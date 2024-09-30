@@ -8,4 +8,6 @@ use Illuminate\Database\Eloquent\Model;
 class drone_connection extends Model
 {
     use HasFactory;
+
+    
 }

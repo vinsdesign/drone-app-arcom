@@ -11,5 +11,20 @@ class organization extends Model
     public function users(){
         return $this->hasMany(User::class);
     }
-    protected $fillable = ['name'];
+    protected $fillable = [
+        'name',
+        'email',
+        'owner_name',
+        'compani_size',
+        'gov_registretion',
+        'legalid',
+        'exemption_number',
+        'address',
+        'state',
+        'country',
+        'insurance_amount',
+        'activity',
+        'image',
+        'note'
+    ];
 }

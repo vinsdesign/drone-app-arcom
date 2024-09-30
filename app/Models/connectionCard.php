@@ -8,4 +8,10 @@ use Illuminate\Database\Eloquent\Model;
 class connectionCard extends Model
 {
     use HasFactory;
+
+    protected $fillable =[
+        'slot',
+        'type',
+        'remot_id'
+    ];
 }

@@ -8,4 +8,12 @@ use Illuminate\Database\Eloquent\Model;
 class fligh extends Model
 {
     use HasFactory;
+
+    protected $fillable =[
+        'name',
+        'date',
+        'duration',
+        'type',
+        'customer_id'
+    ];
 }
