@@ -16,8 +16,9 @@ use Illuminate\Database\Eloquent\SoftDeletingScope;
 class MaintenceResource extends Resource
 {
     protected static ?string $model = Maintence::class;
+    protected static ?string $navigationLabel = 'Maintenance';
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-s-wrench-screwdriver';
 
     public static function form(Form $form): Form
     {
