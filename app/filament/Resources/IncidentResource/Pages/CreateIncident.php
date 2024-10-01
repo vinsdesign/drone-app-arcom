@@ -9,4 +9,9 @@ use Filament\Resources\Pages\CreateRecord;
 class CreateIncident extends CreateRecord
 {
     protected static string $resource = IncidentResource::class;
+    
+    protected function getRedirectUrl(): string
+    {
+        return $this->getResource()::getUrl('index');
+    }
 }
