@@ -17,8 +17,8 @@ use Illuminate\Database\Eloquent\SoftDeletingScope;
 class EquidmentResource extends Resource
 {
     protected static ?string $model = Equidment::class;
-    protected static ?string $navigationLabel = 'Equidment z' ;
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationLabel = 'Equidment' ;
+    protected static ?string $navigationIcon = 'heroicon-m-cube';
     protected static?string $navigationGroup = 'Inventory';
 
     public static function form(Form $form): Form

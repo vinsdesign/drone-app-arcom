@@ -19,7 +19,7 @@ class BattreiResource extends Resource
     protected static ?string $navigationGroup = 'Inventory';
     protected static ?string $navigationLabel = 'Battery';
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-s-battery-100';
 
     public static function form(Form $form): Form
     {
