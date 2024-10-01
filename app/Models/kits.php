@@ -8,4 +8,10 @@ use Illuminate\Database\Eloquent\Model;
 class kits extends Model
 {
     use HasFactory;
+
+    protected $fillable = [
+        'name',
+        'type',
+        'blocked'
+    ];
 }

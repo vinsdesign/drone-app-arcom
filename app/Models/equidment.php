@@ -8,4 +8,21 @@ use Illuminate\Database\Eloquent\Model;
 class equidment extends Model
 {
     use HasFactory;
+
+    protected $fillable = [
+        'name',
+        'model',
+        'status',
+        'inventory_asset',
+        'serial',
+        'type',
+        'for_drone',
+        'owner_id',
+        'purchase_date',
+        'insurable_value',
+        'firmware_v',
+        'hardware_v',
+        'description'
+
+    ];
 }

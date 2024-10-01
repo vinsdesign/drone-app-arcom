@@ -8,4 +8,9 @@ use Illuminate\Database\Eloquent\Model;
 class drone_geometry extends Model
 {
     use HasFactory;
+
+    protected $fillable = [
+        'name',
+        'imgae'
+    ];
 }
