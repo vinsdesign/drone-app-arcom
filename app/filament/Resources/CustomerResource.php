@@ -37,6 +37,9 @@ class CustomerResource extends Resource
             Forms\Components\TextInput::make('address')
                 ->required()
                 ->maxLength(255),
+            Forms\Components\TextInput::make('description')
+                ->required()
+                ->maxLength(255),
         ]);
     }
 
@@ -51,6 +54,8 @@ class CustomerResource extends Resource
             Tables\Columns\TextColumn::make('email')
                 ->searchable(),
             Tables\Columns\TextColumn::make('address')
+                ->searchable(),
+            Tables\Columns\TextColumn::make('description')
                 ->searchable(),
             Tables\Columns\TextColumn::make('created_at')
                 ->dateTime()
