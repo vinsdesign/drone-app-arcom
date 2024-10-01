@@ -16,13 +16,14 @@ return new class extends Migration
             $table->string('name');
             $table->string('model');
             $table->string('status');
-            $table->boolean('inventory_asset')->default(false);
+            $table->string('inventory_asset');
             $table->integer('serial');
             $table->string('type');
-            $table->foreignId('for_drone')->nullable()->constrained('drones')->onDelete('set null');
-            $table->foreignId('owner_id')->nullable()->constrained('users')->onDelete('set null');
+            //$table->foreignId('drones_id')->constrained('drones')->cascadeOnDelete();
+            $table->foreignId('users_id')->constrained('users')->cascadeOnDelete();
             $table->date('purchase_date');
             $table->integer('insurable_value');
+            $table->integer('weight');
             $table->string('firmware_v');
             $table->string('hardware_v');
             $table->boolean('is_loaner')->default(false);
