@@ -24,7 +24,7 @@ class drone extends Model
         'inventory_id',
         'inventory_asset',
         'description',
-        'owner_id',
+        'users_id',
         'firmware_v',
         'hardware_v',
         'propulsion_v',
@@ -36,6 +36,11 @@ class drone extends Model
     public function battreis()
     {
         return $this->hasMany(Battrei::class, 'for_drone');
+    }
+
+    public function users()
+    {
+        return $this->belongsTo(User::class);
     }
 
 }

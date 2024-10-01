@@ -10,8 +10,11 @@ use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
+use Filament\Support\Colors\Color;
+use Filament\Support\Facades\FilamentColor;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+
 
 class BattreiResource extends Resource
 {
@@ -78,7 +81,7 @@ class BattreiResource extends Resource
                         //end wizard 1
                     Forms\Components\Wizard\Step::make('Extra Information')
                         ->schema([
-                        Forms\Components\Select::make('owner_id')->label('Owner')
+                        Forms\Components\Select::make('users_id')->label('Owner')
                             ->relationship('users', 'name')
                             ->required(),
                         Forms\Components\DatePicker::make('purchase_date')->label('Purchase date')
@@ -112,59 +115,62 @@ class BattreiResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('name')
+                Tables\Columns\TextColumn::make('name')->label('Name')
                     ->searchable(),
-                Tables\Columns\TextColumn::make('model')
+                Tables\Columns\TextColumn::make('model')->label('Model')
                     ->searchable(),
-                Tables\Columns\TextColumn::make('status')
+                Tables\Columns\TextColumn::make('status')->label('Status')
+                    ->color(fn ($record) => match ($record->status){
+                        'airworthy' => Color::Green,
+                       'maintenance' =>Color::Red,
+                       'retired' => Color::Zinc
+                     })
                     ->searchable(),
-                Tables\Columns\TextColumn::make('asset_inventory')
+                Tables\Columns\TextColumn::make('asset_inventory')->label('Inventory/Asset')
                     ->searchable(),
-                Tables\Columns\TextColumn::make('serial_P')
+                Tables\Columns\TextColumn::make('serial_P')->label('Serial Printed')
+                    ->sortable(),
+                Tables\Columns\TextColumn::make('serial_I')->label('Serial Internal')
+                    ->sortable(),
+                Tables\Columns\TextColumn::make('cellCount')->label('Cell Count')
                     ->numeric()
                     ->sortable(),
-                Tables\Columns\TextColumn::make('serial_I')
+                Tables\Columns\TextColumn::make('nominal_voltage')->label('Voltage')
                     ->numeric()
                     ->sortable(),
-                Tables\Columns\TextColumn::make('cellCount')
+                Tables\Columns\TextColumn::make('capacity')->label('Capacity')
                     ->numeric()
                     ->sortable(),
-                Tables\Columns\TextColumn::make('nominal_voltage')
+                Tables\Columns\TextColumn::make('initial_Cycle_count')->label('Initial Cycles Count')
                     ->numeric()
                     ->sortable(),
-                Tables\Columns\TextColumn::make('capacity')
+                Tables\Columns\TextColumn::make('life_span')->label('Life Span')
                     ->numeric()
                     ->sortable(),
-                Tables\Columns\TextColumn::make('initial_Cycle_count')
+                Tables\Columns\TextColumn::make('flaight_count')->label('Flaight Count')
                     ->numeric()
                     ->sortable(),
-                Tables\Columns\TextColumn::make('life_span')
+                Tables\Columns\TextColumn::make('for_drone')->label('Blokec To Drone')
                     ->numeric()
                     ->sortable(),
-                Tables\Columns\TextColumn::make('flaight_count')
-                    ->numeric()
-                    ->sortable(),
-                Tables\Columns\TextColumn::make('for_drone')
-                    ->numeric()
-                    ->sortable(),
-                Tables\Columns\TextColumn::make('purchase_date')
+                Tables\Columns\TextColumn::make('purchase_date')->label('Purchase Date')
                     ->date()
                     ->sortable(),
-                Tables\Columns\TextColumn::make('insurable_value')
+                Tables\Columns\TextColumn::make('insurable_value')->label('Insurable Value')
                     ->numeric()
                     ->sortable(),
-                Tables\Columns\TextColumn::make('wight')
+                Tables\Columns\TextColumn::make('wight')->label('weight')
                     ->numeric()
                     ->sortable(),
-                Tables\Columns\TextColumn::make('firmware_version')
+                Tables\Columns\TextColumn::make('firmware_version')->label('Firmware Version')
                     ->searchable(),
-                Tables\Columns\TextColumn::make('hardware_version')
+                Tables\Columns\TextColumn::make('hardware_version')->label('Hardware Version')
                     ->searchable(),
-                Tables\Columns\IconColumn::make('is_loaner')
+                Tables\Columns\IconColumn::make('is_loaner')->label('Is Loaner')
                     ->boolean(),
-                Tables\Columns\TextColumn::make('description')
+                Tables\Columns\TextColumn::make('description')->label('Description')
                     ->searchable(),
-                Tables\Columns\TextColumn::make('owner_id')
+                Tables\Columns\TextColumn::make('users.name')->label('Owners')
                     ->numeric()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('created_at')

@@ -24,12 +24,12 @@ class battrei extends Model
         'for_drone',
         'purchase_date',
         'insurable_value',
-        'weight',
+        'wight',
         'firmware_version',
         'hardware_version',
         'is_loaner',
         'description',
-        'owner_id',
+        'users_id',
     ];
 
     public function drone()
@@ -37,8 +37,8 @@ class battrei extends Model
         return $this->belongsTo(Drone::class, 'for_drone');
     }
 
-    public function owner()
+    public function users()
     {
-        return $this->belongsTo(User::class, 'owner_id');
+        return $this->belongsTo(User::class);
     }
 }
