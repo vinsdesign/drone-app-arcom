@@ -9,4 +9,9 @@ use Filament\Resources\Pages\CreateRecord;
 class CreateKits extends CreateRecord
 {
     protected static string $resource = KitsResource::class;
+
+    protected function getRedirectUrl(): string
+    {
+        return $this->getResource()::getUrl('index');
+    }
 }
