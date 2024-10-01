@@ -39,7 +39,6 @@ class CustomerResource extends Resource
                 ->maxLength(255),
 
             Forms\Components\TextInput::make('description')
-                ->required()
                 ->maxLength(255),
         ]);
     }

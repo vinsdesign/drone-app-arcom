@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class equidment extends Model
 {
@@ -16,13 +17,25 @@ class equidment extends Model
         'inventory_asset',
         'serial',
         'type',
-        'for_drone',
-        'owner_id',
+        //'drones_id',
+        'users_id',
         'purchase_date',
         'insurable_value',
+        'weight',
+        'is_loaner',
         'firmware_v',
         'hardware_v',
         'description'
 
     ];
+
+    public function drones(): BelongsTo
+    {
+        return $this->belongsTo(Drone::class);
+    }
+
+    public function users(): BelongsTo
+    {
+        return $this->belongsTo(User::class);
+    }
 }
