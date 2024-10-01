@@ -16,8 +16,10 @@ use Illuminate\Database\Eloquent\SoftDeletingScope;
 class DroneResource extends Resource
 {
     protected static ?string $model = Drone::class;
+    protected static ?string $navigationGroup = 'Inventory';
+    protected static ?string $navigationLabel = 'Drone';
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-m-rocket-launch';
 
     public static function form(Form $form): Form
     {

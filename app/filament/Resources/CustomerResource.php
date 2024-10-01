@@ -16,8 +16,9 @@ use Illuminate\Database\Eloquent\SoftDeletingScope;
 class CustomerResource extends Resource
 {
     protected static ?string $model = Customer::class;
+    protected static ?string $navigationLabel = 'Customer';
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-s-user';
 
     public static function form(Form $form): Form
     {
@@ -28,8 +29,7 @@ class CustomerResource extends Resource
                 ->maxLength(255),
             Forms\Components\TextInput::make('phone')
                 ->tel()
-                ->required()
-                ->maxLength(255),
+                ->required(),
             Forms\Components\TextInput::make('email')
                 ->email()
                 ->required()
@@ -37,6 +37,9 @@ class CustomerResource extends Resource
             Forms\Components\TextInput::make('address')
                 ->required()
                 ->maxLength(255),
+            Forms\Components\Textarea::make('description')
+            ->required()
+            ->maxLength(255)->columnSpanFull(),
         ]);
     }
 

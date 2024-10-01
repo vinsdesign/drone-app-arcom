@@ -17,8 +17,9 @@ class FlighLocationResource extends Resource
 {
     protected static ?string $model = FlighLocation::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-s-map-pin';
     protected static?string $navigationGroup = 'Inventory';
+    protected static ?string $navigationLabel = 'Location';
 
     public static function form(Form $form): Form
     {
