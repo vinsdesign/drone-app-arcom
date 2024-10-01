@@ -42,5 +42,9 @@ class drone extends Model
     {
         return $this->belongsTo(User::class);
     }
+    public function incident()
+    {
+        return $this->belongsTo(incident::class);
+    }
 
 }

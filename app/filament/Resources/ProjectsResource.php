@@ -35,8 +35,8 @@ class ProjectsResource extends Resource
                 Forms\Components\TextInput::make('description')
                     ->required()
                     ->maxLength(255),
-                Forms\Components\Select::make('customers_id')
-                    ->relationship('customers', 'name')
+                Forms\Components\Select::make('customer_id')
+                    ->relationship('customer', 'name')
                     ->required(),
             ]);
     }
@@ -54,7 +54,7 @@ class ProjectsResource extends Resource
                     ->searchable(),
                 Tables\Columns\TextColumn::make('description')
                     ->searchable(),
-                Tables\Columns\TextColumn::make('customers.name')
+                Tables\Columns\TextColumn::make('customer.name')
                     ->numeric()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('created_at')

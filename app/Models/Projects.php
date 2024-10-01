@@ -14,12 +14,17 @@ class Projects extends Model
         'case',
         'revenue',
         'currency',
-        'customers_id',
+        'customer_id',
         'description'
     ];
 
-    public function customers(): BelongsTo
+    public function customer(): BelongsTo
     {
         return $this->belongsTo(Customer::class);
     }
+    public function incident()
+    {
+        return $this->hasMany(incident::class);
+    }
+
 }

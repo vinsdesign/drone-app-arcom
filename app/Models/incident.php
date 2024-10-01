@@ -24,4 +24,13 @@ class incident extends Model
             'project_id',
             'personel_involved_id'
     ];
+
+    public function drone()
+    {
+        return $this->hasMany(drone::class);
+    }
+    public function project()
+    {
+        return $this->belongsTo(project::class);
+    }
 }
