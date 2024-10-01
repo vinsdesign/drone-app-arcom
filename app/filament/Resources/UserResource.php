@@ -17,7 +17,6 @@ class UserResource extends Resource
 {
     protected static ?string $model = User::class;
     protected static ?string $navigationLabel = 'Personel';
-
     protected static ?string $navigationIcon = 'heroicon-s-user-group';
 
     public static function form(Form $form): Form
@@ -49,7 +48,6 @@ class UserResource extends Resource
                     ->maxLength(255),
                 Forms\Components\Select::make('role')
                     ->required()
-                    ->maxLength(255)
                     ->options([
                         'pilot' => 'Pilot',
                         'maintenance' => 'Maintenance',
@@ -65,12 +63,8 @@ class UserResource extends Resource
                     ->searchable(),
                 Tables\Columns\TextColumn::make('email')
                     ->searchable(),
-                Tables\Columns\TextColumn::make('email_verified_at')
-                    ->dateTime()
-                    ->sortable(),
                 Tables\Columns\TextColumn::make('phone')
-                    ->numeric()
-                    ->sortable(),
+                    ->searchable(),
                 Tables\Columns\TextColumn::make('country')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('lenguage')

@@ -27,7 +27,7 @@ return new class extends Migration
             $table->foreignId('inventory_id')->constrainedTo('inventory')->cascadeDelete();
             $table->string('inventory_asset'); // nanti hapus
             $table->string('description');
-            $table->foreignId('owner_id')->constrained('users')->cascadeOnDelete();
+            $table->foreignId('users_id')->constrained('users')->cascadeOnDelete();
             $table->string('firmware_v');
             $table->string('hardware_v');
             $table->string('propulsion_v');

@@ -25,7 +25,7 @@ return new class extends Migration
             $table->integer('initial_Cycle_count');
             $table->integer('life_span');
             $table->integer('flaight_count');
-            $table->foreignId('for_drone')->constrainedTo('drone')->cascadeDelete();
+            $table->foreignId('for_drone')->nullable()->constrainedTo('drone')->cascadeDelete();
             $table->date('purchase_date');
             $table->integer('insurable_value');
             $table->integer('wight');
@@ -33,7 +33,7 @@ return new class extends Migration
             $table->string('hardware_version');
             $table->boolean('is_loaner')->default(false);
             $table->string('description');
-            $table->foreignId('owner_id')->constrainedTo('users')->cascadeDelete();
+            $table->foreignId('users_id')->constrainedTo('users')->cascadeDelete();
             $table->timestamps();
         });
     }

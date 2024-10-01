@@ -10,9 +10,12 @@ use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
+use Filament\Support\Colors\Color;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
-
+use Filament\Infolists\Infolist;
+use Filament\Infolists\Components\TextEntry;
+use Filament\Forms\Components\Section;
 class DroneResource extends Resource
 {
     protected static ?string $model = Drone::class;
@@ -67,10 +70,10 @@ class DroneResource extends Resource
                                 'inventory'=> 'Inventory',
                             ])
                             ->required(),
-                        Forms\Components\TextInput::make('owner_id')->label('Owner')
+                        Forms\Components\Select::make('users_id')->label('Owner')
+                            ->relationship('users','name')
                             ->required()
-                            ->columnSpanFull()
-                            ->numeric(),
+                            ->columnSpanFull(),
                         Forms\Components\TextInput::make('firmware_v')->label('Firmware version')
                             ->required()
                             ->maxLength(255),
@@ -120,60 +123,65 @@ class DroneResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('name')
+                Tables\Columns\TextColumn::make('name')->label('Drone Name')
                     ->searchable(),
-                Tables\Columns\TextColumn::make('status')
+                Tables\Columns\TextColumn::make('status')->label('Status')
+                ->color(fn ($record) => match ($record->status){
+                    'airworthy' => Color::Green,
+                   'maintenance' =>Color::Red,
+                   'retired' => Color::Zinc
+                 })
                     ->searchable(),
-                Tables\Columns\TextColumn::make('idlegal')
+                Tables\Columns\TextColumn::make('idlegal')->label('Legal ID')
                     ->searchable(),
-                Tables\Columns\TextColumn::make('brand')
-                    ->searchable(),
-                Tables\Columns\TextColumn::make('model')
-                    ->searchable(),
-                Tables\Columns\TextColumn::make('type')
-                    ->searchable(),
-                Tables\Columns\TextColumn::make('serial_p')
-                    ->numeric()
+                Tables\Columns\TextColumn::make('users.name')->label('Owners')
                     ->sortable(),
-                Tables\Columns\TextColumn::make('serial_i')
-                    ->numeric()
-                    ->sortable(),
-                Tables\Columns\TextColumn::make('flight_c')
-                    ->searchable(),
-                Tables\Columns\TextColumn::make('remote_c')
-                    ->searchable(),
-                Tables\Columns\TextColumn::make('remote_cc')
-                    ->searchable(),
-                Tables\Columns\TextColumn::make('inventory_id')
-                    ->numeric()
-                    ->sortable(),
-                Tables\Columns\TextColumn::make('inventory_asset')
-                    ->searchable(),
-                Tables\Columns\TextColumn::make('description')
-                    ->searchable(),
-                Tables\Columns\TextColumn::make('owner_id')
-                    ->numeric()
-                    ->sortable(),
-                Tables\Columns\TextColumn::make('firmware_v')
-                    ->searchable(),
-                Tables\Columns\TextColumn::make('hardware_v')
-                    ->searchable(),
-                Tables\Columns\TextColumn::make('propulsion_v')
-                    ->searchable(),
-                Tables\Columns\TextColumn::make('color')
-                    ->searchable(),
-                Tables\Columns\TextColumn::make('remote')
-                    ->searchable(),
-                Tables\Columns\TextColumn::make('conn_card')
-                    ->searchable(),
-                Tables\Columns\TextColumn::make('created_at')
-                    ->dateTime()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
-                Tables\Columns\TextColumn::make('updated_at')
-                    ->dateTime()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
+                // Tables\Columns\TextColumn::make('brand')
+                //     ->searchable(),
+                // Tables\Columns\TextColumn::make('model')
+                //     ->searchable(),
+                // Tables\Columns\TextColumn::make('type')
+                //     ->searchable(),
+                // Tables\Columns\TextColumn::make('serial_p')
+                //     ->numeric()
+                //     ->sortable(),
+                // Tables\Columns\TextColumn::make('serial_i')
+                //     ->numeric()
+                //     ->sortable(),
+                // Tables\Columns\TextColumn::make('flight_c')
+                //     ->searchable(),
+                // Tables\Columns\TextColumn::make('remote_c')
+                //     ->searchable(),
+                // Tables\Columns\TextColumn::make('remote_cc')
+                //     ->searchable(),
+                // Tables\Columns\TextColumn::make('inventory_id')
+                //     ->numeric()
+                //     ->sortable(),
+                // Tables\Columns\TextColumn::make('inventory_asset')
+                //     ->searchable(),
+                // Tables\Columns\TextColumn::make('description')
+                //     ->searchable(),
+
+                // Tables\Columns\TextColumn::make('firmware_v')
+                //     ->searchable(),
+                // Tables\Columns\TextColumn::make('hardware_v')
+                //     ->searchable(),
+                // Tables\Columns\TextColumn::make('propulsion_v')
+                //     ->searchable(),
+                // Tables\Columns\TextColumn::make('color')
+                //     ->searchable(),
+                // Tables\Columns\TextColumn::make('remote')
+                //     ->searchable(),
+                // Tables\Columns\TextColumn::make('conn_card')
+                //     ->searchable(),
+                // Tables\Columns\TextColumn::make('created_at')
+                //     ->dateTime()
+                //     ->sortable()
+                //     ->toggleable(isToggledHiddenByDefault: true),
+                // Tables\Columns\TextColumn::make('updated_at')
+                //     ->dateTime()
+                //     ->sortable()
+                //     ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
                 //
@@ -188,6 +196,27 @@ class DroneResource extends Resource
                 ]),
             ]);
     }
+
+    //infolist
+    public static function infolist(Infolist $infolist): Infolist
+    {
+        return $infolist
+        
+        ->schema([
+            TextEntry::make('name')->label('Name'),
+            TextEntry::make('idlegal')->label('Legal ID'),
+            TextEntry::make('status')->label('Status'),
+            TextEntry::make('users.name')->label('Owner'),
+
+            TextEntry::make('firmware_v')->label('Firmware Version'),
+            TextEntry::make('hardware_v')->label('Hardware Version'),
+            TextEntry::make('serial_i')->label('Serial Internal'),
+            TextEntry::make('serial_p')->label('Serial Printed'),
+            TextEntry::make('remote')->label('Remote'),
+            TextEntry::make('created_at')->label('Purchas Date')->date('Y-m-d'),
+        ])->columns(3);
+    }
+
 
     public static function getRelations(): array
     {
