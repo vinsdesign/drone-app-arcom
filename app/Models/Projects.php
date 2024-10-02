@@ -22,4 +22,9 @@ class Projects extends Model
     {
         return $this->belongsTo(Customer::class);
     }
+    public function incident()
+    {
+        return $this->hasMany(Incident::class);
+    }
+
 }

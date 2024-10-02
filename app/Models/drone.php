@@ -4,11 +4,11 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-class drone extends Model
+class Drone extends Model
 {
     use HasFactory;
+
     protected $fillable = [
         'name',
         'status',
@@ -33,9 +33,9 @@ class drone extends Model
         'conn_card'
     ];
 
-    public function battreis()
+    public function batteries()
     {
-        return $this->hasMany(Battrei::class, 'for_drone');
+        return $this->hasMany(battrei::class, 'for_drone');
     }
 
     public function users()
@@ -43,4 +43,8 @@ class drone extends Model
         return $this->belongsTo(User::class);
     }
 
+    public function incidents()
+    {
+        return $this->hasMany(Incident::class);
+    }
 }
