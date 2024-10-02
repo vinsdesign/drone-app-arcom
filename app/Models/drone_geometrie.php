@@ -5,12 +5,14 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class drone_geometry extends Model
+class drone_geometrie extends Model
 {
     use HasFactory;
 
     protected $fillable = [
-        'name',
-        'imgae'
+        'name'
     ];
+    public function drones(){
+        return $this->hasMany(drone::class);
+    }
 }

@@ -24,7 +24,7 @@ return new class extends Migration
             $table->string('flight_c');
             $table->string('remote_c');
             $table->string('remote_cc');
-            $table->foreignId('inventory_id')->constrainedTo('inventory')->cascadeDelete();
+            $table->string('geometry');
             $table->string('inventory_asset'); // nanti hapus
             $table->string('description');
             $table->foreignId('users_id')->constrained('users')->cascadeOnDelete();

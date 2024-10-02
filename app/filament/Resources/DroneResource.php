@@ -51,16 +51,51 @@ class DroneResource extends Resource
                         Forms\Components\TextInput::make('model')->label('Model')
                             ->required()
                             ->maxLength(255),
-                        Forms\Components\TextInput::make('type')->label('Type')
-                            ->required()
-                            ->maxLength(255),
+                        Forms\Components\Select::make('type')->label('Type')
+                        ->options([
+                            'aircraft' => 'Aircraft',
+                            'autoPilot' => 'AutoPilot',
+                            'boat' => 'Boat',
+                            'fixed_wing' => 'Fixed-Wing',
+                            'flight controller' => 'Flight Controller',
+                            'flying-wings' => 'Flying-Wings',
+                            'fpv' => 'FPV',
+                            'hexsacopter' => 'Hexsacopter',
+                            'home-made' => 'Home-Made',
+                            'multi-rotors' => 'Multi-Rotors',
+                            'quadcopter' => 'Quadcopter',
+                            'rover' => 'Rover',
+                            'rpa' => 'RPA',
+                            'Submersible' => 'Submersible',
+                        ])->searchable()->required(),
                     ])->columns(3),
                     //and wizard 1
                     Forms\Components\Wizard\Step::make('Drone Details')
                     ->schema([
-                        Forms\Components\TextInput::make('inventory_id')->label('Drone Geometry')
-                            ->required()
-                            ->numeric(),
+                        Forms\Components\Select::make('geometry')->label('Drone Geometry')
+                        ->options([
+                            'dual_rotor_coaxial' => 'Dual Rotor Coaxial',
+                            'fixed_wing_1' => 'Fixed Wing 1',
+                            'fixed_wing_2' => 'Fixed Wing 2',
+                            'fixed_wing_3' => 'Fixed Wing 3',
+                            'hexa_plus' => 'Hexa +',
+                            'hexa_x' => 'Hexa x',
+                            'octa_plus' => 'Octa +',
+                            'octa_v' => 'Octa V',
+                            'octa_x' => 'Octa X',
+                            'quad_plus' => 'Quad +',
+                            'quad_x' => 'Quad X',
+                            'quad_x_dji' => 'Quad X DJI',
+                            'single_rotor' => 'Single Rotor',
+                            'tri' => 'Tri',
+                            'vtol_1' => 'VTOL 1',
+                            'vtol_2' => 'VTOL 2',
+                            'vtol_3' => 'VTOL 3',
+                            'vtol_4' => 'VTOL 4',
+                            'x8_coaxial' => 'X8 Coaxial',
+                            'x6_coaxial' => 'X6 Coaxial',
+                        ])
+                        ->required(),
                         Forms\Components\TextInput::make('color')->label('Color')
                             ->required()
                             ->maxLength(255),
@@ -80,9 +115,15 @@ class DroneResource extends Resource
                         Forms\Components\TextInput::make('hardware_v')->label('Hardware Version')
                             ->required()
                             ->maxLength(255),
-                        Forms\Components\TextInput::make('propulsion_v')->label('propulsion Version')
-                            ->required()
-                            ->maxLength(255),
+                        Forms\Components\Select::make('propulsion_v')->label('propulsion Version')
+                            ->options([
+                                'electric' => 'Electric',
+                                'fuel'=> 'Fuel',
+                                'hydrogen' => 'Hydrogen',
+                                'hybrid' => 'Hybrid',
+                                'turbine' => 'Turbine',
+                            ])
+                            ->required(),
                         Forms\Components\Textarea::make('description')->label('Description')
                             ->required()
                             ->maxLength(255)->columnSpanFull(),
@@ -205,7 +246,12 @@ class DroneResource extends Resource
         ->schema([
             TextEntry::make('name')->label('Name'),
             TextEntry::make('idlegal')->label('Legal ID'),
-            TextEntry::make('status')->label('Status'),
+            TextEntry::make('status')->label('Status')
+            ->color(fn ($record) => match ($record->status){
+                'airworthy' => Color::Green,
+               'maintenance' =>Color::Red,
+               'retired' => Color::Zinc
+             }),
             TextEntry::make('users.name')->label('Owner'),
 
             TextEntry::make('firmware_v')->label('Firmware Version'),

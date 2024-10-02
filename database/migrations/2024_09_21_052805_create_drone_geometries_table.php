@@ -14,7 +14,6 @@ return new class extends Migration
         Schema::create('drone_geometries', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->string('imgae');
             $table->timestamps();
         });
     }
