@@ -19,7 +19,7 @@ return new class extends Migration
             $table->string('inventory_asset');
             $table->integer('serial');
             $table->string('type');
-            //$table->foreignId('drones_id')->constrained('drones')->cascadeOnDelete();
+            $table->foreignId('drones_id')->constrained('drones')->cascadeOnDelete();
             $table->foreignId('users_id')->constrained('users')->cascadeOnDelete();
             $table->date('purchase_date');
             $table->integer('insurable_value');

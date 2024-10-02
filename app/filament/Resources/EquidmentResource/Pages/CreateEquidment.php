@@ -9,4 +9,8 @@ use Filament\Resources\Pages\CreateRecord;
 class CreateEquidment extends CreateRecord
 {
     protected static string $resource = EquidmentResource::class;
+    protected function getRedirectUrl(): string
+    {
+        return $this->getResource()::getUrl('index');
+    }
 }

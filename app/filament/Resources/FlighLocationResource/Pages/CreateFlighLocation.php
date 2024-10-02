@@ -9,4 +9,8 @@ use Filament\Resources\Pages\CreateRecord;
 class CreateFlighLocation extends CreateRecord
 {
     protected static string $resource = FlighLocationResource::class;
+    protected function getRedirectUrl(): string
+    {
+        return $this->getResource()::getUrl('index');
+    }
 }
