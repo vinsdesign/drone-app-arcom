@@ -17,7 +17,7 @@ class equidment extends Model
         'inventory_asset',
         'serial',
         'type',
-        //'drones_id',
+        'drones_id',
         'users_id',
         'purchase_date',
         'insurable_value',

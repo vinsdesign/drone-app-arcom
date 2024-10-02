@@ -91,8 +91,8 @@ class EquidmentResource extends Resource
                                 'video_transmitter' => 'Video Transmitter'
                             ])
                             ->required()->columnSpan(2),
-                        //Forms\Components\Select::make('for_drones')->label('For Drone (Optional)')
-                            //->relationship('drones', 'name'),
+                        Forms\Components\Select::make('drones_id')->label('For Drone (Optional)')
+                            ->relationship('drones', 'name'),
                     ])->columns(4),
                     //form ke dua
                     Forms\Components\Wizard\Step::make('Extra Information')
@@ -141,9 +141,9 @@ class EquidmentResource extends Resource
                     ->sortable(),
                 Tables\Columns\TextColumn::make('type')
                     ->searchable(),
-                //Tables\Columns\TextColumn::make('drones.name')
-                    //->numeric()
-                    //->sortable(),
+                Tables\Columns\TextColumn::make('drones.name')
+                    ->numeric()
+                    ->sortable(),
                 Tables\Columns\TextColumn::make('users.name')
                     ->numeric()
                     ->sortable(),
@@ -164,14 +164,6 @@ class EquidmentResource extends Resource
                     ->boolean(),
                 Tables\Columns\TextColumn::make('description')
                     ->searchable(),
-                Tables\Columns\TextColumn::make('created_at')
-                    ->dateTime()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
-                Tables\Columns\TextColumn::make('updated_at')
-                    ->dateTime()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
                 //

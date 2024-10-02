@@ -4,7 +4,7 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\FlighLocationResource\Pages;
 use App\Filament\Resources\FlighLocationResource\RelationManagers;
-use App\Models\FlighLocation;
+use App\Models\fligh_location;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -15,7 +15,7 @@ use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class FlighLocationResource extends Resource
 {
-    protected static ?string $model = FlighLocation::class;
+    protected static ?string $model = fligh_location::class;
 
     protected static ?string $navigationIcon = 'heroicon-s-map-pin';
     protected static?string $navigationGroup = 'Inventory';

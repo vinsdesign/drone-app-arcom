@@ -1,14 +1,14 @@
 <?php
 
-namespace App\Filament\Resources\FlighLocationResource\Pages;
+namespace App\Filament\Resources\FlighResource\Pages;
 
-use App\Filament\Resources\FlighLocationResource;
+use App\Filament\Resources\FlighResource;
 use Filament\Actions;
 use Filament\Resources\Pages\EditRecord;
 
-class EditFlighLocation extends EditRecord
+class EditFligh extends EditRecord
 {
-    protected static string $resource = FlighLocationResource::class;
+    protected static string $resource = FlighResource::class;
 
     protected function getHeaderActions(): array
     {
