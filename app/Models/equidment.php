@@ -38,4 +38,8 @@ class equidment extends Model
     {
         return $this->belongsTo(User::class);
     }
+    public function maintence_eq()
+    {
+        return $this->hasMany(maintence_eq::class);
+    }
 }

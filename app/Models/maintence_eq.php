@@ -18,4 +18,9 @@ class maintence_eq extends Model
         'notes',
         'equidment_id'
     ];
+
+    public function equidment()
+    {
+        return $this->belongsTo(equidment::class);
+    }
 }
