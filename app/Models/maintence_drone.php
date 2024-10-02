@@ -17,6 +17,17 @@ class maintence_drone extends Model
         'currency',
         'notes',
         'drone_id',
-        'task_id'
+        'part',
+        'replaced',
+        'part_name',
+        'status_part',
+        'technician',
+        'new_part_serial',
+        'description_part'
     ];
+
+    public function drone()
+    {
+        return $this->belongsTo(Drone::class, 'drone_id');
+    }
 }

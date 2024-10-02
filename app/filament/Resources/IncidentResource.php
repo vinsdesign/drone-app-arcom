@@ -38,18 +38,18 @@ class IncidentResource extends Resource
                             false => 'Closed',
                             true => 'Under Review',
                         ]),
-                    Forms\Components\BelongsToSelect::make('location_id')
-                        ->relationship('fligh_location','name')
-                        ->required()
-                        ->searchable(),
-                     Forms\Components\BelongsToSelect::make('drone_id')
+                    // Forms\Components\BelongsToSelect::make('location_id')
+                    Forms\Components\TextInput::make('location_id')
+                        // ->relationship('fligh_location','name')
+                        ->label('Flight Location')
+                        ->required(),
+                        // ->searchable(),
+                     Forms\Components\Select::make('drone_id')
                         ->relationship('drone','name')
-                        ->required()
-                        ->searchable(),
-                    Forms\Components\BelongsToSelect::make('project_id')
-                        ->relationship('project','name')
-                        ->required()
-                        ->searchable(),
+                        ->required(),
+                    Forms\Components\Select::make('project_id')
+                        ->relationship('project','case')
+                        ->required(),
                     Forms\Components\TextInput::make('personel_involved_id')
                         ->required()
                         ->numeric()->columnSpanFull(),
