@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Database\Seeders\drone_geometries;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -21,7 +22,7 @@ class Drone extends Model
         'flight_c',
         'remote_c',
         'remote_cc',
-        'inventory_id',
+        'geometry',
         'inventory_asset',
         'description',
         'users_id',
@@ -51,4 +52,5 @@ class Drone extends Model
     {
         return $this->belongsTo(maintence_drone::class);
     }
+
 }

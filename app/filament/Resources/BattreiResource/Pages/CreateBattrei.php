@@ -9,4 +9,8 @@ use Filament\Resources\Pages\CreateRecord;
 class CreateBattrei extends CreateRecord
 {
     protected static string $resource = BattreiResource::class;
+    protected function getRedirectUrl(): string
+    {
+        return $this->getResource()::getUrl('index');
+    }
 }

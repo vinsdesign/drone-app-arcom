@@ -12,6 +12,8 @@ use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Filament\Infolists\Infolist;
+use Filament\Infolists\Components\TextEntry;
 
 class UserResource extends Resource
 {
@@ -91,6 +93,22 @@ class UserResource extends Resource
             ]);
     }
 
+    //infolist users
+    public static function infolist(Infolist $infolist): Infolist
+    {
+        return $infolist
+        
+        ->schema([
+            TextEntry::make('name')->label('Name'),
+            TextEntry::make('email')->label('email'),
+            TextEntry::make('phone')->label('phone'),
+            TextEntry::make('country')->label('Country'),
+            TextEntry::make('lenguage')->label('Lenguage'),
+            TextEntry::make('sertif')->label('Srtifikat'),
+            TextEntry::make('timezone')->label('Timezone'),
+            TextEntry::make('role')->label('Role Type'),
+        ])->columns(2);
+    }
     public static function getRelations(): array
     {
         return [

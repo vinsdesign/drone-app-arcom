@@ -14,6 +14,8 @@ use Filament\Support\Colors\Color;
 use Filament\Support\Facades\FilamentColor;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Filament\Infolists\Infolist;
+use Filament\Infolists\Components\TextEntry;
 
 
 class BattreiResource extends Resource
@@ -195,7 +197,37 @@ class BattreiResource extends Resource
                 ]),
             ]);
     }
+//infolist battery
+public static function infolist(Infolist $infolist): Infolist
+{
+    return $infolist
+    
+    ->schema([
+        TextEntry::make('name')->label('Name'),
+        TextEntry::make('model')->label('Model'),
+        TextEntry::make('status')->label('Status')
+        ->color(fn ($record) => match ($record->status){
+            'airworthy' => Color::Green,
+           'maintenance' =>Color::Red,
+           'retired' => Color::Zinc
+         }),
+        TextEntry::make('users.name')->label('Owner'),
+        TextEntry::make('asset_inventory')->label('Asset Inventory'),
 
+        TextEntry::make('firmware_version')->label('Firmware Version'),
+        TextEntry::make('hardware_version')->label('Hardware Version'),
+        TextEntry::make('serial_I')->label('Serial Internal'),
+        TextEntry::make('serial_P')->label('Serial Printed'),
+        TextEntry::make('insurable_value')->label('Remote'),
+        TextEntry::make('created_at')->label('Purchas Date')->date('Y-m-d'),
+
+        TextEntry::make('cellCount')->label('Cell Count'),
+        TextEntry::make('nominal_voltage')->label('Nominal Voltage (V)'),
+        TextEntry::make('capacity')->label('Capacity (mAh)'),
+        TextEntry::make('initial_Cycle_count')->label('Initial Cycle Count'),
+        TextEntry::make('life_span')->label('Life Span'),
+    ])->columns(3);
+}
     public static function getRelations(): array
     {
         return [
