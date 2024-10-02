@@ -18,7 +18,7 @@ class maintence_drone extends Model
         'notes',
         'drone_id',
         'part',
-        'name_part',
+        'part_name',
         'status_part',
         'technician',
         'new_part_serial',
