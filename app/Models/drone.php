@@ -47,4 +47,8 @@ class Drone extends Model
     {
         return $this->hasMany(Incident::class);
     }
+    public function maintence_drone()
+    {
+        return $this->belongsTo(maintence_drone::class);
+    }
 }

@@ -19,4 +19,9 @@ class maintence_drone extends Model
         'drone_id',
         'task_id'
     ];
+
+    public function drone()
+    {
+        return $this->belongsTo(Drone::class, 'drone_id');
+    }
 }
