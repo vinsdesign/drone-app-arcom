@@ -77,6 +77,7 @@ class MaintenceResource extends Resource
                         Forms\Components\TextInput::make('new_part_serial')
                             ->label('New Part Serial #')
                             ->maxLength(255),
+                        Forms\Components\Checkbox::make('replaced')->label('Replaced'),
                         Forms\Components\Textarea::make('description_part')
                         ->label('Description')
                             ->maxLength(255)->columnSpanFull(),
@@ -117,6 +118,8 @@ class MaintenceResource extends Resource
                     ->sortable(),
                 Tables\Columns\TextColumn::make('technician')
                     ->sortable(),
+                Tables\Columns\IconColumn::make('replaced')
+                    ->boolean(),
                 Tables\Columns\TextColumn::make('new_part_serial')
                     ->sortable(),
                 Tables\Columns\TextColumn::make('description_part')
