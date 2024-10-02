@@ -17,7 +17,12 @@ class maintence_drone extends Model
         'currency',
         'notes',
         'drone_id',
-        'task_id'
+        'part',
+        'name_part',
+        'status_part',
+        'technician',
+        'new_part_serial',
+        'description_part'
     ];
 
     public function drone()

@@ -91,7 +91,36 @@ class MaintenceResource extends Resource
     {
         return $table
             ->columns([
-                //
+                Tables\Columns\TextColumn::make('name')
+                    ->searchable(),
+                Tables\Columns\TextColumn::make('drone_id')
+                    ->searchable(),
+                Tables\Columns\TextColumn::make('date')
+                    ->date()
+                    ->searchable(),
+                Tables\Columns\TextColumn::make('status')
+                    ->searchable(),
+                Tables\Columns\TextColumn::make('cost')
+                    ->searchable(),
+                Tables\Columns\TextColumn::make('currency')
+                    ->searchable(),
+                Tables\Columns\TextColumn::make('notes')
+                    ->searchable(),
+                Tables\Columns\TextColumn::make('created_at')
+                    ->dateTime()
+                    ->sortable(),
+                Tables\Columns\TextColumn::make('part')
+                    ->sortable(),
+                Tables\Columns\TextColumn::make('part_name')
+                    ->searchable(),
+                Tables\Columns\TextColumn::make('status_part')
+                    ->sortable(),
+                Tables\Columns\TextColumn::make('technician')
+                    ->sortable(),
+                Tables\Columns\TextColumn::make('new_part_serial')
+                    ->sortable(),
+                Tables\Columns\TextColumn::make('description_part')
+                    ->sortable()
             ])
             ->filters([
                 //
@@ -105,7 +134,7 @@ class MaintenceResource extends Resource
                 ]),
             ]);
     }
-
+    
     public static function getRelations(): array
     {
         return [
