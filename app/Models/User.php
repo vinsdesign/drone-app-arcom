@@ -7,8 +7,7 @@ use Filament\Models\Contracts\HasTenants;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
-
-
+use Illuminate\Support\Collection;
 use Filament\Panel;
 
 class User extends Authenticatable
