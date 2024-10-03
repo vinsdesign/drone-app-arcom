@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('flighs', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->date('date');
+            $table->date('date_flight');
             $table->integer('duration_hour');
             $table->integer('duration_minute');
             $table->string('type');
