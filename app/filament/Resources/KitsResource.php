@@ -36,10 +36,11 @@ class KitsResource extends Resource
                     ->required(),
                 Forms\Components\Toggle::make('enabled')->label('Enabled')
                     ->required(),
-                Forms\Components\BelongsToSelect::make('blocked')->label('Blocked To Drone')
+                Forms\Components\Select::make('blocked')
+                    ->label('Blocked To Drone')
                     ->relationship('drone', 'name')
                     ->nullable()
-                    ->searchable()->columnSpanFull(),
+                    ->columnSpanFull(),
             ]);
     }
 
@@ -53,7 +54,7 @@ class KitsResource extends Resource
                     ->searchable(),
                 Tables\Columns\IconColumn::make('enabled')
                     ->boolean(),
-                Tables\Columns\TextColumn::make('blocked')
+                Tables\Columns\TextColumn::make('drone_id')
                     ->numeric()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('created_at')
