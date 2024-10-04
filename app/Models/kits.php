@@ -12,6 +12,11 @@ class kits extends Model
     protected $fillable = [
         'name',
         'type',
-        'blocked'
+        'enabled',
+        'drone_id'
     ];
+    public function drone()
+    {
+        return $this->belongsTo(drone::class);
+    }
 }
