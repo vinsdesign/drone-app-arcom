@@ -17,8 +17,13 @@ class FlighResource extends Resource
 {
     protected static ?string $model = Fligh::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+
+
     public static ?string $tenantOwnershipRelationshipName = 'teams';
+
+    protected static ?string $navigationLabel = 'Flights' ;
+    protected static ?string $navigationIcon = 'heroicon-s-clipboard-document-list';
+
 
     public static function form(Form $form): Form
     {
@@ -30,7 +35,7 @@ class FlighResource extends Resource
                 Forms\Components\TextInput::make('name')
                     ->required()
                     ->maxLength(255),
-                Forms\Components\DatePicker::make('date')
+                Forms\Components\DatePicker::make('date_flight')
                     ->required(),
                 Forms\Components\TextInput::make('duration_hour')->label('Duration Hour')
                     ->required()
@@ -116,7 +121,7 @@ class FlighResource extends Resource
                     ->relationship('battreis', 'name')    
                     ->required(),
                 Forms\Components\Select::make('equidments_id')->label('Equipment')
-                    ->relationship('equidments', 'name')    
+                    ->relationship('equidments', 'name')   
                     ->required(),
                 Forms\Components\TextInput::make('pre_volt')->label('Pre Voltage')
                     ->numeric()    
@@ -139,7 +144,7 @@ class FlighResource extends Resource
             ->columns([
                 Tables\Columns\TextColumn::make('name')
                     ->searchable(),
-                Tables\Columns\TextColumn::make('date')
+                Tables\Columns\TextColumn::make('date_flight')
                     ->date()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('duration_hour'),

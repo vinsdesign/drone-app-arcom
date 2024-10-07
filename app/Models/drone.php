@@ -53,8 +53,14 @@ class drone extends Model
     {
         return $this->belongsTo(maintence_drone::class);
     }
+
     public function teams(){
         return $this->belongsTo(Team::class);
+    }
+    public function kits()
+    {
+        return $this->belongsTo(kits::class);
+
     }
 
 }

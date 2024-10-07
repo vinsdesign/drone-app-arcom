@@ -46,7 +46,7 @@ class MaintenanceBatteryResource extends Resource
                         Forms\Components\Select::make('status')
                             ->label('Status')
                             ->options([
-                                'asset'=> 'Schedule',
+                                'schedule'=> 'Schedule',
                                 'in_progress'=> 'In Progress',
                                 'completed'=> 'Completed',
                             ]),

@@ -16,7 +16,7 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->date('date');
-            $table->integer('status');
+            $table->string('status');
             $table->integer('cost');
             $table->string('currency');
             $table->string('notes');
