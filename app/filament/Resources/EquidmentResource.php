@@ -13,8 +13,13 @@ use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Table;
+use Filament\Infolists\Infolist;
+use Filament\Infolists\Components\TextEntry;
+use Filament\Support\Colors\Color;
+use Filament\Infolists\Components\IconEntry;
 use Filament\Tables\Columns\Layout\Panel;
 use Filament\Tables\Columns\Layout\Split;
+use Filament\Tables\Columns\Layout\View;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Columns\Layout\Stack;
 use Illuminate\Database\Eloquent\Builder;
@@ -128,42 +133,48 @@ class EquidmentResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('name')
+                 Tables\Columns\TextColumn::make('name')
+                     ->searchable(),
+                 Tables\Columns\TextColumn::make('model')
+                     ->searchable(),
+                     Tables\Columns\TextColumn::make('status')->label('Status')
+                     ->color(fn ($record) => match ($record->status){
+                         'airworthy' => Color::Green,
+                        'maintenance' =>Color::Red,
+                        'retired' => Color::Zinc,
+                    })
                     ->searchable(),
-                Tables\Columns\TextColumn::make('model')
-                    ->searchable(),
-                Tables\Columns\TextColumn::make('status')
-                    ->searchable(),
-                Tables\Columns\TextColumn::make('inventory_asset')
-                    ->searchable(),
-                Tables\Columns\TextColumn::make('serial')
-                    ->numeric()
-                    ->sortable(),
-                Tables\Columns\TextColumn::make('type')
-                    ->searchable(),
-                Tables\Columns\TextColumn::make('drones.name')
-                    ->numeric()
-                    ->sortable(),
-                Tables\Columns\TextColumn::make('users.name')
-                    ->numeric()
-                    ->sortable(),
-                Tables\Columns\TextColumn::make('purchase_date')
-                    ->date()
-                    ->sortable(),
-                Tables\Columns\TextColumn::make('insurable_value')
-                    ->numeric()
-                    ->sortable(),
-                Tables\Columns\TextColumn::make('weight')
-                    ->numeric()
-                    ->sortable(),
-                Tables\Columns\TextColumn::make('firmware_v')
-                    ->searchable(),
-                Tables\Columns\TextColumn::make('hardware_v')
-                    ->searchable(),
-                Tables\Columns\IconColumn::make('is_loaner')
-                    ->boolean(),
-                Tables\Columns\TextColumn::make('description')
-                    ->searchable(),
+                //  Tables\Columns\TextColumn::make('inventory_asset')
+                //      ->searchable(),
+                //  Tables\Columns\TextColumn::make('serial')
+                //      ->numeric()
+                //      ->sortable(),
+                //  Tables\Columns\TextColumn::make('type')
+                //      ->searchable(),
+                 Tables\Columns\TextColumn::make('drones.name')
+                     ->numeric()
+                     ->sortable(),
+                 Tables\Columns\TextColumn::make('users.name')
+                    ->label('Owner')
+                     ->numeric()
+                     ->sortable(),
+                //  Tables\Columns\TextColumn::make('purchase_date')
+                //      ->date()
+                //      ->sortable(),
+                //  Tables\Columns\TextColumn::make('insurable_value')
+                //      ->numeric()
+                //      ->sortable(),
+                //  Tables\Columns\TextColumn::make('weight')
+                //      ->numeric()
+                //      ->sortable(),
+                //  Tables\Columns\TextColumn::make('firmware_v')
+                //      ->searchable(),
+                //  Tables\Columns\TextColumn::make('hardware_v')
+                //      ->searchable(),
+                //  Tables\Columns\IconColumn::make('is_loaner')
+                //      ->boolean(),
+                //  Tables\Columns\TextColumn::make('description')
+                //      ->searchable(),
             ])
             ->filters([
                 //
@@ -179,6 +190,34 @@ class EquidmentResource extends Resource
             ]);
     }
 
+    public static function infolist(Infolist $infolist): Infolist
+    {
+        return $infolist
+        
+        ->schema([
+            TextEntry::make('name')->label('Name'),
+            TextEntry::make('model')->label('Model'),
+            TextEntry::make('status')->label('Status')
+            ->color(fn ($record) => match ($record->status){
+                'airworthy' => Color::Green,
+               'maintenance' =>Color::Red,
+               'retired' => Color::Zinc
+             }),
+            TextEntry::make('inventory_asset')->label('Inventory/Asset'),
+            TextEntry::make('serial')->label('serial'),
+            TextEntry::make('type')->label('type'),
+            TextEntry::make('drones.name')->label('Drones'),
+            TextEntry::make('users.name')->label('Owner'),
+            TextEntry::make('purchase_date')->label('Purchase Date')->date('Y-m-d'),
+            TextEntry::make('insurable_value')->label('Insurable Value'),
+            TextEntry::make('weight')->label('Weight'),
+            TextEntry::make('firmware_v')->label('Firmware Version'),
+            TextEntry::make('hardware_v')->label('Hardware Version'),
+            IconEntry::make('is_loaner')->boolean()->label('Loaner Equipment'),
+            TextEntry::make('description')->label('Description'),
+        ])->columns(3);
+    }
+
     public static function getRelations(): array
     {
         return [
@@ -191,7 +230,6 @@ class EquidmentResource extends Resource
         return [
             'index' => Pages\ListEquidments::route('/'),
             'create' => Pages\CreateEquidment::route('/create'),
-            'view' => Pages\ViewEquidment::route('/{record}'),
             'edit' => Pages\EditEquidment::route('/{record}/edit'),
         ];
     }

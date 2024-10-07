@@ -276,7 +276,7 @@ class DroneResource extends Resource
         return [
             'index' => Pages\ListDrones::route('/'),
             'create' => Pages\CreateDrone::route('/create'),
-            'view' => Pages\ViewDrone::route('/{record}'),
+            //'view' => Pages\ViewDrone::route('/{record}'),
             'edit' => Pages\EditDrone::route('/{record}/edit'),
         ];
     }
