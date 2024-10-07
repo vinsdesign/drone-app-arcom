@@ -131,50 +131,50 @@ class BattreiResource extends Resource
                        'retired' => Color::Zinc
                      })
                     ->searchable(),
-                Tables\Columns\TextColumn::make('asset_inventory')->label('Inventory/Asset')
-                    ->searchable(),
-                Tables\Columns\TextColumn::make('serial_P')->label('Serial Printed')
-                    ->sortable(),
-                Tables\Columns\TextColumn::make('serial_I')->label('Serial Internal')
-                    ->sortable(),
-                Tables\Columns\TextColumn::make('cellCount')->label('Cell Count')
-                    ->numeric()
-                    ->sortable(),
-                Tables\Columns\TextColumn::make('nominal_voltage')->label('Voltage')
-                    ->numeric()
-                    ->sortable(),
-                Tables\Columns\TextColumn::make('capacity')->label('Capacity')
-                    ->numeric()
-                    ->sortable(),
-                Tables\Columns\TextColumn::make('initial_Cycle_count')->label('Initial Cycles Count')
-                    ->numeric()
-                    ->sortable(),
+                // Tables\Columns\TextColumn::make('asset_inventory')->label('Inventory/Asset')
+                //     ->searchable(),
+                // Tables\Columns\TextColumn::make('serial_P')->label('Serial Printed')
+                //     ->sortable(),
+                // Tables\Columns\TextColumn::make('serial_I')->label('Serial Internal')
+                //     ->sortable(),
+                // Tables\Columns\TextColumn::make('cellCount')->label('Cell Count')
+                //     ->numeric()
+                //     ->sortable(),
+                // Tables\Columns\TextColumn::make('nominal_voltage')->label('Voltage')
+                //     ->numeric()
+                //     ->sortable(),
+                // Tables\Columns\TextColumn::make('capacity')->label('Capacity')
+                //     ->numeric()
+                //     ->sortable(),
+                // Tables\Columns\TextColumn::make('initial_Cycle_count')->label('Initial Cycles Count')
+                //     ->numeric()
+                //     ->sortable(),
                 Tables\Columns\TextColumn::make('life_span')->label('Life Span')
                     ->numeric()
                     ->sortable(),
-                Tables\Columns\TextColumn::make('flaight_count')->label('Flaight Count')
-                    ->numeric()
-                    ->sortable(),
-                Tables\Columns\TextColumn::make('for_drone')->label('Blokec To Drone')
-                    ->numeric()
-                    ->sortable(),
-                Tables\Columns\TextColumn::make('purchase_date')->label('Purchase Date')
-                    ->date()
-                    ->sortable(),
-                Tables\Columns\TextColumn::make('insurable_value')->label('Insurable Value')
-                    ->numeric()
-                    ->sortable(),
-                Tables\Columns\TextColumn::make('wight')->label('weight')
-                    ->numeric()
-                    ->sortable(),
-                Tables\Columns\TextColumn::make('firmware_version')->label('Firmware Version')
-                    ->searchable(),
-                Tables\Columns\TextColumn::make('hardware_version')->label('Hardware Version')
-                    ->searchable(),
-                Tables\Columns\IconColumn::make('is_loaner')->label('Is Loaner')
-                    ->boolean(),
-                Tables\Columns\TextColumn::make('description')->label('Description')
-                    ->searchable(),
+                // Tables\Columns\TextColumn::make('flaight_count')->label('Flaight Count')
+                //     ->numeric()
+                //     ->sortable(),
+                // Tables\Columns\TextColumn::make('for_drone')->label('Blokec To Drone')
+                //     ->numeric()
+                //     ->sortable(),
+                // Tables\Columns\TextColumn::make('purchase_date')->label('Purchase Date')
+                //     ->date()
+                //     ->sortable(),
+                // Tables\Columns\TextColumn::make('insurable_value')->label('Insurable Value')
+                //     ->numeric()
+                //     ->sortable(),
+                // Tables\Columns\TextColumn::make('wight')->label('weight')
+                //     ->numeric()
+                //     ->sortable(),
+                // Tables\Columns\TextColumn::make('firmware_version')->label('Firmware Version')
+                //     ->searchable(),
+                // Tables\Columns\TextColumn::make('hardware_version')->label('Hardware Version')
+                //     ->searchable(),
+                // Tables\Columns\IconColumn::make('is_loaner')->label('Is Loaner')
+                //     ->boolean(),
+                // Tables\Columns\TextColumn::make('description')->label('Description')
+                //     ->searchable(),
                 Tables\Columns\TextColumn::make('users.name')->label('Owners')
                     ->numeric()
                     ->sortable(),
@@ -243,7 +243,7 @@ public static function infolist(Infolist $infolist): Infolist
         return [
             'index' => Pages\ListBattreis::route('/'),
             'create' => Pages\CreateBattrei::route('/create'),
-            'view' => Pages\ViewBattrei::route('/{record}'),
+            //'view' => Pages\ViewBattrei::route('/{record}'),
             'edit' => Pages\EditBattrei::route('/{record}/edit'),
         ];
     }
