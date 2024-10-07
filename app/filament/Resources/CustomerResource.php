@@ -19,8 +19,11 @@ class CustomerResource extends Resource
     protected static ?string $navigationLabel = 'Customer';
 
     protected static ?string $navigationIcon = 'heroicon-s-user';
+    public static ?string $tenantOwnershipRelationshipName = 'teams';
+    
 
     public static function form(Form $form): Form
+
     {
         return $form
         ->schema([
@@ -40,6 +43,8 @@ class CustomerResource extends Resource
 
             Forms\Components\TextInput::make('description')
                 ->maxLength(255),
+            Forms\Components\Hidden::make('teams_id')
+            ->default(auth()->user()->teams()->first()->id ?? null),
         ]);
     }
 
@@ -78,6 +83,9 @@ class CustomerResource extends Resource
                 ]),
             ]);
     }
+    //untuk tenancy
+
+    //end te
 
     public static function getRelations(): array
     {

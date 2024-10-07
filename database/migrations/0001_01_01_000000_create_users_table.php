@@ -24,6 +24,7 @@ return new class extends Migration
             $table->string('lenguage')->nullable();
             $table->string('sertif')->nullable();
             $table->string('timezone')->nullable();
+            $table->foreignId('organization_id')->nullable()->constrainedTo('organization')->onDelete('cascade');
             $table->rememberToken();
             $table->timestamps();
         });

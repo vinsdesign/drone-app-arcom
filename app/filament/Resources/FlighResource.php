@@ -18,6 +18,7 @@ class FlighResource extends Resource
     protected static ?string $model = Fligh::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    public static ?string $tenantOwnershipRelationshipName = 'teams';
 
     public static function form(Form $form): Form
     {
@@ -127,6 +128,8 @@ class FlighResource extends Resource
                 //Forms\Components\TextInput::make('wheater_id')
                     //->required()
                     //->numeric(),
+                Forms\Components\Hidden::make('teams_id')
+                    ->default(auth()->user()->teams()->first()->id ?? null),
             ]);
     }
 

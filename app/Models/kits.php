@@ -12,6 +12,10 @@ class kits extends Model
     protected $fillable = [
         'name',
         'type',
-        'blocked'
+        'blocked',
+        'teams_id'
     ];
+    public function teams(){
+        return $this->belongsTo(Team::class);
+    }
 }

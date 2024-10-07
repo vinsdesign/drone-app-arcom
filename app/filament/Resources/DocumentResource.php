@@ -18,6 +18,7 @@ class DocumentResource extends Resource
     protected static ?string $model = Document::class;
 
     protected static ?string $navigationIcon = 'heroicon-m-document-text';
+    public static ?string $tenantOwnershipRelationshipName = 'teams';
 
     public static function form(Form $form): Form
     {
@@ -78,6 +79,8 @@ class DocumentResource extends Resource
                     ->maxLength(255)->columnSpan(2),
                 Forms\Components\TextArea::make('description')->label('Description')
                     ->maxLength(255)->columnSpanFull(),
+                Forms\Components\Hidden::make('teams_id')
+                    ->default(auth()->user()->teams()->first()->id ?? null),
 
                 ])->columns(3),
                 

@@ -19,6 +19,10 @@ class fligh_location extends Model
         'pos_code',
         'latitude',
         'longitude',
-        'altitude'
+        'altitude',
+        'teams_id'
     ];
+    public function teams(){
+        return $this->belongsTo(Team::class);
+       }
 }

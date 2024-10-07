@@ -23,11 +23,15 @@ class maintence_drone extends Model
         'status_part',
         'technician',
         'new_part_serial',
-        'description_part'
+        'description_part',
+        'teams_id'
     ];
 
     public function drone()
     {
         return $this->belongsTo(Drone::class, 'drone_id');
     }
+    public function teams(){
+        return $this->belongsTo(Team::class);
+       }
 }

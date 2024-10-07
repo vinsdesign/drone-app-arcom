@@ -4,27 +4,33 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class organization extends Model
 {
     use HasFactory;
-    public function users(){
-        return $this->hasMany(User::class);
-    }
     protected $fillable = [
         'name',
         'email',
-        'owner_name',
-        'compani_size',
+        'phone',
+        'owner',
+        'website',
+        'company_size',
         'gov_registretion',
-        'legalid',
+        'legal_id',
         'exemption_number',
         'address',
         'state',
+        'city',
+        'postal_code',
         'country',
+        'insurance',
         'insurance_amount',
         'activity',
-        'image',
         'note'
     ];
+    public function users():BelongsToMany
+    {
+        return $this->belongsToMany(User::class);
+    }
 }

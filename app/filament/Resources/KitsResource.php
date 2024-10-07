@@ -20,11 +20,14 @@ class KitsResource extends Resource
     protected static ?string $navigationLabel = 'Kit';
 
     protected static ?string $navigationIcon = 'heroicon-c-briefcase';
+    public static ?string $tenantOwnershipRelationshipName = 'teams';
 
     public static function form(Form $form): Form
     {
         return $form
             ->schema([
+                Forms\Components\Hidden::make('teams_id')
+                    ->default(auth()->user()->teams()->first()->id ?? null),
                 Forms\Components\TextInput::make('name')->label('Kit Name')
                     ->required()
                     ->maxLength(255),

@@ -25,7 +25,8 @@ class equidment extends Model
         'is_loaner',
         'firmware_v',
         'hardware_v',
-        'description'
+        'description',
+        'teams_id'
 
     ];
 
@@ -41,5 +42,8 @@ class equidment extends Model
     public function maintence_eq()
     {
         return $this->hasMany(maintence_eq::class);
+    }
+    public function teams(){
+        return $this->belongsTo(Team::class);
     }
 }

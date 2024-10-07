@@ -20,12 +20,16 @@ class FlighLocationResource extends Resource
     protected static ?string $navigationIcon = 'heroicon-s-map-pin';
     protected static?string $navigationGroup = 'Inventory';
     protected static ?string $navigationLabel = 'Location';
+    public static ?string $tenantOwnershipRelationshipName = 'teams';
 
     public static function form(Form $form): Form
     {
         return $form
             ->schema([
-                //
+                //untuk tenancy
+                Forms\Components\Hidden::make('teams_id')
+                ->default(auth()->user()->teams()->first()->id ?? null),
+                //end untuk tenancy
             ]);
     }
 

@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\team;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -18,7 +19,13 @@ return new class extends Migration
             $table->string('phone')->unique();
             $table->string('address');
             $table->string('description');
+            $table->foreignIdFor(Team::class,'teams_id')->index();
             $table->timestamps();
+        });
+        Schema::create('customer_team', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('team_id')->constrainedTo('teams');
+            $table->foreignId('customer_id')->constrained('customers');
         });
     }
 
@@ -28,5 +35,6 @@ return new class extends Migration
     public function down(): void
     {
         Schema::dropIfExists('customers');
+        Schema::dropIfExists('customer_team');
     }
 };
