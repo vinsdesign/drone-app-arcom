@@ -16,11 +16,15 @@ class maintence_eq extends Model
         'cost',
         'currency',
         'notes',
-        'equidment_id'
+        'equidment_id',
+        'teams_id'
     ];
 
     public function equidment()
     {
         return $this->belongsTo(equidment::class);
+    }
+    public function teams(){
+        return $this->belongsTo(Team::class);
     }
 }

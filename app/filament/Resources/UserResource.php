@@ -20,6 +20,7 @@ class UserResource extends Resource
     protected static ?string $model = User::class;
     protected static ?string $navigationLabel = 'Personel';
     protected static ?string $navigationIcon = 'heroicon-s-user-group';
+    public static ?string $tenantOwnershipRelationshipName = 'teams';
 
     public static function form(Form $form): Form
     {
@@ -54,6 +55,8 @@ class UserResource extends Resource
                         'pilot' => 'Pilot',
                         'maintenance' => 'Maintenance',
                     ]),
+                Forms\Components\Hidden::make('teams_id')
+                    ->default(auth()->user()->teams()->first()->id ?? null),
             ]);
     }
 

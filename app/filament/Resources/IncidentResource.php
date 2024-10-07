@@ -19,6 +19,8 @@ class IncidentResource extends Resource
     protected static ?string $navigationLabel = 'Incident';
 
     protected static ?string $navigationIcon = 'heroicon-m-exclamation-triangle';
+    public static ?string $tenantOwnershipRelationshipName = 'teams';
+
 
     public static function form(Form $form): Form
     {
@@ -27,6 +29,8 @@ class IncidentResource extends Resource
                 Forms\Components\Section::make('Incident Overview')
                     ->description('')
                     ->schema([
+                    Forms\Components\Hidden::make('teams_id')
+                        ->default(auth()->user()->teams()->first()->id ?? null),
                     Forms\Components\DatePicker::make('incident_date')
                     ->required(),
                     Forms\Components\TextInput::make('cause')

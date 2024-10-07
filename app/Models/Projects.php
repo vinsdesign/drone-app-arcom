@@ -15,7 +15,8 @@ class Projects extends Model
         'revenue',
         'currency',
         'customers_id',
-        'description'
+        'description',
+        'teams_id'
     ];
 
     public function customers(): BelongsTo
@@ -25,6 +26,9 @@ class Projects extends Model
     public function incident()
     {
         return $this->hasMany(Incident::class);
+    }
+    public function teams(){
+        return $this->belongsTo(Team::class);
     }
 
 }

@@ -30,6 +30,7 @@ class battrei extends Model
         'is_loaner',
         'description',
         'users_id',
+        'teams_id'
     ];
 
     public function drone()
@@ -40,5 +41,8 @@ class battrei extends Model
     public function users()
     {
         return $this->belongsTo(User::class);
+    }
+    public function teams(){
+        return $this->belongsTo(Team::class);
     }
 }

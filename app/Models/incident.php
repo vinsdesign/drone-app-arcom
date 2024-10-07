@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Incident extends Model
+class incident extends Model
 {
     use HasFactory;
 
@@ -22,6 +22,7 @@ class Incident extends Model
         'incuration_type',
         'rectification_note',
         'rectification_date',
+        'teams_id',
         'Technician',
     ];
 
@@ -34,4 +35,7 @@ class Incident extends Model
     {
         return $this->belongsTo(Project::class, 'project_id');
     }
+    public function teams(){
+        return $this->belongsTo(Team::class);
+       }
 }

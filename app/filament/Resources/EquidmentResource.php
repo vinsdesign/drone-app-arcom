@@ -26,6 +26,7 @@ class EquidmentResource extends Resource
     protected static ?string $navigationLabel = 'Equipment' ;
     protected static ?string $navigationIcon = 'heroicon-m-cube';
     protected static?string $navigationGroup = 'Inventory';
+    public static ?string $tenantOwnershipRelationshipName = 'teams';
 
     public static function form(Form $form): Form
     {
@@ -34,6 +35,8 @@ class EquidmentResource extends Resource
                 Forms\Components\Wizard::make([
                     Forms\Components\Wizard\Step::make('Overview')
                         ->schema([
+                        Forms\Components\Hidden::make('teams_id')
+                            ->default(auth()->user()->teams()->first()->id ?? null),
                         Forms\Components\TextInput::make('name')->label('Name')
                             ->required()
                             ->maxLength(255),

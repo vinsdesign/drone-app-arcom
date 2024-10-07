@@ -18,11 +18,14 @@ class ProjectsResource extends Resource
     protected static ?string $model = Projects::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    public static ?string $tenantOwnershipRelationshipName = 'teams';
 
     public static function form(Form $form): Form
     {
         return $form
             ->schema([
+                Forms\Components\Hidden::make('teams_id')
+                ->default(auth()->user()->teams()->first()->id ?? null),
                 Forms\Components\TextInput::make('case')
                     ->required()
                     ->maxLength(255),

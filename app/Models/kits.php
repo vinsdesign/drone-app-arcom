@@ -12,9 +12,13 @@ class kits extends Model
     protected $fillable = [
         'name',
         'type',
-        'enabled',
-        'drone_id'
+         'enabled',
+        'drone_id',
+        'teams_id'
     ];
+    public function teams(){
+        return $this->belongsTo(Team::class);
+    }
     public function drone()
     {
         return $this->belongsTo(drone::class);

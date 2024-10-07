@@ -4,7 +4,7 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\MaintenceResource\Pages;
 use App\Filament\Resources\MaintenceResource\RelationManagers;
-use App\Models\maintence_drone;
+use App\Models\Maintence_drone;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -15,10 +15,13 @@ use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class MaintenceResource extends Resource
 {
-    protected static ?string $model = maintence_drone::class;
+    protected static ?string $model = Maintence_drone::class;
     protected static ?string $navigationLabel = 'Maintenance Drone';
+    protected static ?string $tenantRelationshipName = 'maintence_drones';
+
 
     protected static ?string $navigationIcon = 'heroicon-s-wrench-screwdriver';
+    public static ?string $tenantOwnershipRelationshipName = 'teams';
 
     public static function form(Form $form): Form
     {
@@ -27,6 +30,8 @@ class MaintenceResource extends Resource
                 Forms\Components\Wizard::make([
                     Forms\Components\Wizard\Step::make('Overview')
                     ->schema([
+                        Forms\Components\Hidden::make('teams_id')
+                        ->default(auth()->user()->teams()->first()->id ?? null),
                         Forms\Components\TextInput::make('name')
                             ->label('Maintenance Description')
                             ->maxLength(255),

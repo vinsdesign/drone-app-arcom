@@ -1,5 +1,5 @@
 <?php
-
+use App\Models\Team;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -32,8 +32,14 @@ return new class extends Migration
             $table->foreignId('equidments_id')->constrainedTo('equidments')->cascadeDelete();
             $table->integer('pre_volt');
             $table->integer('fuel_used')->default('1');
+            $table->foreignIdFor(Team::class,'teams_id')->index();
             //$table->foreignId('wheater_id')->constrainedTo('wheater')->cascadeDelete();
             $table->timestamps();
+        });
+        Schema::create('fligh_team', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('team_id')->constrainedTo('teams');
+            $table->foreignId('fligh_id')->constrained('flighs');
         });
     }
 
@@ -43,5 +49,6 @@ return new class extends Migration
     public function down(): void
     {
         Schema::dropIfExists('flighs');
+        Schema::dropIfExists('fligh_team');
     }
 };

@@ -25,6 +25,7 @@ class BattreiResource extends Resource
     protected static ?string $navigationLabel = 'Battery';
 
     protected static ?string $navigationIcon = 'heroicon-s-battery-100';
+    public static ?string $tenantOwnershipRelationshipName = 'teams';
 
     public static function form(Form $form): Form
     {
@@ -33,6 +34,8 @@ class BattreiResource extends Resource
                 Forms\Components\Wizard::make([
                     Forms\Components\Wizard\Step::make('Overview')
                         ->schema([
+                        Forms\Components\Hidden::make('teams_id')
+                            ->default(auth()->user()->teams()->first()->id ?? null),
                         Forms\Components\TextInput::make('name')->label('Name')
                             ->required()
                             ->maxLength(255),

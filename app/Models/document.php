@@ -20,6 +20,7 @@ class document extends Model
         'users_id',
         'customers_id',
         'projects_id',
+        'teams_id',
     ];
 
     public function users()
@@ -33,6 +34,9 @@ class document extends Model
     public function projects()
     {
         return $this->belongsTo(Project::class);
+    }
+    public function teams(){
+        return $this->belongsTo(Team::class);
     }
 
 }

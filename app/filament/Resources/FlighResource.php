@@ -16,8 +16,14 @@ use Illuminate\Database\Eloquent\SoftDeletingScope;
 class FlighResource extends Resource
 {
     protected static ?string $model = Fligh::class;
+
+
+
+    public static ?string $tenantOwnershipRelationshipName = 'teams';
+
     protected static ?string $navigationLabel = 'Flights' ;
     protected static ?string $navigationIcon = 'heroicon-s-clipboard-document-list';
+
 
     public static function form(Form $form): Form
     {
@@ -127,6 +133,8 @@ class FlighResource extends Resource
                 //Forms\Components\TextInput::make('wheater_id')
                     //->required()
                     //->numeric(),
+                Forms\Components\Hidden::make('teams_id')
+                    ->default(auth()->user()->teams()->first()->id ?? null),
             ]);
     }
 

@@ -6,7 +6,7 @@ use Database\Seeders\drone_geometries;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Drone extends Model
+class drone extends Model
 {
     use HasFactory;
 
@@ -31,7 +31,8 @@ class Drone extends Model
         'propulsion_v',
         'color',
         'remote',
-        'conn_card'
+        'conn_card',
+        'teams_id'
     ];
 
     public function batteries()
@@ -52,9 +53,14 @@ class Drone extends Model
     {
         return $this->belongsTo(maintence_drone::class);
     }
+
+    public function teams(){
+        return $this->belongsTo(Team::class);
+    }
     public function kits()
     {
         return $this->belongsTo(kits::class);
+
     }
 
 }

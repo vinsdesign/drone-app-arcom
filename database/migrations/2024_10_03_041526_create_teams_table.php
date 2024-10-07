@@ -11,31 +11,33 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('organizations', function (Blueprint $table) {
+        Schema::create('teams', function (Blueprint $table) {
             $table->id();
             $table->string('name');
             $table->string('email')->nullable();
-            $table->string('owner_name')->nullable();
-            $table->integer('compani_size')->nullable();
-            $table->string('gov_registretion')->nullable();
-            $table->string('legalid')->nullable();
+            $table->string('phone')->nullable();
+            $table->string('owner')->nullable();
+            $table->string('website')->nullable();
+            $table->integer('company_size')->nullable();
+            $table->string('gov_registration')->nullable();
+            $table->string('legal_id')->nullable();
             $table->integer('exemption_number')->nullable();
+            $table->string('category')->nullable();
             $table->string('address')->nullable();
             $table->string('state')->nullable();
+            $table->string('city')->nullable();
+            $table->string('postal_code')->nullable();
             $table->string('country')->nullable();
-            $table->boolean('is_insurance')->nullable();
+            $table->boolean('insurance')->nullable();
             $table->integer('insurance_amount')->nullable();
             $table->string('activity')->nullable();
-            $table->string('image')->nullable();
             $table->string('note')->nullable();
             $table->timestamps();
         });
-
-        Schema::create('organization_user', function (Blueprint $table) {
+        Schema::create('team_user', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('organization_id')->constrained('organizations');
             $table->foreignId('user_id')->constrained('users');
-            $table->timestamps();
+            $table->foreignId('team_id')->constrained('teams');
         });
     }
 
@@ -44,7 +46,7 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('organizations');
-        Schema::dropIfExists('organization_user');
+        Schema::dropIfExists('teams');
+        Schema::dropIfExists('team_user');
     }
 };

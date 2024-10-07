@@ -30,7 +30,8 @@ class fligh extends Model
         'battreis_id',
         'equidments_id',
         'pre_volt',
-        'fuel_used'
+        'fuel_used',
+        'teams_id'
     ];
 
     public function customers(): BelongsTo
@@ -62,4 +63,7 @@ class fligh extends Model
     {
         return $this->belongsTo(Equidment::class);
     }
+    public function teams(){
+        return $this->belongsTo(Team::class);
+       }
 }

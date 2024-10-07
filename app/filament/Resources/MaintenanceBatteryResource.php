@@ -18,8 +18,13 @@ class MaintenanceBatteryResource extends Resource
     protected static ?string $model = maintence_eq::class;
 
     protected static ?string $navigationLabel = 'Maintenance Equipment';
+    protected static ?string $tenantRelationshipName = 'maintence_eqs';
+
 
     protected static ?string $navigationIcon = 'heroicon-o-cog';
+    public static ?string $tenantOwnershipRelationshipName = 'teams';
+
+    
 
     public static function form(Form $form): Form
     {
@@ -27,6 +32,8 @@ class MaintenanceBatteryResource extends Resource
             ->schema([
                 Forms\Components\Section::make('Maintenance Battery Overview')
                     ->schema([
+                        Forms\Components\Hidden::make('teams_id')
+                        ->default(auth()->user()->teams()->first()->id ?? null),
                         Forms\Components\TextInput::make('name')
                             ->label('Maintenance Description')
                             ->maxLength(255),
