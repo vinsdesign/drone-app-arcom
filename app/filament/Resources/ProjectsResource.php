@@ -10,6 +10,8 @@ use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
+use Filament\Infolists\Infolist;
+use Filament\Infolists\Components\TextEntry;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 
@@ -78,6 +80,7 @@ class ProjectsResource extends Resource
                 //
             ])
             ->actions([
+                Tables\Actions\ViewAction::make(),
                 Tables\Actions\EditAction::make(),
             ])
             ->bulkActions([
@@ -85,6 +88,18 @@ class ProjectsResource extends Resource
                     Tables\Actions\DeleteBulkAction::make(),
                 ]),
             ]);
+    }
+
+    public static function infolist(Infolist $infolist): Infolist
+    {
+        return $infolist
+        ->schema([
+            TextEntry::make('case')->label('Case'),
+            TextEntry::make('revenue')->label('Revenue'),
+            TextEntry::make('currency')->label('Currency'),
+            TextEntry::make('customers.name')->label('Customers'),
+            TextEntry::make('description')->label('Description'),
+        ]);
     }
 
     public static function getRelations(): array

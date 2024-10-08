@@ -7,9 +7,12 @@ use App\Filament\Resources\KitsResource\RelationManagers;
 use App\Models\Kits;
 use Filament\Forms;
 use Filament\Forms\Form;
+use Filament\Infolists\Components\IconEntry;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
+use Filament\Infolists\Infolist;
+use Filament\Infolists\Components\TextEntry;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 
@@ -57,7 +60,7 @@ class KitsResource extends Resource
                     ->searchable(),
                 Tables\Columns\IconColumn::make('enabled')
                     ->boolean(),
-                Tables\Columns\TextColumn::make('drone_id')
+                Tables\Columns\TextColumn::make('drone.name')
                     ->numeric()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('created_at')
@@ -83,6 +86,17 @@ class KitsResource extends Resource
             ]);
     }
 
+    public static function infolist(Infolist $infolist): Infolist
+    {
+        return $infolist
+        ->schema([
+                TextEntry::make('name')->label('Name'),
+                TextEntry::make('type')->label('Type'),
+                IconEntry::make('enabled')->boolean()->label('Enabled'),
+                TextEntry::make('drone.name')->label('Blocked To Drone')
+        ]);
+    }
+
     public static function getRelations(): array
     {
         return [
@@ -95,7 +109,7 @@ class KitsResource extends Resource
         return [
             'index' => Pages\ListKits::route('/'),
             'create' => Pages\CreateKits::route('/create'),
-            'view' => Pages\ViewKits::route('/{record}'),
+            //'view' => Pages\ViewKits::route('/{record}'),
             'edit' => Pages\EditKits::route('/{record}/edit'),
         ];
     }

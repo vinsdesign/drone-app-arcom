@@ -6,7 +6,10 @@ use App\Filament\Resources\IncidentResource\Pages;
 use App\Filament\Resources\IncidentResource\RelationManagers;
 use App\Models\Incident;
 use Filament\Forms;
+use Filament\Infolists\Components\Section;
 use Filament\Forms\Form;
+use Filament\Infolists\Infolist;
+use Filament\Infolists\Components\TextEntry;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
@@ -103,8 +106,10 @@ class IncidentResource extends Resource
                     ->sortable(),
                 Tables\Columns\TextColumn::make('cause')
                     ->searchable(),
-                // Tables\Columns\TextColumn::make('aircraft_damage')
-                //     ->searchable(),
+
+                Tables\Columns\TextColumn::make('aircraft_damage')
+                    ->searchable(),
+
                 // Tables\Columns\TextColumn::make('other_damage')
                 //     ->searchable(),
                 // Tables\Columns\TextColumn::make('description')
@@ -118,9 +123,11 @@ class IncidentResource extends Resource
                 //     ->sortable(),
                 Tables\Columns\TextColumn::make('Technician')
                     ->searchable(),
-                Tables\Columns\TextColumn::make('location_id')
-                    ->numeric()
-                    ->sortable(),
+
+                // Tables\Columns\TextColumn::make('location_id')
+                //     ->numeric()
+                //     ->sortable(),
+
                 Tables\Columns\TextColumn::make('drone.name')
                     ->numeric()
                     ->sortable(),
@@ -156,34 +163,38 @@ class IncidentResource extends Resource
             ]);
     }
 
-                //infolist
-                public static function infolist(Infolist $infolist): Infolist
-                {
-                    return $infolist
-                    
-                    ->schema([
-                TextEntry::make('incident_date')->label('Date')
-                    ->date(),
-                TextEntry::make('cause')->label('cause'),
-                TextEntry::make('aircraft_damage')->label('Aircraft Damage'),
-                TextEntry::make('other_damage')->label('Other Damage'),
-                TextEntry::make('description')->label('Description'),
-                TextEntry::make('incuration_type')->label('Incuration Type'),
-                TextEntry::make('rectification_note')->label('Note'),
-                TextEntry::make('rectification_date')->label('Rectification Date')
-                    ->date(),
-                TextEntry::make('Technician')->label('Technician Name'),
-                TextEntry::make('location_id')->label('Location')
-                    ->numeric(),
-                TextEntry::make('drone.name')->label('Drone Name')
-                    ->numeric(),
-                TextEntry::make('project.case')->label('Project Name')
-                    ->numeric(),
-                TextEntry::make('personel_involved_id')->label('Personel Involved ')
-                    ->numeric(),
-                    ])->columns(3);
-                }
-                //end
+
+    public static function infolist(Infolist $infolist): Infolist
+    {
+        return $infolist
+        ->schema([
+            Section::make('Incident Overview')
+                ->schema([
+                    TextEntry::make('incident_date'),
+                    TextEntry::make('cause'),
+                    TextEntry::make('review'),
+                    TextEntry::make('location_id'),
+                    TextEntry::make('drone.name'),
+                    TextEntry::make('project.case'),
+                    TextEntry::make('personel_involved_id'),
+                ])->columns(4),
+            Section::make('Insiden Description')
+                ->schema([
+                    TextEntry::make('aircraft_damage'),
+                    TextEntry::make('other_damage'),
+                    TextEntry::make('description'),
+                    TextEntry::make('incuration_type'),
+                ])->columns(4),
+            Section::make('Incident Rectification')
+                ->schema([
+                    TextEntry::make('rectification_note'),
+                    TextEntry::make('rectification_date'),
+                    TextEntry::make('Technician'),
+                ])->columns(3)
+        ]);
+    }
+
+            
 
     public static function getRelations(): array
     {
@@ -197,7 +208,9 @@ class IncidentResource extends Resource
         return [
             'index' => Pages\ListIncidents::route('/'),
             'create' => Pages\CreateIncident::route('/create'),
-            // 'view' => Pages\ViewIncident::route('/{record}'),
+
+            //'view' => Pages\ViewIncident::route('/{record}'),
+
             'edit' => Pages\EditIncident::route('/{record}/edit'),
         ];
     }

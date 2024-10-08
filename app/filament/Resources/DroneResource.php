@@ -15,7 +15,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Filament\Infolists\Infolist;
 use Filament\Infolists\Components\TextEntry;
-use Filament\Forms\Components\Section;
+use Filament\Infolists\Components\Section;
 class DroneResource extends Resource
 {
     protected static ?string $model = Drone::class;
@@ -118,7 +118,7 @@ class DroneResource extends Resource
                         Forms\Components\TextInput::make('hardware_v')->label('Hardware Version')
                             ->required()
                             ->maxLength(255),
-                        Forms\Components\Select::make('propulsion_v')->label('propulsion Version')
+                        Forms\Components\Select::make('propulsion_v')->label('Propulsion Version')
                             ->options([
                                 'electric' => 'Electric',
                                 'fuel'=> 'Fuel',
@@ -247,6 +247,8 @@ class DroneResource extends Resource
         return $infolist
         
         ->schema([
+            Section::make('Overview')
+                ->schema([
             TextEntry::make('name')->label('Name'),
             TextEntry::make('idlegal')->label('Legal ID'),
             TextEntry::make('status')->label('Status')
@@ -255,15 +257,32 @@ class DroneResource extends Resource
                'maintenance' =>Color::Red,
                'retired' => Color::Zinc
              }),
+            TextEntry::make('brand')->label('Brand'),
+            TextEntry::make('model')->label('Model'),
+            TextEntry::make('type')->label('Type'),
+                ])->columns(3),
+                Section::make('Drone Details')
+                ->schema([
+            TextEntry::make('geometry')->label('Drone Geometry'),
+            TextEntry::make('color')->label('Color'),
+            TextEntry::make('inventory_asset')->label('Inventory/Asset'),
             TextEntry::make('users.name')->label('Owner'),
-
             TextEntry::make('firmware_v')->label('Firmware Version'),
             TextEntry::make('hardware_v')->label('Hardware Version'),
-            TextEntry::make('serial_i')->label('Serial Internal'),
-            TextEntry::make('serial_p')->label('Serial Printed'),
-            TextEntry::make('remote')->label('Remote'),
-            TextEntry::make('created_at')->label('Purchas Date')->date('Y-m-d'),
-        ])->columns(3);
+            TextEntry::make('propulsion_v')->label('Propulsion Version'),
+            TextEntry::make('description')->label('Description'),
+                ])->columns(5),
+                Section::make('Connect')
+                ->schema([
+                    TextEntry::make('serial_p')->label('Serial Printed'),
+                    TextEntry::make('serial_i')->label('Serial Internal'),
+                    TextEntry::make('flight_c')->label('Flight controller'),
+                    TextEntry::make('remote_c')->label('Remote Controller'),
+                    TextEntry::make('remote_cc')->label('Remote Controller2'),
+                    TextEntry::make('remote')->label('Remote ID'),
+                    TextEntry::make('conn_card')->label('Connection Card'),
+                ])->columns(4),
+        ]);
     }
 
 

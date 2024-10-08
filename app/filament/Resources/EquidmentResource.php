@@ -12,6 +12,7 @@ use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Columns\IconColumn;
+use Filament\Infolists\Components\Section;
 use Filament\Tables\Table;
 use Filament\Infolists\Infolist;
 use Filament\Infolists\Components\TextEntry;
@@ -31,7 +32,9 @@ class EquidmentResource extends Resource
     protected static ?string $navigationLabel = 'Equipment' ;
     protected static ?string $navigationIcon = 'heroicon-m-cube';
     protected static?string $navigationGroup = 'Inventory';
+
     protected static?string $modelLabel = 'Equipment';
+
     public static ?string $tenantOwnershipRelationshipName = 'teams';
 
     public static function form(Form $form): Form
@@ -122,7 +125,7 @@ class EquidmentResource extends Resource
                         Forms\Components\TextInput::make('hardware_v')->label('Hardware Version')
                             ->required()
                             ->maxLength(255),
-                        Forms\Components\Checkbox::make('is_loaner')->label('Loaner Equidment'),
+                        Forms\Components\Checkbox::make('is_loaner')->label('Loaner Equipment'),
                         Forms\Components\TextArea::make('description')->label('Description')
                             ->maxLength(255),
                         ])->columns(3),
@@ -148,13 +151,6 @@ class EquidmentResource extends Resource
                         'retired' => Color::Zinc,
                     })
                     ->searchable(),
-                //  Tables\Columns\TextColumn::make('inventory_asset')
-                //      ->searchable(),
-                //  Tables\Columns\TextColumn::make('serial')
-                //      ->numeric()
-                //      ->sortable(),
-                //  Tables\Columns\TextColumn::make('type')
-                //      ->searchable(),
                  Tables\Columns\TextColumn::make('drones.name')
                      ->numeric()
                      ->sortable(),
@@ -162,23 +158,6 @@ class EquidmentResource extends Resource
                     ->label('Owner')
                      ->numeric()
                      ->sortable(),
-                //  Tables\Columns\TextColumn::make('purchase_date')
-                //      ->date()
-                //      ->sortable(),
-                //  Tables\Columns\TextColumn::make('insurable_value')
-                //      ->numeric()
-                //      ->sortable(),
-                //  Tables\Columns\TextColumn::make('weight')
-                //      ->numeric()
-                //      ->sortable(),
-                //  Tables\Columns\TextColumn::make('firmware_v')
-                //      ->searchable(),
-                //  Tables\Columns\TextColumn::make('hardware_v')
-                //      ->searchable(),
-                //  Tables\Columns\IconColumn::make('is_loaner')
-                //      ->boolean(),
-                //  Tables\Columns\TextColumn::make('description')
-                //      ->searchable(),
             ])
             ->filters([
                 //
@@ -197,29 +176,34 @@ class EquidmentResource extends Resource
     public static function infolist(Infolist $infolist): Infolist
     {
         return $infolist
-        
         ->schema([
-            TextEntry::make('name')->label('Name'),
-            TextEntry::make('model')->label('Model'),
-            TextEntry::make('status')->label('Status')
-            ->color(fn ($record) => match ($record->status){
-                'airworthy' => Color::Green,
-               'maintenance' =>Color::Red,
-               'retired' => Color::Zinc
-             }),
-            TextEntry::make('inventory_asset')->label('Inventory/Asset'),
-            TextEntry::make('serial')->label('serial'),
-            TextEntry::make('type')->label('type'),
-            TextEntry::make('drones.name')->label('Drones'),
-            TextEntry::make('users.name')->label('Owner'),
-            TextEntry::make('purchase_date')->label('Purchase Date')->date('Y-m-d'),
-            TextEntry::make('insurable_value')->label('Insurable Value'),
-            TextEntry::make('weight')->label('Weight'),
-            TextEntry::make('firmware_v')->label('Firmware Version'),
-            TextEntry::make('hardware_v')->label('Hardware Version'),
-            IconEntry::make('is_loaner')->boolean()->label('Loaner Equipment'),
-            TextEntry::make('description')->label('Description'),
-        ])->columns(3);
+            Section::make('Overview')
+                ->schema([
+                TextEntry::make('name')->label('Name'),
+                TextEntry::make('model')->label('Model'),
+                TextEntry::make('status')->label('Status')
+                    ->color(fn ($record) => match ($record->status){
+                    'airworthy' => Color::Green,
+                    'maintenance' =>Color::Red,
+                    'retired' => Color::Zinc
+                }),
+                TextEntry::make('inventory_asset')->label('Inventory/Asset'),
+                TextEntry::make('serial')->label('Serial'),
+                TextEntry::make('type')->label('Type'),
+                TextEntry::make('drones.name')->label('Drones'),
+                ])->columns(4),
+            Section::make('Extra Information')
+            ->schema([
+                TextEntry::make('users.name')->label('Owner'),
+                TextEntry::make('purchase_date')->label('Purchase Date')->date('Y-m-d'),
+                TextEntry::make('insurable_value')->label('Insurable Value'),
+                TextEntry::make('weight')->label('Weight'),
+                TextEntry::make('firmware_v')->label('Firmware Version'),
+                TextEntry::make('hardware_v')->label('Hardware Version'),
+                IconEntry::make('is_loaner')->boolean()->label('Loaner Equipment'),
+                TextEntry::make('description')->label('Description'),
+            ])->columns(4)
+        ]);
     }
 
     public static function getRelations(): array
