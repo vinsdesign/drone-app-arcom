@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('type');
             $table->string('description');
-            $table->foreignId('geometry_id')->constrainedTo('drone_geometrie')->cascadeDelete();
+            $table->foreignId('geometry_id')->constrainedTo('drone_geometrie')->cascadeOnDelete();
             $table->timestamps();
         });
     }

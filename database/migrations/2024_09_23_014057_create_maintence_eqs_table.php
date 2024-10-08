@@ -21,13 +21,13 @@ return new class extends Migration
             $table->string('currency');
             $table->string('notes');
             $table->foreignId('equidment_id')->constrainedTo('equidment')->cascadeDelete();
-            $table->foreignIdFor(Team::class,'teams_id')->index();
+            $table->foreignIdFor(Team::class,'teams_id')->index()->cascadeOnDelete();
             $table->timestamps();
         });
         Schema::create('maintence_eq_team', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('team_id')->constrainedTo('teams');
-            $table->foreignId('maintence_eq_id')->constrained('maintence_eqs');
+            $table->foreignId('team_id')->constrainedTo('teams')->cascadeOnDelete();
+            $table->foreignId('maintence_eq_id')->constrained('maintence_eqs')->cascadeOnDelete();
         });
     }
 

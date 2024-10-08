@@ -15,6 +15,8 @@ use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Filament\Infolists\Infolist;
+use Filament\Infolists\Components\TextEntry;
 
 class IncidentResource extends Resource
 {
@@ -104,8 +106,10 @@ class IncidentResource extends Resource
                     ->sortable(),
                 Tables\Columns\TextColumn::make('cause')
                     ->searchable(),
+
                 Tables\Columns\TextColumn::make('aircraft_damage')
                     ->searchable(),
+
                 // Tables\Columns\TextColumn::make('other_damage')
                 //     ->searchable(),
                 // Tables\Columns\TextColumn::make('description')
@@ -119,9 +123,11 @@ class IncidentResource extends Resource
                 //     ->sortable(),
                 Tables\Columns\TextColumn::make('Technician')
                     ->searchable(),
+
                 // Tables\Columns\TextColumn::make('location_id')
                 //     ->numeric()
                 //     ->sortable(),
+
                 Tables\Columns\TextColumn::make('drone.name')
                     ->numeric()
                     ->sortable(),
@@ -140,6 +146,9 @@ class IncidentResource extends Resource
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
+
+
+
             ->filters([
                 //
             ])
@@ -153,6 +162,7 @@ class IncidentResource extends Resource
                 ]),
             ]);
     }
+
 
     public static function infolist(Infolist $infolist): Infolist
     {
@@ -184,6 +194,8 @@ class IncidentResource extends Resource
         ]);
     }
 
+            
+
     public static function getRelations(): array
     {
         return [
@@ -196,7 +208,9 @@ class IncidentResource extends Resource
         return [
             'index' => Pages\ListIncidents::route('/'),
             'create' => Pages\CreateIncident::route('/create'),
+
             //'view' => Pages\ViewIncident::route('/{record}'),
+
             'edit' => Pages\EditIncident::route('/{record}/edit'),
         ];
     }

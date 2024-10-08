@@ -27,39 +27,45 @@ class UserResource extends Resource
     {
         return $form
             ->schema([
-                Forms\Components\TextInput::make('name')
-                    ->required()
-                    ->maxLength(255),
-                Forms\Components\TextInput::make('email')
-                    ->email()
-                    ->required()
-                    ->maxLength(255),
-                Forms\Components\DateTimePicker::make('email_verified_at'),
-                Forms\Components\TextInput::make('password')
-                    ->password()
-                    ->required()
-                    ->maxLength(255),
-                Forms\Components\TextInput::make('phone')
-                    ->tel()
-                    ->numeric(),
-                Forms\Components\TextInput::make('country')
-                    ->maxLength(255),
-                Forms\Components\TextInput::make('lenguage')
-                    ->label('Language')
-                    ->maxLength(255),
-                Forms\Components\TextInput::make('sertif')
-                    ->label('Certificate')
-                    ->maxLength(255),
-                Forms\Components\TextInput::make('timezone')
-                    ->maxLength(255),
-                Forms\Components\Select::make('role')
-                    ->required()
-                    ->options([
-                        'pilot' => 'Pilot',
-                        'maintenance' => 'Maintenance',
-                    ]),
-                Forms\Components\Hidden::make('teams_id')
-                    ->default(auth()->user()->teams()->first()->id ?? null),
+                Forms\Components\Section::make('Personel')
+                ->schema([
+                    Forms\Components\TextInput::make('name')
+                        ->required()
+                        ->maxLength(255),
+                    Forms\Components\TextInput::make('email')
+                        ->email()
+                        ->required()
+                        ->unique(User::class, 'email') // Validasi unique
+                        ->rules(['unique:users,email'])
+                        ->maxLength(255)->columnSpan(2),
+                    Forms\Components\DateTimePicker::make('email_verified_at'),
+                    Forms\Components\TextInput::make('password')
+                        ->password()
+                        ->required()
+                        ->maxLength(255),
+                    Forms\Components\TextInput::make('phone')
+                        ->tel()
+                        ->unique(User::class, 'phone') // Validasi unique
+                        ->rules(['unique:users,phone'])
+                        ->numeric(),
+                    Forms\Components\TextInput::make('country')
+                        ->maxLength(255),
+                    Forms\Components\TextInput::make('lenguage')
+                        ->maxLength(255),
+                    Forms\Components\TextInput::make('sertif')
+                        ->maxLength(255),
+                    Forms\Components\TextInput::make('timezone')
+                        ->maxLength(255),
+                    Forms\Components\Select::make('role')
+                        ->required()
+                        ->options([
+                            'pilot' => 'Pilot',
+                            'maintenance' => 'Maintenance',
+                        ])->columnSpan(2),
+                    Forms\Components\Hidden::make('teams_id')
+                        ->default(auth()->user()->teams()->first()->id ?? null),
+                ])->columns(3),
+                
             ]);
     }
 

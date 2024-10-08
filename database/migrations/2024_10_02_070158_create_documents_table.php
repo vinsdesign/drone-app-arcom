@@ -29,8 +29,8 @@ return new class extends Migration
         });
         Schema::create('document_team', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('team_id')->constrainedTo('teams');
-            $table->foreignId('document_id')->constrained('documents');
+            $table->foreignId('team_id')->constrainedTo('teams')->cascadeOnDelete();
+            $table->foreignId('document_id')->constrained('documents')->cascadeOnDelete();
         });
     }
 

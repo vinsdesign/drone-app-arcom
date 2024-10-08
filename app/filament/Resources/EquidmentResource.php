@@ -32,7 +32,9 @@ class EquidmentResource extends Resource
     protected static ?string $navigationLabel = 'Equipment' ;
     protected static ?string $navigationIcon = 'heroicon-m-cube';
     protected static?string $navigationGroup = 'Inventory';
-    protected static ?string $modelLabel = 'Equipment';
+
+    protected static?string $modelLabel = 'Equipment';
+
     public static ?string $tenantOwnershipRelationshipName = 'teams';
 
     public static function form(Form $form): Form
