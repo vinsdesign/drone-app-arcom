@@ -7,6 +7,7 @@ use App\Filament\Resources\BattreiResource\RelationManagers;
 use App\Models\Battrei;
 use Filament\Forms;
 use Filament\Forms\Form;
+use Filament\Infolists\Components\IconEntry;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
@@ -16,14 +17,15 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Filament\Infolists\Infolist;
 use Filament\Infolists\Components\TextEntry;
+use Filament\Infolists\Components\Section;
 
 
 class BattreiResource extends Resource
 {
     protected static ?string $model = Battrei::class;
     protected static ?string $navigationGroup = 'Inventory';
-    protected static ?string $navigationLabel = 'Battery';
-
+    protected static ?string $navigationLabel = 'Batteries';
+    protected static ?string $modelLabel = 'Batteries';
     protected static ?string $navigationIcon = 'heroicon-s-battery-100';
     public static ?string $tenantOwnershipRelationshipName = 'teams';
 
@@ -94,7 +96,7 @@ class BattreiResource extends Resource
                         Forms\Components\TextInput::make('insurable_value')->label('Insurable Value')
                             ->required()
                             ->numeric(),
-                        Forms\Components\TextInput::make('wight')->label('Wight')
+                        Forms\Components\TextInput::make('wight')->label('Weight')
                             ->required()
                             ->numeric(),
                         Forms\Components\TextInput::make('firmware_version')->label('Firmware Version')
@@ -206,6 +208,8 @@ public static function infolist(Infolist $infolist): Infolist
     return $infolist
     
     ->schema([
+        Section::make('Overview')
+                ->schema([
         TextEntry::make('name')->label('Name'),
         TextEntry::make('model')->label('Model'),
         TextEntry::make('status')->label('Status')
@@ -214,22 +218,29 @@ public static function infolist(Infolist $infolist): Infolist
            'maintenance' =>Color::Red,
            'retired' => Color::Zinc
          }),
-        TextEntry::make('users.name')->label('Owner'),
         TextEntry::make('asset_inventory')->label('Asset Inventory'),
-
-        TextEntry::make('firmware_version')->label('Firmware Version'),
-        TextEntry::make('hardware_version')->label('Hardware Version'),
-        TextEntry::make('serial_I')->label('Serial Internal'),
         TextEntry::make('serial_P')->label('Serial Printed'),
-        TextEntry::make('insurable_value')->label('Remote'),
-        TextEntry::make('created_at')->label('Purchas Date')->date('Y-m-d'),
-
+        TextEntry::make('serial_I')->label('Serial Internal'),
         TextEntry::make('cellCount')->label('Cell Count'),
-        TextEntry::make('nominal_voltage')->label('Nominal Voltage (V)'),
-        TextEntry::make('capacity')->label('Capacity (mAh)'),
-        TextEntry::make('initial_Cycle_count')->label('Initial Cycle Count'),
+        TextEntry::make('nominal_voltage')->label('Voltage'),
+        TextEntry::make('capacity')->label('Capacity'),
+        TextEntry::make('initial_Cycle_count')->label('Initial Cycles Count'),
         TextEntry::make('life_span')->label('Life Span'),
-    ])->columns(3);
+        TextEntry::make('flaight_count')->label('Flaight Count'),
+        TextEntry::make('drone.name')->label('For Drone (Optional)'),
+                ])->columns(5),
+            Section::make('Extra Information')
+                ->schema([
+                    TextEntry::make('users.name')->label('Owner'),
+                    TextEntry::make('purchase_date')->label('Purchase date'),
+                TextEntry::make('insurable_value')->label('Insurable Value'),
+                TextEntry::make('wight')->label('Weight'),
+                TextEntry::make('firmware_version')->label('Firmware Version'),
+                TextEntry::make('hardware_version')->label('Hardware Version'),
+                IconEntry::make('is_loaner')->boolean()->label('Loaner Battery'),
+                TextEntry::make('description')->label('Description'),
+    ])->columns(4)
+                ]);
 }
     public static function getRelations(): array
     {

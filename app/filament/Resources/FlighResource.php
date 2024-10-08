@@ -11,6 +11,7 @@ use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Filament\Infolists\Infolist;
+use Filament\Infolists\Components\Section;
 use Filament\Infolists\Components\TextEntry;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
@@ -24,6 +25,7 @@ class FlighResource extends Resource
     public static ?string $tenantOwnershipRelationshipName = 'teams';
 
     protected static ?string $navigationLabel = 'Flights' ;
+    protected static ?string $modelLabel = 'Flights';
     protected static ?string $navigationIcon = 'heroicon-s-clipboard-document-list';
 
 
@@ -95,7 +97,7 @@ class FlighResource extends Resource
                     ->relationship('projects', 'case')
                     ->required(),
                 ])->columns(3),
-                Forms\Components\Section::make('Personel')
+                Forms\Components\Section::make('Personnel')
                     ->description('')
                     ->schema([
                 Forms\Components\Select::make('users_id')->label('Pilot')
@@ -151,12 +153,6 @@ class FlighResource extends Resource
                     ->sortable(),
                 Tables\Columns\TextColumn::make('duration_hour'),
                 Tables\Columns\TextColumn::make('duration_minute'),
-                // Tables\Columns\TextColumn::make('type')
-                //     ->searchable(),
-                // Tables\Columns\TextColumn::make('ops')
-                //     ->searchable(),
-                // Tables\Columns\TextColumn::make('landings')
-                //     ->searchable(),
                 Tables\Columns\TextColumn::make('customers.name')
                     ->numeric()
                     ->sortable(),
@@ -170,28 +166,6 @@ class FlighResource extends Resource
                     ->label('Pilot')
                     ->numeric()
                     ->sortable(),
-                // Tables\Columns\TextColumn::make('instructor')
-                //     ->searchable(),
-                // Tables\Columns\TextColumn::make('vo')
-                //     ->searchable(),
-                // Tables\Columns\TextColumn::make('po')
-                //     ->searchable(),
-                // Tables\Columns\TextColumn::make('drones.name')
-                //     ->numeric()
-                //     ->sortable(),
-                // Tables\Columns\TextColumn::make('battreis.name')
-                //     ->numeric()
-                //     ->sortable(),
-                // Tables\Columns\TextColumn::make('equidments.name')
-                //     ->numeric()
-                //     ->sortable(),
-                // Tables\Columns\TextColumn::make('pre_volt')
-                //     ->searchable(),
-                // Tables\Columns\TextColumn::make('fuel_used')
-                //     ->searchable(),
-                //Tables\Columns\TextColumn::make('wheater_id')
-                    //->numeric()
-                    //->sortable(),
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()
@@ -220,25 +194,34 @@ class FlighResource extends Resource
         return $infolist
         
         ->schema([
-            TextEntry::make('name')->label('Name'),
-            TextEntry::make('date_flight')->label('date_flight'),
-            TextEntry::make('duration_hour')->label('Duration Hour'),
-            TextEntry::make('duration_minute')->label('Duration Minute'),
-            TextEntry::make('type')->label('Type'),
-            TextEntry::make('ops')->label('Ops'),
-            TextEntry::make('landings')->label('Landings'),
-            TextEntry::make('customers.name')->label('Customer'),
-            TextEntry::make('projects.case')->label('Project'),
-            TextEntry::make('users.name')->label('Pilot'),
-            TextEntry::make('instructor')->label('Instructor'),
-            TextEntry::make('vo')->label('VO'),
-            TextEntry::make('po')->label('PO'),
-            TextEntry::make('drones.name')->label('Drone'),
-            TextEntry::make('battreis.name')->label('Battery'),
-            TextEntry::make('equidments.name')->label('Equipment'),
-            TextEntry::make('pre_volt')->label('Pre-Voltage'),
-            TextEntry::make('fuel_used')->label('Fuel Used'),
-        ])->columns(3);
+            Section::make('Flight Detail')
+                ->schema([
+                TextEntry::make('name')->label('Name'),
+                TextEntry::make('date_flight')->label('Date Flight'),
+                TextEntry::make('duration_hour')->label('Duration Hour'),
+                TextEntry::make('duration_minute')->label('Duration Minute'),
+                TextEntry::make('type')->label('Type'),
+                TextEntry::make('ops')->label('Ops'),
+                TextEntry::make('landings')->label('Landings'),
+                TextEntry::make('customers.name')->label('Customer'),
+                TextEntry::make('projects.case')->label('Project'),
+                ])->columns(5),
+            Section::make('Personnel')
+                ->schema([
+                TextEntry::make('users.name')->label('Pilot'),
+                TextEntry::make('instructor')->label('Instructor'),
+                TextEntry::make('vo')->label('VO'),
+                TextEntry::make('po')->label('PO'),
+                ])->columns(4),
+            Section::make('Drone & Equipments')
+                ->schema([
+                TextEntry::make('drones.name')->label('Drone'),
+                TextEntry::make('battreis.name')->label('Battery'),
+                TextEntry::make('equidments.name')->label('Equipment'),
+                TextEntry::make('pre_volt')->label('Pre-Voltage'),
+                TextEntry::make('fuel_used')->label('Fuel Used'),
+                ])->columns(5)
+        ]);
     }
 
     public static function getRelations(): array

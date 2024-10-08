@@ -7,9 +7,13 @@ use App\Filament\Resources\MaintenceResource\RelationManagers;
 use App\Models\Maintence_drone;
 use Filament\Forms;
 use Filament\Forms\Form;
+use Filament\Infolists\Components\IconEntry;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
+use Filament\Infolists\Infolist;
+use Filament\Infolists\Components\Section;
+use Filament\Infolists\Components\TextEntry;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 
@@ -18,7 +22,7 @@ class MaintenceResource extends Resource
     protected static ?string $model = Maintence_drone::class;
     protected static ?string $navigationLabel = 'Maintenance Drone';
     protected static ?string $tenantRelationshipName = 'maintence_drones';
-
+    protected static ?string $modelLabel = 'Maintenance Drone';
 
     protected static ?string $navigationIcon = 'heroicon-s-wrench-screwdriver';
     public static ?string $tenantOwnershipRelationshipName = 'teams';
@@ -44,7 +48,7 @@ class MaintenceResource extends Resource
                         Forms\Components\Select::make('status')
                             ->label('Status')
                             ->options([
-                                'asset'=> 'Schedule',
+                                'Schedule'=> 'Schedule',
                                 'in_progress'=> 'In Progress',
                                 'completed'=> 'Completed',
                             ]),
@@ -67,10 +71,10 @@ class MaintenceResource extends Resource
                                 'part 3'=> 'Part 3',
                             ]),
                         Forms\Components\TextInput::make('part_name')
-                            ->label('Part_name')
+                            ->label('Part Name')
                             ->maxLength(255),
                         Forms\Components\Select::make('status_part')
-                            ->label('status_part')
+                            ->label('Status Part')
                             ->options([
                                 'partial'=> 'Partial',
                                 'open'=> 'Open',
@@ -99,41 +103,25 @@ class MaintenceResource extends Resource
             ->columns([
                 Tables\Columns\TextColumn::make('name')
                     ->searchable(),
-                Tables\Columns\TextColumn::make('drone_id')
+                Tables\Columns\TextColumn::make('drone.name')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('date')
                     ->date()
-                    ->searchable(),
-                Tables\Columns\TextColumn::make('status')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('cost')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('currency')
                     ->searchable(),
-                Tables\Columns\TextColumn::make('notes')
-                    ->searchable(),
-                Tables\Columns\TextColumn::make('created_at')
-                    ->dateTime()
-                    ->sortable(),
-                Tables\Columns\TextColumn::make('part')
-                    ->sortable(),
-                Tables\Columns\TextColumn::make('part_name')
-                    ->searchable(),
-                Tables\Columns\TextColumn::make('status_part')
-                    ->sortable(),
                 Tables\Columns\TextColumn::make('technician')
                     ->sortable(),
                 Tables\Columns\IconColumn::make('replaced')
                     ->boolean(),
-                Tables\Columns\TextColumn::make('new_part_serial')
-                    ->sortable(),
-                Tables\Columns\TextColumn::make('description_part')
-                    ->sortable()
             ])
             ->filters([
                 //
             ])
             ->actions([
+                Tables\Actions\ViewAction::make(),
                 Tables\Actions\EditAction::make(),
             ])
             ->bulkActions([
@@ -143,6 +131,34 @@ class MaintenceResource extends Resource
             ]);
     }
     
+    public static function infolist(Infolist $infolist): Infolist
+    {
+        return $infolist
+        
+        ->schema([
+            Section::make('Overview')
+                ->schema([
+                    TextEntry::make('name')->label('Name'),
+                    TextEntry::make('drone.name')->label('Drone'),
+                    TextEntry::make('date')->label('Date'),
+                    TextEntry::make('status')->label('Status'),
+                    TextEntry::make('cost')->label('Cost'),
+                    TextEntry::make('currency')->label('Currency'),
+                    TextEntry::make('notes')->label('Notes')
+                ])->columns(4),
+            Section::make('Add Tasks (Optional)')
+                ->schema([
+                    TextEntry::make('part')->label('Part'),
+                    TextEntry::make('part_name')->label('Part Name'),
+                    TextEntry::make('status_part')->label('Status Part'),
+                    TextEntry::make('technician')->label('Technician'),
+                    IconEntry::make('replaced')->boolean()->label('Replaced'),
+                    TextEntry::make('new_part_serial')->label('New Part Serial'),
+                    TextEntry::make('description_part')->label('Description Part')
+                ])->columns(4)
+        ]);
+    }
+
     public static function getRelations(): array
     {
         return [

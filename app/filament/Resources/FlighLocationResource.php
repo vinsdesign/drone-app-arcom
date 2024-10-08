@@ -20,6 +20,7 @@ class FlighLocationResource extends Resource
     protected static ?string $navigationIcon = 'heroicon-s-map-pin';
     protected static?string $navigationGroup = 'Inventory';
     protected static ?string $navigationLabel = 'Location';
+    protected static ?string $modelLabel = 'Locations';
     public static ?string $tenantOwnershipRelationshipName = 'teams';
 
     public static function form(Form $form): Form

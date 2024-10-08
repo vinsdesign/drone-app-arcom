@@ -10,13 +10,15 @@ use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
+use Filament\Infolists\Infolist;
+use Filament\Infolists\Components\TextEntry;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class CustomerResource extends Resource
 {
     protected static ?string $model = Customer::class;
-    protected static ?string $navigationLabel = 'Customer';
+    protected static ?string $navigationLabel = 'Customers';
 
     protected static ?string $navigationIcon = 'heroicon-s-user';
     public static ?string $tenantOwnershipRelationshipName = 'teams';
@@ -75,7 +77,8 @@ class CustomerResource extends Resource
                 //
             ])
             ->actions([
-                Tables\Actions\EditAction::make(),
+                Tables\Actions\ViewAction::make(),
+                Tables\Actions\EditAction::make()
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
@@ -86,6 +89,18 @@ class CustomerResource extends Resource
     //untuk tenancy
 
     //end te
+
+    public static function infolist(Infolist $infolist): Infolist
+    {
+        return $infolist
+        ->schema([
+                TextEntry::make('name')->label('Name'),
+                TextEntry::make('phone')->label('Phone'),
+                TextEntry::make('email')->label('Email'),
+                TextEntry::make('address')->label('Address'),
+                TextEntry::make('description')->label('Description')
+        ]);
+    }
 
     public static function getRelations(): array
     {

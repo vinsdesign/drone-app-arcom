@@ -10,6 +10,8 @@ use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
+use Filament\Infolists\Infolist;
+use Filament\Infolists\Components\TextEntry;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 
@@ -19,7 +21,7 @@ class MaintenanceBatteryResource extends Resource
 
     protected static ?string $navigationLabel = 'Maintenance Equipment';
     protected static ?string $tenantRelationshipName = 'maintence_eqs';
-
+    protected static ?string $modelLabel = 'Maintenance Equipment';
 
     protected static ?string $navigationIcon = 'heroicon-o-cog';
     public static ?string $tenantOwnershipRelationshipName = 'teams';
@@ -65,13 +67,29 @@ class MaintenanceBatteryResource extends Resource
     {
         return $table
             ->columns([
-                    
+                Tables\Columns\TextColumn::make('name')
+                ->searchable(),
+                Tables\Columns\TextColumn::make('equidment.name')
+                ->label('Equipment')
+                ->searchable(),
+                Tables\Columns\TextColumn::make('date')
+                ->date()
+                ->searchable(),
+                Tables\Columns\TextColumn::make('status')
+                ->searchable(),
+                Tables\Columns\TextColumn::make('cost')
+                ->searchable(),
+                Tables\Columns\TextColumn::make('currency')
+                ->searchable(),
+                // Tables\Columns\TextColumn::make('notes')
+                // ->searchable(), 
             ])
         
             ->filters([
                 //
             ])
             ->actions([
+                Tables\Actions\ViewAction::make(),
                 Tables\Actions\EditAction::make(),
             ])
             ->bulkActions([
@@ -79,6 +97,20 @@ class MaintenanceBatteryResource extends Resource
                     Tables\Actions\DeleteBulkAction::make(),
                 ]),
             ]);
+    }
+
+    public static function infolist(Infolist $infolist): Infolist
+    {
+        return $infolist
+        ->schema([
+            TextEntry::make('name')->label('Name'),
+            TextEntry::make('equidment.name')->label('Equipment'),
+            TextEntry::make('date')->label('Date'),
+            TextEntry::make('status')->label('Status'),
+            TextEntry::make('cost')->label('Cost'),
+            TextEntry::make('currency')->label('Currency'),
+            TextEntry::make('notes')->label('Notes'), 
+        ])->columns(3);
     }
 
     public static function getRelations(): array
