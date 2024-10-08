@@ -27,14 +27,14 @@ return new class extends Migration
             $table->foreignId('drone_id')->constrainedTo('drone')->cascadeDelete();
             $table->foreignId('project_id')->constrainedTo('project')->cascadeDelete();
             $table->foreignId('personel_involved_id')->constrainedTo('users')->cascadeDelete();
-            $table->foreignIdFor(Team::class,'teams_id')->index();
+            $table->foreignIdFor(Team::class,'teams_id')->index()->cascadeOnDelete();
             $table->timestamps();
         });
         
         Schema::create('incident_team', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('team_id')->constrainedTo('teams');
-            $table->foreignId('incident_id')->constrained('incidents');
+            $table->foreignId('team_id')->constrainedTo('teams')->cascadeOnDelete();
+            $table->foreignId('incident_id')->constrained('incidents')->cascadeOnDelete();
         });
     }
 

@@ -27,24 +27,32 @@ class CustomerResource extends Resource
     {
         return $form
         ->schema([
-            Forms\Components\TextInput::make('name')
-                ->required()
-                ->maxLength(255),
-            Forms\Components\TextInput::make('phone')
-                ->tel()
-                ->required(),
-            Forms\Components\TextInput::make('email')
-                ->email()
-                ->required()
-                ->maxLength(255),
-            Forms\Components\TextInput::make('address')
-                ->required()
-                ->maxLength(255),
+            Forms\Components\Section::make('Customer')
+                ->schema([
+                    Forms\Components\TextInput::make('name')
+                    ->required()
+                    ->maxLength(255),
+                Forms\Components\TextInput::make('phone')
+                    ->tel()
+                    ->required()
+                    ->unique(Customer::class, 'phone')
+                    ->rules(['unique:users,phone']),
+                Forms\Components\TextInput::make('email')
+                    ->email()
+                    ->required()
+                    ->unique(Customer::class, 'email') // Validasi unique
+                    ->rules(['unique:users,email'])
+                    ->maxLength(255),
+                Forms\Components\TextInput::make('address')
+                    ->required()
+                    ->maxLength(255),
+    
+                Forms\Components\Textarea::make('description')
+                    ->maxLength(255)->columnSpanFull(),
+                Forms\Components\Hidden::make('teams_id')
+                ->default(auth()->user()->teams()->first()->id ?? null),
+                ])->columns(2),
 
-            Forms\Components\TextInput::make('description')
-                ->maxLength(255),
-            Forms\Components\Hidden::make('teams_id')
-            ->default(auth()->user()->teams()->first()->id ?? null),
         ]);
     }
 

@@ -34,8 +34,8 @@ return new class extends Migration
 
         Schema::create('equidment_team', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('team_id')->constrainedTo('teams');
-            $table->foreignId('equidment_id')->constrained('equidments');
+            $table->foreignId('team_id')->constrainedTo('teams')->cascadeOnDelete();
+            $table->foreignId('equidment_id')->constrained('equidments')->cascadeOnDelete();
         });
     }
 

@@ -12,6 +12,8 @@ use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Filament\Infolists\Infolist;
+use Filament\Infolists\Components\TextEntry;
 
 class IncidentResource extends Resource
 {
@@ -101,33 +103,33 @@ class IncidentResource extends Resource
                     ->sortable(),
                 Tables\Columns\TextColumn::make('cause')
                     ->searchable(),
-                Tables\Columns\TextColumn::make('aircraft_damage')
-                    ->searchable(),
-                Tables\Columns\TextColumn::make('other_damage')
-                    ->searchable(),
-                Tables\Columns\TextColumn::make('description')
-                    ->searchable(),
-                Tables\Columns\TextColumn::make('incuration_type')
-                    ->searchable(),
-                Tables\Columns\TextColumn::make('rectification_note')
-                    ->searchable(),
-                Tables\Columns\TextColumn::make('rectification_date')
-                    ->date()
-                    ->sortable(),
+                // Tables\Columns\TextColumn::make('aircraft_damage')
+                //     ->searchable(),
+                // Tables\Columns\TextColumn::make('other_damage')
+                //     ->searchable(),
+                // Tables\Columns\TextColumn::make('description')
+                //     ->searchable(),
+                // Tables\Columns\TextColumn::make('incuration_type')
+                //     ->searchable(),
+                // Tables\Columns\TextColumn::make('rectification_note')
+                //     ->searchable(),
+                // Tables\Columns\TextColumn::make('rectification_date')
+                //     ->date()
+                //     ->sortable(),
                 Tables\Columns\TextColumn::make('Technician')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('location_id')
                     ->numeric()
                     ->sortable(),
-                Tables\Columns\TextColumn::make('drone_id')
+                Tables\Columns\TextColumn::make('drone.name')
                     ->numeric()
                     ->sortable(),
-                Tables\Columns\TextColumn::make('project_id')
+                Tables\Columns\TextColumn::make('project.case')
                     ->numeric()
                     ->sortable(),
-                Tables\Columns\TextColumn::make('personel_involved_id')
-                    ->numeric()
-                    ->sortable(),
+                // Tables\Columns\TextColumn::make('personel_involved_id')
+                //     ->numeric()
+                //     ->sortable(),
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()
@@ -137,6 +139,9 @@ class IncidentResource extends Resource
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
+
+
+
             ->filters([
                 //
             ])
@@ -151,6 +156,35 @@ class IncidentResource extends Resource
             ]);
     }
 
+                //infolist
+                public static function infolist(Infolist $infolist): Infolist
+                {
+                    return $infolist
+                    
+                    ->schema([
+                TextEntry::make('incident_date')->label('Date')
+                    ->date(),
+                TextEntry::make('cause')->label('cause'),
+                TextEntry::make('aircraft_damage')->label('Aircraft Damage'),
+                TextEntry::make('other_damage')->label('Other Damage'),
+                TextEntry::make('description')->label('Description'),
+                TextEntry::make('incuration_type')->label('Incuration Type'),
+                TextEntry::make('rectification_note')->label('Note'),
+                TextEntry::make('rectification_date')->label('Rectification Date')
+                    ->date(),
+                TextEntry::make('Technician')->label('Technician Name'),
+                TextEntry::make('location_id')->label('Location')
+                    ->numeric(),
+                TextEntry::make('drone.name')->label('Drone Name')
+                    ->numeric(),
+                TextEntry::make('project.case')->label('Project Name')
+                    ->numeric(),
+                TextEntry::make('personel_involved_id')->label('Personel Involved ')
+                    ->numeric(),
+                    ])->columns(3);
+                }
+                //end
+
     public static function getRelations(): array
     {
         return [
@@ -163,7 +197,7 @@ class IncidentResource extends Resource
         return [
             'index' => Pages\ListIncidents::route('/'),
             'create' => Pages\CreateIncident::route('/create'),
-            'view' => Pages\ViewIncident::route('/{record}'),
+            // 'view' => Pages\ViewIncident::route('/{record}'),
             'edit' => Pages\EditIncident::route('/{record}/edit'),
         ];
     }

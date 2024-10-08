@@ -21,13 +21,13 @@ return new class extends Migration
             $table->string('notes');
             $table->foreignId('drone_id')->constrainedTo('drone')->cascadeDelete();
             $table->foreignId('task_id')->constrainedTo('task')->cascadeDelete();
-            $table->foreignIdFor(Team::class,'teams_id')->index();
+            $table->foreignIdFor(Team::class,'teams_id')->index()->cascadeOnDelete();
             $table->timestamps();
         });
         Schema::create('maintence_drone_team', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('team_id')->constrainedTo('teams');
-            $table->foreignId('maintence_drone_id')->constrained('maintence_drones');
+            $table->foreignId('team_id')->constrainedTo('teams')->cascadeOnDelete();
+            $table->foreignId('maintence_drone_id')->constrained('maintence_drones')->cascadeOnDelete();
         });
     }
 

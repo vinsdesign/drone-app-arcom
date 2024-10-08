@@ -24,6 +24,7 @@ class FlighResource extends Resource
     public static ?string $tenantOwnershipRelationshipName = 'teams';
 
     protected static ?string $navigationLabel = 'Flights' ;
+    Protected static ?string $modelLabel = 'Flights';
     protected static ?string $navigationIcon = 'heroicon-s-clipboard-document-list';
 
 

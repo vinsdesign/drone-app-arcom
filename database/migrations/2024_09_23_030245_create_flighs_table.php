@@ -32,14 +32,14 @@ return new class extends Migration
             $table->foreignId('equidments_id')->constrainedTo('equidments')->cascadeDelete();
             $table->integer('pre_volt');
             $table->integer('fuel_used')->default('1');
-            $table->foreignIdFor(Team::class,'teams_id')->index();
+            $table->foreignIdFor(Team::class,'teams_id')->index()->cascadeOnDelete();
             //$table->foreignId('wheater_id')->constrainedTo('wheater')->cascadeDelete();
             $table->timestamps();
         });
         Schema::create('fligh_team', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('team_id')->constrainedTo('teams');
-            $table->foreignId('fligh_id')->constrained('flighs');
+            $table->foreignId('team_id')->constrainedTo('teams')->cascadeOnDelete();
+            $table->foreignId('fligh_id')->constrained('flighs')->cascadeOnDelete();
         });
     }
 
