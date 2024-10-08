@@ -24,23 +24,28 @@ class ProjectsResource extends Resource
     {
         return $form
             ->schema([
-                Forms\Components\Hidden::make('teams_id')
-                ->default(auth()->user()->teams()->first()->id ?? null),
-                Forms\Components\TextInput::make('case')
-                    ->required()
-                    ->maxLength(255),
-                Forms\Components\TextInput::make('revenue')
-                    ->required()
-                    ->numeric(),
-                Forms\Components\TextInput::make('currency')
-                    ->required()
-                    ->maxLength(255),
-                Forms\Components\TextInput::make('description')
-                    ->required()
-                    ->maxLength(255),
-                Forms\Components\Select::make('customers_id')
-                    ->relationship('customers', 'name')
-                    ->required(),
+                Forms\Components\Section::make('Projects')
+                    ->schema([
+                        Forms\Components\Hidden::make('teams_id')
+                        ->default(auth()->user()->teams()->first()->id ?? null),
+                        Forms\Components\TextInput::make('case')
+                            ->required()
+                            ->maxLength(255),
+                        Forms\Components\TextInput::make('revenue')
+                            ->required()
+                            ->numeric(),
+                        Forms\Components\TextInput::make('currency')
+                            ->required()
+                            ->maxLength(255),
+                        Forms\Components\Select::make('customers_id')
+                            ->relationship('customers', 'name')
+                            ->required(),
+                        Forms\Components\TextArea::make('description')
+                            ->required()
+                            ->maxLength(255)->columnSpanFull(),
+
+                ])->columns(2),
+               
             ]);
     }
 

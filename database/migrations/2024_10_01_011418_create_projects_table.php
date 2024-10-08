@@ -19,14 +19,14 @@ return new class extends Migration
             $table->string('currency');
             $table->foreignId('customers_id');
             $table->string('description');
-            $table->foreignIdFor(Team::class,'teams_id')->index();
+            $table->foreignIdFor(Team::class,'teams_id')->index()->cascadeOnDelete();
             $table->timestamps();
         });
 
         Schema::create('projects_team', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('team_id')->constrainedTo('teams');
-            $table->foreignId('projects_id')->constrained('projects');
+            $table->foreignId('team_id')->constrainedTo('teams')->cascadeOnDelete();
+            $table->foreignId('projects_id')->constrained('projects')->cascadeOnDelete();
         });
     }
 }

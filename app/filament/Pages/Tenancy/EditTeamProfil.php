@@ -1,6 +1,7 @@
 <?php
 namespace App\Filament\Pages\Tenancy;
  
+use App\Models\team;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Section;
@@ -24,8 +25,12 @@ class EditTeamProfil extends EditTenantProfile
                 ->description('')
                 ->schema([
                     TextInput::make('name')->label('Organization Name')->columnSpan(2),
-                    TextInput::make('email')->email()->label('Email Address'),
-                    TextInput::make('phone')->label('Phone Number'),
+                    TextInput::make('email')->email()->label('Email Address')
+                    ->unique(Team::class, 'email') // Validasi unique
+                    ->rules(['unique:users,email']),
+                    TextInput::make('phone')->label('Phone Number')
+                    ->unique(Team::class, 'phone') // Validasi unique
+                    ->rules(['unique:users,phone']),
                     TextInput::make('owner')->label('Incorporation Name')->columnSpan(2),
                     TextInput::make('website')->label('Website'),
                     TextInput::make('company_size')->label('Company Size')->numeric(),

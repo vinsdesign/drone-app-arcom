@@ -17,13 +17,13 @@ return new class extends Migration
             $table->string('type');
             $table->boolean('enabled')->default(false);
             $table->foreignId('blocked')->nullable()->constrained('drones')->default('null')->onDelete('set null');
-            $table->foreignIdFor(Team::class,'teams_id')->index();
+            $table->foreignIdFor(Team::class,'teams_id')->index()->cascadeOnDelete();
             $table->timestamps();
         });
         Schema::create('kits_team', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('team_id')->constrainedTo('teams');
-            $table->foreignId('kits_id')->constrained('kits');
+            $table->foreignId('team_id')->constrainedTo('teams')->cascadeOnDelete();
+            $table->foreignId('kits_id')->constrained('kits')->cascadeOnDelete();
         });
     }
 

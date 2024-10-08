@@ -24,8 +24,8 @@ return new class extends Migration
         });
         Schema::create('customer_team', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('team_id')->constrainedTo('teams');
-            $table->foreignId('customer_id')->constrained('customers');
+            $table->foreignId('team_id')->constrainedTo('teams')->cascadeOnDelete();
+            $table->foreignId('customer_id')->constrained('customers')->cascadeOnDelete();
         });
     }
 

@@ -33,15 +33,15 @@ return new class extends Migration
             $table->string('hardware_version');
             $table->boolean('is_loaner')->default(false);
             $table->string('description');
-            $table->foreignId('users_id')->constrainedTo('users')->cascadeDelete();
-            $table->foreignIdFor(Team::class,'teams_id')->index();
+            $table->foreignId('users_id')->constrainedTo('users')->cascadeOnDelete();
+            $table->foreignIdFor(Team::class,'teams_id')->index()->cascadeOnDelete();
             $table->timestamps();
         });
 
         Schema::create('battrei_team', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('team_id')->constrainedTo('teams');
-            $table->foreignId('battrei_id')->constrained('battreis');
+            $table->foreignId('team_id')->constrainedTo('teams')->cascadeOnDelete();
+            $table->foreignId('battrei_id')->constrained('battreis')->cascadeOnDelete();
         });
     }
 
