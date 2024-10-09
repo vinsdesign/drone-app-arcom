@@ -102,10 +102,13 @@ class FlighResource extends Resource
                 Forms\Components\Section::make('Personnel')
                     ->description('')
                     ->schema([
-                Forms\Components\Select::make('users_id')->label('Pilot')
-                    ->relationship('users', 'name', function (Builder $query) {
-                        $query->where('role', 'pilot');
-                    })    
+                        Forms\Components\Select::make('users_id')
+                        ->label('Pilot')
+                        ->relationship('users', 'name', function (Builder $query) {
+                            $query->whereHas('roles', function (Builder $query) {
+                                $query->where('roles.name', 'super_admin');
+                            });
+                        })  
                     ->required(),
                 Forms\Components\TextInput::make('instructor')->label('Instructor')
                     ->required()

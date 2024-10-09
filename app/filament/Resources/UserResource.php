@@ -5,6 +5,7 @@ namespace App\Filament\Resources;
 use App\Filament\Resources\UserResource\Pages;
 use App\Filament\Resources\UserResource\RelationManagers;
 use App\Models\User;
+use App\Models\model_has_role;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -56,14 +57,16 @@ class UserResource extends Resource
                         ->maxLength(255),
                     Forms\Components\TextInput::make('timezone')
                         ->maxLength(255),
-                    Forms\Components\Select::make('role')
-                        ->required()
-                        ->options([
-                            'pilot' => 'Pilot',
-                            'maintenance' => 'Maintenance',
-                        ])->columnSpan(2),
                     Forms\Components\Hidden::make('teams_id')
                         ->default(auth()->user()->teams()->first()->id ?? null),
+                    //role
+                    Forms\Components\Select::make('roles')
+                        ->relationship('roles', 'name')
+                        ->multiple()
+                        ->preload()
+                        ->searchable()->columnSpan(2)
+                        
+                    
                 ])->columns(3),
                 
             ]);
@@ -90,7 +93,7 @@ class UserResource extends Resource
                 Tables\Columns\TextColumn::make('timezone')
                     ->searchable(),
                 Tables\Columns\ImageColumn::make('image'),
-                Tables\Columns\TextColumn::make('role')
+                Tables\Columns\TextColumn::make('roles.name')
                     ->searchable(),
             ])
             ->filters([
@@ -120,7 +123,7 @@ class UserResource extends Resource
             TextEntry::make('lenguage')->label('Language'),
             TextEntry::make('sertif')->label('Certificate'),
             TextEntry::make('timezone')->label('Timezone'),
-            TextEntry::make('role')->label('Role Type'),
+            TextEntry::make('roles.name')->label('Role Type'),
         ])->columns(2);
     }
     public static function getRelations(): array

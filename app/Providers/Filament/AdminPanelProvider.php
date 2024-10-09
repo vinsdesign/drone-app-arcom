@@ -30,6 +30,9 @@ class AdminPanelProvider extends PanelProvider
             ->path('admin')
             ->login()
             ->registration()
+            ->plugins([
+                \BezhanSalleh\FilamentShield\FilamentShieldPlugin::make()
+            ])
             ->tenant(Team::class, ownershipRelationship: 'team')
             ->tenantRegistration(RegisterTeam::class)
             ->tenantProfile(EditTeamProfil::class)
