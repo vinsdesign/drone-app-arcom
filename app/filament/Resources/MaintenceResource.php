@@ -16,8 +16,6 @@ use Filament\Infolists\Components\Section;
 use Filament\Infolists\Components\TextEntry;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
-use Filament\Infolists\Infolist;
-use Filament\Infolists\Components\TextEntry;
 
 class MaintenceResource extends Resource
 {
@@ -134,31 +132,6 @@ class MaintenceResource extends Resource
             ]);
     }
 
-                    //infolist
-                    public static function infolist(Infolist $infolist): Infolist
-                    {
-                        return $infolist
-                        
-                        ->schema([
-                        TextEntry::make('name'),
-                        TextEntry::make('drone_id'),
-                        TextEntry::make('date')
-                            ->date(),
-                        TextEntry::make('status'),
-                        TextEntry::make('cost'),
-                        TextEntry::make('currency'),
-                        TextEntry::make('notes'),
-                        TextEntry::make('created_at')
-                            ->dateTime(),
-                        TextEntry::make('part'),
-                        TextEntry::make('part_name'),
-                        TextEntry::make('status_part'),
-                        TextEntry::make('technician'),
-                        TextEntry::make('new_part_serial'),
-                        TextEntry::make('description_part')
-                        ])->columns(3);
-                    }
-                    //end
     
     public static function infolist(Infolist $infolist): Infolist
     {
