@@ -109,8 +109,12 @@ class DocumentResource extends Resource
                 Tables\Columns\TextColumn::make('description')->label('Description')
                     ->searchable(),
                     //Belum bisa Link ke Document
-                Tables\Columns\TextColumn::make('doc')->label('Document')
+                    Tables\Columns\TextColumn::make('doc')
+                    ->label('Document')
+                    ->formatStateUsing(fn ($state) => "<a href='/storage/{$state}' target='_blank' rel='noopener noreferrer' style='display:inline-block; padding:10px 15px; background-color:#ff8303; color:white; text-align:center; border-radius:5px;'>Buka Dokumen</a>")
+                    ->html()
                     ->searchable(),
+                
                 Tables\Columns\TextColumn::make('customers_id')->label('Customer')
                     ->numeric()
                     ->sortable(),
