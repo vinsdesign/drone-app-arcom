@@ -6,7 +6,7 @@ use App\Models\User;
 use App\Models\Incident;
 use Illuminate\Auth\Access\HandlesAuthorization;
 
-class incidentPolicy
+class IncidentPolicy
 {
     use HandlesAuthorization;
 

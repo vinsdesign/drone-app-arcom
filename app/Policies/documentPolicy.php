@@ -6,7 +6,7 @@ use App\Models\User;
 use App\Models\Document;
 use Illuminate\Auth\Access\HandlesAuthorization;
 
-class documentPolicy
+class DocumentPolicy
 {
     use HandlesAuthorization;
 

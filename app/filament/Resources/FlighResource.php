@@ -4,7 +4,10 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\FlighResource\Pages;
 use App\Filament\Resources\FlighResource\RelationManagers;
+use App\Models\customer;
 use App\Models\Fligh;
+use App\Models\Projects;
+use Closure;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -89,15 +92,31 @@ class FlighResource extends Resource
                 Forms\Components\TextInput::make('landings')
                     ->required()
                     ->numeric(),
-                Forms\Components\Select::make('customers_id')
-                    ->relationship('customers', 'name')
+                Forms\Components\Select::make('projects_id')
+                    ->relationship('projects', 'case')
+                    ->required()
+                     ->reactive()
+                     ->afterStateUpdated(function ($state, callable $set) {
+                        if ($state) {
+                            $project = Projects::find($state);
+                            $set('customers_id', $project ? $project->customers_id : null);
+                            // Jika Anda ingin menampilkan nama customer, Anda juga bisa menambahkannya
+                            $set('customers_name', $project && $project->customers ? $project->customers->name : null);
+                        } else {
+                            $set('customers_id', null);
+                            $set('customers_name', null); // Reset nama customer juga
+                        }
+                    }),
+                Forms\Components\Hidden::make('customers_id') // Menyimpan ID customer
                     ->required(),
+                Forms\Components\TextInput::make('customers_name')
+                    ->label('Customer Name')
+                    //->relationship('customers', 'name')
+                    ->required()
+                    ->disabled(),
                 //Forms\Components\Select::make('location_id')
                     //->relationship('fligh_locations', 'name'),
                     //->required(),
-                Forms\Components\Select::make('projects_id')
-                    ->relationship('projects', 'case')
-                    ->required(),
                 ])->columns(3),
                 Forms\Components\Section::make('Personnel')
                     ->description('')
@@ -158,13 +177,13 @@ class FlighResource extends Resource
                     ->sortable(),
                 Tables\Columns\TextColumn::make('duration_hour'),
                 Tables\Columns\TextColumn::make('duration_minute'),
-                Tables\Columns\TextColumn::make('customers.name')
-                    ->numeric()
-                    ->sortable(),
                 //Tables\Columns\TextColumn::make('location_id')
                     //->numeric()
                     //->sortable(),
                 Tables\Columns\TextColumn::make('projects.case')
+                    ->numeric()
+                    ->sortable(),
+                Tables\Columns\TextColumn::make('projects.customers.name')
                     ->numeric()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('users.name')

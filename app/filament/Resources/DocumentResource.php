@@ -73,7 +73,8 @@ class DocumentResource extends Resource
                     Forms\Components\Select::make('projects_id')->label('Project / Job Reference')
                     ->relationship('projects', 'case')
                     ->columnSpanFull(),
-                Forms\Components\FileUpload::make('doc')->label('Upload Document'),
+                Forms\Components\FileUpload::make('doc')->label('Upload Document')
+                    ->acceptedFileTypes(['application/pdf']),
                 Forms\Components\TextInput::make('external link')->label('Or External Link,your document')
                     ->required()
                     ->maxLength(255)->columnSpan(2),
@@ -111,7 +112,7 @@ class DocumentResource extends Resource
                     //Belum bisa Link ke Document
                     Tables\Columns\TextColumn::make('doc')
                     ->label('Document')
-                    ->formatStateUsing(fn ($state) => "<a href='/storage/{$state}' target='_blank' rel='noopener noreferrer' style='display:inline-block; padding:10px 15px; background-color:#ff8303; color:white; text-align:center; border-radius:5px;'>Buka Dokumen</a>")
+                    ->formatStateUsing(fn ($state) => "<a href='/storage/{$state}' target='_blank' rel='noopener noreferrer' style='padding:5px 10px; background-color:#ff8303; color:white; border-radius:5px;'>Buka Dokumen</a>")
                     ->html()
                     ->searchable(),
                 

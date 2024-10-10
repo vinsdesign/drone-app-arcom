@@ -6,7 +6,7 @@ use App\Models\User;
 use App\Models\Equidment;
 use Illuminate\Auth\Access\HandlesAuthorization;
 
-class equidmentPolicy
+class EquidmentPolicy
 {
     use HandlesAuthorization;
 
