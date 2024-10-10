@@ -20,5 +20,10 @@ class customer extends Model
    public function teams(){
     return $this->belongsTo(Team::class);
    }
+
+   public function projects()
+    {
+        return $this->hasMany(Projects::class);
+    }
    
 }
