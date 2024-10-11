@@ -6,7 +6,7 @@ use App\Models\User;
 use App\Models\Drone;
 use Illuminate\Auth\Access\HandlesAuthorization;
 
-class dronePolicy
+class DronePolicy
 {
     use HandlesAuthorization;
 

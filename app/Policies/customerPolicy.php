@@ -6,7 +6,7 @@ use App\Models\User;
 use App\Models\Customer;
 use Illuminate\Auth\Access\HandlesAuthorization;
 
-class customerPolicy
+class CustomerPolicy
 {
     use HandlesAuthorization;
 

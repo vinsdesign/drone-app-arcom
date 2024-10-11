@@ -6,7 +6,7 @@ use App\Models\User;
 use App\Models\Fligh;
 use Illuminate\Auth\Access\HandlesAuthorization;
 
-class flighPolicy
+class FlighPolicy
 {
     use HandlesAuthorization;
 

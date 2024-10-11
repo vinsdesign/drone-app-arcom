@@ -6,7 +6,7 @@ use App\Models\User;
 use App\Models\Battrei;
 use Illuminate\Auth\Access\HandlesAuthorization;
 
-class battreiPolicy
+class BattreiPolicy
 {
     use HandlesAuthorization;
 
