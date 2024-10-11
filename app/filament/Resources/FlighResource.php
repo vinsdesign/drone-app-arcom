@@ -100,14 +100,13 @@ class FlighResource extends Resource
                         if ($state) {
                             $project = Projects::find($state);
                             $set('customers_id', $project ? $project->customers_id : null);
-                            // Jika Anda ingin menampilkan nama customer, Anda juga bisa menambahkannya
                             $set('customers_name', $project && $project->customers ? $project->customers->name : null);
                         } else {
                             $set('customers_id', null);
-                            $set('customers_name', null); // Reset nama customer juga
+                            $set('customers_name', null); 
                         }
                     }),
-                Forms\Components\Hidden::make('customers_id') // Menyimpan ID customer
+                Forms\Components\Hidden::make('customers_id') 
                     ->required(),
                 Forms\Components\TextInput::make('customers_name')
                     ->label('Customer Name')
