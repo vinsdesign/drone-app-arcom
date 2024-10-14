@@ -40,7 +40,10 @@ class MaintenceResource extends Resource
                             ->label('Maintenance Description')
                             ->maxLength(255),
                         Forms\Components\Select::make('drone_id')
-                            ->relationship('drone','name')
+                            ->relationship('drone','name', function (Builder $query){
+                                $currentTeamId = auth()->user()->teams()->first()->id;
+                                $query->where('teams_id', $currentTeamId);
+                            })
                             ->columnSpan(1),
                         Forms\Components\DatePicker::make('date')
                             ->label('Maintenance Date')   

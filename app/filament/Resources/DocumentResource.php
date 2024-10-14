@@ -5,6 +5,7 @@ namespace App\Filament\Resources;
 use App\Filament\Resources\DocumentResource\Pages;
 use App\Filament\Resources\DocumentResource\RelationManagers;
 use App\Models\Document;
+use App\Models\User;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -54,7 +55,10 @@ class DocumentResource extends Resource
                 Forms\Components\DatePicker::make('expired_date')->label('Expired Date')
                     ->required(),
                 Forms\Components\Select::make('customers_id')->label('Customer')
-                    ->relationship('customers', 'name'),
+                    ->relationship('customers', 'name', function (Builder $query){
+                        $currentTeamId = auth()->user()->teams()->first()->id;
+                        $query->where('teams_id', $currentTeamId);
+                    }),
                 Forms\Components\Select::make('scope')->label('Scope')
                     ->required()
                     ->options([
@@ -68,10 +72,20 @@ class DocumentResource extends Resource
                     ])
                     ->columnSpan(2),
                 Forms\Components\Select::make('users_id')->label('Owner')
-                    ->relationship('users', 'name')
+                    //->relationship('users', 'name')
+                    ->options(function () {
+                        $currentTeamId = auth()->user()->teams()->first()->id; 
+                
+                        return User::whereHas('teams', function (Builder $query) use ($currentTeamId) {
+                            $query->where('team_user.team_id', $currentTeamId); 
+                        })->pluck('name', 'id'); 
+                    })
                     ->required(),
                     Forms\Components\Select::make('projects_id')->label('Project / Job Reference')
-                    ->relationship('projects', 'case')
+                    ->relationship('projects', 'case', function (Builder $query){
+                        $currentTeamId = auth()->user()->teams()->first()->id;;
+                        $query->where('teams_id', $currentTeamId);
+                    })
                     ->columnSpanFull(),
                 Forms\Components\FileUpload::make('doc')->label('Upload Document')
                     ->acceptedFileTypes(['application/pdf']),

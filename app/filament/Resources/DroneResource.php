@@ -5,6 +5,7 @@ namespace App\Filament\Resources;
 use App\Filament\Resources\DroneResource\Pages;
 use App\Filament\Resources\DroneResource\RelationManagers;
 use App\Models\Drone;
+use App\Models\User;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -109,7 +110,17 @@ class DroneResource extends Resource
                             ])
                             ->required(),
                         Forms\Components\Select::make('users_id')->label('Owner')
-                            ->relationship('users','name')
+                            // ->relationship('users','name', function (Builder $query){
+                            //     $currentTeamId = auth()->user()->teams()->first()->id;
+                            //     $query->where('team_user.teams_id', $currentTeamId);
+                            // })   
+                            ->options(function () {
+                                $currentTeamId = auth()->user()->teams()->first()->id; 
+                        
+                                return User::whereHas('teams', function (Builder $query) use ($currentTeamId) {
+                                    $query->where('team_user.team_id', $currentTeamId); 
+                                })->pluck('name', 'id'); 
+                            }) 
                             ->required()
                             ->columnSpanFull(),
                         Forms\Components\TextInput::make('firmware_v')->label('Firmware version')
