@@ -14,22 +14,24 @@ class FlightDurationChart extends ChartWidget
 
     protected function getData(): array
     {
-        $data = Trend::model(fligh::class)
-        ->between(
-            start: now()->startOfYear(),
-            end: now()->endOfYear(),
-        )
-        ->perDay()
-        ->sum('duration_minute');
+        $tenant_id = Auth()->User()->teams()->first()->id;
+        $teams = Fligh::where('teams_id', $tenant_id)
+        ->whereBetween('created_at', [now()->startOfYear(), now()->endOfYear()])
+        ->get();
+        $data = $teams->groupBy(function ($item) {
+            return $item->created_at->format('Y-m-d');
+        })->map(function ($group) {
+            return $group->sum('duration_minute');
+        });
  
     return [
         'datasets' => [
             [
                 'label' => 'Total Duration Minute',
-                'data' => $data->map(fn (TrendValue $value) => $value->aggregate),
+                'data' => $data->values(),
             ],
         ],
-        'labels' => $data->map(fn (TrendValue $value) => $value->date),
+        'labels' => $data->keys(),
     ];
     }
 
