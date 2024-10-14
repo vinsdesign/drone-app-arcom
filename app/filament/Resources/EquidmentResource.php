@@ -104,13 +104,23 @@ class EquidmentResource extends Resource
                             ])
                             ->required()->columnSpan(2),
                         Forms\Components\Select::make('drones_id')->label('For Drone (Optional)')
-                            ->relationship('drones', 'name'),
+                            ->relationship('drones', 'name', function (Builder $query){
+                                $currentTeamId = auth()->user()->teams()->first()->id;
+                                $query->where('teams_id', $currentTeamId);
+                            }),
                     ])->columns(4),
                     //form ke dua
                     Forms\Components\Wizard\Step::make('Extra Information')
                         ->schema([
                         Forms\Components\Select::make('users_id')->label('Owner')
-                            ->relationship('users', 'name'),
+                            //->relationship('users', 'name')
+                            ->options(function () {
+                                $currentTeamId = auth()->user()->teams()->first()->id; 
+                        
+                                return User::whereHas('teams', function (Builder $query) use ($currentTeamId) {
+                                    $query->where('team_user.team_id', $currentTeamId); 
+                                })->pluck('name', 'id'); 
+                            }),
                         Forms\Components\DatePicker::make('purchase_date')->label('Purchase date')
                             ->required(),
                         Forms\Components\TextInput::make('insurable_value')->label('Insurable Value')

@@ -36,6 +36,7 @@ class FlighResource extends Resource
 
     public static function form(Form $form): Form
     {
+        $currentTeamId = auth()->user()->teams()->first()->id;;
         return $form
             ->schema([
                 Forms\Components\Section::make('Flight Detail')
@@ -92,19 +93,22 @@ class FlighResource extends Resource
                 Forms\Components\TextInput::make('landings')
                     ->required()
                     ->numeric(),
-                Forms\Components\Select::make('projects_id')
+                    Forms\Components\Select::make('projects_id')
                     ->relationship('projects', 'case')
                     ->required()
-                     ->reactive()
-                     ->afterStateUpdated(function ($state, callable $set) {
+                    ->reactive()
+                    ->afterStateUpdated(function ($state, callable $set) {
                         if ($state) {
                             $project = Projects::find($state);
                             $set('customers_id', $project ? $project->customers_id : null);
                             $set('customers_name', $project && $project->customers ? $project->customers->name : null);
                         } else {
                             $set('customers_id', null);
-                            $set('customers_name', null); 
+                            $set('customers_name', null);
                         }
+                    })
+                    ->options(function (callable $get) use ($currentTeamId) {
+                        return Projects::where('teams_id', $currentTeamId)->pluck('case', 'id');
                     }),
                 Forms\Components\Hidden::make('customers_id') 
                     ->required(),
@@ -123,8 +127,12 @@ class FlighResource extends Resource
                         Forms\Components\Select::make('users_id')
                         ->label('Pilot')
                         ->relationship('users', 'name', function (Builder $query) {
-                            $query->whereHas('roles', function (Builder $query) {
-                                $query->where('roles.name', 'super_admin');
+                            $currentTeamId = auth()->user()->teams()->first()->id;
+                            $query->whereHas('teams', function (Builder $query) use ($currentTeamId){
+                                $query->where('team_id', $currentTeamId);
+                            })
+                            ->whereHas('roles', function (Builder $query) {
+                                $query->where('roles.name', 'Pilot');
                             });
                         })  
                     ->required(),
@@ -142,13 +150,22 @@ class FlighResource extends Resource
                     ->description('')
                     ->schema([
                 Forms\Components\Select::make('drones_id')
-                    ->relationship('drones', 'name')    
+                    ->relationship('drones', 'name', function (Builder $query){
+                        $currentTeamId = auth()->user()->teams()->first()->id;;
+                        $query->where('teams_id', $currentTeamId);
+                    })    
                     ->required(),
                 Forms\Components\Select::make('battreis_id')->label('Battery')
-                    ->relationship('battreis', 'name')    
+                    ->relationship('battreis', 'name', function (Builder $query){
+                        $currentTeamId = auth()->user()->teams()->first()->id;;
+                        $query->where('teams_id', $currentTeamId);
+                    })        
                     ->required(),
                 Forms\Components\Select::make('equidments_id')->label('Equipment')
-                    ->relationship('equidments', 'name')   
+                    ->relationship('equidments', 'name', function (Builder $query){
+                        $currentTeamId = auth()->user()->teams()->first()->id;;
+                        $query->where('teams_id', $currentTeamId);
+                    })       
                     ->required(),
                 Forms\Components\TextInput::make('pre_volt')->label('Pre Voltage')
                     ->numeric()    

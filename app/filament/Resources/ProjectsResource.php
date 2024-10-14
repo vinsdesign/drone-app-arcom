@@ -24,6 +24,7 @@ class ProjectsResource extends Resource
 
     public static function form(Form $form): Form
     {
+        $currentTeamId = auth()->user()->current_teams_id;
         return $form
             ->schema([
                 Forms\Components\Section::make('Projects')
@@ -40,7 +41,10 @@ class ProjectsResource extends Resource
                             ->required()
                             ->maxLength(255),
                         Forms\Components\Select::make('customers_id')
-                            ->relationship('customers', 'name')
+                            ->relationship('customers', 'name', function (Builder $query){
+                                $currentTeamId = auth()->user()->teams()->first()->id;
+                                $query->where('teams_id', $currentTeamId);
+                            })    
                             ->required(),
                         Forms\Components\TextArea::make('description')
                             ->required()

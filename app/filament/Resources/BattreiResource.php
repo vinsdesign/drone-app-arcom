@@ -5,6 +5,7 @@ namespace App\Filament\Resources;
 use App\Filament\Resources\BattreiResource\Pages;
 use App\Filament\Resources\BattreiResource\RelationManagers;
 use App\Models\Battrei;
+use App\Models\User;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Infolists\Components\IconEntry;
@@ -64,7 +65,10 @@ class BattreiResource extends Resource
                             ->required()
                             ->numeric()->columnSpan(2),
                         Forms\Components\BelongsToSelect::make('for_drone')->label('For Drone (Optional)')
-                            ->relationship('drone', 'name')
+                            ->relationship('drone', 'name', function (Builder $query){
+                                $currentTeamId = auth()->user()->teams()->first()->id;
+                                $query->where('teams_id', $currentTeamId);
+                            })
                             ->columnSpanFull(),
                         Forms\Components\TextInput::make('cellCount')->label('Cell Count')
                             ->required()
@@ -89,7 +93,14 @@ class BattreiResource extends Resource
                     Forms\Components\Wizard\Step::make('Extra Information')
                         ->schema([
                         Forms\Components\Select::make('users_id')->label('Owner')
-                            ->relationship('users', 'name')
+                            //->relationship('users', 'name')
+                            ->options(function () {
+                                $currentTeamId = auth()->user()->teams()->first()->id; 
+                        
+                                return User::whereHas('teams', function (Builder $query) use ($currentTeamId) {
+                                    $query->where('team_user.team_id', $currentTeamId); 
+                                })->pluck('name', 'id'); 
+                            }) 
                             ->required(),
                         Forms\Components\DatePicker::make('purchase_date')->label('Purchase date')
                             ->required(),
