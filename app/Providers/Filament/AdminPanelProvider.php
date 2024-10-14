@@ -20,6 +20,8 @@ use Illuminate\View\Middleware\ShareErrorsFromSession;
 use App\Filament\Pages\Tenancy\RegisterTeam;
 use App\Filament\Pages\Tenancy\EditTeamProfil;
 use Jeffgreco13\FilamentBreezy\BreezyCore;
+use Filament\Navigation\MenuItem;
+use App\Livewire\MyCustomComponent;
 
 class AdminPanelProvider extends PanelProvider
 {
@@ -38,16 +40,23 @@ class AdminPanelProvider extends PanelProvider
             ->plugin(
                 BreezyCore::make()
                 ->myProfile(
-                    shouldRegisterUserMenu: true, // Sets the 'account' link in the panel User Menu (default = true)
-                    shouldRegisterNavigation: false, // Adds a main navigation item for the My Profile page (default = false)
-                    navigationGroup: 'Settings', // Sets the navigation group for the My Profile page (default = null)
-                    hasAvatars: true, // Enables the avatar upload form component (default = false)
-                    slug: 'my-profile' // Sets the slug for the profile page (default = 'my-profile')
+                    shouldRegisterUserMenu: true,
+                    shouldRegisterNavigation: false,
+                    navigationGroup: 'Settings',
+                    hasAvatars: true,
+                    slug: 'my-profile'
+                    
+    
                 )
+                ->myProfileComponents([MyCustomComponent::class])
             )
             ->tenant(Team::class, ownershipRelationship: 'team')
             ->tenantRegistration(RegisterTeam::class)
             ->tenantProfile(EditTeamProfil::class)
+            ->tenantMenuItems([
+                'register' => MenuItem::make()->label('Register new team')->hidden(),
+                // ...
+            ])
             ->colors([
                 'primary' => Color::Amber,
             ])

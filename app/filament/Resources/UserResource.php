@@ -15,6 +15,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Filament\Infolists\Infolist;
 use Filament\Infolists\Components\TextEntry;
+use Illuminate\Support\Facades\DB;
 
 class UserResource extends Resource
 {
@@ -39,7 +40,6 @@ class UserResource extends Resource
                         ->unique(User::class, 'email') // Validasi unique
                         ->rules(['unique:users,email'])
                         ->maxLength(255)->columnSpan(2),
-                    Forms\Components\DateTimePicker::make('email_verified_at'),
                     Forms\Components\TextInput::make('password')
                         ->password()
                         ->required()
@@ -64,7 +64,11 @@ class UserResource extends Resource
                         ->relationship('roles', 'name')
                         ->multiple()
                         ->preload()
-                        ->searchable()->columnSpan(2)
+                        ->Options(fn($state)=>
+                            Auth()->User()->roles()->where('name','panel_user')->exists()
+                            ? DB::table('roles')->where('name', '!=' ,'super_admin')->get()->pluck('name', 'id')
+                            : DB::table('roles')->pluck('name', 'id'))
+                        ->searchable()->columnSpanFull()
                         
                     
                 ])->columns(3),

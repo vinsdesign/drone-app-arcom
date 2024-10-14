@@ -13,22 +13,24 @@ class FlightChart extends ChartWidget
 
     protected function getData(): array
     {
-        $data = Trend::model(fligh::class)
-        ->between(
-            start: now()->startOfYear(),
-            end: now()->endOfYear(),
-        )
-        ->perDay()
-        ->count();
+        $tenant_id = Auth()->User()->teams()->first()->id;
+        $teams = Fligh::where('teams_id', $tenant_id)
+        ->whereBetween('created_at', [now()->startOfYear(), now()->endOfYear()])
+        ->get();
+        $data = $teams->groupBy(function ($item) {
+            return $item->created_at->format('Y-m-d');
+        })->map(function ($group) {
+            return $group->count();
+        });
  
     return [
         'datasets' => [
             [
-                'label' => 'Flight perHari',
-                'data' => $data->map(fn (TrendValue $value) => $value->aggregate),
+                'label' => 'Flight Perhari',
+                'data' => $data->map(fn ($value) => round($value))->values(),
             ],
         ],
-        'labels' => $data->map(fn (TrendValue $value) => $value->date),
+        'labels' => $data->map(fn ($value) => round($value))->keys(),
     ];
     }
 

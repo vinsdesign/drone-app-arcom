@@ -13,10 +13,11 @@ class InventoryStats extends BaseWidget
 {
     protected function getStats(): array
     {
-        $totalEq = equidment::count('name');
-        $totalBattery = battrei::count('name');
-        $totalDrone = drone::count('name');
-        $totallocation = fligh_location::count('name');
+        $tenant_id = Auth()->user()->teams()->first()->id;
+        $totalEq = equidment::where('teams_id', $tenant_id)->count('name');
+        $totalBattery = battrei::where('teams_id', $tenant_id)->count('name');
+        $totalDrone = drone::where('teams_id', $tenant_id)->count('name');
+        $totallocation = fligh_location::where('teams_id', $tenant_id)->count('name');
         return [
             Stat::make('Total Drone', $totalDrone),
             Stat::make('Total Batteries', $totalBattery),
