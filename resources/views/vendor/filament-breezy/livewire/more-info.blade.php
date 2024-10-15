@@ -1,6 +1,3 @@
-
-
-
 <x-filament-breezy::grid-section md=2 title="More Information" description="Manage your More Information">
     <x-filament::card>
         <form wire:submit.prevent="submit" class="space-y-6">

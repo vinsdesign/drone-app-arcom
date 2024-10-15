@@ -22,6 +22,9 @@ use App\Filament\Pages\Tenancy\EditTeamProfil;
 use Jeffgreco13\FilamentBreezy\BreezyCore;
 use Filament\Navigation\MenuItem;
 use App\Livewire\MyCustomComponent;
+use TomatoPHP\FilamentSubscriptions\FilamentSubscriptionsProvider;
+use TomatoPHP\FilamentSubscriptions\Filament\Pages\Billing;
+use Filament\Facades\Filament;
 
 class AdminPanelProvider extends PanelProvider
 {
@@ -34,6 +37,15 @@ class AdminPanelProvider extends PanelProvider
             ->login()
             ->registration()
             ->spa()
+            //subscribe
+            ->plugin(\TomatoPHP\FilamentSubscriptions\FilamentSubscriptionsPlugin::make())
+            ->pages([
+                Billing::class
+            ])
+            ->tenantBillingProvider(new FilamentSubscriptionsProvider())
+            // ->requiresTenantSubscription() //error ketika mequest subscriptions
+
+            //shield
             ->plugins([
                 \BezhanSalleh\FilamentShield\FilamentShieldPlugin::make()
             ])
