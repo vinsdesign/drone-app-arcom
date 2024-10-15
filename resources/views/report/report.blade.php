@@ -77,13 +77,13 @@
             @endforeach
         </div>
         <hr>
-        <p class="report-date">Reporting Period: {{ $startDate }} to {{ $endDate }}</p>
+        <p class="report-date"><strong>Reporting Period: </strong>{{ $startDate }} <strong>to</strong> {{ $endDate }}</p>
         @foreach($team as $teams)
-            <p style="text-align: left; margin: 0;">Company: {{ $teams->name }} ({{ $teams->owner }})</p>
-            <p style="text-align: left; margin: 0;">Address: {{ $teams->address }}</p>
-            <p style="text-align: left; margin: 0;">Website: {{ $teams->website }}</p>
-            <p style="text-align: left; margin: 0;">Contact Email: {{ $teams->email }}</p>
-            <p style="text-align: left; margin: 0;">Contact Phone: {{ $teams->phone }}</p>
+            <p style="text-align: left; margin: 0;"><strong>Company: </strong>{{ $teams->name }} ({{ $teams->owner }})</p>
+            <p style="text-align: left; margin: 0;"><strong>Address: </strong>{{ $teams->address }}</p>
+            <p style="text-align: left; margin: 0;"><strong>Website: </strong>{{ $teams->website }}</p>
+            <p style="text-align: left; margin: 0;"><strong>Contact Email: </strong>{{ $teams->email }}</p>
+            <p style="text-align: left; margin: 0;"><strong>Contact Phone: </strong>{{ $teams->phone }}</p>
         @endforeach
 
         <h2 style="margin-top: 16px; font-size: 20px; font-weight: 600; text-align: center;">Personnel</h2>

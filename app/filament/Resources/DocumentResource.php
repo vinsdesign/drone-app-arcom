@@ -13,6 +13,7 @@ use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Carbon\Carbon;
 
 class DocumentResource extends Resource
 {
@@ -116,17 +117,37 @@ class DocumentResource extends Resource
                     ->searchable(),
                 Tables\Columns\TextColumn::make('expired_date')->label('Expired Date')
                     ->date('Y-m-d')
-                    ->sortable(),
+                    ->sortable()
+                    ->formatStateUsing(function ($state) {
+                        $expiredDate = Carbon::parse($state);
+                        $now = Carbon::now();
+    
+                        if ($expiredDate->isPast()) {
+                            return "<span style='color: red; font-weight: bold;'>Expired: {$expiredDate->format('Y-m-d')}</span>";
+                        } else {
+                            return $expiredDate->format('Y-m-d');
+                        }
+                    })
+                    ->html(),
                 Tables\Columns\TextColumn::make('scope')->label('Scope')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('external link')->label('External Link')
-                    ->searchable(),
+                    ->searchable()
+                    ->formatStateUsing(function ($state) {
+                        // Memastikan URL memiliki protokol. Jika tidak, tambahkan 'https://'
+                        $url = preg_match('/^https?:\/\//', $state) ? $state : "https://{$state}";
+                        
+                        // Mengembalikan tag <a> dengan atribut target untuk membuka di tab baru
+                        return "<a href='{$url}' target='_blank' style='padding:5px 10px; background-color:#ff8303; color:white; border-radius:5px;' rel='noopener noreferrer'>Klik Here</a>";
+
+                    })
+                    ->html(),
                 Tables\Columns\TextColumn::make('description')->label('Description')
                     ->searchable(),
                     //Belum bisa Link ke Document
                     Tables\Columns\TextColumn::make('doc')
                     ->label('Document')
-                    ->formatStateUsing(fn ($state) => "<a href='/storage/{$state}' target='_blank' rel='noopener noreferrer' style='padding:5px 10px; background-color:#ff8303; color:white; border-radius:5px;'>Buka Dokumen</a>")
+                    ->formatStateUsing(fn ($state) => "<a href='/storage/{$state}' target='_blank' rel='noopener noreferrer' style='padding:5px 10px; background-color:#ff8303; color:white; border-radius:5px;'>Open Document</a>")
                     ->html()
                     ->searchable(),
                 

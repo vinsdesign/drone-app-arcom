@@ -12,4 +12,5 @@ Route::post('/send-email', [ContactController::class, 'sendEmail'])->name('sendE
 
 Route::get('/report', Report::class)->name('filament.report');
 Route::post('/report/download', [Report::class, 'downloadReport'])->name('filament.report.download');
+Route::post('/filament/report/inventory/download', [Report::class, 'downloadInventoryReport'])->name('filament.report.inventory.download');
 
