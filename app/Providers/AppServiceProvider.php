@@ -3,6 +3,7 @@
 namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
+use TomatoPHP\FilamentSubscriptions\Facades\FilamentSubscriptions;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -19,6 +20,10 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        //
+        FilamentSubscriptions::register(
+            \TomatoPHP\FilamentSubscriptions\Services\Contracts\Subscriber::make('Subscriber')
+                ->name('User')
+                ->model(\App\Models\User::class)
+        );
     }
 }

@@ -18,6 +18,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Spatie\Permission\Traits\HasRoles;
 use BezhanSalleh\FilamentShield\Traits\HasPanelShield;
 use Illuminate\Support\Facades\Storage;
+use Laravelcm\Subscriptions\Traits\HasPlanSubscriptions;
 
 
 
@@ -25,7 +26,7 @@ use Illuminate\Support\Facades\Storage;
 class User extends Authenticatable implements HasTenants, FilamentUser, HasAvatar
 
 {
-    use HasFactory, Notifiable, HasRoles, HasPanelShield, HasAvatars;
+    use HasFactory, Notifiable, HasRoles, HasPanelShield, HasAvatars,  HasPlanSubscriptions;
 
     public function getFilamentAvatarUrl(): ?string
     {
