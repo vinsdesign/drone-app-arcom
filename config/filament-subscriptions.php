@@ -1,5 +1,5 @@
 <?php
 
 return [
-   "route" => "/admin/billing"
+   "route" => "/admin/{tenant}/billing"
 ];

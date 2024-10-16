@@ -16,14 +16,20 @@ class AStatsOverview extends BaseWidget
         $FlightsCount = fligh::where('teams_id', $tenant_id)->count('name');
         $totalProject = project::where('teams_id', $tenant_id)->count('case');
         $totalDrone = drone::where('teams_id', $tenant_id)->count('name');
-        $totalDuration = fligh::where('teams_id', $tenant_id)->sum('duration_hour');
-        $totalDurationM = fligh::where('teams_id', $tenant_id)->sum('duration_minute');
-        $totalDurasi = $totalDuration*60+$totalDurationM;
+        $flights = fligh::where('teams_id', $tenant_id)->get();
+        $totalSeconds = 0;
+        foreach ($flights as $flight) {
+            if (preg_match('/^\d{2}:\d{2}:\d{2}$/', $flight->duration)) {
+                list($hours, $minutes, $seconds) = explode(':', $flight->duration);
+                $totalSeconds += ($hours * 3600) + ($minutes * 60) + $seconds;
+            }
+        }
+        $totalDuration = \Carbon\CarbonInterval::seconds($totalSeconds)->cascade()->format('%H:%I:%S');
         return [
             Stat::make('Total Flight', $FlightsCount),
             Stat::make('Total Project', $totalProject),
             Stat::make('Total Drone', $totalDrone),
-            Stat::make('Total Durasi', $totalDurasi),
+            Stat::make('Total Flight Duration', $totalDuration),
         ];
     }
 }

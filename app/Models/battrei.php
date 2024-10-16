@@ -45,4 +45,7 @@ class battrei extends Model
     public function teams(){
         return $this->belongsTo(Team::class);
     }
+    public function kits(){
+        return $this->belongsToMany(kits::class);
+    }
 }
