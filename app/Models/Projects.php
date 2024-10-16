@@ -30,5 +30,9 @@ class Projects extends Model
     public function teams(){
         return $this->belongsTo(Team::class);
     }
+    public function flight_locations()
+    {
+        return $this->hasMany(fligh_location::class);
+    }
 
 }

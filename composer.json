@@ -8,6 +8,7 @@
         "php": "^8.2",
         "barryvdh/laravel-dompdf": "^3.0",
         "bezhansalleh/filament-shield": "*",
+        "dotswan/filament-map-picker": "^1.4",
         "filament/filament": "^3.2",
         "filament/spark-billing-provider": "^3.2",
         "flowframe/laravel-trend": "^0.2.0",

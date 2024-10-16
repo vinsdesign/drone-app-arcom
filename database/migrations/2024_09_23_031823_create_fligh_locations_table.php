@@ -25,6 +25,8 @@ return new class extends Migration
             $table->decimal('longitude', 10, 7);
             $table->integer('altitude');
             $table->foreignIdFor(Team::class,'teams_id')->index()->cascadeOnDelete();
+            $table->foreignId('projects_id')->constrainedTo('project')->cascadeOnDelete()->nullable();
+            $table->foreignId('customers_id')->constrainedTo('customer')->cascadeOnDelete()->nullable();
             $table->timestamps();
         });
 
