@@ -15,8 +15,9 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->date('date_flight');
-            $table->integer('duration_hour');
-            $table->integer('duration_minute');
+            // $table->integer('duration_hour');
+            // $table->integer('duration_minute');
+            $table->time('duration');
             $table->string('type');
             $table->string('ops');
             $table->integer('landings')->default('1');

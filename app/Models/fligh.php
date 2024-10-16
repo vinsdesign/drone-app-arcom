@@ -14,8 +14,7 @@ class fligh extends Model
     protected $fillable =[
        'name',
         'date_flight',
-        'duration_hour',
-        'duration_minute',
+        'duration',
         'type',
         'ops',
         'landings',

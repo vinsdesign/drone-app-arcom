@@ -4,6 +4,8 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\KitsResource\Pages;
 use App\Filament\Resources\KitsResource\RelationManagers;
+use App\Models\battrei;
+use App\Models\equidment;
 use App\Models\Kits;
 use Filament\Forms;
 use Filament\Forms\Form;
@@ -13,6 +15,7 @@ use Filament\Tables;
 use Filament\Tables\Table;
 use Filament\Infolists\Infolist;
 use Filament\Infolists\Components\TextEntry;
+use Illuminate\Container\Attributes\Auth;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 
@@ -39,14 +42,38 @@ class KitsResource extends Resource
                         'battery' => 'Battery',
                         'mix' => 'mix'
                     ])
-                    ->required(),
+                    ->required()
+                    ->reactive(),
                 Forms\Components\Toggle::make('enabled')->label('Enabled')
                     ->required(),
                 Forms\Components\Select::make('blocked')
                     ->label('Blocked To Drone')
-                    ->relationship('drone', 'name')
+                    ->relationship('drone', 'name', function (Builder $query){
+                        $currentTeamId = auth()->user()->teams()->first()->id;
+                        $query->where('teams_id', $currentTeamId);
+                    })
                     ->nullable()
                     ->columnSpanFull(),
+
+                    // CheckboxList untuk Batteries, hanya muncul jika type = battery
+                Forms\Components\CheckboxList::make('batteries')
+                ->label('Batteries')
+                ->options(
+                    battrei::where('teams_id', auth()->user()->teams()->first()->id)
+                        ->pluck('name', 'id')
+                )
+                ->visible(fn (callable $get) => $get('type') === 'battery')
+                ->required(fn (callable $get) => $get('type') === 'battery'),
+
+            // CheckboxList untuk Equipments, hanya muncul jika type = mix
+            Forms\Components\CheckboxList::make('equipments')
+                ->label('Equipments')
+                ->options(
+                    equidment::where('teams_id', auth()->user()->teams()->first()->id)
+                        ->pluck('name', 'id')
+                )
+                ->visible(fn (callable $get) => $get('type') === 'mix')
+                ->required(fn (callable $get) => $get('type') === 'mix'),
             ]);
     }
 
@@ -93,7 +120,17 @@ class KitsResource extends Resource
                 TextEntry::make('name')->label('Name'),
                 TextEntry::make('type')->label('Type'),
                 IconEntry::make('enabled')->boolean()->label('Enabled'),
-                TextEntry::make('drone.name')->label('Blocked To Drone')
+                TextEntry::make('drone.name')->label('Blocked To Drone'),
+                TextEntry::make('batteries')
+                    ->label('Batteries')
+                    ->visible(fn ($record) => $record->type === 'battery')
+                    ->formatStateUsing(fn ($record) => $record->battreis->pluck('name')->join(', ')),
+
+                // Menambahkan Equipments jika type = mix
+                TextEntry::make('equipments')
+                    ->label('Equipments')
+                    ->visible(fn ($record) => $record->type === 'mix')
+                    ->formatStateUsing(fn ($record) => $record->equidments->pluck('name')->join(', ')),
         ]);
     }
 

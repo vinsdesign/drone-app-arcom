@@ -3,10 +3,10 @@
 namespace App\Policies;
 
 use App\Models\User;
-use App\Models\Kits;
+use App\Models\Contact;
 use Illuminate\Auth\Access\HandlesAuthorization;
 
-class KitsPolicy
+class ContactPolicy
 {
     use HandlesAuthorization;
 
@@ -15,15 +15,15 @@ class KitsPolicy
      */
     public function viewAny(User $user): bool
     {
-        return $user->can('view_any_kits');
+        return $user->can('view_any_contact');
     }
 
     /**
      * Determine whether the user can view the model.
      */
-    public function view(User $user, Kits $kits): bool
+    public function view(User $user, Contact $contact): bool
     {
-        return $user->can('view_kits');
+        return $user->can('view_contact');
     }
 
     /**
@@ -31,23 +31,23 @@ class KitsPolicy
      */
     public function create(User $user): bool
     {
-        return $user->can('create_kits');
+        return $user->can('create_contact');
     }
 
     /**
      * Determine whether the user can update the model.
      */
-    public function update(User $user, Kits $kits): bool
+    public function update(User $user, Contact $contact): bool
     {
-        return $user->can('update_kits');
+        return $user->can('update_contact');
     }
 
     /**
      * Determine whether the user can delete the model.
      */
-    public function delete(User $user, Kits $kits): bool
+    public function delete(User $user, Contact $contact): bool
     {
-        return $user->can('delete_kits');
+        return $user->can('delete_contact');
     }
 
     /**
@@ -55,15 +55,15 @@ class KitsPolicy
      */
     public function deleteAny(User $user): bool
     {
-        return $user->can('delete_any_kits');
+        return $user->can('delete_any_contact');
     }
 
     /**
      * Determine whether the user can permanently delete.
      */
-    public function forceDelete(User $user, Kits $kits): bool
+    public function forceDelete(User $user, Contact $contact): bool
     {
-        return $user->can('force_delete_kits');
+        return $user->can('force_delete_contact');
     }
 
     /**
@@ -71,15 +71,15 @@ class KitsPolicy
      */
     public function forceDeleteAny(User $user): bool
     {
-        return $user->can('force_delete_any_kits');
+        return $user->can('force_delete_any_contact');
     }
 
     /**
      * Determine whether the user can restore.
      */
-    public function restore(User $user, Kits $kits): bool
+    public function restore(User $user, Contact $contact): bool
     {
-        return $user->can('restore_kits');
+        return $user->can('restore_contact');
     }
 
     /**
@@ -87,15 +87,15 @@ class KitsPolicy
      */
     public function restoreAny(User $user): bool
     {
-        return $user->can('restore_any_kits');
+        return $user->can('restore_any_contact');
     }
 
     /**
      * Determine whether the user can replicate.
      */
-    public function replicate(User $user, Kits $kits): bool
+    public function replicate(User $user, Contact $contact): bool
     {
-        return $user->can('replicate_kits');
+        return $user->can('replicate_contact');
     }
 
     /**
@@ -103,6 +103,6 @@ class KitsPolicy
      */
     public function reorder(User $user): bool
     {
-        return $user->can('reorder_kits');
+        return $user->can('reorder_contact');
     }
 }

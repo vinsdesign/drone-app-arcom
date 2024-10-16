@@ -47,12 +47,12 @@ class FlighResource extends Resource
                     ->maxLength(255),
                 Forms\Components\DatePicker::make('date_flight')
                     ->required(),
-                Forms\Components\TextInput::make('duration_hour')->label('Duration Hour')
+                Forms\Components\TextInput::make('duration')
                     ->required()
-                    ->numeric(),
-                Forms\Components\TextInput::make('duration_minute')->label('Duration Minute')
-                    ->required()
-                    ->numeric(),
+                    ->label('Duration')
+                    ->placeholder('hh:mm:ss') 
+                    ->helperText('Enter duration in hh:mm:ss format')
+                    ->default('00:00:00'),
                 Forms\Components\Select::make('type')->label('Flight Type')
                     ->options([
                         'commercial-agriculture' => 'Commercial-Agriculture',
@@ -172,7 +172,8 @@ class FlighResource extends Resource
                     ->required(),
                 Forms\Components\TextInput::make('fuel_used')
                     ->numeric()    
-                    ->required(),
+                    ->required()
+                    ->default('1'),
                     ])->columns(2),
                 //Forms\Components\TextInput::make('wheater_id')
                     //->required()
@@ -191,8 +192,7 @@ class FlighResource extends Resource
                 Tables\Columns\TextColumn::make('date_flight')
                     ->date()
                     ->sortable(),
-                Tables\Columns\TextColumn::make('duration_hour'),
-                Tables\Columns\TextColumn::make('duration_minute'),
+                Tables\Columns\TextColumn::make('duration'),
                 //Tables\Columns\TextColumn::make('location_id')
                     //->numeric()
                     //->sortable(),
@@ -238,8 +238,7 @@ class FlighResource extends Resource
                 ->schema([
                 TextEntry::make('name')->label('Name'),
                 TextEntry::make('date_flight')->label('Date Flight'),
-                TextEntry::make('duration_hour')->label('Duration Hour'),
-                TextEntry::make('duration_minute')->label('Duration Minute'),
+                TextEntry::make('duration')->label('Duration'),
                 TextEntry::make('type')->label('Type'),
                 TextEntry::make('ops')->label('Ops'),
                 TextEntry::make('landings')->label('Landings'),
