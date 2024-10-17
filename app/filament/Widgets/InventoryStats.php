@@ -11,6 +11,7 @@ use Filament\Widgets\StatsOverviewWidget\Stat;
 
 class InventoryStats extends BaseWidget
 {
+    protected static bool $isLazy = false;
     protected function getStats(): array
     {
         $tenant_id = Auth()->user()->teams()->first()->id;

@@ -10,6 +10,7 @@ use Filament\Widgets\StatsOverviewWidget\Stat;
 class AStatsOverview extends BaseWidget
 {
     public static ?string $tenantOwnershipRelationshipName = 'teams';
+    protected static bool $isLazy = false;
     protected function getStats(): array
     {
         $tenant_id = Auth()->user()->teams()->first()->id;

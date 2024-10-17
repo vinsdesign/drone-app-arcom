@@ -43,7 +43,7 @@ class AdminPanelProvider extends PanelProvider
                 Billing::class
             ])
             ->tenantBillingProvider(new FilamentSubscriptionsProvider())
-            // ->requiresTenantSubscription() //error ketika mequest subscriptions
+            ->requiresTenantSubscription() //error ketika mequest subscriptions
 
             //shield
             ->plugins([

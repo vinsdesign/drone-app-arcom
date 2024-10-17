@@ -11,6 +11,7 @@ class FlightDurationChart extends ChartWidget
 {
     protected static ?string $heading = 'Duration Flight Minute';
     protected static string $color = 'success';
+    protected static bool $isLazy = false;
 
     protected function getData(): array
     {

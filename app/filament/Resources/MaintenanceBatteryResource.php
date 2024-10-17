@@ -14,6 +14,7 @@ use Filament\Infolists\Infolist;
 use Filament\Infolists\Components\TextEntry;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Filament\Support\Colors\Color;
 
 class MaintenanceBatteryResource extends Resource
 {
@@ -74,6 +75,10 @@ class MaintenanceBatteryResource extends Resource
                 ->searchable(),
                 Tables\Columns\TextColumn::make('equidment.name')
                 ->label('Equipment')
+                ->url(fn($record) => $record->equidment_id?route('filament.admin.resources.equidments.index', [
+                    'tenant' => Auth()->user()->teams()->first()->id,
+                    'record' => $record->equidment_id,
+                ]):null)->color(Color::Blue)
                 ->searchable(),
                 Tables\Columns\TextColumn::make('date')
                 ->date()
@@ -107,7 +112,11 @@ class MaintenanceBatteryResource extends Resource
         return $infolist
         ->schema([
             TextEntry::make('name')->label('Name'),
-            TextEntry::make('equidment.name')->label('Equipment'),
+            TextEntry::make('equidment.name')->label('Equipment')
+                ->url(fn($record) => $record->equidment_id?route('filament.admin.resources.equidments.index', [
+                    'tenant' => Auth()->user()->teams()->first()->id,
+                    'record' => $record->equidment_id,
+                ]):null)->color(Color::Blue),
             TextEntry::make('date')->label('Date'),
             TextEntry::make('status')->label('Status'),
             TextEntry::make('cost')->label('Cost'),

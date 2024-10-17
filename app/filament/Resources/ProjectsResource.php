@@ -14,6 +14,7 @@ use Filament\Infolists\Infolist;
 use Filament\Infolists\Components\TextEntry;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Filament\Support\Colors\Color;
 
 class ProjectsResource extends Resource
 {
@@ -70,6 +71,10 @@ class ProjectsResource extends Resource
                     ->searchable(),
                 Tables\Columns\TextColumn::make('customers.name')
                     ->numeric()
+                    ->url(fn($record) => $record->customers_id ? route('filament.admin.resources.customers.index', [
+                        'tenant' => Auth()->user()->teams()->first()->id,
+                        'record' => $record->customers_id,
+                    ]):null)->color(Color::Blue)
                     ->sortable(),
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()
@@ -101,7 +106,11 @@ class ProjectsResource extends Resource
             TextEntry::make('case')->label('Case'),
             TextEntry::make('revenue')->label('Revenue'),
             TextEntry::make('currency')->label('Currency'),
-            TextEntry::make('customers.name')->label('Customers'),
+            TextEntry::make('customers.name')->label('Customers')
+            ->url(fn($record) => $record->customers_id ? route('filament.admin.resources.customers.index', [
+                'tenant' => Auth()->user()->teams()->first()->id,
+                'record' => $record->customers_id,
+            ]):null)->color(Color::Blue),
             TextEntry::make('description')->label('Description'),
         ]);
     }
