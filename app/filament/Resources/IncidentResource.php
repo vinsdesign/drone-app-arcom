@@ -15,6 +15,7 @@ use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Filament\Support\Colors\Color;
 
 class IncidentResource extends Resource
 {
@@ -46,8 +47,8 @@ class IncidentResource extends Resource
                             true => 'Under Review',
                         ]),
                     // Forms\Components\BelongsToSelect::make('location_id')
-                    Forms\Components\TextInput::make('location_id')
-                        // ->relationship('fligh_location','name')
+                    Forms\Components\Select::make('location_id')
+                    ->relationship('fligh_locations', 'name')
                         ->label('Flight Location')
                         ->required(),
                         // ->searchable(),
@@ -128,9 +129,17 @@ class IncidentResource extends Resource
 
                 Tables\Columns\TextColumn::make('drone.name')
                     ->numeric()
+                    ->url(fn($record) => $record->drone_id?route('filament.admin.resources.drones.index', [
+                        'tenant' => Auth()->user()->teams()->first()->id,
+                        'record' => $record->drone_id,
+                    ]):null)->color(Color::Blue)
                     ->sortable(),
                 Tables\Columns\TextColumn::make('project.case')
                     ->numeric()
+                    ->url(fn($record) => $record->project_id?route('filament.admin.resources.projects.index', [
+                        'tenant' => Auth()->user()->teams()->first()->id,
+                        'record' => $record->project_id,
+                    ]):null)->color(Color::Blue)
                     ->sortable(),
                 // Tables\Columns\TextColumn::make('personel_involved_id')
                 //     ->numeric()
@@ -172,8 +181,16 @@ class IncidentResource extends Resource
                     TextEntry::make('cause'),
                     TextEntry::make('review'),
                     TextEntry::make('location_id'),
-                    TextEntry::make('drone.name'),
-                    TextEntry::make('project.case'),
+                    TextEntry::make('drone.name')
+                        ->url(fn($record) => $record->drone_id?route('filament.admin.resources.drones.index', [
+                            'tenant' => Auth()->user()->teams()->first()->id,
+                            'record' => $record->drone_id,
+                        ]):null)->color(Color::Blue),
+                    TextEntry::make('project.case')
+                        ->url(fn($record) => $record->project_id?route('filament.admin.resources.projects.index', [
+                            'tenant' => Auth()->user()->teams()->first()->id,
+                            'record' => $record->project_id,
+                        ]):null)->color(Color::Blue),
                     TextEntry::make('personel_involved_id'),
                 ])->columns(4),
             Section::make('Insiden Description')

@@ -19,6 +19,9 @@ use Filament\Infolists\Components\Section;
 use Filament\Infolists\Components\TextEntry;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Filament\Support\Colors\Color;
+use Filament\Widgets\StatsOverviewWidget\Card;
+use App\Filament\Widgets\FlightChart;
 
 class FlighResource extends Resource
 {
@@ -254,13 +257,25 @@ class FlighResource extends Resource
                     ->sortable(),
                 Tables\Columns\TextColumn::make('projects.case')
                     ->numeric()
+                    ->url(fn($record) => $record->projects_id?route('filament.admin.resources.projects.index', [
+                        'tenant' => Auth()->user()->teams()->first()->id,
+                        'record' => $record->projects_id,
+                    ]):null)->color(Color::Blue)
                     ->sortable(),
                 Tables\Columns\TextColumn::make('projects.customers.name')
                     ->numeric()
+                    ->url(fn($record) => $record->customers_id?route('filament.admin.resources.customers.index', [
+                        'tenant' => Auth()->user()->teams()->first()->id,
+                        'record' => $record->customers_id,
+                    ]):null)->color(Color::Blue)
                     ->sortable(),
                 Tables\Columns\TextColumn::make('users.name')
                     ->label('Pilot')
                     ->numeric()
+                    ->url(fn($record) => $record->users_id?route('filament.admin.resources.users.view', [
+                        'tenant' => Auth()->user()->teams()->first()->id,
+                        'record' => $record->users_id,
+                    ]):null)->color(Color::Blue)
                     ->sortable(),
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()
@@ -298,13 +313,25 @@ class FlighResource extends Resource
                 TextEntry::make('type')->label('Type'),
                 TextEntry::make('ops')->label('Ops'),
                 TextEntry::make('landings')->label('Landings'),
-                TextEntry::make('customers.name')->label('Customer'),
-                TextEntry::make('projects.case')->label('Project'),
                 TextEntry::make('fligh_location.name')->label('Location'),
+                TextEntry::make('customers.name')->label('Customer')
+                    ->url(fn($record) => $record->customers_id?route('filament.admin.resources.customers.index', [
+                        'tenant' => Auth()->user()->teams()->first()->id,
+                        'record' => $record->customers_id,
+                    ]):null)->color(Color::Blue),
+                TextEntry::make('projects.case')->label('Project')
+                    ->url(fn($record) => $record->projects_id?route('filament.admin.resources.projects.index', [
+                        'tenant' => Auth()->user()->teams()->first()->id,
+                        'record' => $record->projects_id,
+                    ]):null)->color(Color::Blue),
                 ])->columns(5),
             Section::make('Personnel')
                 ->schema([
-                TextEntry::make('users.name')->label('Pilot'),
+                TextEntry::make('users.name')->label('Pilot')
+                    ->url(fn($record) => $record->users_id?route('filament.admin.resources.users.view', [
+                        'tenant' => Auth()->user()->teams()->first()->id,
+                        'record' => $record->users_id,
+                    ]):null)->color(Color::Blue),
                 TextEntry::make('instructor')->label('Instructor'),
                 TextEntry::make('vo')->label('VO'),
                 TextEntry::make('po')->label('PO'),

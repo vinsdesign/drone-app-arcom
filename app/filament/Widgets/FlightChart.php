@@ -11,6 +11,7 @@ use Flowframe\Trend\TrendValue;
 class FlightChart extends ChartWidget
 {
     protected static ?string $heading = 'Flight';
+    protected static bool $isLazy = false;
 
     protected function getData(): array
     {

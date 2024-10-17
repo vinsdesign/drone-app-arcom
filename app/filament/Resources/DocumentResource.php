@@ -14,6 +14,7 @@ use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Carbon\Carbon;
+use Filament\Support\Colors\Color;
 
 class DocumentResource extends Resource
 {
@@ -151,11 +152,19 @@ class DocumentResource extends Resource
                     ->html()
                     ->searchable(),
                 
-                Tables\Columns\TextColumn::make('customers_id')->label('Customer')
+                Tables\Columns\TextColumn::make('customers.name')->label('Customer')
                     ->numeric()
+                    ->url(fn($record) => $record->customer_id ? route('filament.admin.resources.customers.index', [
+                        'tenant' => Auth()->user()->teams()->first()->id,
+                        'record' => $record->customer_id,
+                    ]): null)->color(Color::Blue)
                     ->sortable(),
-                Tables\Columns\TextColumn::make('projects_id')->label('Project')
+                Tables\Columns\TextColumn::make('project.case')->label('Project')
                     ->numeric()
+                    ->url(fn($record) => $record->project_id ?  route('filament.admin.resources.projects.index', [
+                        'tenant' => Auth()->user()->teams()->first()->id,
+                        'record' => $record->project_id,
+                    ]): null)->color(Color::Blue)
                     ->sortable(),
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()
