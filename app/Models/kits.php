@@ -24,9 +24,13 @@ class kits extends Model
         return $this->belongsTo(drone::class);
     }
     public function battrei(){
-        return $this->belongsToMany(battrei::class);
+        return $this->belongsToMany(battrei::class, 'battrei_kits');
     }
     public function equidment(){
-        return $this->belongsToMany(equidment::class);
+        return $this->belongsToMany(equidment::class, 'equidment_kits');
+    }
+    public function fligh()
+    {
+        return $this->hasMany(fligh::class, 'kits_id');
     }
 }

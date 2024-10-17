@@ -19,11 +19,12 @@ class fligh extends Model
         'ops',
         'landings',
         'customers_id',
-        //'location_id',
+        'location_id',
         'projects_id',
         'users_id',
         'vo',
         'po',
+        'kits_id',
         'instructor',
         'drones_id',
         'battreis_id',
@@ -41,6 +42,11 @@ class fligh extends Model
     public function projects(): BelongsTo
     {
         return $this->belongsTo(Projects::class);
+    }
+
+    public function fligh_location(): BelongsTo
+    {
+        return $this->belongsTo(fligh_location::class, 'location_id', 'id');
     }
 
     public function users(): BelongsTo
@@ -64,5 +70,9 @@ class fligh extends Model
     }
     public function teams(){
         return $this->belongsTo(Team::class);
-       }
+    }
+    public function kits()
+    {
+        return $this->belongsTo(kits::class, 'kits_id');
+    }
 }
