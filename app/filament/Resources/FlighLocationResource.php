@@ -13,6 +13,7 @@ use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Dotswan\MapPicker\Fields\Map;
+use Filament\Support\Colors\Color;
 
 class FlighLocationResource extends Resource
 {
@@ -96,27 +97,35 @@ class FlighLocationResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('name')
+                Tables\Columns\TextColumn::make('name')->label('Name')
                     ->searchable(),
-                Tables\Columns\TextColumn::make('project_id')
+                Tables\Columns\TextColumn::make('project.case')->label('Project Case')
+                ->url(fn($record)  =>  $record->project_id ? route('filament.admin.resources.projects.index', [
+                    'tenant' => Auth()->user()->teams()->first()->id,
+                    'record' => $record->project_id,
+                ]) : null)->color(Color::Blue)
                     ->searchable(),
-                Tables\Columns\TextColumn::make('customer_id')
+                Tables\Columns\TextColumn::make('customer.name')->label('Customer Name')
+                ->url(fn($record) => $record->customer_id ? route('filament.admin.resources.customers.index', [
+                    'tenant' => Auth()->user()->teams()->first()->id,
+                    'record' => $record->customer_id,
+                ]) : null)->color(Color::Blue)
                     ->searchable(),
-                Tables\Columns\TextColumn::make('address')
+                Tables\Columns\TextColumn::make('address')->label('Address')
                     ->searchable(),
-                Tables\Columns\TextColumn::make('city')
+                Tables\Columns\TextColumn::make('city')->label('City')
                     ->searchable(),
-                Tables\Columns\TextColumn::make('pos_code')
+                Tables\Columns\TextColumn::make('pos_code')->label('Postel code')
                     ->searchable(),
-                Tables\Columns\TextColumn::make('state')
+                Tables\Columns\TextColumn::make('state')->label('State')
                     ->searchable(),
-                Tables\Columns\TextColumn::make('country')
+                Tables\Columns\TextColumn::make('country')->label('Country')
                     ->searchable(),
-                Tables\Columns\TextColumn::make('latitude')
+                Tables\Columns\TextColumn::make('latitude')->label('Latitude')
                     ->searchable(),
-                Tables\Columns\TextColumn::make('longitude')
+                Tables\Columns\TextColumn::make('longitude')->label('Longitude')
                     ->searchable(),
-                Tables\Columns\TextColumn::make('altitude')
+                Tables\Columns\TextColumn::make('altitude')->label('Altitude')
                     ->searchable(),
             ])
             ->filters([

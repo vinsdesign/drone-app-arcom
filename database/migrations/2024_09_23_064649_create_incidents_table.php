@@ -23,7 +23,7 @@ return new class extends Migration
             $table->string('rectification_note');
             $table->date('rectification_date');
             $table->string('Technician');
-            $table->foreignId('location_id')->constrainedTo('location')->cascadeDelete();
+            $table->foreignId('location_id')->constrainedTo('fligh_location')->cascadeDelete();
             $table->foreignId('drone_id')->constrainedTo('drone')->cascadeDelete();
             $table->foreignId('project_id')->constrainedTo('project')->cascadeDelete();
             $table->foreignId('personel_involved_id')->constrainedTo('users')->cascadeDelete();

@@ -168,9 +168,12 @@ class BattreiResource extends Resource
                 // Tables\Columns\TextColumn::make('flaight_count')->label('Flaight Count')
                 //     ->numeric()
                 //     ->sortable(),
-                // Tables\Columns\TextColumn::make('for_drone')->label('Blokec To Drone')
-                //     ->numeric()
-                //     ->sortable(),
+                Tables\Columns\TextColumn::make('drone.name')->label('Blokec To Drone')
+                    ->numeric()->url(fn($record) => $record->for_drone ? route('filament.admin.resources.drones.index', [
+                        'tenant' => Auth()->user()->teams()->first()->id,
+                        'record' => $record->for_drone,
+                    ]): null)->color(Color::Blue)
+                    ->sortable(),
                 // Tables\Columns\TextColumn::make('purchase_date')->label('Purchase Date')
                 //     ->date()
                 //     ->sortable(),
@@ -238,11 +241,19 @@ public static function infolist(Infolist $infolist): Infolist
         TextEntry::make('initial_Cycle_count')->label('Initial Cycles Count'),
         TextEntry::make('life_span')->label('Life Span'),
         TextEntry::make('flaight_count')->label('Flaight Count'),
-        TextEntry::make('drone.name')->label('For Drone (Optional)'),
+        TextEntry::make('drone.name')->label('For Drone (Optional)')
+        ->url(fn($record) => $record->for_drone ? route('filament.admin.resources.drones.index', [
+            'tenant' => Auth()->user()->teams()->first()->id,
+            'record' => $record->for_drone,
+        ]): null)->color(Color::Blue),
                 ])->columns(5),
             Section::make('Extra Information')
                 ->schema([
-                    TextEntry::make('users.name')->label('Owner'),
+                    TextEntry::make('users.name')->label('Owner')
+                    ->url(fn($record) => $record->for_drone ? route('filament.admin.resources.users.index', [
+                        'tenant' => Auth()->user()->teams()->first()->id,
+                        'record' => $record->users_id,
+                    ]): null)->color(Color::Blue),
                     TextEntry::make('purchase_date')->label('Purchase date'),
                 TextEntry::make('insurable_value')->label('Insurable Value'),
                 TextEntry::make('wight')->label('Weight'),

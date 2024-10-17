@@ -190,6 +190,10 @@ class DroneResource extends Resource
                 Tables\Columns\TextColumn::make('idlegal')->label('Legal ID')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('users.name')->label('Owners')
+                ->url(fn($record) => $record->users_id ? route('filament.admin.resources.users.view', [
+                    'tenant' => Auth()->user()->teams()->first()->id,
+                    'record' => $record->users_id,
+                ]) : null)->color(Color::Blue)
                     ->sortable(),
                 // Tables\Columns\TextColumn::make('brand')
                 //     ->searchable(),
@@ -277,7 +281,11 @@ class DroneResource extends Resource
             TextEntry::make('geometry')->label('Drone Geometry'),
             TextEntry::make('color')->label('Color'),
             TextEntry::make('inventory_asset')->label('Inventory/Asset'),
-            TextEntry::make('users.name')->label('Owner'),
+            TextEntry::make('users.name')->label('Owner')
+            ->url(fn($record) => $record->users_id ? route('filament.admin.resources.users.view', [
+                'tenant' => Auth()->user()->teams()->first()->id,
+                'record' => $record->users_id,
+            ]) : null)->color(Color::Blue),
             TextEntry::make('firmware_v')->label('Firmware Version'),
             TextEntry::make('hardware_v')->label('Hardware Version'),
             TextEntry::make('propulsion_v')->label('Propulsion Version'),
@@ -309,8 +317,10 @@ class DroneResource extends Resource
         return [
             'index' => Pages\ListDrones::route('/'),
             'create' => Pages\CreateDrone::route('/create'),
-            //'view' => Pages\ViewDrone::route('/{record}'),
+            'view' => Pages\ViewDrone::route('/{record}'),
+            // 'widget' => Pages\WidgetDrone::route('/{record}/widget'),
             'edit' => Pages\EditDrone::route('/{record}/edit'),
         ];
     }
+    
 }

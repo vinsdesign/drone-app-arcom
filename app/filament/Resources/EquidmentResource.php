@@ -163,9 +163,17 @@ class EquidmentResource extends Resource
                     ->searchable(),
                  Tables\Columns\TextColumn::make('drones.name')
                      ->numeric()
+                     ->url(fn($record) =>$record->for_drone? route('filament.admin.resources.drones.index', [
+                        'tenant' => Auth()->user()->teams()->first()->id,
+                        'record' => $record->for_drone,
+                    ]):null)->color(Color::Blue)
                      ->sortable(),
                  Tables\Columns\TextColumn::make('users.name')
                     ->label('Owner')
+                    ->url(fn($record) => $record->users_id? route('filament.admin.resources.users.view', [
+                        'tenant' => Auth()->user()->teams()->first()->id,
+                        'record' => $record->users_id,
+                    ]):null)->color(Color::Blue)
                      ->numeric()
                      ->sortable(),
             ])
@@ -200,11 +208,19 @@ class EquidmentResource extends Resource
                 TextEntry::make('inventory_asset')->label('Inventory/Asset'),
                 TextEntry::make('serial')->label('Serial'),
                 TextEntry::make('type')->label('Type'),
-                TextEntry::make('drones.name')->label('Drones'),
-                ])->columns(4),
+                TextEntry::make('drones.name')->label('Drones')
+                    ->url(fn($record) =>$record->for_drone? route('filament.admin.resources.drones.index', [
+                        'tenant' => Auth()->user()->teams()->first()->id,
+                        'record' => $record->for_drone,
+                    ]):null)->color(Color::Blue),
+                    ])->columns(4),
             Section::make('Extra Information')
             ->schema([
-                TextEntry::make('users.name')->label('Owner'),
+                TextEntry::make('users.name')->label('Owner')
+                    ->url(fn($record) => $record->users_id? route('filament.admin.resources.users.view', [
+                        'tenant' => Auth()->user()->teams()->first()->id,
+                        'record' => $record->users_id,
+                    ]):null)->color(Color::Blue),
                 TextEntry::make('purchase_date')->label('Purchase Date')->date('Y-m-d'),
                 TextEntry::make('insurable_value')->label('Insurable Value'),
                 TextEntry::make('weight')->label('Weight'),
