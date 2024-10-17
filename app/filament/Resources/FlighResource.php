@@ -6,6 +6,7 @@ use App\Filament\Resources\FlighResource\Pages;
 use App\Filament\Resources\FlighResource\RelationManagers;
 use App\Models\customer;
 use App\Models\Fligh;
+use App\Models\kits;
 use App\Models\Projects;
 use Closure;
 use Filament\Forms;
@@ -96,7 +97,7 @@ class FlighResource extends Resource
                 Forms\Components\TextInput::make('landings')
                     ->required()
                     ->numeric(),
-                    Forms\Components\Select::make('projects_id')
+                Forms\Components\Select::make('projects_id')
                     ->relationship('projects', 'case')
                     ->required()
                     ->reactive()
@@ -120,9 +121,14 @@ class FlighResource extends Resource
                     //->relationship('customers', 'name')
                     ->required()
                     ->disabled(),
-                //Forms\Components\Select::make('location_id')
-                    //->relationship('fligh_locations', 'name'),
-                    //->required(),
+                Forms\Components\Select::make('location_id')
+                    ->relationship('fligh_location', 'name', function (Builder $query) {
+                        $currentTeamId = auth()->user()->teams()->first()->id;
+                        $query->whereHas('teams', function (Builder $query) use ($currentTeamId){
+                            $query->where('teams_id', $currentTeamId);
+                        });
+                    })
+                    ->required(),
                 ])->columns(3),
                 Forms\Components\Section::make('Personnel')
                     ->description('')
@@ -151,25 +157,75 @@ class FlighResource extends Resource
                 ])->columns(2),
                 Forms\Components\Section::make('Drone & Equipments')
                     ->description('')
-                    ->schema([
+                    ->schema([      
                 Forms\Components\Select::make('drones_id')
                     ->relationship('drones', 'name', function (Builder $query){
                         $currentTeamId = auth()->user()->teams()->first()->id;;
                         $query->where('teams_id', $currentTeamId);
                     })    
-                    ->required(),
+                    ->required()
+                    ->columnSpanFull(),
+                //kits
+                Forms\Components\Select::make('kits_id')
+                    ->label('Kits')
+                    ->relationship('kits', 'name', function (Builder $query) {
+                        $currentTeamId = auth()->user()->teams()->first()->id;
+                        $query->whereHas('teams', function (Builder $query) use ($currentTeamId){
+                            $query->where('team_id', $currentTeamId);
+                        });
+                    })
+                    ->required()
+                    ->reactive()
+                    ->afterStateUpdated(function ($state, callable $set) {
+                        if ($state) {
+                            $kit = kits::find($state);
+                            if ($kit) {
+                                if ($kit->type === 'battery') {
+                                    $batteries = $kit->battrei()->pluck('name')->join(', ');
+                                    $set('battery_name', $batteries);
+                                    $set('camera_gimbal', null); 
+                                    $set('others', null); 
+                                }
+                
+                                if ($kit->type === 'mix') {
+                                    $battery = $kit->equidment()->where('type', 'battery')->pluck('type')->join(', ');
+                                    $cameraGimbal = $kit->equidment()->where('type', 'camera')->pluck('type')->join(', ');
+                                    $others = $kit->equidment()->whereNotIn('type', ['camera'])->pluck('type')->join(', ');
+                
+                                    $set('camera_gimbal', $cameraGimbal);
+                                    $set('others', $others);
+                                    $set('battery_name', $battery);
+                                }
+                            } else {
+                                $set('battery_name', null);
+                                $set('camera_gimbal', null);
+                                $set('others', null);
+                            }
+                        }
+                    })
+                    ->options(function (callable $get) use ($currentTeamId) {
+                        return kits::where('teams_id', $currentTeamId)->pluck('name', 'id');
+                    }),
+                Forms\Components\TextInput::make('battery_name')
+                        ->label('Battery')
+                        ->disabled(), 
+                Forms\Components\TextInput::make('camera_gimbal')
+                        ->label('Camera/Gimbal')
+                        ->disabled(), 
+                Forms\Components\TextInput::make('others')
+                        ->label('Others')
+                        ->disabled(), 
+
                 Forms\Components\Select::make('battreis_id')->label('Battery')
                     ->relationship('battreis', 'name', function (Builder $query){
                         $currentTeamId = auth()->user()->teams()->first()->id;;
                         $query->where('teams_id', $currentTeamId);
-                    })        
-                    ->required(),
+                    }),
                 Forms\Components\Select::make('equidments_id')->label('Equipment')
                     ->relationship('equidments', 'name', function (Builder $query){
                         $currentTeamId = auth()->user()->teams()->first()->id;;
                         $query->where('teams_id', $currentTeamId);
-                    })       
-                    ->required(),
+                    }),
                 Forms\Components\TextInput::make('pre_volt')->label('Pre Voltage')
                     ->numeric()    
                     ->required(),
@@ -196,9 +252,9 @@ class FlighResource extends Resource
                     ->date()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('duration'),
-                //Tables\Columns\TextColumn::make('location_id')
-                    //->numeric()
-                    //->sortable(),
+                Tables\Columns\TextColumn::make('fligh_location.name')
+                    ->numeric()
+                    ->sortable(),
                 Tables\Columns\TextColumn::make('projects.case')
                     ->numeric()
                     ->url(fn($record) => $record->projects_id?route('filament.admin.resources.projects.index', [
@@ -257,6 +313,7 @@ class FlighResource extends Resource
                 TextEntry::make('type')->label('Type'),
                 TextEntry::make('ops')->label('Ops'),
                 TextEntry::make('landings')->label('Landings'),
+                TextEntry::make('fligh_location.name')->label('Location'),
                 TextEntry::make('customers.name')->label('Customer')
                     ->url(fn($record) => $record->customers_id?route('filament.admin.resources.customers.index', [
                         'tenant' => Auth()->user()->teams()->first()->id,
@@ -281,6 +338,9 @@ class FlighResource extends Resource
                 ])->columns(4),
             Section::make('Drone & Equipments')
                 ->schema([
+                TextEntry::make('kits.name')->label('Kits'),
+                TextEntry::make('kits.battrei.name')->label('Kits Battery'),
+                TextEntry::make('kits.equidment.type')->label('Kits Equipments (Camera) '),
                 TextEntry::make('drones.name')->label('Drone'),
                 TextEntry::make('battreis.name')->label('Battery'),
                 TextEntry::make('equidments.name')->label('Equipment'),

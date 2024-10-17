@@ -3,6 +3,7 @@
 namespace App\Filament\Widgets;
 
 use App\Models\fligh;
+use Carbon\Carbon;
 use Filament\Widgets\ChartWidget;
 use Flowframe\Trend\Trend;
 use Flowframe\Trend\TrendValue;
@@ -16,11 +17,11 @@ class FlightDurationChart extends ChartWidget
     protected function getData(): array
     {
         $tenant_id = Auth()->User()->teams()->first()->id;
-        $teams = Fligh::where('teams_id', $tenant_id)
-        ->whereBetween('created_at', [now()->startOfYear(), now()->endOfYear()])
+        $teams = fligh::where('teams_id', $tenant_id)
+        ->whereBetween('date_flight', [now()->startOfYear(), now()->endOfYear()])
         ->get();
         $data = $teams->groupBy(function ($item) {
-            return $item->created_at->format('Y-m-d');
+            return Carbon::parse($item->date_flight)->format('Y-m-d');
         })->map(function ($group) {
             $totalSeconds = 0;
             foreach ($group as $flight) {

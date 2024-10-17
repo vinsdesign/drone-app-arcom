@@ -18,6 +18,7 @@ use Filament\Infolists\Components\TextEntry;
 use Illuminate\Container\Attributes\Auth;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Novadaemon\FilamentCombobox\Combobox;
 
 class KitsResource extends Resource
 {
@@ -55,26 +56,32 @@ class KitsResource extends Resource
                     ->nullable()
                     ->columnSpanFull(),
 
-                    // CheckboxList untuk Batteries, hanya muncul jika type = battery
-                Forms\Components\CheckboxList::make('batteries')
-                ->label('Batteries')
-                ->options(
-                    battrei::where('teams_id', auth()->user()->teams()->first()->id)
-                        ->pluck('name', 'id')
-                )
-                ->visible(fn (callable $get) => $get('type') === 'battery')
-                ->required(fn (callable $get) => $get('type') === 'battery'),
+                Forms\Components\Select::make('Batteries')
+                    ->multiple()
+                    ->options(
+                        battrei::where('teams_id', auth()->user()->teams()->first()->id)
+                            ->pluck('name', 'id')
+                    )
+                    ->visible(fn (callable $get) => $get('type') === 'battery' || $get('type') === 'mix')
+                    ->required(fn (callable $get) => $get('type') === 'battery' || $get('type') === 'mix')
+                    ->searchable()
+                    ->saveRelationshipsUsing(function ($component, $state) {
+                        $component->getRecord()->battrei()->sync($state);
+                    }),
 
-            // CheckboxList untuk Equipments, hanya muncul jika type = mix
-            Forms\Components\CheckboxList::make('equipments')
-                ->label('Equipments')
-                ->options(
-                    equidment::where('teams_id', auth()->user()->teams()->first()->id)
-                        ->pluck('name', 'id')
-                )
-                ->visible(fn (callable $get) => $get('type') === 'mix')
-                ->required(fn (callable $get) => $get('type') === 'mix'),
-            ]);
+                Forms\Components\Select::make('Equipments')
+                    ->multiple()
+                    ->options(
+                        equidment::where('teams_id', auth()->user()->teams()->first()->id)
+                            ->pluck('name', 'id')
+                    )
+                    ->visible(fn (callable $get) => $get('type') === 'mix')
+                    ->required(fn (callable $get) => $get('type') === 'mix')
+                    ->searchable()
+                    ->saveRelationshipsUsing(function ($component, $state) {
+                        $component->getRecord()->equidment()->sync($state);
+                    }),
+             ]);
     }
 
     public static function table(Table $table): Table
@@ -88,6 +95,12 @@ class KitsResource extends Resource
                 Tables\Columns\IconColumn::make('enabled')
                     ->boolean(),
                 Tables\Columns\TextColumn::make('drone.name')
+                    ->numeric()
+                    ->sortable(),
+                Tables\Columns\TextColumn::make('battrei.name')
+                    ->numeric()
+                    ->sortable(),
+                Tables\Columns\TextColumn::make('equidment.name')
                     ->numeric()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('created_at')
@@ -125,8 +138,6 @@ class KitsResource extends Resource
                     ->label('Batteries')
                     ->visible(fn ($record) => $record->type === 'battery')
                     ->formatStateUsing(fn ($record) => $record->battreis->pluck('name')->join(', ')),
-
-                // Menambahkan Equipments jika type = mix
                 TextEntry::make('equipments')
                     ->label('Equipments')
                     ->visible(fn ($record) => $record->type === 'mix')

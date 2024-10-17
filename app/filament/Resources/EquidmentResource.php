@@ -150,11 +150,13 @@ class EquidmentResource extends Resource
     {
         return $table
             ->columns([
-                 Tables\Columns\TextColumn::make('name')
+                Tables\Columns\TextColumn::make('name')
                      ->searchable(),
-                 Tables\Columns\TextColumn::make('model')
+                Tables\Columns\TextColumn::make('model')
                      ->searchable(),
-                     Tables\Columns\TextColumn::make('status')->label('Status')
+                Tables\Columns\TextColumn::make('type')
+                     ->searchable(),
+                Tables\Columns\TextColumn::make('status')->label('Status')
                      ->color(fn ($record) => match ($record->status){
                          'airworthy' => Color::Green,
                         'maintenance' =>Color::Red,

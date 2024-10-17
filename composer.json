@@ -16,6 +16,7 @@
         "joaopaulolndev/filament-edit-profile": "*",
         "laravel/framework": "^11.9",
         "laravel/tinker": "^2.9",
+        "novadaemon/filament-combobox": "^1.1",
         "tomatophp/filament-subscriptions": "^1.0"
     },
     "require-dev": {

@@ -47,6 +47,6 @@ class equidment extends Model
         return $this->belongsTo(Team::class);
     }
     public function kits(){
-        return $this->belongsToMany(kits::class);
+        return $this->belongsToMany(kits::class, 'equidment_kits');
     }
 }
