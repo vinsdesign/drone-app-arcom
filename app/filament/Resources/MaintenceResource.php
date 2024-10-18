@@ -126,12 +126,17 @@ class MaintenceResource extends Resource
                     ->boolean(),
             ])
             ->filters([
-                //
+                Tables\Filters\SelectFilter::make('status')
+                ->options([
+                    'Schedule' => 'Schedule',
+                    'in_progress' => 'In Progress',
+                    'completed' => 'Completed'
+                ])
+                ->label('Filter by Status'),
             ])
             ->actions([
                 Tables\Actions\ViewAction::make(),
                 Tables\Actions\EditAction::make(),
-                Tables\Actions\ViewAction::make(),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([

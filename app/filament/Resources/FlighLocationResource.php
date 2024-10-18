@@ -99,13 +99,13 @@ class FlighLocationResource extends Resource
             ->columns([
                 Tables\Columns\TextColumn::make('name')->label('Name')
                     ->searchable(),
-                Tables\Columns\TextColumn::make('project.case')->label('Project Case')
+                Tables\Columns\TextColumn::make('projects.case')->label('Project Case')
                 ->url(fn($record)  =>  $record->project_id ? route('filament.admin.resources.projects.index', [
                     'tenant' => Auth()->user()->teams()->first()->id,
                     'record' => $record->project_id,
                 ]) : null)->color(Color::Blue)
                     ->searchable(),
-                Tables\Columns\TextColumn::make('customer.name')->label('Customer Name')
+                Tables\Columns\TextColumn::make('customers.name')->label('Customer Name')
                 ->url(fn($record) => $record->customer_id ? route('filament.admin.resources.customers.index', [
                     'tenant' => Auth()->user()->teams()->first()->id,
                     'record' => $record->customer_id,

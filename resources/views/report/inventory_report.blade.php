@@ -3,12 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Inventory Table</title>
+    <title>Inventory Report</title>
     <style>
         table {
             width: 100%;
             border-collapse: collapse;
             margin-bottom: 20px;
+            page-break-inside: avoid;
         }
         table, th, td {
             border: 1px solid black;
@@ -18,11 +19,15 @@
             text-align: left;
         }
         th {
-            background-color: #f2f2f2;
+            background-color: #315a39;
+            color: white;
         }
         .row-span {
             font-size: 15px;
             color: #555;
+        }
+        .drone, .battery, .equipment {
+            background-color: #acd1af;
         }
         
     </style>
@@ -38,10 +43,11 @@
             @endforeach
         </div>
         <hr>
+        <br>
 
-    <h2 style="text-align: center">Drone</h2>
     <table>
         <thead>
+            <th colspan="6" style="text-align: center; font-size: 25px">Drone</th>
             <tr>
                 <th>Name</th>
                 <th>Status</th>
@@ -53,7 +59,7 @@
         </thead>
         <tbody>
             @foreach ($drone as $drones)
-                <tr>
+                <tr class="drone">
                     <td>{{ $drones->name }}</td>
                     <td>{{ $drones->status }}</td>
                     <td>{{ $drones->type }}</td>
@@ -76,9 +82,9 @@
         </tbody>
     </table>
 
-<h2 style="text-align: center">Battery</h2>
 <table>
     <thead>
+        <th colspan="5" style="text-align: center; font-size: 25px">Battery</th>
         <tr>
             <th>Name</th>
             <th>Model</th>
@@ -89,7 +95,7 @@
     </thead>
     <tbody>
         @foreach ($battery as $batteries)
-            <tr>
+            <tr class="battery">
                 <td>{{ $batteries->name }}</td>
                 <td>{{ $batteries->model }}</td>
                 <td>{{ $batteries->drone->name }}</td>
@@ -109,9 +115,9 @@
     </tbody>
 </table>
 
-<h2 style="text-align: center">Equipment</h2>
 <table>
     <thead>
+        <th colspan="5" style="text-align: center; font-size: 25px">Equipment</th>
         <tr>
             <th>Name</th>
             <th>Model</th>
@@ -122,7 +128,7 @@
     </thead>
     <tbody>
         @foreach ($equipment as $equipments)
-            <tr>
+            <tr class="equipment">
                 <td>{{ $equipments->name }}</td>
                 <td>{{ $equipments->model }}</td>
                 <td>{{ $equipments->type }}</td>
@@ -144,6 +150,5 @@
         @endforeach
     </tbody>
 </table>
-
 </body>
 </html>
