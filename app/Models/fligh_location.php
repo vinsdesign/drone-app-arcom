@@ -40,6 +40,7 @@ class fligh_location extends Model
     }
     public function Incidents()
     {
+
         return $this->hasMany(Incident::class);
 
     }

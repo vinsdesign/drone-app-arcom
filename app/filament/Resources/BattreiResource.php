@@ -169,7 +169,7 @@ class BattreiResource extends Resource
                 //     ->numeric()
                 //     ->sortable(),
                 Tables\Columns\TextColumn::make('drone.name')->label('Blokec To Drone')
-                    ->numeric()->url(fn($record) => $record->for_drone ? route('filament.admin.resources.drones.index', [
+                    ->numeric()->url(fn($record) => $record->for_drone ? route('filament.admin.resources.drones.view', [
                         'tenant' => Auth()->user()->teams()->first()->id,
                         'record' => $record->for_drone,
                     ]): null)->color(Color::Blue)
@@ -248,7 +248,7 @@ public static function infolist(Infolist $infolist): Infolist
         TextEntry::make('life_span')->label('Life Span'),
         TextEntry::make('flaight_count')->label('Flaight Count'),
         TextEntry::make('drone.name')->label('For Drone (Optional)')
-        ->url(fn($record) => $record->for_drone ? route('filament.admin.resources.drones.index', [
+        ->url(fn($record) => $record->for_drone ? route('filament.admin.resources.drones.view', [
             'tenant' => Auth()->user()->teams()->first()->id,
             'record' => $record->for_drone,
         ]): null)->color(Color::Blue),
@@ -282,7 +282,7 @@ public static function infolist(Infolist $infolist): Infolist
         return [
             'index' => Pages\ListBattreis::route('/'),
             'create' => Pages\CreateBattrei::route('/create'),
-            //'view' => Pages\ViewBattrei::route('/{record}'),
+            'view' => Pages\ViewBattrei::route('/{record}'),
             'edit' => Pages\EditBattrei::route('/{record}/edit'),
         ];
     }
