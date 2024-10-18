@@ -55,7 +55,7 @@ class FlighResource extends Resource
                     ->required()
                     ->label('Duration')
                     ->placeholder('hh:mm:ss') 
-                    ->helperText('Enter duration in hh:mm:ss format')
+                    //->helperText('Enter duration in hh:mm:ss format')
                     ->default('00:00:00'),
                 Forms\Components\Select::make('type')->label('Flight Type')
                     ->options([
@@ -207,11 +207,14 @@ class FlighResource extends Resource
                     }),
                 Forms\Components\TextInput::make('battery_name')
                         ->label('Battery')
+                        ->helperText('Automatically filled when selecting kits')
                         ->disabled(), 
                 Forms\Components\TextInput::make('camera_gimbal')
                         ->label('Camera/Gimbal')
+                        ->helperText('Automatically filled when selecting kits')
                         ->disabled(), 
                 Forms\Components\TextInput::make('others')
+                        ->helperText('Automatically filled when selecting kits')
                         ->label('Others')
                         ->disabled(), 
 
@@ -286,7 +289,41 @@ class FlighResource extends Resource
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
-                //
+                Tables\Filters\Filter::make('date_flight')
+                    ->form([
+                        Forms\Components\Grid::make(2)
+                            ->schema([
+                        Forms\Components\DatePicker::make('from')->label('Flight Date From'),
+                        Forms\Components\DatePicker::make('until')->label('Until'),
+                            ]),
+                    ])
+                    ->query(function (Builder $query, array $data){
+                        $query->when($data['from'], fn ($q) => $q->whereDate('date_flight', '>=', $data['from']));
+                        $query->when($data['until'], fn ($q) => $q->whereDate('date_flight', '<=', $data['until']));
+                    }),
+                Tables\Filters\SelectFilter::make('projects_id')
+                    ->relationship('projects', 'case', function (Builder $query){
+                        $currentTeamId = auth()->user()->teams()->first()->id;;
+                        $query->where('teams_id', $currentTeamId);
+                    })    
+                    ->label('Filter by Project'),
+                Tables\Filters\SelectFilter::make('drones_id')
+                    ->relationship('drones', 'name', function (Builder $query){
+                        $currentTeamId = auth()->user()->teams()->first()->id;;
+                        $query->where('teams_id', $currentTeamId);
+                    })    
+                    ->label('Filter by Drones'),
+                Tables\Filters\SelectFilter::make('users_id')
+                    ->relationship('users', 'name', function (Builder $query) {
+                        $currentTeamId = auth()->user()->teams()->first()->id;
+                        $query->whereHas('teams', function (Builder $query) use ($currentTeamId){
+                            $query->where('team_id', $currentTeamId);
+                        })
+                        ->whereHas('roles', function (Builder $query) {
+                            $query->where('roles.name', 'Pilot');
+                        });
+                    })
+                    ->label('Filter by Pilot')
             ])
             ->actions([
                 Tables\Actions\ViewAction::make(),
@@ -338,14 +375,14 @@ class FlighResource extends Resource
             Section::make('Drone & Equipments')
                 ->schema([
                 TextEntry::make('kits.name')->label('Kits'),
-                TextEntry::make('kits.battrei.name')->label('Kits Battery'),
-                TextEntry::make('kits.equidment.type')->label('Kits Equipments (Camera) '),
+                //TextEntry::make('battery_name')->label('Kits Battery'),
+                // TextEntry::make('kits.equidment.type')->label('Kits Equipments (Camera) '),
                 TextEntry::make('drones.name')->label('Drone'),
                 TextEntry::make('battreis.name')->label('Battery'),
                 TextEntry::make('equidments.name')->label('Equipment'),
                 TextEntry::make('pre_volt')->label('Pre-Voltage'),
                 TextEntry::make('fuel_used')->label('Fuel Used'),
-                ])->columns(5)
+                ])->columns(4)
         ]);
     }
 

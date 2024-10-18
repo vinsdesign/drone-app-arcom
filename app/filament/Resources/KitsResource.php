@@ -134,14 +134,8 @@ class KitsResource extends Resource
                 TextEntry::make('type')->label('Type'),
                 IconEntry::make('enabled')->boolean()->label('Enabled'),
                 TextEntry::make('drone.name')->label('Blocked To Drone'),
-                TextEntry::make('batteries')
-                    ->label('Batteries')
-                    ->visible(fn ($record) => $record->type === 'battery')
-                    ->formatStateUsing(fn ($record) => $record->battreis->pluck('name')->join(', ')),
-                TextEntry::make('equipments')
-                    ->label('Equipments')
-                    ->visible(fn ($record) => $record->type === 'mix')
-                    ->formatStateUsing(fn ($record) => $record->equidments->pluck('name')->join(', ')),
+                TextEntry::make('battrei.name'),
+                TextEntry::make('equidment.name'),
         ]);
     }
 

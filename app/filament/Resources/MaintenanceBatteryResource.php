@@ -94,7 +94,13 @@ class MaintenanceBatteryResource extends Resource
             ])
         
             ->filters([
-                //
+                Tables\Filters\SelectFilter::make('status')
+                ->options([
+                    'Schedule' => 'Schedule',
+                    'in_progress' => 'In Progress',
+                    'completed' => 'Completed'
+                ])
+                ->label('Filter by Status'),
             ])
             ->actions([
                 Tables\Actions\ViewAction::make(),

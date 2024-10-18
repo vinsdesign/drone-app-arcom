@@ -204,7 +204,13 @@ class BattreiResource extends Resource
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
-                //
+                Tables\Filters\SelectFilter::make('status')
+                ->options([
+                    'airworthy' => 'Airworthy',
+                   'maintenance' => 'Maintenance',
+                   'retired' => 'Retired'
+                ])
+                ->label('Filter by Status'),
             ])
             ->actions([
                 Tables\Actions\ViewAction::make(),

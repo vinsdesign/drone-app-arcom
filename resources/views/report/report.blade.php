@@ -3,8 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Report</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <title>Flight Report</title>
     <style>
         body {
             background-color: #f7fafc;
@@ -38,31 +37,33 @@
             text-align: right;
             margin: 16px 0;
         }
-        .personnel-table,
-        .drone-table,
-        .flight-table {
+        table {
             width: 100%;
             border: 1px solid #cbd5e0;
             border-collapse: collapse;
             margin-top: 16px;
+            page-break-inside: avoid;
         }
-        .personnel-table th,
-        .drone-table th,
-        .flight-table th,
-        .personnel-table td,
-        .drone-table td,
-        .flight-table td {
+        table, th, td {
             padding: 8px;
-            border: 1px solid #cbd5e0;
+            border: 1px solid black;
         }
-        .header-row {
-            background-color: #edf2f7;
+        th {
+            background-color: #acd1af;
         }
-        .detail-row {
-            background-color: #f9fafb;
+        .header-title {
+            font-size: 25px;
+            text-align: center;
+            margin: 0;
+            background-color: #315a39;
+            color: white;
         }
         .summary-row {
-            background-color: #edf2f7;
+            background-color: #acd1af;
+        }
+        .detail-row{
+            font-size: 15px;
+            color: #555;
         }
     </style>
 </head>
@@ -86,10 +87,10 @@
             <p style="text-align: left; margin: 0;"><strong>Contact Phone: </strong>{{ $teams->phone }}</p>
         @endforeach
 
-        <h2 style="margin-top: 16px; font-size: 20px; font-weight: 600; text-align: center;">Personnel</h2>
         <table class="personnel-table">
             <thead>
-                <tr class="header-row">
+                    <th colspan="3" class="header-title">Personnel</th>
+                <tr>
                     <th>Name</th>
                     <th>Email</th>
                     <th>Phone</th>
@@ -106,10 +107,10 @@
             </tbody>
         </table>
 
-        <h2 style="margin-top: 16px; font-size: 20px; font-weight: 600; text-align: center;">Drone</h2>
         <table class="drone-table">
             <thead>
-                <tr class="header-row">
+                    <th colspan="3" class="header-title">Drone</th>
+                <tr class="drone">
                     <th>Name</th>
                     <th>Type</th>
                     <th>Geometry</th>
@@ -126,18 +127,17 @@
             </tbody>
         </table>
 
-        <h2 style="margin-top: 16px; font-size: 20px; font-weight: 600; text-align: center;">Flight</h2>
-
-        @foreach($flight as $flights)
+        @foreach($flight as $index => $flights)
             <table class="flight-table">
                 <thead>
-                    <tr class="header-row">
+                        <th colspan="6" class="header-title">Flight {{ $index + 1 }}</th>
+                    <tr class="flight">
                         <th>Name</th>
                         <th>Date Flight</th>
                         <th>Pilot</th>
-                        <th>Duration(H)</th>
-                        <th>Duration(M)</th>
+                        <th>Duration</th>
                         <th>Type</th>
+                        <th>Customers</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -145,28 +145,33 @@
                         <td>{{ $flights->name }}</td>
                         <td>{{ $flights->date_flight }}</td>
                         <td>{{ $flights->users->name }}</td>
-                        <td>{{ $flights->duration_hour }}</td>
-                        <td>{{ $flights->duration_minute }}</td>
+                        <td>{{ $flights->duration }}</td>
                         <td>{{ $flights->type }}</td>
+                        <td>{{ $flights->customers->name }}</td>
                     </tr>
                     <tr class="summary-row">
                         <td colspan="6"><strong>Flight Details:</strong></td>
                     </tr>
                     <tr class="detail-row">
-                        <td><b>Customers:</b> {{ $flights->customers->name }}</td>
-                        <td><b>Drones:</b> {{ $flights->drones->name }}/{{ $flights->drones->geometry }}</td>
-                        <td><b>2nd Pilot:</b> {{ $flights->instructor }}</td>
-                        <td><b>OPS:</b> {{ $flights->ops }}</td>
-                        <td><b>VO:</b> {{ $flights->vo }}</td>
-                        <td><b>PO:</b> {{ $flights->po }}</td>
+                        <td colspan="6">
+                            <strong>Drones:</strong> {{ $flights->drones->name }}/{{ $flights->drones->geometry }} &nbsp;&nbsp;
+                            <strong>2nd Pilot:</strong> {{ $flights->instructor }} &nbsp;&nbsp;
+                            <strong>OPS:</strong> {{ $flights->ops }}
+                            <br>
+                            <strong>VO:</strong> {{ $flights->vo }} &nbsp;&nbsp;
+                            <strong>PO:</strong> {{ $flights->po }} &nbsp;&nbsp;
+                            <strong>Kits:</strong> {{ $flights->kits->name ?? ''}}
+                        </td>
                     </tr>
-                    <tr>
-                        <td><b>Battery:</b> {{ $flights->battreis->name }}</td>
-                        <td><b>Equipment:</b> {{ $flights->equidments->name }}</td>
-                        <td><b>Fuel Used:</b> {{ $flights->fuel_used }}</td>
-                        <td><b>Landings:</b> {{ $flights->landings }}</td>
-                        <td><b>Pre-Volt:</b> {{ $flights->pre_volt }}</td>
-                        <td></td>
+                    <tr class="detail-row">
+                        <td colspan="6">
+                            <strong>Battery:</strong> {{ $flights->battreis->name ?? '' }} &nbsp;&nbsp;
+                            <strong>Equipment:</strong> {{ $flights->equidments->name ?? '' }} 
+                            <br>
+                            <strong>Fuel Used:</strong> {{ $flights->fuel_used }} &nbsp;&nbsp;
+                            <strong>Landings:</strong> {{ $flights->landings }}&nbsp;&nbsp;
+                            <strong>Pre-Volt:</strong> {{ $flights->pre_volt }}
+                        </td>
                     </tr>
                 </tbody>
             </table>

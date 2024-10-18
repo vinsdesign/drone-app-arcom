@@ -176,7 +176,17 @@ class DocumentResource extends Resource
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
-                //
+                Tables\Filters\SelectFilter::make('scope')
+                ->options([
+                    'Flight' => 'Flight',
+                    'Organization' => 'Organization',
+                    'Pilot' => 'Pilot',
+                    'Project' => 'Project',
+                    'Drones' => 'Drones',
+                    'Equidments/Battry' => 'Equidments/Battry',
+                    'Incident' => 'Incident',
+                ])
+                ->label('Filter by Scope'),
             ])
             ->actions([
                 Tables\Actions\ViewAction::make(),
