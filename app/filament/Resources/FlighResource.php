@@ -174,7 +174,6 @@ class FlighResource extends Resource
                             $query->where('team_id', $currentTeamId);
                         });
                     })
-                    ->required()
                     ->reactive()
                     ->afterStateUpdated(function ($state, callable $set) {
                         if ($state) {

@@ -246,7 +246,10 @@ class DroneResource extends Resource
                 //
             ])
             ->actions([
-                Tables\Actions\ViewAction::make(),
+                Tables\Actions\ViewAction::make('viewDrone')
+                    ->action(function(Drone $record, $livewire){
+                        $livewire->emit('viewDrone', $record->id);
+                    }),
                 Tables\Actions\EditAction::make(),
             ])
             ->bulkActions([

@@ -129,7 +129,7 @@ class IncidentResource extends Resource
 
                 Tables\Columns\TextColumn::make('drone.name')
                     ->numeric()
-                    ->url(fn($record) => $record->drone_id?route('filament.admin.resources.drones.index', [
+                    ->url(fn($record) => $record->drone_id?route('filament.admin.resources.drones.view', [
                         'tenant' => Auth()->user()->teams()->first()->id,
                         'record' => $record->drone_id,
                     ]):null)->color(Color::Blue)
@@ -182,7 +182,7 @@ class IncidentResource extends Resource
                     TextEntry::make('review'),
                     TextEntry::make('location_id'),
                     TextEntry::make('drone.name')
-                        ->url(fn($record) => $record->drone_id?route('filament.admin.resources.drones.index', [
+                        ->url(fn($record) => $record->drone_id?route('filament.admin.resources.drones.view', [
                             'tenant' => Auth()->user()->teams()->first()->id,
                             'record' => $record->drone_id,
                         ]):null)->color(Color::Blue),

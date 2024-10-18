@@ -165,7 +165,7 @@ class EquidmentResource extends Resource
                     ->searchable(),
                  Tables\Columns\TextColumn::make('drones.name')
                      ->numeric()
-                     ->url(fn($record) =>$record->for_drone? route('filament.admin.resources.drones.index', [
+                     ->url(fn($record) =>$record->for_drone? route('filament.admin.resources.drones.view', [
                         'tenant' => Auth()->user()->teams()->first()->id,
                         'record' => $record->for_drone,
                     ]):null)->color(Color::Blue)
@@ -211,7 +211,7 @@ class EquidmentResource extends Resource
                 TextEntry::make('serial')->label('Serial'),
                 TextEntry::make('type')->label('Type'),
                 TextEntry::make('drones.name')->label('Drones')
-                    ->url(fn($record) =>$record->for_drone? route('filament.admin.resources.drones.index', [
+                    ->url(fn($record) =>$record->for_drone? route('filament.admin.resources.drones.view', [
                         'tenant' => Auth()->user()->teams()->first()->id,
                         'record' => $record->for_drone,
                     ]):null)->color(Color::Blue),
