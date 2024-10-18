@@ -180,7 +180,13 @@ class EquidmentResource extends Resource
                      ->sortable(),
             ])
             ->filters([
-                //
+                Tables\Filters\SelectFilter::make('status')
+                ->options([
+                    'airworthy' => 'Airworthy',
+                   'maintenance' => 'Maintenance',
+                   'retired' => 'Retired'
+                ])
+                ->label('Filter by Status'),
             ])
             ->actions([
                 Tables\Actions\ViewAction::make(),
