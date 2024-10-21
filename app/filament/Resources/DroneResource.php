@@ -121,6 +121,7 @@ class DroneResource extends Resource
                                     $query->where('team_user.team_id', $currentTeamId); 
                                 })->pluck('name', 'id'); 
                             }) 
+                            ->searchable()
                             ->required()
                             ->columnSpanFull(),
                         Forms\Components\TextInput::make('firmware_v')->label('Firmware version')

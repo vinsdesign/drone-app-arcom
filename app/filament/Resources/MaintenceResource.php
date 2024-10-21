@@ -4,7 +4,10 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\MaintenceResource\Pages;
 use App\Filament\Resources\MaintenceResource\RelationManagers;
+use App\Models\drone;
 use App\Models\Maintence_drone;
+use Carbon\Carbon;
+use Filament\Facades\Filament;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Infolists\Components\IconEntry;
@@ -14,6 +17,7 @@ use Filament\Tables\Table;
 use Filament\Infolists\Infolist;
 use Filament\Infolists\Components\Section;
 use Filament\Infolists\Components\TextEntry;
+use Filament\Notifications\Notification;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Filament\Support\Colors\Color;
@@ -30,6 +34,7 @@ class MaintenceResource extends Resource
 
     public static function form(Form $form): Form
     {
+        $currentTeamId = auth()->user()->teams()->first()->id;
         return $form
             ->schema([
                 Forms\Components\Wizard::make([
@@ -41,10 +46,15 @@ class MaintenceResource extends Resource
                             ->label('Maintenance Description')
                             ->maxLength(255),
                         Forms\Components\Select::make('drone_id')
-                            ->relationship('drone','name', function (Builder $query){
-                                $currentTeamId = auth()->user()->teams()->first()->id;
-                                $query->where('teams_id', $currentTeamId);
+                            // ->relationship('drone','name', function (Builder $query){
+                            //     $currentTeamId = auth()->user()->teams()->first()->id;
+                            //     $query->where('teams_id', $currentTeamId);
+                            // })
+                            ->options(function (callable $get) use ($currentTeamId) {
+                                return drone::where('teams_id', $currentTeamId)->pluck('name', 'id');
                             })
+                            ->label('Drone')
+                            ->searchable()
                             ->columnSpan(1),
                         Forms\Components\DatePicker::make('date')
                             ->label('Maintenance Date')   
@@ -115,15 +125,46 @@ class MaintenceResource extends Resource
                     ->searchable(),
                 Tables\Columns\TextColumn::make('date')
                     ->date()
-                    ->searchable(),
+                    ->searchable()
+                    ->formatStateUsing(function ($state, $record) {
+                        $daysOverdue = Carbon::parse($state);
+                        $now = Carbon::now();
+                        $formatDate = $daysOverdue->format('Y-m-d');
+    
+                        if ($record->status !== 'completed') {
+                            $daysOverdue = $now->diffInDays($daysOverdue, false);
+
+                            if ($daysOverdue < 0){
+                                $daysOverdue = abs(intval($daysOverdue));
+                                return "<div>{$formatDate}<br><span style='
+                                display: inline-block;
+                                background-color: red; 
+                                color: white; 
+                                padding: 3px 6px;
+                                border-radius: 5px;
+                                font-weight: bold;
+                            '>
+                                Overdue: {$daysOverdue} days
+                            </span>
+                        </div>";
+                            }
+                        }
+                        return $daysOverdue->format('Y-m-d');
+                    })
+                    ->html(),
                 Tables\Columns\TextColumn::make('cost')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('currency')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('technician')
                     ->sortable(),
-                Tables\Columns\IconColumn::make('replaced')
-                    ->boolean(),
+                Tables\Columns\TextColumn::make('status')
+                    ->color(fn ($record) => match ($record->status){
+                        'completed' => Color::Green,
+                        'Schedule' =>Color::Red,
+                        'in_progress' => Color::Zinc
+                    })
+                    ->searchable(),
             ])
             ->filters([
                 Tables\Filters\SelectFilter::make('status')
@@ -137,6 +178,20 @@ class MaintenceResource extends Resource
             ->actions([
                 Tables\Actions\ViewAction::make(),
                 Tables\Actions\EditAction::make(),
+                Tables\Actions\Action::make('resolve')
+                    ->label('Resolve')
+                    ->action(function ($record){
+                        $record->status = 'completed';
+                        $record->save();
+                        Notification::make()
+                            ->title('Task Resolved')
+                            ->body('The task has been successfully resolved.')
+                            ->send();
+                    })
+                    ->requiresConfirmation()
+                    ->visible(function ($record){
+                        return $record->status !== 'completed';
+                    })
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([

@@ -5,6 +5,7 @@ namespace App\Filament\Resources;
 use App\Filament\Resources\KitsResource\Pages;
 use App\Filament\Resources\KitsResource\RelationManagers;
 use App\Models\battrei;
+use App\Models\drone;
 use App\Models\equidment;
 use App\Models\Kits;
 use Filament\Forms;
@@ -31,6 +32,7 @@ class KitsResource extends Resource
 
     public static function form(Form $form): Form
     {
+        $currentTeamId = auth()->user()->teams()->first()->id;
         return $form
             ->schema([
                 Forms\Components\Hidden::make('teams_id')
@@ -49,11 +51,11 @@ class KitsResource extends Resource
                     ->required(),
                 Forms\Components\Select::make('blocked')
                     ->label('Blocked To Drone')
-                    ->relationship('drone', 'name', function (Builder $query){
-                        $currentTeamId = auth()->user()->teams()->first()->id;
-                        $query->where('teams_id', $currentTeamId);
+                    ->options(function (callable $get) use ($currentTeamId) {
+                        return drone::where('teams_id', $currentTeamId)->pluck('name', 'id');
                     })
                     ->nullable()
+                    ->searchable()
                     ->columnSpanFull(),
 
                 Forms\Components\Select::make('Batteries')
@@ -73,7 +75,11 @@ class KitsResource extends Resource
                     ->multiple()
                     ->options(
                         equidment::where('teams_id', auth()->user()->teams()->first()->id)
-                            ->pluck('name', 'id')
+                            // ->pluck('name', 'id')
+                            ->get()
+                            ->mapWithKeys(function ($equidment) {
+                                return [$equidment->id => "{$equidment->name} [{$equidment->type}]"];
+                            })
                     )
                     ->visible(fn (callable $get) => $get('type') === 'mix')
                     ->required(fn (callable $get) => $get('type') === 'mix')
@@ -98,9 +104,11 @@ class KitsResource extends Resource
                     ->numeric()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('battrei.name')
+                    ->label('Battery')
                     ->numeric()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('equidment.name')
+                    ->label('Equipment')
                     ->numeric()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('created_at')
@@ -134,8 +142,8 @@ class KitsResource extends Resource
                 TextEntry::make('type')->label('Type'),
                 IconEntry::make('enabled')->boolean()->label('Enabled'),
                 TextEntry::make('drone.name')->label('Blocked To Drone'),
-                TextEntry::make('battrei.name'),
-                TextEntry::make('equidment.name'),
+                TextEntry::make('battrei.name')->label('Battery'),
+                TextEntry::make('equidment.name')->label('Equipment'),
         ]);
     }
 
