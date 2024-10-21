@@ -22,7 +22,6 @@ class DroneResource extends Resource
     protected static ?string $model = Drone::class;
     protected static ?string $navigationGroup = 'Inventory';
     protected static ?string $navigationLabel = 'Drone';
-
     protected static ?string $navigationIcon = 'heroicon-m-rocket-launch';
     public static ?string $tenantOwnershipRelationshipName = 'teams';
 
@@ -99,7 +98,7 @@ class DroneResource extends Resource
                             'x8_coaxial' => 'X8 Coaxial',
                             'x6_coaxial' => 'X6 Coaxial',
                         ])
-                        ->required(),
+                        ->required()->searchable(),
                         Forms\Components\TextInput::make('color')->label('Color')
                             ->required()
                             ->maxLength(255),
@@ -253,10 +252,9 @@ class DroneResource extends Resource
                 ->label('Filter by Status'),
             ])
             ->actions([
-                Tables\Actions\ViewAction::make('viewDrone')
-                    ->action(function(Drone $record, $livewire){
-                        $livewire->emit('viewDrone', $record->id);
-                    }),
+                Tables\Actions\Action::make('showDrone')
+                ->url(fn ($record) => route('drone.statistik', ['drone_id' => $record->id]))->label('view')
+                ->icon('heroicon-s-eye'),
                 Tables\Actions\EditAction::make(),
             ])
             ->bulkActions([

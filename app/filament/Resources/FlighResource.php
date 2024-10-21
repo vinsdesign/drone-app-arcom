@@ -4,8 +4,12 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\FlighResource\Pages;
 use App\Filament\Resources\FlighResource\RelationManagers;
+use App\Models\battrei;
 use App\Models\customer;
+use App\Models\drone;
+use App\Models\equidment;
 use App\Models\Fligh;
+use App\Models\fligh_location;
 use App\Models\kits;
 use App\Models\Projects;
 use Closure;
@@ -38,8 +42,9 @@ class FlighResource extends Resource
     protected static ?string $navigationLabel = 'Flights' ;
 
     Protected static ?string $modelLabel = 'Flights';
-
+    public static ?int $navigationSort = 4;
     protected static ?string $navigationIcon = 'heroicon-s-clipboard-document-list';
+    public static ?string $navigationGroup = 'flight';
 
 
     public static function form(Form $form): Form
@@ -83,7 +88,7 @@ class FlighResource extends Resource
                         'survey' => 'Survey',
                         'test_flight' => 'Test Flight',
                         'training_flight' => 'Training Flight',
-                    ])
+                    ])->searchable()
                     ->required(),
                 Forms\Components\Select::make('ops')->label('Ops')
                     ->options([
@@ -116,9 +121,9 @@ class FlighResource extends Resource
                             $set('customers_name', null);
                         }
                     })
-                    ->options(function (callable $get) use ($currentTeamId) {
-                        return Projects::where('teams_id', $currentTeamId)->pluck('case', 'id');
-                    }),
+                    ->options(Projects::where('teams_id', auth()->user()->teams()->first()->id)
+                            ->pluck('case', 'id')
+                            )->searchable(),
                 Forms\Components\Hidden::make('customers_id') 
                     ->required(),
                 Forms\Components\TextInput::make('customers_name')
@@ -407,9 +412,20 @@ class FlighResource extends Resource
                 TextEntry::make('kits.name')->label('Kits'),
                 //TextEntry::make('battery_name')->label('Kits Battery'),
                 // TextEntry::make('kits.equidment.type')->label('Kits Equipments (Camera) '),
-                TextEntry::make('drones.name')->label('Drone'),
-                TextEntry::make('battreis.name')->label('Battery'),
-                TextEntry::make('equidments.name')->label('Equipment'),
+                TextEntry::make('drones.name')->label('Drone')
+                ->url(fn($record) => $record->users_id?route('filament.admin.resources.drones.view', [
+                    'tenant' => Auth()->user()->teams()->first()->id,
+                    'record' => $record->users_id,
+                ]):null)->color(Color::Blue),
+                TextEntry::make('battreis.name')->label('Battery')
+                ->url(fn($record) => $record->users_id?route('filament.admin.resources.battreis.view', [
+                    'tenant' => Auth()->user()->teams()->first()->id,
+                    'record' => $record->users_id,
+                ]):null)->color(Color::Blue),
+                TextEntry::make('equidments.name')->label('Equipment')->url(fn($record) => $record->users_id?route('filament.admin.resources.equidments.view', [
+                    'tenant' => Auth()->user()->teams()->first()->id,
+                    'record' => $record->users_id,
+                ]):null)->color(Color::Blue),
                 TextEntry::make('pre_volt')->label('Pre-Voltage'),
                 TextEntry::make('fuel_used')->label('Fuel Used'),
                 ])->columns(4)

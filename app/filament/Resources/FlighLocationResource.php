@@ -6,7 +6,7 @@ use App\Filament\Resources\FlighLocationResource\Pages;
 use App\Filament\Resources\FlighLocationResource\RelationManagers;
 use App\Models\customer;
 use App\Models\fligh_location;
-use App\Models\project;
+use App\Models\Projects;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;

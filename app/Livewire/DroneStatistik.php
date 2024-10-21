@@ -5,24 +5,43 @@ namespace App\Livewire;
 use App\Models\fligh;
 use Filament\Widgets\ChartWidget;
 use Carbon\Carbon;
+use App\Models\Drone;
+use Livewire\Component;
+use Illuminate\Contracts\View\View;
+use Route;
 class DroneStatistik extends ChartWidget
 {
     protected static bool $isLazy = false;
     protected static ?string $heading = 'Drone Activity Statistics';
     protected int|string|array $columnSpan = 'full';
-    public $id;
-    protected $listeners = ['viewDrone'];
+    public $Drone_id;
+    public $Drone;
+    protected $listeners = ['showDroneStatistik'];
 
-    
+    public function showDroneStatistik($id)
+    {
+    // dd($this->Drone = $id);
+    $this->Drone_id = $id;
+    $this->Drone = Drone::find($id);
+    session(['drone_id' => $id]);
+    // $this->emitSelf('dataUpdated');
+    if (request()->routeIs('filament.admin.resources.drones.view')) {
+        return; 
+    }return redirect()->route('filament.admin.resources.drones.view', [
+        'tenant' => Auth()->user()->teams()->first()->id,
+        'record' => $id
+    ]);
 
-    public function viewDrone($id){
-        $this->id = $id;
-        
-    }
+}
+    //langsung ke load tidak berhenti sehingga menghasilkan null saat mengirim id ke sini, solusi alernative buatblade jangan di panggil dulu di action gunakan action lain viewdrone disana yang bermasalaha
+    /// render
     protected function getData(): array
     {
+        //aman boys, gunakan session untuk mendapat menyimpan id Drone
+        $droneId = session('drone_id');
+        // dd($droneId);
         $tenant_id = Auth()->user()->teams()->first()->id;
-        $flights = fligh::where('teams_id', $tenant_id)
+        $flights = fligh::where('teams_id', $tenant_id)->where('drones_id', $droneId)
             ->whereBetween('date_flight', [now()->startOfYear(), now()->endOfYear()])
             ->get();
     
@@ -35,10 +54,11 @@ class DroneStatistik extends ChartWidget
                 return ($hours * 3600) + ($minutes * 60) + $seconds;
             });
             $totalHours = $totalDuration / 3600;
+            $formatTotalHour = round($totalHours,1);
 
             return [
                 'totalFlights' => $totalFlights,
-                'totalDuration' => $totalHours,
+                'totalDuration' => $formatTotalHour,
             ];
         });
     
@@ -62,8 +82,9 @@ class DroneStatistik extends ChartWidget
     }
     protected function getOptions(): array
     {
+        $droneId = session('drone_id');
         $tenant_id = Auth()->user()->teams()->first()->id;
-        $flights = fligh::where('teams_id', $tenant_id)
+        $flights = fligh::where('teams_id', $tenant_id)->where('drones_id', $droneId)
             ->whereBetween('date_flight', [now()->startOfYear(), now()->endOfYear()])
             ->get();
             $data = $flights->groupBy(function ($item) {

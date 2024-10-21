@@ -29,6 +29,8 @@ class MaintenanceBatteryResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-cog';
     public static ?string $tenantOwnershipRelationshipName = 'teams';
+    public static ?int $navigationSort = 6;
+    public static ?string $navigationGroup = 'Maintenance';
 
     
 

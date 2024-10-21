@@ -1,10 +1,14 @@
 <?php
 
 namespace App\Providers\Filament;
+use App\Filament\Pages\Report;
+use App\Filament\Resources\CustomerResource;
+use App\Filament\Resources\DocumentResource;
 use App\Models\Team;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\DisableBladeIconComponents;
 use Filament\Http\Middleware\DispatchServingFilamentEvent;
+use Filament\Navigation\NavigationGroup;
 use Filament\Pages;
 use Filament\Panel;
 use Filament\PanelProvider;
@@ -62,6 +66,19 @@ class AdminPanelProvider extends PanelProvider
                 )
                 ->myProfileComponents([MyCustomComponent::class])
             )
+            //navigation Group
+            ->navigationGroups([
+                'master',
+                'Inventory',
+                'flight',
+                'Maintenance',
+                'report',
+                'Contact',
+                'Filament Shield',
+                'Payment',
+
+    ])
+            //end Navigation Group
             ->tenant(Team::class, ownershipRelationship: 'team')
             ->tenantRegistration(RegisterTeam::class)
             ->tenantProfile(EditTeamProfil::class)
@@ -96,6 +113,7 @@ class AdminPanelProvider extends PanelProvider
             ->authMiddleware([
                 Authenticate::class,
             ]);
+
             
             
     }

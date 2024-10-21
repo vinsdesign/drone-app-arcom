@@ -67,10 +67,13 @@ class BattreiResource extends Resource
                             ->required()
                             ->numeric()->columnSpan(2),
                         Forms\Components\BelongsToSelect::make('for_drone')->label('For Drone (Optional)')
+
                             // ->relationship('drone', 'name', function (Builder $query){
                             //     $currentTeamId = auth()->user()->teams()->first()->id;
                             //     $query->where('teams_id', $currentTeamId);
                             // })
+
+
                             ->searchable()
                             ->options(function (callable $get) use ($currentTeamId) {
                                 return drone::where('teams_id', $currentTeamId)->pluck('name', 'id');
@@ -219,7 +222,9 @@ class BattreiResource extends Resource
                 ->label('Filter by Status'),
             ])
             ->actions([
-                Tables\Actions\ViewAction::make(),
+                Tables\Actions\Action::make('showBattrey')
+                ->url(fn ($record) => route('battery.statistik', ['battery_id' => $record->id]))->label('View')
+                ->icon('heroicon-s-eye'),
                 Tables\Actions\EditAction::make(),
             ])
             ->bulkActions([

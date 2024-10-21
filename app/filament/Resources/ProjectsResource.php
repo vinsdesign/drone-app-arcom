@@ -4,6 +4,7 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\ProjectsResource\Pages;
 use App\Filament\Resources\ProjectsResource\RelationManagers;
+use App\Models\customer;
 use App\Models\Projects;
 use Filament\Forms;
 use Filament\Forms\Form;
@@ -22,6 +23,8 @@ class ProjectsResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
     public static ?string $tenantOwnershipRelationshipName = 'teams';
+    public static ?int $navigationSort = 4;
+    public static ?string $navigationGroup = ' ';
 
     public static function form(Form $form): Form
     {
@@ -32,22 +35,22 @@ class ProjectsResource extends Resource
                     ->schema([
                         Forms\Components\Hidden::make('teams_id')
                         ->default(auth()->user()->teams()->first()->id ?? null),
-                        Forms\Components\TextInput::make('case')
+                        Forms\Components\TextInput::make('case')->label('Case')
                             ->required()
                             ->maxLength(255),
-                        Forms\Components\TextInput::make('revenue')
+                        Forms\Components\TextInput::make('revenue')->label('Revenue')
                             ->required()
                             ->numeric(),
-                        Forms\Components\TextInput::make('currency')
+                        Forms\Components\TextInput::make('currency')->label('Currency')
                             ->required()
                             ->maxLength(255),
-                        Forms\Components\Select::make('customers_id')
-                            ->relationship('customers', 'name', function (Builder $query){
-                                $currentTeamId = auth()->user()->teams()->first()->id;
-                                $query->where('teams_id', $currentTeamId);
-                            })    
+                        Forms\Components\Select::make('customers_id')->label('Customer Name') 
+                            ->options(customer::where('teams_id', auth()->user()->teams()->first()->id)
+                            ->pluck('name', 'id')
+                            )->searchable()
+                            ->placeholder('Select an Customer')
                             ->required(),
-                        Forms\Components\TextArea::make('description')
+                        Forms\Components\TextArea::make('description')->label('Description')
                             ->required()
                             ->maxLength(255)->columnSpanFull(),
 

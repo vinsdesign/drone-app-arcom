@@ -6,7 +6,7 @@ use App\Filament\Resources\DocumentResource\Pages;
 use App\Filament\Resources\DocumentResource\RelationManagers;
 use App\Models\customer;
 use App\Models\Document;
-use App\Models\project;
+use App\Models\Projects;
 use App\Models\User;
 use Filament\Forms;
 use Filament\Forms\Form;
@@ -24,6 +24,14 @@ class DocumentResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-m-document-text';
     public static ?string $tenantOwnershipRelationshipName = 'teams';
+
+    public static ?int $navigationSort = 3;
+    public static ?string $navigationGroup = ' ';
+
+    public static function getNavigationLabel(): string
+    {
+        return 'Documents'; // Sesuaikan dengan label yang diinginkan
+    }
 
     public static function form(Form $form): Form
     {
