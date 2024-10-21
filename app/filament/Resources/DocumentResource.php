@@ -35,6 +35,7 @@ class DocumentResource extends Resource
 
     public static function form(Form $form): Form
     {
+        $currentTeamId = auth()->user()->teams()->first()->id;
         return $form
             ->schema([
                 Forms\Components\Section::make('')
@@ -66,10 +67,15 @@ class DocumentResource extends Resource
                     ->maxLength(255),
                 Forms\Components\DatePicker::make('expired_date')->label('Expired Date')
                     ->required(),
-                Forms\Components\Select::make('customers_id')->label('Customer (optional)')
-                ->options(customer::where('teams_id', auth()->user()->teams()->first()->id)
-                ->pluck('name', 'id')
-                )->searchable(),
+                Forms\Components\Select::make('customers_id')->label('Customer')
+                    // ->relationship('customers', 'name', function (Builder $query){
+                    //     $currentTeamId = auth()->user()->teams()->first()->id;
+                    //     $query->where('teams_id', $currentTeamId);
+                    // }),
+                    ->options(function (callable $get) use ($currentTeamId) {
+                        return customer::where('teams_id', $currentTeamId)->pluck('name', 'id');
+                    })
+                    ->searchable(),
                 Forms\Components\Select::make('scope')->label('Scope')
                     ->required()
                     ->options([
@@ -91,11 +97,17 @@ class DocumentResource extends Resource
                             $query->where('team_user.team_id', $currentTeamId); 
                         })->pluck('name', 'id'); 
                     })
+                    ->searchable()
                     ->required(),
                     Forms\Components\Select::make('projects_id')->label('Project / Job Reference')
-                    ->options(Projects::where('teams_id', auth()->user()->teams()->first()->id)
-                    ->pluck('case', 'id')
-                    )->searchable()
+                    // ->relationship('projects', 'case', function (Builder $query){
+                    //     $currentTeamId = auth()->user()->teams()->first()->id;;
+                    //     $query->where('teams_id', $currentTeamId);
+                    // })
+                    ->searchable()
+                    ->options(function (callable $get) use ($currentTeamId) {
+                        return project::where('teams_id', $currentTeamId)->pluck('case', 'id');
+                    })
                     ->columnSpanFull(),
                 Forms\Components\FileUpload::make('doc')->label('Upload Document')
                     ->acceptedFileTypes(['application/pdf']),
@@ -147,7 +159,7 @@ class DocumentResource extends Resource
                         $url = preg_match('/^https?:\/\//', $state) ? $state : "https://{$state}";
                         
                         // Mengembalikan tag <a> dengan atribut target untuk membuka di tab baru
-                        return "<a href='{$url}' target='_blank' style='padding:5px 10px; background-color:#ff8303; color:white; border-radius:5px;' rel='noopener noreferrer'>Klik Here</a>";
+                        return "<a href='{$url}' target='_blank' style='padding:5px 10px; background-color:#ff8303; color:white; border-radius:5px;' rel='noopener noreferrer'>Click Here</a>";
 
                     })
                     ->html(),

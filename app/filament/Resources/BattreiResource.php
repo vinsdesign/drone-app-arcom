@@ -33,6 +33,7 @@ class BattreiResource extends Resource
 
     public static function form(Form $form): Form
     {
+        $currentTeamId = auth()->user()->teams()->first()->id;
         return $form
             ->schema([
                 Forms\Components\Wizard::make([
@@ -66,13 +67,17 @@ class BattreiResource extends Resource
                             ->required()
                             ->numeric()->columnSpan(2),
                         Forms\Components\BelongsToSelect::make('for_drone')->label('For Drone (Optional)')
-                        ->options(drone::where('teams_id', auth()->user()->teams()->first()->id)
-                            ->pluck('name', 'id')
-                            )->searchable()
+
                             // ->relationship('drone', 'name', function (Builder $query){
                             //     $currentTeamId = auth()->user()->teams()->first()->id;
                             //     $query->where('teams_id', $currentTeamId);
                             // })
+
+
+                            ->searchable()
+                            ->options(function (callable $get) use ($currentTeamId) {
+                                return drone::where('teams_id', $currentTeamId)->pluck('name', 'id');
+                            })
                             ->columnSpanFull(),
                         Forms\Components\TextInput::make('cellCount')->label('Cell Count')
                             ->required()

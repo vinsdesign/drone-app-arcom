@@ -119,7 +119,8 @@ class DroneResource extends Resource
                                 return User::whereHas('teams', function (Builder $query) use ($currentTeamId) {
                                     $query->where('team_user.team_id', $currentTeamId); 
                                 })->pluck('name', 'id'); 
-                            })->searchable() 
+                            }) 
+                            ->searchable()
                             ->required()
                             ->columnSpanFull(),
                         Forms\Components\TextInput::make('firmware_v')->label('Firmware version')

@@ -40,6 +40,7 @@ class EquidmentResource extends Resource
 
     public static function form(Form $form): Form
     {
+        $currentTeamId = auth()->user()->teams()->first()->id;
         return $form
             ->schema([
                 Forms\Components\Wizard::make([
@@ -105,15 +106,21 @@ class EquidmentResource extends Resource
                             ])->searchable()
                             ->required()->columnSpan(2),
                         Forms\Components\Select::make('drones_id')->label('For Drone (Optional)')
-                        ->options(drone::where('teams_id', auth()->user()->teams()->first()->id)
-                        ->pluck('name', 'id')
-                        )->searchable(),
+                            // ->relationship('drones', 'name', function (Builder $query){
+                            //     $currentTeamId = auth()->user()->teams()->first()->id;
+                            //     $query->where('teams_id', $currentTeamId);
+                            // }),
+                            ->searchable()
+                            ->options(function (callable $get) use ($currentTeamId) {
+                                return drone::where('teams_id', $currentTeamId)->pluck('name', 'id');
+                            })
                     ])->columns(4),
                     //form ke dua
                     Forms\Components\Wizard\Step::make('Extra Information')
                         ->schema([
                         Forms\Components\Select::make('users_id')->label('Owner')
                             //->relationship('users', 'name')
+                            ->searchable()
                             ->options(function () {
                                 $currentTeamId = auth()->user()->teams()->first()->id; 
                         
