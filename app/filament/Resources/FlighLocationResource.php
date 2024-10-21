@@ -4,7 +4,9 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\FlighLocationResource\Pages;
 use App\Filament\Resources\FlighLocationResource\RelationManagers;
+use App\Models\customer;
 use App\Models\fligh_location;
+use App\Models\project;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -27,6 +29,7 @@ class FlighLocationResource extends Resource
 
     public static function form(Form $form): Form
     {
+        $currentTeamId = auth()->user()->teams()->first()->id;
         return $form
             ->schema([
                 //untuk tenancy
@@ -38,15 +41,25 @@ class FlighLocationResource extends Resource
                     ->Schema([
                         Forms\Components\TextInput::make('name'),
                         Forms\Components\Select::make('projects_id')
-                        ->relationship('projects','case', function (Builder $query){
-                            $currentTeamId = auth()->user()->teams()->first()->id;
-                            $query->where('teams_id', $currentTeamId);
-                        }),    
+                        // ->relationship('projects','case', function (Builder $query){
+                        //     $currentTeamId = auth()->user()->teams()->first()->id;
+                        //     $query->where('teams_id', $currentTeamId);
+                        // }),  
+                        ->options(function (callable $get) use ($currentTeamId) {
+                            return project::where('teams_id', $currentTeamId)->pluck('case', 'id');
+                        })
+                        ->label('Projects')
+                        ->searchable(),  
                         Forms\Components\Select::make('customers_id')
-                        ->relationship('customers','name', function (Builder $query){
-                            $currentTeamId = auth()->user()->teams()->first()->id;
-                            $query->where('teams_id', $currentTeamId);
-                        })    
+                        // ->relationship('customers','name', function (Builder $query){
+                        //     $currentTeamId = auth()->user()->teams()->first()->id;
+                        //     $query->where('teams_id', $currentTeamId);
+                        // })  
+                        ->options(function (callable $get) use ($currentTeamId) {
+                            return customer::where('teams_id', $currentTeamId)->pluck('name', 'id');
+                        })  
+                        ->label('Customers')
+                        ->searchable()
                         ->columnSpanFull(),
                         Forms\Components\TextArea::make('description')->columnSpanFull(),
                     ])->columns(2),

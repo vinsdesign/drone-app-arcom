@@ -4,7 +4,10 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\IncidentResource\Pages;
 use App\Filament\Resources\IncidentResource\RelationManagers;
+use App\Models\drone;
+use App\Models\fligh_location;
 use App\Models\Incident;
+use App\Models\project;
 use Filament\Forms;
 use Filament\Infolists\Components\Section;
 use Filament\Forms\Form;
@@ -28,6 +31,7 @@ class IncidentResource extends Resource
 
     public static function form(Form $form): Form
     {
+        $currentTeamId = auth()->user()->teams()->first()->id;
         return $form
             ->schema([
                 Forms\Components\Section::make('Incident Overview')
@@ -38,6 +42,7 @@ class IncidentResource extends Resource
                     Forms\Components\DatePicker::make('incident_date')
                     ->required(),
                     Forms\Components\TextInput::make('cause')
+                        ->label('Incident Cause')
                         ->required()
                         ->maxLength(255),
                     Forms\Components\Select::make('review')
@@ -48,15 +53,29 @@ class IncidentResource extends Resource
                         ]),
                     // Forms\Components\BelongsToSelect::make('location_id')
                     Forms\Components\Select::make('location_id')
-                    ->relationship('fligh_locations', 'name')
+                        // ->relationship('fligh_locations', 'name')
+                        ->options(function (callable $get) use ($currentTeamId) {
+                            return fligh_location::where('teams_id', $currentTeamId)->pluck('name', 'id');
+                        })
+                        ->searchable()
                         ->label('Flight Location')
                         ->required(),
                         // ->searchable(),
                      Forms\Components\Select::make('drone_id')
-                        ->relationship('drone','name')
+                        // ->relationship('drone','name')
+                        ->label('Drones')
+                        ->options(function (callable $get) use ($currentTeamId) {
+                            return drone::where('teams_id', $currentTeamId)->pluck('name', 'id');
+                        })
+                        ->searchable()
                         ->required(),
                     Forms\Components\Select::make('project_id')
-                        ->relationship('project','case')
+                        // ->relationship('project','case')
+                        ->label('Projects')
+                        ->options(function (callable $get) use ($currentTeamId) {
+                            return project::where('teams_id', $currentTeamId)->pluck('case', 'id');
+                        })
+                        ->searchable()
                         ->required(),
                     Forms\Components\TextInput::make('personel_involved_id')
                         ->required()

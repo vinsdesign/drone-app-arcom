@@ -22,6 +22,10 @@ use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Filament\Support\Colors\Color;
 use Filament\Widgets\StatsOverviewWidget\Card;
 use App\Filament\Widgets\FlightChart;
+use App\Models\battrei;
+use App\Models\drone;
+use App\Models\equidment;
+use App\Models\fligh_location;
 
 class FlighResource extends Resource
 {
@@ -101,6 +105,7 @@ class FlighResource extends Resource
                     ->relationship('projects', 'case')
                     ->required()
                     ->reactive()
+                    ->searchable()
                     ->afterStateUpdated(function ($state, callable $set) {
                         if ($state) {
                             $project = Projects::find($state);
@@ -122,12 +127,17 @@ class FlighResource extends Resource
                     ->required()
                     ->disabled(),
                 Forms\Components\Select::make('location_id')
-                    ->relationship('fligh_location', 'name', function (Builder $query) {
-                        $currentTeamId = auth()->user()->teams()->first()->id;
-                        $query->whereHas('teams', function (Builder $query) use ($currentTeamId){
-                            $query->where('teams_id', $currentTeamId);
-                        });
+                    // ->relationship('fligh_location', 'name', function (Builder $query) {
+                    //     $currentTeamId = auth()->user()->teams()->first()->id;
+                    //     $query->whereHas('teams', function (Builder $query) use ($currentTeamId){
+                    //         $query->where('teams_id', $currentTeamId);
+                    //     });
+                    // })
+                    ->options(function (callable $get) use ($currentTeamId) {
+                        return fligh_location::where('teams_id', $currentTeamId)->pluck('name', 'id');
                     })
+                    ->label('Location')
+                    ->searchable()
                     ->required(),
                 ])->columns(3),
                 Forms\Components\Section::make('Personnel')
@@ -159,21 +169,33 @@ class FlighResource extends Resource
                     ->description('')
                     ->schema([      
                 Forms\Components\Select::make('drones_id')
-                    ->relationship('drones', 'name', function (Builder $query){
-                        $currentTeamId = auth()->user()->teams()->first()->id;;
-                        $query->where('teams_id', $currentTeamId);
-                    })    
+                    // ->relationship('drones', 'name', function (Builder $query){
+                    //     $currentTeamId = auth()->user()->teams()->first()->id;;
+                    //     $query->where('teams_id', $currentTeamId);
+                    // })    
                     ->required()
+                    ->label('Drones')
+                    ->options(function (callable $get) use ($currentTeamId) {
+                        return drone::where('teams_id', $currentTeamId)->where('status', 'airworthy')->whereHas('maintence_drone', function ($query) {
+                            $query->orWhere('status', 'completed'); 
+                        })
+                        ->pluck('name', 'id');
+                    })
+                    ->searchable()
                     ->columnSpanFull(),
                 //kits
                 Forms\Components\Select::make('kits_id')
                     ->label('Kits')
-                    ->relationship('kits', 'name', function (Builder $query) {
-                        $currentTeamId = auth()->user()->teams()->first()->id;
-                        $query->whereHas('teams', function (Builder $query) use ($currentTeamId){
-                            $query->where('team_id', $currentTeamId);
-                        });
+                    // ->relationship('kits', 'name', function (Builder $query) {
+                    //     $currentTeamId = auth()->user()->teams()->first()->id;
+                    //     $query->whereHas('teams', function (Builder $query) use ($currentTeamId){
+                    //         $query->where('team_id', $currentTeamId);
+                    //     });
+                    // })
+                    ->options(function (callable $get) use ($currentTeamId) {
+                        return kits::where('teams_id', $currentTeamId)->pluck('name', 'id');
                     })
+                    ->searchable()
                     ->reactive()
                     ->afterStateUpdated(function ($state, callable $set) {
                         if ($state) {
@@ -219,15 +241,23 @@ class FlighResource extends Resource
                         ->disabled(), 
 
                 Forms\Components\Select::make('battreis_id')->label('Battery')
-                    ->relationship('battreis', 'name', function (Builder $query){
-                        $currentTeamId = auth()->user()->teams()->first()->id;;
-                        $query->where('teams_id', $currentTeamId);
-                    }),
+                    // ->relationship('battreis', 'name', function (Builder $query){
+                    //     $currentTeamId = auth()->user()->teams()->first()->id;;
+                    //     $query->where('teams_id', $currentTeamId);
+                    // }),
+                    ->options(function (callable $get) use ($currentTeamId) {
+                        return battrei::where('teams_id', $currentTeamId)->pluck('name', 'id');
+                    })
+                    ->searchable(),
                 Forms\Components\Select::make('equidments_id')->label('Equipment')
-                    ->relationship('equidments', 'name', function (Builder $query){
-                        $currentTeamId = auth()->user()->teams()->first()->id;;
-                        $query->where('teams_id', $currentTeamId);
-                    }),
+                    // ->relationship('equidments', 'name', function (Builder $query){
+                    //     $currentTeamId = auth()->user()->teams()->first()->id;;
+                    //     $query->where('teams_id', $currentTeamId);
+                    // }),
+                    ->options(function (callable $get) use ($currentTeamId) {
+                        return equidment::where('teams_id', $currentTeamId)->pluck('name', 'id');
+                    })
+                    ->searchable(),
                 Forms\Components\TextInput::make('pre_volt')->label('Pre Voltage')
                     ->numeric()    
                     ->required(),
