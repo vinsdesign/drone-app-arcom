@@ -4,6 +4,7 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\EquidmentResource\Pages;
 use App\Filament\Resources\EquidmentResource\RelationManagers;
+use App\Models\drone;
 use App\Models\Equidment;
 use App\Models\User;
 use Filament\Forms;
@@ -101,13 +102,12 @@ class EquidmentResource extends Resource
                                 'telementry_radio' => 'Telementry Radio',
                                 'tripod' => 'Tripod',
                                 'video_transmitter' => 'Video Transmitter'
-                            ])
+                            ])->searchable()
                             ->required()->columnSpan(2),
                         Forms\Components\Select::make('drones_id')->label('For Drone (Optional)')
-                            ->relationship('drones', 'name', function (Builder $query){
-                                $currentTeamId = auth()->user()->teams()->first()->id;
-                                $query->where('teams_id', $currentTeamId);
-                            }),
+                        ->options(drone::where('teams_id', auth()->user()->teams()->first()->id)
+                        ->pluck('name', 'id')
+                        )->searchable(),
                     ])->columns(4),
                     //form ke dua
                     Forms\Components\Wizard\Step::make('Extra Information')
@@ -253,6 +253,7 @@ class EquidmentResource extends Resource
             'index' => Pages\ListEquidments::route('/'),
             'create' => Pages\CreateEquidment::route('/create'),
             'edit' => Pages\EditEquidment::route('/{record}/edit'),
+            'view' => Pages\ViewEquidment::route('/{record}')
         ];
     }
 }

@@ -19,6 +19,7 @@ use Illuminate\Container\Attributes\Auth;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Novadaemon\FilamentCombobox\Combobox;
+use Filament\Support\Colors\Color;
 
 class KitsResource extends Resource
 {
@@ -96,12 +97,24 @@ class KitsResource extends Resource
                     ->boolean(),
                 Tables\Columns\TextColumn::make('drone.name')
                     ->numeric()
+                    ->url(fn($record) => $record->users_id?route('filament.admin.resources.drones.view', [
+                        'tenant' => Auth()->user()->teams()->first()->id,
+                        'record' => $record->users_id,
+                    ]):null)->color(Color::Blue)
                     ->sortable(),
                 Tables\Columns\TextColumn::make('battrei.name')
                     ->numeric()
+                    ->url(fn($record) => $record->users_id?route('filament.admin.resources.battreis.view', [
+                        'tenant' => Auth()->user()->teams()->first()->id,
+                        'record' => $record->users_id,
+                    ]):null)->color(Color::Blue)
                     ->sortable(),
                 Tables\Columns\TextColumn::make('equidment.name')
                     ->numeric()
+                    ->url(fn($record) => $record->users_id?route('filament.admin.resources.equidments.view', [
+                        'tenant' => Auth()->user()->teams()->first()->id,
+                        'record' => $record->users_id,
+                    ]):null)->color(Color::Blue)
                     ->sortable(),
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()

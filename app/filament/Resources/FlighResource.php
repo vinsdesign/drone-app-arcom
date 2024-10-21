@@ -4,8 +4,12 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\FlighResource\Pages;
 use App\Filament\Resources\FlighResource\RelationManagers;
+use App\Models\battrei;
 use App\Models\customer;
+use App\Models\drone;
+use App\Models\equidment;
 use App\Models\Fligh;
+use App\Models\fligh_location;
 use App\Models\kits;
 use App\Models\Projects;
 use Closure;
@@ -34,8 +38,9 @@ class FlighResource extends Resource
     protected static ?string $navigationLabel = 'Flights' ;
 
     Protected static ?string $modelLabel = 'Flights';
-
+    public static ?int $navigationSort = 4;
     protected static ?string $navigationIcon = 'heroicon-s-clipboard-document-list';
+    public static ?string $navigationGroup = 'flight';
 
 
     public static function form(Form $form): Form
@@ -79,7 +84,7 @@ class FlighResource extends Resource
                         'survey' => 'Survey',
                         'test_flight' => 'Test Flight',
                         'training_flight' => 'Training Flight',
-                    ])
+                    ])->searchable()
                     ->required(),
                 Forms\Components\Select::make('ops')->label('Ops')
                     ->options([
@@ -111,9 +116,9 @@ class FlighResource extends Resource
                             $set('customers_name', null);
                         }
                     })
-                    ->options(function (callable $get) use ($currentTeamId) {
-                        return Projects::where('teams_id', $currentTeamId)->pluck('case', 'id');
-                    }),
+                    ->options(Projects::where('teams_id', auth()->user()->teams()->first()->id)
+                            ->pluck('case', 'id')
+                            )->searchable(),
                 Forms\Components\Hidden::make('customers_id') 
                     ->required(),
                 Forms\Components\TextInput::make('customers_name')
@@ -122,12 +127,9 @@ class FlighResource extends Resource
                     ->required()
                     ->disabled(),
                 Forms\Components\Select::make('location_id')
-                    ->relationship('fligh_location', 'name', function (Builder $query) {
-                        $currentTeamId = auth()->user()->teams()->first()->id;
-                        $query->whereHas('teams', function (Builder $query) use ($currentTeamId){
-                            $query->where('teams_id', $currentTeamId);
-                        });
-                    })
+                ->options(fligh_location::where('teams_id', auth()->user()->teams()->first()->id)
+                ->pluck('name', 'id')
+                )->searchable()
                     ->required(),
                 ])->columns(3),
                 Forms\Components\Section::make('Personnel')
@@ -159,10 +161,9 @@ class FlighResource extends Resource
                     ->description('')
                     ->schema([      
                 Forms\Components\Select::make('drones_id')
-                    ->relationship('drones', 'name', function (Builder $query){
-                        $currentTeamId = auth()->user()->teams()->first()->id;;
-                        $query->where('teams_id', $currentTeamId);
-                    })    
+                ->options(drone::where('teams_id', auth()->user()->teams()->first()->id)
+                ->pluck('name', 'id')
+                )->searchable() 
                     ->required()
                     ->columnSpanFull(),
                 //kits
@@ -219,15 +220,13 @@ class FlighResource extends Resource
                         ->disabled(), 
 
                 Forms\Components\Select::make('battreis_id')->label('Battery')
-                    ->relationship('battreis', 'name', function (Builder $query){
-                        $currentTeamId = auth()->user()->teams()->first()->id;;
-                        $query->where('teams_id', $currentTeamId);
-                    }),
+                ->options(battrei::where('teams_id', auth()->user()->teams()->first()->id)
+                ->pluck('name', 'id')
+                )->searchable(),
                 Forms\Components\Select::make('equidments_id')->label('Equipment')
-                    ->relationship('equidments', 'name', function (Builder $query){
-                        $currentTeamId = auth()->user()->teams()->first()->id;;
-                        $query->where('teams_id', $currentTeamId);
-                    }),
+                ->options(equidment::where('teams_id', auth()->user()->teams()->first()->id)
+                ->pluck('name', 'id')
+                )->searchable(),
                 Forms\Components\TextInput::make('pre_volt')->label('Pre Voltage')
                     ->numeric()    
                     ->required(),
@@ -377,9 +376,20 @@ class FlighResource extends Resource
                 TextEntry::make('kits.name')->label('Kits'),
                 //TextEntry::make('battery_name')->label('Kits Battery'),
                 // TextEntry::make('kits.equidment.type')->label('Kits Equipments (Camera) '),
-                TextEntry::make('drones.name')->label('Drone'),
-                TextEntry::make('battreis.name')->label('Battery'),
-                TextEntry::make('equidments.name')->label('Equipment'),
+                TextEntry::make('drones.name')->label('Drone')
+                ->url(fn($record) => $record->users_id?route('filament.admin.resources.drones.view', [
+                    'tenant' => Auth()->user()->teams()->first()->id,
+                    'record' => $record->users_id,
+                ]):null)->color(Color::Blue),
+                TextEntry::make('battreis.name')->label('Battery')
+                ->url(fn($record) => $record->users_id?route('filament.admin.resources.battreis.view', [
+                    'tenant' => Auth()->user()->teams()->first()->id,
+                    'record' => $record->users_id,
+                ]):null)->color(Color::Blue),
+                TextEntry::make('equidments.name')->label('Equipment')->url(fn($record) => $record->users_id?route('filament.admin.resources.equidments.view', [
+                    'tenant' => Auth()->user()->teams()->first()->id,
+                    'record' => $record->users_id,
+                ]):null)->color(Color::Blue),
                 TextEntry::make('pre_volt')->label('Pre-Voltage'),
                 TextEntry::make('fuel_used')->label('Fuel Used'),
                 ])->columns(4)

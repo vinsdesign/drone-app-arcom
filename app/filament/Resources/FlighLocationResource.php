@@ -4,7 +4,9 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\FlighLocationResource\Pages;
 use App\Filament\Resources\FlighLocationResource\RelationManagers;
+use App\Models\customer;
 use App\Models\fligh_location;
+use App\Models\Projects;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -38,15 +40,13 @@ class FlighLocationResource extends Resource
                     ->Schema([
                         Forms\Components\TextInput::make('name'),
                         Forms\Components\Select::make('projects_id')
-                        ->relationship('projects','case', function (Builder $query){
-                            $currentTeamId = auth()->user()->teams()->first()->id;
-                            $query->where('teams_id', $currentTeamId);
-                        }),    
+                        ->options(Projects::where('teams_id', auth()->user()->teams()->first()->id)
+                        ->pluck('case', 'id')
+                        )->searchable(),    
                         Forms\Components\Select::make('customers_id')
-                        ->relationship('customers','name', function (Builder $query){
-                            $currentTeamId = auth()->user()->teams()->first()->id;
-                            $query->where('teams_id', $currentTeamId);
-                        })    
+                        ->options(customer::where('teams_id', auth()->user()->teams()->first()->id)
+                        ->pluck('name', 'id')
+                        )->searchable()    
                         ->columnSpanFull(),
                         Forms\Components\TextArea::make('description')->columnSpanFull(),
                     ])->columns(2),

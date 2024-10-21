@@ -2,20 +2,17 @@
 
 namespace Database\Seeders;
 
-use App\Models\fligh_location;
-use App\Models\kits;
 use Illuminate\Database\Seeder;
 use App\Models\Fligh; // Pastikan nama model sesuai dengan casing
+use Faker\Factory as Faker;
 use App\Models\Customer; // Model Customer
-use App\Models\Location; // Model FlighLocation
-use App\Models\Project; // Model Project
-use App\Models\Kit; // Model Kit
+use App\Models\fligh_location; // Model FlighLocation
+use App\Models\Project; // Model Projects
+use App\Models\kits; // Model Kit
 use App\Models\User; // Model User
 use App\Models\Drone; // Model Drone
-use App\Models\Battrei; // Model Battrei
-use App\Models\Equidment; // Model Equidment
-use App\Models\Team; // Model Team
-use Faker\Factory as Faker;
+use App\Models\battrei; // Model Bluetooth
+use App\Models\equidment; // Model
 
 class FlighSeeder extends Seeder
 {

@@ -17,6 +17,8 @@ class Report extends Page
 {
     protected static ?string $navigationIcon = 'heroicon-o-document-text';
     public static ?string $tenantOwnershipRelationshipName = 'teams';
+    public static ?int $navigationSort = 9;
+    public static ?string $navigationGroup = 'report';
     protected static string $view = 'filament.pages.report';
 
     public function downloadReport(Request $request)

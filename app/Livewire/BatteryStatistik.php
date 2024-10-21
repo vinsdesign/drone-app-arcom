@@ -2,6 +2,7 @@
 
 namespace App\Livewire;
 
+use App\Models\battrei;
 use Filament\Widgets\ChartWidget;
 use App\Models\fligh;
 use Illuminate\Support\Carbon;
@@ -10,12 +11,31 @@ class BatteryStatistik extends ChartWidget
 {
     protected static ?string $heading = 'Battery Activity Statistics';
     protected int|string|array $columnSpan = 'full';
+    protected static bool $isLazy = false;
+    public $battery_id;
+    public $battery;
+    protected $listeners = ['showBatteryStatistik'];
 
+    public function showBatteryStatistik($id)
+    {
+    // dd($this->Drone = $id);
+    $this->battery_id = $id;
+    $this->battery = battrei::find($id);
+    session(['battery_id' => $id]);
+    // $this->emitSelf('dataUpdated');
+    if (request()->routeIs('filament.admin.resources.batteris.view')) {
+        return; 
+    }return redirect()->route('filament.admin.resources.battreis.view', [
+        'tenant' => Auth()->user()->teams()->first()->id,
+        'record' => $id
+    ]);
 
+}
     protected function getData(): array
     {
+        $batteryID = session('battery_id');
         $tenant_id = Auth()->user()->teams()->first()->id;
-        $flights = fligh::where('teams_id', $tenant_id)
+        $flights = fligh::where('teams_id', $tenant_id)->where('battreis_id', $batteryID)
             ->whereBetween('date_flight', [now()->startOfYear(), now()->endOfYear()])
             ->get();
     
@@ -28,10 +48,11 @@ class BatteryStatistik extends ChartWidget
                 return ($hours * 3600) + ($minutes * 60) + $seconds;
             });
             $totalHours = $totalDuration / 3600;
+            $formatTotalHour = round($totalHours,1);
 
             return [
                 'totalFlights' => $totalFlights,
-                'totalDuration' => $totalHours,
+                'totalDuration' => $formatTotalHour,
             ];
         });
     
@@ -55,8 +76,9 @@ class BatteryStatistik extends ChartWidget
     }
     protected function getOptions(): array
     {
+        $batteryID = session('battery_id');
         $tenant_id = Auth()->user()->teams()->first()->id;
-        $flights = fligh::where('teams_id', $tenant_id)
+        $flights = fligh::where('teams_id', $tenant_id)->where('battreis_id', $batteryID)
             ->whereBetween('date_flight', [now()->startOfYear(), now()->endOfYear()])
             ->get();
             $data = $flights->groupBy(function ($item) {

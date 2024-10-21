@@ -10,7 +10,7 @@ use Flowframe\Trend\TrendValue;
 
 class FlightDurationChart extends ChartWidget
 {
-    protected static ?string $heading = 'Duration Flight Minute';
+    protected static ?string $heading = 'Duration Flight Hours';
     protected static string $color = 'success';
     protected static bool $isLazy = false;
 
@@ -32,14 +32,17 @@ class FlightDurationChart extends ChartWidget
                 }
             }
             $totalMinutes = $totalSeconds / 60;
+            $totalHours = $totalMinutes / 60;
+            $formatTotalHour = round($totalHours,1);
+            
 
-            return $totalMinutes;
+            return $formatTotalHour;
         });
  
     return [
         'datasets' => [
             [
-                'label' => 'Total Flight Duration (Minutes)',
+                'label' => 'Total Flight Duration (Hours)',
                 'data' => $data->values(),
             ],
         ],

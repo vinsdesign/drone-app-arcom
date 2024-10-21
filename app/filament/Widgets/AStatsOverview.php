@@ -18,19 +18,22 @@ class AStatsOverview extends BaseWidget
         $totalProject = project::where('teams_id', $tenant_id)->count('case');
         $totalDrone = drone::where('teams_id', $tenant_id)->count('name');
         $flights = fligh::where('teams_id', $tenant_id)->get();
-        $totalSeconds = 0;
-        foreach ($flights as $flight) {
-            if (preg_match('/^\d{2}:\d{2}:\d{2}$/', $flight->duration)) {
+         $totalDurationInSeconds = $flights->sum(function ($flight) {
                 list($hours, $minutes, $seconds) = explode(':', $flight->duration);
-                $totalSeconds += ($hours * 3600) + ($minutes * 60) + $seconds;
-            }
-        }
-        $totalDuration = \Carbon\CarbonInterval::seconds($totalSeconds)->cascade()->format('%H:%I:%S');
+                return ($hours * 3600) + ($minutes * 60) + $seconds;
+            });
+            
+            $totalHours = floor($totalDurationInSeconds / 3600);
+            $totalMinutes = floor(($totalDurationInSeconds % 3600) / 60);
+            $totalSeconds = $totalDurationInSeconds % 60;
+            
+            // Format total durasi
+            $formattedTotalDuration = sprintf('%02d:%02d:%02d', $totalHours, $totalMinutes, $totalSeconds);
         return [
             Stat::make('Total Flight', $FlightsCount),
             Stat::make('Total Project', $totalProject),
             Stat::make('Total Drone', $totalDrone),
-            Stat::make('Total Flight Duration', $totalDuration),
+            Stat::make('Total Flight Duration', $formattedTotalDuration),
         ];
     }
 }

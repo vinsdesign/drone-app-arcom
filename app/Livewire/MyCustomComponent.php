@@ -28,18 +28,18 @@ class MyCustomComponent extends MyProfileComponent
     {
         return $form
             ->schema([
-                TextInput::make('phone')
+                TextInput::make('phone')->label('Phone')
                         ->tel()
                         ->unique(User::class, 'phone') // Validasi unique
                         ->rules(['unique:users,phone'])
                         ->numeric(),
-                TextInput::make('country')
+                TextInput::make('country')->label('Country')
                         ->maxLength(255),
-                TextInput::make('lenguage')
+                TextInput::make('lenguage')->label('Languages')
                         ->maxLength(255),
-                TextInput::make('sertif')
+                TextInput::make('sertif')->label('Sertification')
                         ->maxLength(255),
-                TextInput::make('timezone')
+                TextInput::make('timezone')->label('Timezone')
                         ->maxLength(255),
             ])
             ->statePath('data');

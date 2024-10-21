@@ -4,7 +4,9 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\DocumentResource\Pages;
 use App\Filament\Resources\DocumentResource\RelationManagers;
+use App\Models\customer;
 use App\Models\Document;
+use App\Models\Projects;
 use App\Models\User;
 use Filament\Forms;
 use Filament\Forms\Form;
@@ -22,6 +24,14 @@ class DocumentResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-m-document-text';
     public static ?string $tenantOwnershipRelationshipName = 'teams';
+
+    public static ?int $navigationSort = 3;
+    public static ?string $navigationGroup = ' ';
+
+    public static function getNavigationLabel(): string
+    {
+        return 'Documents'; // Sesuaikan dengan label yang diinginkan
+    }
 
     public static function form(Form $form): Form
     {
@@ -56,11 +66,10 @@ class DocumentResource extends Resource
                     ->maxLength(255),
                 Forms\Components\DatePicker::make('expired_date')->label('Expired Date')
                     ->required(),
-                Forms\Components\Select::make('customers_id')->label('Customer')
-                    ->relationship('customers', 'name', function (Builder $query){
-                        $currentTeamId = auth()->user()->teams()->first()->id;
-                        $query->where('teams_id', $currentTeamId);
-                    }),
+                Forms\Components\Select::make('customers_id')->label('Customer (optional)')
+                ->options(customer::where('teams_id', auth()->user()->teams()->first()->id)
+                ->pluck('name', 'id')
+                )->searchable(),
                 Forms\Components\Select::make('scope')->label('Scope')
                     ->required()
                     ->options([
@@ -84,10 +93,9 @@ class DocumentResource extends Resource
                     })
                     ->required(),
                     Forms\Components\Select::make('projects_id')->label('Project / Job Reference')
-                    ->relationship('projects', 'case', function (Builder $query){
-                        $currentTeamId = auth()->user()->teams()->first()->id;;
-                        $query->where('teams_id', $currentTeamId);
-                    })
+                    ->options(Projects::where('teams_id', auth()->user()->teams()->first()->id)
+                    ->pluck('case', 'id')
+                    )->searchable()
                     ->columnSpanFull(),
                 Forms\Components\FileUpload::make('doc')->label('Upload Document')
                     ->acceptedFileTypes(['application/pdf']),

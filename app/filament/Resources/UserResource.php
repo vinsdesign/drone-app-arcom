@@ -20,9 +20,11 @@ use Illuminate\Support\Facades\DB;
 class UserResource extends Resource
 {
     protected static ?string $model = User::class;
-    protected static ?string $navigationLabel = 'Personnel';
+    protected static ?string $navigationLabel = 'Personel';
     protected static ?string $navigationIcon = 'heroicon-s-user-group';
-    protected static ?string $modelLabel = 'Personnel';
+    protected static ?string $modelLabel = 'Personel';
+    public static ?int $navigationSort = 2;
+    public static ?string $navigationGroup = ' ';
     public static ?string $tenantOwnershipRelationshipName = 'teams';
 
     public static function form(Form $form): Form
