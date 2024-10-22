@@ -19,10 +19,10 @@ return new class extends Migration
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
             $table->string('phone')->unique()->nullable();
-            $table->string('country')->nullable();
-            $table->string('lenguage')->nullable();
+            $table->foreignId('countries_id')->nullable()->constrainedTo('countries')->onDelete('cascade');
+            $table->foreignId('cities_id')->nullable()->constrainedTo('cities')->onDelete('cascade');
             $table->string('sertif')->nullable();
-            $table->string('timezone')->nullable();
+            $table->string('address')->nullable();
             $table->foreignId('organization_id')->nullable()->constrainedTo('organization')->onDelete('cascade');
             $table->rememberToken();
             $table->timestamps();

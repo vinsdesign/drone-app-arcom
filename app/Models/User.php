@@ -37,7 +37,7 @@ class User extends Authenticatable implements HasTenants, FilamentUser, HasAvata
      *
      * @var array<int, string>
      */
-    protected $fillable = ['name', 'email', 'password', 'role','country','sertif','phone','lenguage','timezone','avatar_url'];
+    protected $fillable = ['name', 'email', 'password', 'role','countries_id','cities_id','sertif','phone','address','avatar_url'];
 
 
     /**
@@ -80,5 +80,11 @@ class User extends Authenticatable implements HasTenants, FilamentUser, HasAvata
     public function canAccessTenant(Model $tenant): bool
     {
         return $this->teams()->whereKey($tenant)->exists();
+    }
+    public function countries(){
+        return $this->belongsTo(countrie::class);
+    }
+    public function cities(){
+        return $this->belongsTo(citie::class);
     }
 }

@@ -26,6 +26,7 @@ use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Filament\Support\Colors\Color;
 use Filament\Widgets\StatsOverviewWidget\Card;
 use App\Filament\Widgets\FlightChart;
+use Carbon\Carbon;
 
 
 class FlighResource extends Resource
@@ -55,14 +56,30 @@ class FlighResource extends Resource
                 Forms\Components\TextInput::make('name')
                     ->required()
                     ->maxLength(255),
-                Forms\Components\DatePicker::make('date_flight')
+                Forms\Components\DateTimePicker::make('start_date_flight')->label('Start Date Flight')
+                ->afterStateUpdated(function (callable $get, callable $set) {
+                    $start = $get('start_date_flight');
+                    $end = $get('end_date_flight');
+                    if ($start && $end) {
+                        $diffInSeconds = Carbon::parse($start)->diffInSeconds(Carbon::parse($end));
+                        $duration = gmdate('H:i:s', $diffInSeconds); // Format menjadi hh:mm:ss
+                        $set('duration', $duration);
+                    }
+                })->reactive()
                     ->required(),
-                Forms\Components\TextInput::make('duration')
-                    ->required()
-                    ->label('Duration')
-                    ->placeholder('hh:mm:ss') 
-                    //->helperText('Enter duration in hh:mm:ss format')
-                    ->default('00:00:00'),
+                Forms\Components\DateTimePicker::make('end_date_flight')->label('End Date Flight')
+                ->afterStateUpdated(function (callable $get, callable $set) {
+                    $start = $get('start_date_flight');
+                    $end = $get('end_date_flight');
+                    if ($start && $end) {
+                        $diffInSeconds = Carbon::parse($start)->diffInSeconds(Carbon::parse($end));
+                        $duration = gmdate('H:i:s', $diffInSeconds); // Format menjadi hh:mm:ss
+                        $set('duration', $duration);
+                    }
+                })->reactive()
+                    ->required(),
+                Forms\Components\Hidden::make('duration')
+                    ->reactive(),
                 Forms\Components\Select::make('type')->label('Flight Type')
                     ->options([
                         'commercial-agriculture' => 'Commercial-Agriculture',

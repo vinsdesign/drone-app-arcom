@@ -13,7 +13,8 @@ class fligh extends Model
 
     protected $fillable =[
        'name',
-        'date_flight',
+        'start_date_flight',
+        'end_date_flight',
         'duration',
         'type',
         'ops',
