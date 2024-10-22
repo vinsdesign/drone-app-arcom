@@ -57,6 +57,10 @@ class FlighResource extends Resource
                     ->maxLength(255),
                 Forms\Components\DatePicker::make('date_flight')
                     ->required(),
+                    // ->reactive()
+                    // ->afterStateUpdated(function ($state, callable $set){
+                    //     $set('flight_date', $state);
+                    // }),
                 Forms\Components\TextInput::make('duration')
                     ->required()
                     ->label('Duration')
@@ -178,9 +182,13 @@ class FlighResource extends Resource
                     ->required()
                     ->label('Drones')
                     ->options(function (callable $get) use ($currentTeamId) {
+                        //$flightDate = $get('flight_date');
                         return drone::where('teams_id', $currentTeamId)->where('status', 'airworthy')->whereHas('maintence_drone', function ($query) {
                             $query->orWhere('status', 'completed'); 
                         })
+                        // ->whereDoesntHave('fligh', function ($query) use ($flightDate) {
+                        //     $query->whereDate('date_flight', $flightDate); // Pastikan equipment tidak digunakan di tanggal flight yang sama
+                        // })
                         ->pluck('name', 'id');
                     })
                     ->searchable()
@@ -194,9 +202,15 @@ class FlighResource extends Resource
                     //         $query->where('team_id', $currentTeamId);
                     //     });
                     // })
-                    ->options(function (callable $get) use ($currentTeamId) {
-                        return kits::where('teams_id', $currentTeamId)->pluck('name', 'id');
-                    })
+                    // ->options(function (callable $get) use ($currentTeamId) {
+                    //     //$flightDate = $get('flight_date'); // Ambil tanggal flight
+                
+                    //     return kits::where('teams_id', $currentTeamId)
+                    //         ->whereDoesntHave('fligh', function ($query) use ($flightDate) {
+                    //             $query->whereDate('date_flight', $flightDate); // Filter kits yang belum digunakan pada tanggal yang sama
+                    //         })
+                    //         ->pluck('name', 'id');
+                    // })
                     ->searchable()
                     ->reactive()
                     ->afterStateUpdated(function ($state, callable $set) {
@@ -250,6 +264,15 @@ class FlighResource extends Resource
                     ->options(function (callable $get) use ($currentTeamId) {
                         return battrei::where('teams_id', $currentTeamId)->pluck('name', 'id');
                     })
+                    // ->options(function (callable $get) use ($currentTeamId) {
+                    //     $flightDate = $get('flight_date'); // Ambil tanggal flight
+                
+                    //     return battrei::where('teams_id', $currentTeamId)
+                    //         ->whereDoesntHave('fligh', function ($query) use ($flightDate) {
+                    //             $query->whereDate('date_flight', $flightDate); // Filter kits yang belum digunakan pada tanggal yang sama
+                    //         })
+                    //         ->pluck('name', 'id');
+                    // })
                     ->searchable(),
                 Forms\Components\Select::make('equidments_id')->label('Equipment')
                     // ->relationship('equidments', 'name', function (Builder $query){
@@ -257,7 +280,17 @@ class FlighResource extends Resource
                     //     $query->where('teams_id', $currentTeamId);
                     // }),
                     ->options(function (callable $get) use ($currentTeamId) {
-                        return equidment::where('teams_id', $currentTeamId)->pluck('name', 'id');
+                        $flightDate = $get('flight_date'); // Ambil tanggal flight
+                        
+                        return equidment::where('teams_id', $currentTeamId)
+                            ->where('status', 'airworthy')
+                            ->whereHas('maintence_eq', function ($query) {
+                                $query->orWhere('status', 'completed'); // Saring equipment yang maintenance-nya sudah selesai
+                            })
+                            // ->whereDoesntHave('fligh', function ($query) use ($flightDate) {
+                            //     $query->whereDate('date_flight', $flightDate); // Pastikan equipment tidak digunakan di tanggal flight yang sama
+                            // })
+                            ->pluck('name', 'id'); // Mengambil nama dan ID equipment yang sesuai dengan kriteria
                     })
                     ->searchable(),
                 Forms\Components\TextInput::make('pre_volt')->label('Pre Voltage')

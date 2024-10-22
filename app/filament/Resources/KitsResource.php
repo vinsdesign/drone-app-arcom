@@ -63,6 +63,9 @@ class KitsResource extends Resource
                     ->multiple()
                     ->options(
                         battrei::where('teams_id', auth()->user()->teams()->first()->id)
+                            ->whereDoesntHave('kits', function ($query){
+                                $query->whereNotNull('battrei_id');
+                            })
                             ->pluck('name', 'id')
                     )
                     ->visible(fn (callable $get) => $get('type') === 'battery' || $get('type') === 'mix')
@@ -76,6 +79,9 @@ class KitsResource extends Resource
                     ->multiple()
                     ->options(
                         equidment::where('teams_id', auth()->user()->teams()->first()->id)
+                            ->whereDoesntHave('kits', function ($query){
+                                $query->whereNotNull('equidment_id');
+                            })
                             // ->pluck('name', 'id')
                             ->get()
                             ->mapWithKeys(function ($equidment) {
@@ -102,6 +108,7 @@ class KitsResource extends Resource
                 Tables\Columns\IconColumn::make('enabled')
                     ->boolean(),
                 Tables\Columns\TextColumn::make('drone.name')
+                    ->label('Blocked To Drone')
                     ->numeric()
                     ->url(fn($record) => $record->users_id?route('filament.admin.resources.drones.view', [
                         'tenant' => Auth()->user()->teams()->first()->id,
