@@ -26,10 +26,7 @@ use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Filament\Support\Colors\Color;
 use Filament\Widgets\StatsOverviewWidget\Card;
 use App\Filament\Widgets\FlightChart;
-use App\Models\battrei;
-use App\Models\drone;
-use App\Models\equidment;
-use App\Models\fligh_location;
+
 
 class FlighResource extends Resource
 {
