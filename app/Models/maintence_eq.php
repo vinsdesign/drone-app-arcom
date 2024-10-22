@@ -20,6 +20,27 @@ class maintence_eq extends Model
         'teams_id'
     ];
 
+    protected static function booted()
+    {
+        static::created(function ($maintence_eq) {
+            $equipment = equidment::find($maintence_eq->equidment_id);
+    
+            if ($equipment && $equipment->status === 'airworthy') {
+                $equipment->update(['status' => 'maintenance']);
+            }
+        });
+    
+        // Event saat maintenance diupdate
+        static::updated(function ($maintence_eq) {
+            $equipment = equidment::find($maintence_eq->equidment_id);
+    
+            // Cek jika maintenance sudah selesai
+            if ($maintence_eq->status === 'completed' && $equipment && $equipment->status === 'maintenance') {
+                $equipment->update(['status' => 'airworthy']);
+            }
+        });
+    }
+
     public function equidment()
     {
         return $this->belongsTo(equidment::class);

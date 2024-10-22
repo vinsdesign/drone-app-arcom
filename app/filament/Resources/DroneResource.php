@@ -176,6 +176,7 @@ class DroneResource extends Resource
 
     public static function table(Table $table): Table
     {
+        $currentTeamId = auth()->user()->teams()->first()->id;
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('name')->label('Drone Name')
