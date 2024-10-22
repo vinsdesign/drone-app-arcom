@@ -4,6 +4,8 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\UserResource\Pages;
 use App\Filament\Resources\UserResource\RelationManagers;
+use App\Models\citie;
+use App\Models\countrie;
 use App\Models\User;
 use App\Models\model_has_role;
 use Filament\Forms;
@@ -16,7 +18,7 @@ use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Filament\Infolists\Infolist;
 use Filament\Infolists\Components\TextEntry;
 use Illuminate\Support\Facades\DB;
-
+use Filament\Infolists\Components\Section;
 class UserResource extends Resource
 {
     protected static ?string $model = User::class;
@@ -51,13 +53,25 @@ class UserResource extends Resource
                         ->unique(User::class, 'phone') // Validasi unique
                         ->rules(['unique:users,phone'])
                         ->numeric(),
-                    Forms\Components\TextInput::make('country')
-                        ->maxLength(255),
-                    Forms\Components\TextInput::make('lenguage')
-                        ->maxLength(255),
+                    Forms\Components\Select::make('countries_id')->label('Country')
+                        ->options(countrie::all()->pluck('name','id'))
+                        ->reactive()
+                        ->afterStateUpdated(fn(callable $set)=>$set('cities_id',null))
+                        ->placeholder('Select a Country')
+                        ->searchable(),
+                    Forms\Components\Select::make('Cities_id')->label('City')
+                        ->options(function ($get) {
+                        $countryId = $get('countries_id');
+                        if ($countryId) {
+                            return citie::where('country_id', $countryId)->pluck('name', 'id');
+                        }
+                        return citie::pluck('name', 'id');
+                    })
+                        ->searchable()
+                        ->reactive()
+                        ->placeholder('Select a City')
+                        ->disabled(fn ($get) => !$get('countries_id')),
                     Forms\Components\TextInput::make('sertif')
-                        ->maxLength(255),
-                    Forms\Components\TextInput::make('timezone')
                         ->maxLength(255),
                     Forms\Components\Hidden::make('teams_id')
                         ->default(auth()->user()->teams()->first()->id ?? null),
@@ -70,7 +84,10 @@ class UserResource extends Resource
                             Auth()->User()->roles()->where('name','panel_user')->exists()
                             ? DB::table('roles')->where('name', '!=' ,'super_admin')->get()->pluck('name', 'id')
                             : DB::table('roles')->pluck('name', 'id'))
-                        ->searchable()->columnSpanFull()
+                        ->searchable(),
+                        Forms\Components\TextArea::make('address')
+                        ->helperText('Your Specific Address')
+                        ->columnSpanFull()
                         
                     
                 ])->columns(3),
@@ -82,21 +99,21 @@ class UserResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('name')
+                Tables\Columns\TextColumn::make('name')->label('Name')
                     ->searchable(),
-                Tables\Columns\TextColumn::make('email')
+                Tables\Columns\TextColumn::make('email')->label('Email')
                     ->searchable(),
-                Tables\Columns\TextColumn::make('phone')
+                Tables\Columns\TextColumn::make('phone')->label('Phone number')
                     ->searchable(),
-                Tables\Columns\TextColumn::make('country')
+                Tables\Columns\TextColumn::make('countries.name')->label('Country')
                     ->searchable(),
-                Tables\Columns\TextColumn::make('lenguage')
-                    ->label('Language')
+                Tables\Columns\TextColumn::make('cities.name')->label('City')
+                    ->label('City')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('sertif')
                     ->label('Certificate')
                     ->searchable(),
-                Tables\Columns\TextColumn::make('timezone')
+                Tables\Columns\TextColumn::make('address')->label('Address')
                     ->searchable(),
                 Tables\Columns\ImageColumn::make('image'),
                 Tables\Columns\TextColumn::make('roles.name')
@@ -107,7 +124,7 @@ class UserResource extends Resource
             ])
             ->actions([
                 Tables\Actions\ViewAction::make(),
-                Tables\Actions\EditAction::make(),
+                // Tables\Actions\EditAction::make(),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
@@ -122,15 +139,18 @@ class UserResource extends Resource
         return $infolist
         
         ->schema([
-            TextEntry::make('name')->label('Name'),
-            TextEntry::make('email')->label('Email'),
-            TextEntry::make('phone')->label('Phone'),
-            TextEntry::make('country')->label('Country'),
-            TextEntry::make('lenguage')->label('Language'),
-            TextEntry::make('sertif')->label('Certificate'),
-            TextEntry::make('timezone')->label('Timezone'),
-            TextEntry::make('roles.name')->label('Role Type'),
-        ])->columns(2);
+            Section::make('Personel Overview')
+            ->schema([
+                TextEntry::make('name')->label('Name'),
+                TextEntry::make('email')->label('Email'),
+                TextEntry::make('phone')->label('Phone'),
+                TextEntry::make('countries.name')->label('Country'),
+                TextEntry::make('cities.name')->label('Language'),
+                TextEntry::make('sertif')->label('Certificate'),
+                TextEntry::make('roles.name')->label('Role Type'),
+                TextEntry::make('address')->label('Address'),
+            ])->columns(2)
+        ]);
     }
     public static function getRelations(): array
     {
@@ -145,7 +165,7 @@ class UserResource extends Resource
             'index' => Pages\ListUsers::route('/'),
             'create' => Pages\CreateUser::route('/create'),
             'view' => Pages\ViewUser::route('/{record}'),
-            'edit' => Pages\EditUser::route('/{record}/edit'),
+            // 'edit' => Pages\EditUser::route('/{record}/edit'),
         ];
     }
 }

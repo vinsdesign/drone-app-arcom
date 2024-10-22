@@ -46,7 +46,7 @@ class FlighLocationResource extends Resource
                         //     $query->where('teams_id', $currentTeamId);
                         // }),  
                         ->options(function (callable $get) use ($currentTeamId) {
-                            return project::where('teams_id', $currentTeamId)->pluck('case', 'id');
+                            return projects::where('teams_id', $currentTeamId)->pluck('case', 'id');
                         })
                         ->label('Projects')
                         ->searchable(),  

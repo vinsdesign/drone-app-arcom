@@ -14,7 +14,7 @@ class maintence_drone extends Model
         'date',
         'status',
         'cost',
-        'currency',
+        'currencies_id',
         'notes',
         'drone_id',
         'part',
@@ -45,4 +45,7 @@ class maintence_drone extends Model
     public function teams(){
         return $this->belongsTo(Team::class);
        }
+       public function currencies(){
+        return $this->belongsTo(currencie::class);
+    }
 }

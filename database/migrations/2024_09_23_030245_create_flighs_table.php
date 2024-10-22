@@ -1,51 +1,55 @@
 <?php
+use App\Models\Team;
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
 
-namespace Database\Seeders;
-
-use App\Models\fligh_location;
-use App\Models\kits;
-use Illuminate\Database\Seeder;
-use App\Models\Fligh; // Pastikan nama model sesuai dengan casing
-use App\Models\Customer; // Model Customer
-use App\Models\Location; // Model FlighLocation
-use App\Models\Project; // Model Project
-use App\Models\Kit; // Model Kit
-use App\Models\User; // Model User
-use App\Models\Drone; // Model Drone
-use App\Models\Battrei; // Model Battrei
-use App\Models\Equidment; // Model Equidment
-use App\Models\Team; // Model Team
-use Faker\Factory as Faker;
-
-class FlighSeeder extends Seeder
+return new class extends Migration
 {
-    public function run()
+    /**
+     * Run the migrations.
+     */
+    public function up(): void
     {
-        $faker = Faker::create();
-
-        for ($i = 0; $i < 10; $i++) {
-            $fligh = Fligh::create([
-                'name' => $faker->word,
-                'date_flight' => $faker->dateTimeBetween('-1 year', 'now'),
-                'duration' => $faker->time(), // Menggunakan waktu sebagai durasi
-                'type' => $faker->word,
-                'ops' => $faker->word,
-                'landings' => $faker->numberBetween(1, 10),
-                'customers_id' => Customer::inRandomOrder()->first()->id, // Ambil ID customer secara acak
-                'location_id' => fligh_location::inRandomOrder()->first()->id, // Ambil ID lokasi secara acak
-                'projects_id' => Project::inRandomOrder()->first()->id, // Ambil ID proyek secara acak
-                'kits_id' => kits::inRandomOrder()->first()->id, // Ambil ID kits secara acak
-                'users_id' => User::inRandomOrder()->first()->id, // Ambil ID pengguna secara acak
-                'vo' => $faker->word,
-                'po' => $faker->word,
-                'instructor' => $faker->name,
-                'drones_id' => Drone::inRandomOrder()->first()->id, // Ambil ID drone secara acak
-                'battreis_id' => Battrei::inRandomOrder()->first()->id, // Ambil ID baterai secara acak
-                'equidments_id' => Equidment::inRandomOrder()->first()->id, // Ambil ID peralatan secara acak
-                'pre_volt' => $faker->numberBetween(10, 20), // Tegangan sebelum penerbangan
-                'fuel_used' => $faker->numberBetween(1, 100), // Bahan bakar yang digunakan
-                'teams_id' => 1, // Ambil ID tim secara acak
-            ]);
-        }
+        Schema::create('flighs', function (Blueprint $table) {
+            $table->id();
+            $table->string('name');
+            $table->dateTime('start_date_flight');
+            $table->dateTime('end_date_flight');
+            $table->time('duration');
+            $table->string('type');
+            $table->string('ops');
+            $table->integer('landings')->default('1');
+            $table->foreignId('customers_id')->constrainedTo('customers')->cascadeDelete();
+            $table->foreignId('location_id')->constrainedTo('fligh_locations')->cascadeDelete()->default(null);
+            $table->foreignId('projects_id')->constrainedTo('projects')->cascadeDelete();
+            $table->foreignId('kits_id')->nullable()->constrainedTo('kits')->cascadeDelete();
+            $table->foreignId('users_id')->constrainedTo('users')->cascadeDelete();
+            $table->string('vo');
+            $table->string('po');
+            $table->string('instructor');
+            $table->foreignId('drones_id')->constrainedTo('drones')->cascadeDelete();
+            $table->foreignId('battreis_id')->nullable()->constrainedTo('battreis')->cascadeDelete();
+            $table->foreignId('equidments_id')->nullable()->constrainedTo('equidments')->cascadeDelete();
+            $table->integer('pre_volt');
+            $table->integer('fuel_used')->default('1');
+            $table->foreignIdFor(Team::class,'teams_id')->index()->cascadeOnDelete();
+            //$table->foreignId('wheater_id')->constrainedTo('wheater')->cascadeDelete();
+            $table->timestamps();
+        });
+        Schema::create('fligh_team', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('team_id')->constrainedTo('teams')->cascadeOnDelete();
+            $table->foreignId('fligh_id')->constrained('flighs')->cascadeOnDelete();
+        });
     }
-}
+
+    /**
+     * Reverse the migrations.
+     */
+    public function down(): void
+    {
+        Schema::dropIfExists('flighs');
+        Schema::dropIfExists('fligh_team');
+    }
+};

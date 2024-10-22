@@ -4,6 +4,7 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\ProjectsResource\Pages;
 use App\Filament\Resources\ProjectsResource\RelationManagers;
+use App\Models\currencie;
 use App\Models\customer;
 use App\Models\Projects;
 use Filament\Forms;
@@ -41,9 +42,11 @@ class ProjectsResource extends Resource
                         Forms\Components\TextInput::make('revenue')->label('Revenue')
                             ->required()
                             ->numeric(),
-                        Forms\Components\TextInput::make('currency')->label('Currency')
-                            ->required()
-                            ->maxLength(255),
+                        Forms\Components\Select::make('currencies_id')->label('Currency')
+                        ->options(currencie::all()->mapWithKeys(function ($currency) {
+                            return [$currency->id => "{$currency->name} - {$currency->iso}"];}))
+                            ->searchable()
+                            ->required(),
                         Forms\Components\Select::make('customers_id')->label('Customer Name') 
                             ->options(customer::where('teams_id', auth()->user()->teams()->first()->id)
                             ->pluck('name', 'id')
@@ -68,7 +71,7 @@ class ProjectsResource extends Resource
                 Tables\Columns\TextColumn::make('revenue')
                     ->numeric()
                     ->sortable(),
-                Tables\Columns\TextColumn::make('currency')
+                Tables\Columns\TextColumn::make('currencies.iso')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('description')
                     ->searchable(),
@@ -108,7 +111,7 @@ class ProjectsResource extends Resource
         ->schema([
             TextEntry::make('case')->label('Case'),
             TextEntry::make('revenue')->label('Revenue'),
-            TextEntry::make('currency')->label('Currency'),
+            TextEntry::make('currencies.iso')->label('Currency'),
             TextEntry::make('customers.name')->label('Customers')
             ->url(fn($record) => $record->customers_id ? route('filament.admin.resources.customers.index', [
                 'tenant' => Auth()->user()->teams()->first()->id,

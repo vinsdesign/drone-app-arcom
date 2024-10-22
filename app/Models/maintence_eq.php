@@ -14,7 +14,7 @@ class maintence_eq extends Model
         'date',
         'status',
         'cost',
-        'currency',
+        'currencies_id',
         'notes',
         'equidment_id',
         'teams_id'
@@ -47,5 +47,8 @@ class maintence_eq extends Model
     }
     public function teams(){
         return $this->belongsTo(Team::class);
+    }
+    public function currencies(){
+        return $this->belongsTo(currencie::class);
     }
 }

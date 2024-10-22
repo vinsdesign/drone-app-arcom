@@ -4,6 +4,7 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\MaintenanceBatteryResource\Pages;
 use App\Filament\Resources\MaintenanceBatteryResource\RelationManagers;
+use App\Models\currencie;
 use App\Models\battrei;
 use App\Models\equidment;
 use App\Models\maintence_eq;
@@ -70,7 +71,10 @@ class MaintenanceBatteryResource extends Resource
                             ]),
                         Forms\Components\TextInput::make('cost')
                             ->label('Expense Cost'),
-                        Forms\Components\TextInput::make('currency')
+                        Forms\Components\Select::make('currencies_id')
+                        ->options(currencie::all()->mapWithKeys(function ($currency) {
+                            return [$currency->id => "{$currency->name} - {$currency->iso}"];}))
+                            ->searchable()
                             ->label('Currency'),
                         Forms\Components\TextArea::make('notes')
                             ->label('Notes')
@@ -131,7 +135,7 @@ class MaintenanceBatteryResource extends Resource
                 ->searchable(),
                 Tables\Columns\TextColumn::make('cost')
                 ->searchable(),
-                Tables\Columns\TextColumn::make('currency')
+                Tables\Columns\TextColumn::make('currencies.iso')
                 ->searchable(),
                 // Tables\Columns\TextColumn::make('notes')
                 // ->searchable(), 
@@ -184,7 +188,7 @@ class MaintenanceBatteryResource extends Resource
             TextEntry::make('date')->label('Date'),
             TextEntry::make('status')->label('Status'),
             TextEntry::make('cost')->label('Cost'),
-            TextEntry::make('currency')->label('Currency'),
+            TextEntry::make('currencies.iso')->label('Currency'),
             TextEntry::make('notes')->label('Notes'), 
         ])->columns(3);
     }

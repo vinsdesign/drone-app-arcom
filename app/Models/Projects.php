@@ -13,7 +13,7 @@ class Projects extends Model
     protected $fillable = [
         'case',
         'revenue',
-        'currency',
+        'currencies_id',
         'customers_id',
         'description',
         'teams_id'
@@ -33,6 +33,9 @@ class Projects extends Model
     public function flight_locations()
     {
         return $this->hasMany(fligh_location::class);
+    }
+    public function currencies(){
+        return $this->belongsTo(currencie::class);
     }
 
 }

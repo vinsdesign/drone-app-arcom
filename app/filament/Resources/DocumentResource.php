@@ -106,7 +106,7 @@ class DocumentResource extends Resource
                     // })
                     ->searchable()
                     ->options(function (callable $get) use ($currentTeamId) {
-                        return project::where('teams_id', $currentTeamId)->pluck('case', 'id');
+                        return projects::where('teams_id', $currentTeamId)->pluck('case', 'id');
                     })
                     ->columnSpanFull(),
                 Forms\Components\FileUpload::make('doc')->label('Upload Document')
