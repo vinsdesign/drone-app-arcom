@@ -69,6 +69,15 @@ class MaintenceResource extends Resource
                                 'in_progress'=> 'In Progress',
                                 'completed'=> 'Completed',
                             ]),
+                            // ->reactive()
+                            // ->afterStateUpdated(function (callable $set, callable $get) {
+                            //     if ($get('status') === 'complete'){
+                            //         $drone = drone::find($get('drone_id'));
+                            //         if ($drone && $drone->status === 'maintenance'){
+                            //             $drone->update(['status'=>'airworthy']);
+                            //         }
+                            //     }
+                            // }),
                         Forms\Components\TextInput::make('cost')
                             ->label('Expense Cost'),
                         Forms\Components\Select::make('currencies_id')
@@ -138,10 +147,10 @@ class MaintenceResource extends Resource
                         $formatDate = $daysOverdue->format('Y-m-d');
     
                         if ($record->status !== 'completed') {
-                            $daysOverdue = $now->diffInDays($daysOverdue, false);
+                            $daysOverdueDiff = $now->diffInDays($daysOverdue, false);
 
-                            if ($daysOverdue < 0){
-                                $daysOverdue = abs(intval($daysOverdue));
+                            if ($daysOverdueDiff < 0){
+                                $daysOverdueDiff = abs(intval($daysOverdueDiff));
                                 return "<div>{$formatDate}<br><span style='
                                 display: inline-block;
                                 background-color: red; 
@@ -150,12 +159,13 @@ class MaintenceResource extends Resource
                                 border-radius: 5px;
                                 font-weight: bold;
                             '>
-                                Overdue: {$daysOverdue} days
+                                Overdue: {$daysOverdueDiff} days
                             </span>
                         </div>";
                             }
                         }
-                        return $daysOverdue->format('Y-m-d');
+                        // return $daysOverdue->format('Y-m-d');
+                        return $formatDate;
                     })
                     ->html(),
                 Tables\Columns\TextColumn::make('cost')

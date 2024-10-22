@@ -62,5 +62,8 @@ class drone extends Model
         return $this->belongsTo(kits::class);
 
     }
+    public function fligh(){
+        return $this->hasMany(fligh::class, 'drones_id');
+    }
 
 }

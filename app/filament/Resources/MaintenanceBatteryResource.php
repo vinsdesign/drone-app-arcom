@@ -5,6 +5,7 @@ namespace App\Filament\Resources;
 use App\Filament\Resources\MaintenanceBatteryResource\Pages;
 use App\Filament\Resources\MaintenanceBatteryResource\RelationManagers;
 use App\Models\currencie;
+use App\Models\battrei;
 use App\Models\equidment;
 use App\Models\maintence_eq;
 use Carbon\Carbon;
@@ -104,10 +105,10 @@ class MaintenanceBatteryResource extends Resource
                     $formatDate = $daysOverdue->format('Y-m-d');
 
                     if ($record->status !== 'completed') {
-                        $daysOverdue = $now->diffInDays($daysOverdue, false);
+                        $daysOverdueDiff = $now->diffInDays($daysOverdue, false);
 
-                        if ($daysOverdue < 0){
-                            $daysOverdue = abs(intval($daysOverdue));
+                        if ($daysOverdueDiff < 0){
+                            $daysOverdueDiff = abs(intval($daysOverdueDiff));
                             return "<div>{$formatDate}<br><span style='
                             display: inline-block;
                             background-color: red; 
@@ -116,12 +117,13 @@ class MaintenanceBatteryResource extends Resource
                             border-radius: 5px;
                             font-weight: bold;
                         '>
-                            Overdue: {$daysOverdue} days
+                            Overdue: {$daysOverdueDiff} days
                         </span>
                     </div>";
                         }
                     }
-                    return $daysOverdue->format('Y-m-d');
+                    // return $daysOverdue->format('Y-m-d');
+                    return $formatDate;
                 })
                 ->html(),
                 Tables\Columns\TextColumn::make('status')

@@ -27,6 +27,17 @@ class maintence_drone extends Model
         'teams_id'
     ];
 
+    protected static function booted()
+    {
+        static::updated(function ($maintence_drone) {
+            $drone = drone::find($maintence_drone->drone_id);
+
+            if ($drone && $maintence_drone->status === 'completed' && $drone->status === 'maintenance') {
+                $drone->update(['status' => 'airworthy']);
+            }
+        });
+    }
+
     public function drone()
     {
         return $this->belongsTo(Drone::class, 'drone_id');

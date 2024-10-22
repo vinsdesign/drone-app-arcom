@@ -49,4 +49,7 @@ class equidment extends Model
     public function kits(){
         return $this->belongsToMany(kits::class, 'equidment_kits');
     }
+    public function fligh(){
+        return $this->hasMany(fligh::class, 'equidments_id');
+    }
 }
