@@ -50,7 +50,7 @@ class KitsResource extends Resource
                     ->reactive(),
                 Forms\Components\Toggle::make('enabled')->label('Enabled')
                     ->required(),
-                Forms\Components\Select::make('blocked')
+                Forms\Components\Select::make('drone_id')
                     ->label('Blocked To Drone')
                     ->options(function (callable $get) use ($currentTeamId) {
                         return drone::where('teams_id', $currentTeamId)->pluck('name', 'id');
@@ -63,8 +63,8 @@ class KitsResource extends Resource
                     ->multiple()
                     ->options(
                         battrei::where('teams_id', auth()->user()->teams()->first()->id)
-                            ->whereDoesntHave('kits', function ($query){
-                                $query->whereNotNull('battrei_id');
+                        ->whereDoesntHave('kits', function ($query){
+                            $query->whereNotNull('battrei_id');
                             })
                             ->pluck('name', 'id')
                     )

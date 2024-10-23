@@ -49,6 +49,10 @@ class battrei extends Model
         return $this->belongsToMany(kits::class, 'battrei_kits');
     }
     public function fligh(){
-        return $this->hasMany(fligh::class, 'battreis_id');
+        return $this->belongsToMany(fligh::class, 'fligh_battrei', 'battrei_id', 'fligh_id');
+    }
+    public function maintence_eq()
+    {
+        return $this->hasMany(maintence_eq::class);
     }
 }

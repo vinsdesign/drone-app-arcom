@@ -60,14 +60,14 @@ class fligh extends Model
         return $this->belongsTo(Drone::class);
     }
 
-    public function battreis(): BelongsTo
+    public function battreis()
     {
-        return $this->belongsTo(Battrei::class);
+        return $this->belongsToMany(battrei::class, 'fligh_battrei', 'fligh_id', 'battrei_id');
     }
 
-    public function equidments(): BelongsTo
+    public function equidments()
     {
-        return $this->belongsTo(Equidment::class);
+        return $this->belongsToMany(Equidment::class, 'fligh_equidment', 'fligh_id', 'equidment_id');
     }
     public function teams(){
         return $this->belongsTo(Team::class);

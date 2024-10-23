@@ -21,6 +21,7 @@ return new class extends Migration
             $table->foreignId('currencies_id')->constrained('currencies')->cascadeDelete();
             $table->string('notes');
             $table->foreignId('equidment_id')->constrainedTo('equidment')->cascadeDelete();
+            $table->foreignId('battrei_id')->constrainedTo('battrei')->cascadeDelete();
             $table->foreignIdFor(Team::class,'teams_id')->index()->cascadeOnDelete();
             $table->timestamps();
         });

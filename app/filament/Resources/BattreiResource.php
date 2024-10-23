@@ -177,7 +177,7 @@ class BattreiResource extends Resource
                 // Tables\Columns\TextColumn::make('flaight_count')->label('Flaight Count')
                 //     ->numeric()
                 //     ->sortable(),
-                Tables\Columns\TextColumn::make('drone.name')->label('Blokec To Drone')
+                Tables\Columns\TextColumn::make('drone.name')->label('For Drone')
                     ->numeric()->url(fn($record) => $record->for_drone ? route('filament.admin.resources.drones.view', [
                         'tenant' => Auth()->user()->teams()->first()->id,
                         'record' => $record->for_drone,
