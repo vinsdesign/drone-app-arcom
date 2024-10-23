@@ -17,7 +17,7 @@ class FlightChart extends ChartWidget
     {
         $tenant_id = Auth()->User()->teams()->first()->id;
         $teams = fligh::where('teams_id', $tenant_id)
-        ->whereBetween('date_flight', [now()->startOfYear(), now()->endOfYear()])
+        ->whereBetween('start_date_flight', [now()->startOfYear(), now()->endOfYear()])
         ->get();
         $data = $teams->groupBy(function ($item) {
             return Carbon::parse($item->date_flight)->format('Y-m-d');

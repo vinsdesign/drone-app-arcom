@@ -29,8 +29,6 @@ return new class extends Migration
             $table->string('po');
             $table->string('instructor');
             $table->foreignId('drones_id')->constrainedTo('drones')->cascadeDelete();
-            $table->foreignId('battreis_id')->nullable()->constrainedTo('battreis')->cascadeDelete();
-            $table->foreignId('equidments_id')->nullable()->constrainedTo('equidments')->cascadeDelete();
             $table->integer('pre_volt');
             $table->integer('fuel_used')->default('1');
             $table->foreignIdFor(Team::class,'teams_id')->index()->cascadeOnDelete();

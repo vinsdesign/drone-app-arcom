@@ -17,6 +17,7 @@ class maintence_eq extends Model
         'currencies_id',
         'notes',
         'equidment_id',
+        'battrei_id',
         'teams_id'
     ];
 
@@ -29,6 +30,14 @@ class maintence_eq extends Model
                 $equipment->update(['status' => 'maintenance']);
             }
         });
+
+        static::created(function ($maintence_eq) {
+            $battery = battrei::find($maintence_eq->battrei_id);
+    
+            if ($battery && $battery->status === 'airworthy') {
+                $battery->update(['status' => 'maintenance']);
+            }
+        });
     
         // Event saat maintenance diupdate
         static::updated(function ($maintence_eq) {
@@ -37,6 +46,15 @@ class maintence_eq extends Model
             // Cek jika maintenance sudah selesai
             if ($maintence_eq->status === 'completed' && $equipment && $equipment->status === 'maintenance') {
                 $equipment->update(['status' => 'airworthy']);
+            }
+        });
+
+        static::updated(function ($maintence_eq) {
+            $battery = battrei::find($maintence_eq->battrei_id);
+    
+            // Cek jika maintenance sudah selesai
+            if ($maintence_eq->status === 'completed' && $battery && $battery->status === 'maintenance') {
+                $battery->update(['status' => 'airworthy']);
             }
         });
     }
@@ -50,5 +68,9 @@ class maintence_eq extends Model
     }
     public function currencies(){
         return $this->belongsTo(currencie::class);
+    }
+    public function battrei()
+    {
+        return $this->belongsTo(battrei::class, 'battrei_id');
     }
 }

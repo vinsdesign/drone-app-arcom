@@ -87,4 +87,7 @@ class User extends Authenticatable implements HasTenants, FilamentUser, HasAvata
     public function cities(){
         return $this->belongsTo(citie::class);
     }
+    public function fligh(){
+        return $this->hasMany(fligh::class, 'users_id');
+    }
 }
