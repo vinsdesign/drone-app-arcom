@@ -143,7 +143,7 @@
                 <tbody>
                     <tr>
                         <td>{{ $flights->name }}</td>
-                        <td>{{ $flights->date_flight }}</td>
+                        <td>{{ $flights->start_date_flight }}</td>
                         <td>{{ $flights->users->name }}</td>
                         <td>{{ $flights->duration }}</td>
                         <td>{{ $flights->type }}</td>

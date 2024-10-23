@@ -5,6 +5,7 @@ namespace App\Filament\Resources\BattreiResource\Pages;
 use App\Filament\Resources\BattreiResource;
 use Filament\Actions;
 use Filament\Resources\Pages\ListRecords;
+use App\Livewire\HeaderWidget\HeaderBattery;
 
 class ListBattreis extends ListRecords
 {
@@ -13,7 +14,13 @@ class ListBattreis extends ListRecords
     protected function getHeaderActions(): array
     {
         return [
-            Actions\CreateAction::make(),
+            // Actions\CreateAction::make(),
+        ];
+    }
+    protected function getHeaderWidgets(): array
+    {
+        return [
+            HeaderBattery::class
         ];
     }
 }

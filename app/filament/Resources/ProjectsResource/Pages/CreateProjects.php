@@ -11,6 +11,6 @@ class CreateProjects extends CreateRecord
     protected static string $resource = ProjectsResource::class;
     protected function getRedirectUrl(): string
     {
-        return $this->getResource()::getUrl('index');
+        return $this->getResource()::getUrl();
     }
 }
