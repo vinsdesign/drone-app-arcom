@@ -17,6 +17,7 @@ class FlightChart extends ChartWidget
     {
         $tenant_id = Auth()->User()->teams()->first()->id;
         $teams = fligh::where('teams_id', $tenant_id)
+
         ->whereBetween('Start_date_flight', [now()->startOfYear(), now()->endOfYear()])
         ->get();
         $data = $teams->groupBy(function ($item) {

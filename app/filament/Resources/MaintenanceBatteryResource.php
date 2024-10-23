@@ -25,9 +25,9 @@ class MaintenanceBatteryResource extends Resource
 {
     protected static ?string $model = maintence_eq::class;
 
-    protected static ?string $navigationLabel = 'Maintenance Equipment';
+    protected static ?string $navigationLabel = 'Maintenance Equipment/Battery';
     protected static ?string $tenantRelationshipName = 'maintence_eqs';
-    protected static ?string $modelLabel = 'Maintenance Equipment';
+    protected static ?string $modelLabel = 'Maintenance Equipment/Battery';
 
     protected static ?string $navigationIcon = 'heroicon-o-cog';
     public static ?string $tenantOwnershipRelationshipName = 'teams';
@@ -41,7 +41,7 @@ class MaintenanceBatteryResource extends Resource
         $currentTeamId = auth()->user()->teams()->first()->id;
         return $form
             ->schema([
-                Forms\Components\Section::make('Maintenance Battery Overview')
+                Forms\Components\Section::make('Maintenance Equipment/Battery Overview')
                     ->schema([
                         Forms\Components\Hidden::make('teams_id')
                         ->default(auth()->user()->teams()->first()->id ?? null),
@@ -50,12 +50,15 @@ class MaintenanceBatteryResource extends Resource
                             ->maxLength(255),
                         Forms\Components\Select::make('equidment_id')
                             ->label('Equipment')
-                            // ->relationship('equidment','name', function (Builder $query){
-                            //     $currentTeamId = auth()->user()->teams()->first()->id;
-                            //     $query->where('teams_id', $currentTeamId);
-                            // })
                             ->options(function (callable $get) use ($currentTeamId) {
                                 return equidment::where('teams_id', $currentTeamId)->pluck('name', 'id');
+                            })
+                            ->searchable()
+                            ->columnSpan(1),
+                            Forms\Components\Select::make('battrei_id')
+                            ->label('Battery')
+                            ->options(function (callable $get) use ($currentTeamId) {
+                                return battrei::where('teams_id', $currentTeamId)->pluck('name', 'id');
                             })
                             ->searchable()
                             ->columnSpan(1),
@@ -94,6 +97,13 @@ class MaintenanceBatteryResource extends Resource
                 ->url(fn($record) => $record->equidment_id?route('filament.admin.resources.equidments.index', [
                     'tenant' => Auth()->user()->teams()->first()->id,
                     'record' => $record->equidment_id,
+                ]):null)->color(Color::Blue)
+                ->searchable(),
+                Tables\Columns\TextColumn::make('battrei.name')
+                ->label('Battery')
+                ->url(fn($record) => $record->battrei_id?route('filament.admin.resources.battreis.index', [
+                    'tenant' => Auth()->user()->teams()->first()->id,
+                    'record' => $record->battrei_id,
                 ]):null)->color(Color::Blue)
                 ->searchable(),
                 Tables\Columns\TextColumn::make('date')
