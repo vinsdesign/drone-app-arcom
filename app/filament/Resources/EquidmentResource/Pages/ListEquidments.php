@@ -5,6 +5,7 @@ namespace App\Filament\Resources\EquidmentResource\Pages;
 use App\Filament\Resources\EquidmentResource;
 use Filament\Actions;
 use Filament\Resources\Pages\ListRecords;
+use App\Livewire\HeaderWidget\HeaderEquipment;
 
 class ListEquidments extends ListRecords
 {
@@ -14,6 +15,12 @@ class ListEquidments extends ListRecords
     {
         return [
             Actions\CreateAction::make(),
+        ];
+    }
+    protected function getHeaderWidgets(): array
+    {
+        return [
+            HeaderEquipment::class
         ];
     }
 }

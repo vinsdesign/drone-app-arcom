@@ -30,7 +30,7 @@ class Report extends Page
 
         $flight = fligh::with(['drones', 'battreis', 'equidments', 'users'])
             ->where('teams_id', $currentTeamId) // Filter berdasarkan tim
-            ->whereBetween('date_flight', [$startDate, $endDate])
+            ->whereBetween('start_date_flight', [$startDate, $endDate])
             ->get();
         $user = User::whereHas('teams', function (Builder $query) use ($currentTeamId) {
                 $query->where('team_user.team_id', $currentTeamId); // Pastikan nama tabel pivot benar

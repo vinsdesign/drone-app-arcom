@@ -42,7 +42,7 @@ class DroneStatistik extends ChartWidget
         // dd($droneId);
         $tenant_id = Auth()->user()->teams()->first()->id;
         $flights = fligh::where('teams_id', $tenant_id)->where('drones_id', $droneId)
-            ->whereBetween('date_flight', [now()->startOfYear(), now()->endOfYear()])
+            ->whereBetween('start_date_flight', [now()->startOfYear(), now()->endOfYear()])
             ->get();
     
         $data = $flights->groupBy(function ($item) {
@@ -85,7 +85,7 @@ class DroneStatistik extends ChartWidget
         $droneId = session('drone_id');
         $tenant_id = Auth()->user()->teams()->first()->id;
         $flights = fligh::where('teams_id', $tenant_id)->where('drones_id', $droneId)
-            ->whereBetween('date_flight', [now()->startOfYear(), now()->endOfYear()])
+            ->whereBetween('start_date_flight', [now()->startOfYear(), now()->endOfYear()])
             ->get();
             $data = $flights->groupBy(function ($item) {
                 return Carbon::parse($item->date_flight)->format('Y-m'); // Grup per bulan

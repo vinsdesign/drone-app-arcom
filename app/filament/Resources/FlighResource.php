@@ -14,6 +14,8 @@ use App\Models\kits;
 use App\Models\Projects;
 use Closure;
 use Filament\Forms;
+use Filament\Forms\Components\Actions\Action;
+use Filament\Forms\Components\ToggleButtons;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
@@ -27,6 +29,8 @@ use Filament\Support\Colors\Color;
 use Filament\Widgets\StatsOverviewWidget\Card;
 use App\Filament\Widgets\FlightChart;
 use Carbon\Carbon;
+use Filament\Forms\Components\Button;
+use Filament\Forms\Components\View;
 
 
 class FlighResource extends Resource
@@ -120,7 +124,9 @@ class FlighResource extends Resource
                 Forms\Components\TextInput::make('landings')
                     ->required()
                     ->numeric(),
-                Forms\Components\Select::make('projects_id')
+                Forms\Components\Grid::make(1)->schema([
+                    view::make('component.button-project')->extraAttributes(['class' => 'mr-6 custom-spacing']),
+                    Forms\Components\Select::make('projects_id')
                     ->relationship('projects', 'case')
                     ->required()
                     ->reactive()
@@ -138,14 +144,11 @@ class FlighResource extends Resource
                     ->options(Projects::where('teams_id', auth()->user()->teams()->first()->id)
                             ->pluck('case', 'id')
                             )->searchable(),
-                Forms\Components\Hidden::make('customers_id') 
-                    ->required(),
-                Forms\Components\TextInput::make('customers_name')
-                    ->label('Customer Name')
-                    //->relationship('customers', 'name')
-                    ->required()
-                    ->disabled(),
-                Forms\Components\Select::make('location_id')
+                ])->columnSpan(1),
+                //grid location
+                Forms\Components\Grid::make(1)->schema([
+                    view::make('component.button-location'),
+                    Forms\Components\Select::make('location_id')
                     // ->relationship('fligh_location', 'name', function (Builder $query) {
                     //     $currentTeamId = auth()->user()->teams()->first()->id;
                     //     $query->whereHas('teams', function (Builder $query) use ($currentTeamId){
@@ -158,6 +161,17 @@ class FlighResource extends Resource
                     ->label('Location')
                     ->searchable()
                     ->required(),
+                ])->columnSpan(2),
+                //end grid 
+                Forms\Components\Hidden::make('customers_id') 
+                    ->required(),
+                Forms\Components\TextInput::make('customers_name')
+                    ->label('Customer Name')
+                    //->relationship('customers', 'name')
+                    ->required()
+                    ->disabled()
+                    ->columnSpanFull(),
+ 
                 ])->columns(3),
                 Forms\Components\Section::make('Personnel')
                     ->description('')
@@ -186,8 +200,10 @@ class FlighResource extends Resource
                 ])->columns(2),
                 Forms\Components\Section::make('Drone & Equipments')
                     ->description('')
-                    ->schema([      
-                Forms\Components\Select::make('drones_id')
+                    ->schema([   
+                Forms\Components\Grid::make(1)->schema([
+                    View::make('component.button-drone'),
+                    Forms\Components\Select::make('drones_id')
                     // ->relationship('drones', 'name', function (Builder $query){
                     //     $currentTeamId = auth()->user()->teams()->first()->id;;
                     //     $query->where('teams_id', $currentTeamId);
@@ -206,6 +222,8 @@ class FlighResource extends Resource
                     })
                     ->searchable()
                     ->columnSpanFull(),
+
+                ]), 
                 //kits
                 Forms\Components\Select::make('kits_id')
                     ->label('Kits')
@@ -267,9 +285,13 @@ class FlighResource extends Resource
                 Forms\Components\TextInput::make('others')
                         ->helperText('Automatically filled when selecting kits')
                         ->label('Others')
-                        ->disabled(), 
-
-                Forms\Components\Select::make('battreis_id')->label('Battery')
+                        ->disabled(),
+                
+            
+                //grid battery
+                Forms\Components\Grid::make(1)->schema([
+                    View::make('component.button-battery'),
+                    Forms\Components\Select::make('battreis_id')->label('Battery')
                     // ->relationship('battreis', 'name', function (Builder $query){
                     //     $currentTeamId = auth()->user()->teams()->first()->id;;
                     //     $query->where('teams_id', $currentTeamId);
@@ -287,7 +309,11 @@ class FlighResource extends Resource
                     //         ->pluck('name', 'id');
                     // })
                     ->searchable(),
-                Forms\Components\Select::make('equidments_id')->label('Equipment')
+                ])->columnSpan(1),
+                //grid equdiment
+                Forms\Components\Grid::make(1)->schema([
+                    View::make('component.button-equidment'),
+                    Forms\Components\Select::make('equidments_id')->label('Equipment')
                     // ->relationship('equidments', 'name', function (Builder $query){
                     //     $currentTeamId = auth()->user()->teams()->first()->id;;
                     //     $query->where('teams_id', $currentTeamId);
@@ -306,6 +332,8 @@ class FlighResource extends Resource
                             ->pluck('name', 'id'); // Mengambil nama dan ID equipment yang sesuai dengan kriteria
                     })
                     ->searchable(),
+                ])->columnSpan(1),
+                
                 Forms\Components\TextInput::make('pre_volt')->label('Pre Voltage')
                     ->numeric()    
                     ->required(),
@@ -328,7 +356,7 @@ class FlighResource extends Resource
             ->columns([
                 Tables\Columns\TextColumn::make('name')
                     ->searchable(),
-                Tables\Columns\TextColumn::make('date_flight')
+                Tables\Columns\TextColumn::make('start_date_flight')->label('Date Flight')
                     ->date()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('duration'),
@@ -367,7 +395,7 @@ class FlighResource extends Resource
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
-                Tables\Filters\Filter::make('date_flight')
+                Tables\Filters\Filter::make('start_date_flight')
                     ->form([
                         Forms\Components\Grid::make(2)
                             ->schema([
@@ -376,8 +404,8 @@ class FlighResource extends Resource
                             ]),
                     ])
                     ->query(function (Builder $query, array $data){
-                        $query->when($data['from'], fn ($q) => $q->whereDate('date_flight', '>=', $data['from']));
-                        $query->when($data['until'], fn ($q) => $q->whereDate('date_flight', '<=', $data['until']));
+                        $query->when($data['from'], fn ($q) => $q->whereDate('start_date_flight', '>=', $data['from']));
+                        $query->when($data['until'], fn ($q) => $q->whereDate('start_date_flight', '<=', $data['until']));
                     }),
                 Tables\Filters\SelectFilter::make('projects_id')
                     ->relationship('projects', 'case', function (Builder $query){
@@ -422,7 +450,7 @@ class FlighResource extends Resource
             Section::make('Flight Detail')
                 ->schema([
                 TextEntry::make('name')->label('Name'),
-                TextEntry::make('date_flight')->label('Date Flight'),
+                TextEntry::make('start_date_flight')->label('Date Flight'),
                 TextEntry::make('duration')->label('Duration'),
                 TextEntry::make('type')->label('Type'),
                 TextEntry::make('ops')->label('Ops'),

@@ -36,7 +36,7 @@ class BatteryStatistik extends ChartWidget
         $batteryID = session('battery_id');
         $tenant_id = Auth()->user()->teams()->first()->id;
         $flights = fligh::where('teams_id', $tenant_id)->where('battreis_id', $batteryID)
-            ->whereBetween('date_flight', [now()->startOfYear(), now()->endOfYear()])
+            ->whereBetween('start_date_flight', [now()->startOfYear(), now()->endOfYear()])
             ->get();
     
         $data = $flights->groupBy(function ($item) {
@@ -79,7 +79,7 @@ class BatteryStatistik extends ChartWidget
         $batteryID = session('battery_id');
         $tenant_id = Auth()->user()->teams()->first()->id;
         $flights = fligh::where('teams_id', $tenant_id)->where('battreis_id', $batteryID)
-            ->whereBetween('date_flight', [now()->startOfYear(), now()->endOfYear()])
+            ->whereBetween('start_date_flight', [now()->startOfYear(), now()->endOfYear()])
             ->get();
             $data = $flights->groupBy(function ($item) {
                 return Carbon::parse($item->date_flight)->format('Y-m'); // Grup per bulan
