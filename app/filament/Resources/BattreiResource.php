@@ -111,7 +111,7 @@ class BattreiResource extends Resource
                                 })->pluck('name', 'id'); 
                             }) 
                             ->required(),
-                        Forms\Components\DatePicker::make('purchase_date')->label('Purchase date')
+                        Forms\Components\DatePicker::make('purchase_date')->label('Purchase Date')
                             ->required(),
                         Forms\Components\TextInput::make('insurable_value')->label('Insurable Value')
                             ->required()

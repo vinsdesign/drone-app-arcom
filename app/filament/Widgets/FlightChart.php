@@ -29,7 +29,7 @@ class FlightChart extends ChartWidget
     return [
         'datasets' => [
             [
-                'label' => 'Flight Perhari',
+                'label' => 'Flight PerDay',
                 'data' => $data->map(fn ($value) => round($value))->values(),
             ],
         ],

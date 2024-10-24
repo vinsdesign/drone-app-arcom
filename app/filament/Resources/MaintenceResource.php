@@ -196,6 +196,7 @@ class MaintenceResource extends Resource
                 Tables\Actions\EditAction::make(),
                 Tables\Actions\Action::make('resolve')
                     ->label('Resolve')
+                    ->icon('heroicon-o-check-circle')
                     ->action(function ($record){
                         $record->status = 'completed';
                         $record->save();
@@ -205,8 +206,8 @@ class MaintenceResource extends Resource
                             ->send();
                     })
                     ->requiresConfirmation()
-                    ->visible(function ($record){
-                        return $record->status !== 'completed';
+                    ->visible(function ($record) {
+                        return $record->status !== 'completed' && auth()->user()->hasRole(['maintenance', 'panel_user']);
                     })
             ])
             ->bulkActions([

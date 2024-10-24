@@ -67,7 +67,7 @@ class FlighLocationResource extends Resource
                     ->Schema([
                         Forms\Components\TextInput::make('address')->columnSpanFull(),
                         Forms\Components\TextInput::make('city'),
-                        Forms\Components\TextInput::make('pos_code')->numeric(),
+                        Forms\Components\TextInput::make('pos_code')->label('Postal Code')->numeric(),
                         Forms\Components\TextInput::make('state'),
                         Forms\Components\TextInput::make('country'),
                         Forms\Components\TextInput::make('latitude')->numeric(),
@@ -128,7 +128,7 @@ class FlighLocationResource extends Resource
                     ->searchable(),
                 Tables\Columns\TextColumn::make('city')->label('City')
                     ->searchable(),
-                Tables\Columns\TextColumn::make('pos_code')->label('Postel code')
+                Tables\Columns\TextColumn::make('pos_code')->label('Postal code')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('state')->label('State')
                     ->searchable(),

@@ -22,9 +22,9 @@ use Filament\Infolists\Components\Section;
 class UserResource extends Resource
 {
     protected static ?string $model = User::class;
-    protected static ?string $navigationLabel = 'Personel';
+    protected static ?string $navigationLabel = 'Personnel';
     protected static ?string $navigationIcon = 'heroicon-s-user-group';
-    protected static ?string $modelLabel = 'Personel';
+    protected static ?string $modelLabel = 'Personnel';
     public static ?int $navigationSort = 2;
     public static ?string $navigationGroup = ' ';
     public static ?string $tenantOwnershipRelationshipName = 'teams';
@@ -33,7 +33,7 @@ class UserResource extends Resource
     {
         return $form
             ->schema([
-                Forms\Components\Section::make('Personel')
+                Forms\Components\Section::make('Personnel')
                 ->schema([
                     Forms\Components\TextInput::make('name')
                         ->required()
@@ -72,6 +72,7 @@ class UserResource extends Resource
                         ->placeholder('Select a City')
                         ->disabled(fn ($get) => !$get('countries_id')),
                     Forms\Components\TextInput::make('sertif')
+                        ->label('Certificate')
                         ->maxLength(255),
                     Forms\Components\Hidden::make('teams_id')
                         ->default(auth()->user()->teams()->first()->id ?? null),
