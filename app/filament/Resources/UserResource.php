@@ -19,6 +19,7 @@ use Filament\Infolists\Infolist;
 use Filament\Infolists\Components\TextEntry;
 use Illuminate\Support\Facades\DB;
 use Filament\Infolists\Components\Section;
+use Illuminate\Validation\Rule;
 class UserResource extends Resource
 {
     protected static ?string $model = User::class;
@@ -41,8 +42,14 @@ class UserResource extends Resource
                     Forms\Components\TextInput::make('email')
                         ->email()
                         ->required()
-                        ->unique(User::class, 'email') // Validasi unique
-                        ->rules(['unique:users,email'])
+                        ->rules(function ($get) {
+                            return [
+                                'required',
+                                'email',
+                                Rule::unique('users', 'email')
+                                    ->ignore($get('id')),
+                            ];
+                        })
                         ->maxLength(255)->columnSpan(2),
                     Forms\Components\TextInput::make('password')
                         ->password()
@@ -50,8 +57,14 @@ class UserResource extends Resource
                         ->maxLength(255),
                     Forms\Components\TextInput::make('phone')
                         ->tel()
-                        ->unique(User::class, 'phone') // Validasi unique
-                        ->rules(['unique:users,phone'])
+                        ->rules(function ($get) {
+                            return [
+                                'required',
+                                'numeric',
+                                Rule::unique('users', 'phone')
+                                    ->ignore($get('id')),
+                            ];
+                        })
                         ->numeric(),
                     Forms\Components\Select::make('countries_id')->label('Country')
                         ->options(countrie::all()->pluck('name','id'))

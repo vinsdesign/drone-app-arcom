@@ -35,6 +35,9 @@ return new class extends Migration
             $table->string('color');
             $table->string('remote');
             $table->string('conn_card');
+            $table->integer('initial_flight')->nullable();
+            $table->time('initial_flight_time')->nullable();
+            $table->time('max_flight_time')->nullable();
             $table->foreignIdFor(Team::class,'teams_id')->index();
             $table->timestamps();
         });

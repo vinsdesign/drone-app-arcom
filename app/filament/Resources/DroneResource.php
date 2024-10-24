@@ -138,6 +138,25 @@ class DroneResource extends Resource
                                 'turbine' => 'Turbine',
                             ])
                             ->required(),
+                        //max_Flight_Distance
+                        Forms\Components\TextInput::make('max_flight_time')
+                        ->label('Max Flight Time')
+                        ->placeholder('hh:mm:ss')
+                        ->extraAttributes([
+                            'oninput' => "this.value = this.value.replace(/[^0-9:]/g, '').replace(/^([0-9]{2})([0-9]{2})/, '$1:$2:');", 
+                            'placeholder' => 'HH:mm:ss'
+                        ])->default('00:00:00'),
+                        //initial_Flight
+                        Forms\Components\TextInput::make('initial_flight')->Label('Initial Flight')
+                        ->numeric(),
+                        //initial FLight Time
+                        Forms\Components\TextInput::make('initial_flight_time')->Label('Initial Flight Time')
+                        ->placeholder('hh:mm:ss')
+                        ->extraAttributes([
+                            'oninput' => "this.value = this.value.replace(/[^0-9:]/g, '').replace(/^([0-9]{2})([0-9]{2})/, '$1:$2:');", 
+                            'placeholder' => 'HH:mm:ss'
+                            
+                        ])->default('00:00:00'),
                         Forms\Components\Textarea::make('description')->label('Description')
                             ->required()
                             ->maxLength(255)->columnSpanFull(),

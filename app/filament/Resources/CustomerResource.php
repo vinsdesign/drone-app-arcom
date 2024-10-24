@@ -15,6 +15,7 @@ use Filament\Infolists\Components\Section;;
 use Filament\Infolists\Components\TextEntry;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Illuminate\Validation\Rule;
 
 class CustomerResource extends Resource
 {
@@ -39,13 +40,25 @@ class CustomerResource extends Resource
                 Forms\Components\TextInput::make('phone')
                     ->tel()
                     ->required()
-                    ->unique(Customer::class, 'phone')
-                    ->rules(['unique:customers,phone']),
+                    ->rules(function ($get) {
+                        return [
+                            'required',
+                            'numeric',
+                            Rule::unique('customers', 'phone')
+                                ->ignore($get('id')),
+                        ];
+                    }),
                 Forms\Components\TextInput::make('email')
                     ->email()
                     ->required()
-                    ->unique(Customer::class, 'email')
-                    ->rules(['unique:customers,email'])
+                    ->rules(function ($get) {
+                        return [
+                            'required',
+                            'email',
+                            Rule::unique('customers', 'email')
+                                ->ignore($get('id')),
+                        ];
+                    })
                     ->maxLength(255),
                 Forms\Components\TextInput::make('address')
                     ->required()
