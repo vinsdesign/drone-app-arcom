@@ -45,6 +45,28 @@
         <hr>
         <br>
 
+        <table>
+            <thead>
+                <tr style="font-size: 22px;">
+                    <th>Total Drone</th>
+                    <th>Total Battery</th>
+                    <th>Total Equipment</th>
+                </tr>
+            </thead>
+            <tbody>
+                @php
+                    $totalDrone = $drone->count(); 
+                    $totalBattery = $battery->count();
+                    $totalEquipment = $equipment->count(); 
+                @endphp
+                <tr style="font-size: 18px;">
+                    <td>{{$totalDrone}}</td>
+                    <td>{{$totalBattery}}</td>
+                    <td>{{$totalEquipment}}</td>
+                </tr>
+            </tbody>
+        </table>
+
     <table>
         <thead>
             <th colspan="6" style="text-align: center; font-size: 25px">Drone</th>
@@ -73,9 +95,9 @@
                         <strong>Owner:</strong> {{ $drones->users->name }}
                         <br>
                         <strong>Initial Flight Count:</strong> {{ $drones->flight_c }} &nbsp;&nbsp; 
-                        <strong>Inventory/Asset:</strong> {{ $drones->inventory_asset }}
+                        <strong>Inventory/Asset:</strong> {{ $drones->inventory_asset ?? null}}
                         <br>
-                        <strong>Description:</strong> {{ $drones->description }}
+                        <strong>Description:</strong> {{ $drones->description ?? null}}
                     </td>
                 </tr>
                 @endforeach
@@ -96,17 +118,19 @@
     <tbody>
         @foreach ($battery as $batteries)
             <tr class="battery">
-                <td>{{ $batteries->name }}</td>
-                <td>{{ $batteries->model }}</td>
-                <td>{{ $batteries->drone->name }}</td>
-                <td>{{ $batteries->purchase_date }}</td>
-                <td>{{ $batteries->life_span }}</td>
+                <td>{{ $batteries->name ?? null}}</td>
+                <td>{{ $batteries->model ?? null}}</td>
+                <td>{{ $batteries->drone->name ?? null}}</td>
+                <td>{{ $batteries->purchase_date ?? null}}</td>
+                <td>{{ $batteries->life_span ?? null}}</td>
             </tr>
             <tr>
                 <td colspan="5" class="row-span">
                     <strong>Status:</strong> {{ $batteries->status }} &nbsp;&nbsp; 
                     <strong>Owner:</strong> {{ $batteries->users->name }} &nbsp;&nbsp; 
-                    <strong>Inventory/Asset number:</strong> {{ $batteries->asset_inventory }}
+                    <br>
+                    <strong>Initial Cycle Count:</strong> {{ $batteries->initial_Cycle_count }} &nbsp;&nbsp; 
+                    <strong>Inventory/Asset:</strong> {{ $batteries->asset_inventory }}
                     <br>
                     <strong>Description:</strong> {{ $batteries->description }}
                 </td>
@@ -141,7 +165,7 @@
                     <strong>Owner:</strong> {{ $equipments->users->name }} 
                     <br>
                     <strong>Insurable Value:</strong> {{ $equipments->insurable_value }} &nbsp;&nbsp;
-                    <strong>Inventory/Asset number:</strong> {{ $equipments->asset_inventory }}
+                    <strong>Inventory/Asset number:</strong> {{ $equipments->inventory_asset }}
                     <br>
                     <strong>Description:</strong> {{ $equipments->description }} &nbsp;&nbsp;
                     

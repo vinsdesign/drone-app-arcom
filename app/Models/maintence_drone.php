@@ -29,6 +29,13 @@ class maintence_drone extends Model
 
     protected static function booted()
     {
+        static::created(function ($maintence_drone) {
+            $drone = drone::find($maintence_drone->drone_id);
+    
+            if ($drone && $drone->status === 'airworthy') {
+                $drone->update(['status' => 'maintenance']);
+            }
+        });
         static::updated(function ($maintence_drone) {
             $drone = drone::find($maintence_drone->drone_id);
 

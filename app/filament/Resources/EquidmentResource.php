@@ -51,7 +51,7 @@ class EquidmentResource extends Resource
                         Forms\Components\TextInput::make('name')->label('Name')
                             ->required()
                             ->maxLength(255),
-                        Forms\Components\TextInput::make('model')->label('model')
+                        Forms\Components\TextInput::make('model')->label('Model')
                             ->required()
                             ->maxLength(255),
                         Forms\Components\select::make('status')->label('Status')
@@ -128,7 +128,7 @@ class EquidmentResource extends Resource
                                     $query->where('team_user.team_id', $currentTeamId); 
                                 })->pluck('name', 'id'); 
                             }),
-                        Forms\Components\DatePicker::make('purchase_date')->label('Purchase date')
+                        Forms\Components\DatePicker::make('purchase_date')->label('Purchase Date')
                             ->required(),
                         Forms\Components\TextInput::make('insurable_value')->label('Insurable Value')
                             ->required()
@@ -171,6 +171,7 @@ class EquidmentResource extends Resource
                     })
                     ->searchable(),
                  Tables\Columns\TextColumn::make('drones.name')
+                    ->label('For Drone')
                      ->numeric()
                      ->url(fn($record) =>$record->for_drone? route('filament.admin.resources.drones.view', [
                         'tenant' => Auth()->user()->teams()->first()->id,

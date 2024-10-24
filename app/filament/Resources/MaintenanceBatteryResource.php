@@ -165,6 +165,7 @@ class MaintenanceBatteryResource extends Resource
                 Tables\Actions\EditAction::make(),
                 Tables\Actions\Action::make('resolve')
                     ->label('Resolve')
+                    ->icon('heroicon-o-check-circle')
                     ->action(function ($record){
                         $record->status = 'completed';
                         $record->save();

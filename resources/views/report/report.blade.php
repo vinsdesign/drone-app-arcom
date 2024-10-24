@@ -71,21 +71,43 @@
     <div class="container">
         <div class="team-info">
             <h3>DroneLogbook Report</h3>
-            <p style="text-align: center">{{ $reportDate }}</p>
+            <p style="text-align: center">{{ $reportDate ?? null}}</p>
             @foreach($team as $teams)
-                <p style="text-align: right; margin: 0;">{{ $teams->name }}</p>
-                <p style="text-align: right; margin: 0;">{{ $teams->address }}</p>
+                <p style="text-align: right; margin: 0;">{{ $teams->name ?? null}}</p>
+                <p style="text-align: right; margin: 0;">{{ $teams->address ?? null}}</p>
             @endforeach
         </div>
         <hr>
-        <p class="report-date"><strong>Reporting Period: </strong>{{ $startDate }} <strong>to</strong> {{ $endDate }}</p>
+        <p class="report-date"><strong>Reporting Period: </strong>{{ $startDate ?? null}} <strong>to</strong> {{ $endDate ?? null}}</p>
         @foreach($team as $teams)
-            <p style="text-align: left; margin: 0;"><strong>Company: </strong>{{ $teams->name }} ({{ $teams->owner }})</p>
-            <p style="text-align: left; margin: 0;"><strong>Address: </strong>{{ $teams->address }}</p>
-            <p style="text-align: left; margin: 0;"><strong>Website: </strong>{{ $teams->website }}</p>
-            <p style="text-align: left; margin: 0;"><strong>Contact Email: </strong>{{ $teams->email }}</p>
-            <p style="text-align: left; margin: 0;"><strong>Contact Phone: </strong>{{ $teams->phone }}</p>
+            <p style="text-align: left; margin: 0;"><strong>Company: </strong>{{ $teams->name ?? null}} ({{ $teams->owner ?? null}})</p>
+            <p style="text-align: left; margin: 0;"><strong>Address: </strong>{{ $teams->address ?? null}}</p>
+            <p style="text-align: left; margin: 0;"><strong>Website: </strong>{{ $teams->website ?? null}}</p>
+            <p style="text-align: left; margin: 0;"><strong>Contact Email: </strong>{{ $teams->email ?? null}}</p>
+            <p style="text-align: left; margin: 0;"><strong>Contact Phone: </strong>{{ $teams->phone ?? null}}</p>
         @endforeach
+
+        <table>
+            <thead>
+                <tr style="font-size: 22px; background-color: #315a39;">
+                    <th>Total Personnel</th>
+                    <th>Total Drone</th>
+                    <th>Total flight</th>
+                </tr>
+            </thead>
+            <tbody>
+                @php
+                    $totalPersonnel = $user->count(); 
+                    $totalDrone = $drone->count();
+                    $totalFlight = $flight->count(); 
+                @endphp
+                <tr style="font-size: 18px;">
+                    <td>{{$totalPersonnel}}</td>
+                    <td>{{$totalDrone}}</td>
+                    <td>{{$totalFlight}}</td>
+                </tr>
+            </tbody>
+        </table>
 
         <table class="personnel-table">
             <thead>
@@ -99,9 +121,9 @@
             <tbody>
                 @foreach($user as $users)
                     <tr>
-                        <td>{{ $users->name }}</td>
-                        <td>{{ $users->email }}</td>
-                        <td>{{ $users->phone }}</td>
+                        <td>{{ $users->name ?? null}}</td>
+                        <td>{{ $users->email ?? null}}</td>
+                        <td>{{ $users->phone ?? null}}</td>
                     </tr>
                 @endforeach
             </tbody>
@@ -119,9 +141,9 @@
             <tbody>
                 @foreach($drone as $drones)
                     <tr>
-                        <td>{{ $drones->name }}</td>
-                        <td>{{ $drones->type }}</td>
-                        <td>{{ $drones->geometry }}</td>
+                        <td>{{ $drones->name ?? null}}</td>
+                        <td>{{ $drones->type ?? null}}</td>
+                        <td>{{ $drones->geometry ?? null}}</td>
                     </tr>
                 @endforeach
             </tbody>
@@ -142,35 +164,39 @@
                 </thead>
                 <tbody>
                     <tr>
-                        <td>{{ $flights->name }}</td>
-                        <td>{{ $flights->start_date_flight }}</td>
-                        <td>{{ $flights->users->name }}</td>
-                        <td>{{ $flights->duration }}</td>
-                        <td>{{ $flights->type }}</td>
-                        <td>{{ $flights->customers->name }}</td>
+                        <td>{{ $flights->name ?? null}}</td>
+                        <td>{{ $flights->start_date_flight ?? null }}</td>
+                        <td>{{ $flights->users->name ?? null}}</td>
+                        <td>{{ $flights->duration ?? null}}</td>
+                        <td>{{ $flights->type ?? null}}</td>
+                        <td>{{ $flights->customers->name ?? null}}</td>
                     </tr>
                     <tr class="summary-row">
                         <td colspan="6"><strong>Flight Details:</strong></td>
                     </tr>
                     <tr class="detail-row">
                         <td colspan="6">
-                            <strong>Drones:</strong> {{ $flights->drones->name }}/{{ $flights->drones->geometry }} &nbsp;&nbsp;
-                            <strong>2nd Pilot:</strong> {{ $flights->instructor }} &nbsp;&nbsp;
-                            <strong>OPS:</strong> {{ $flights->ops }}
+                            <strong>Drones:</strong> {{ $flights->drones->name ?? null}}/{{ $flights->drones->geometry ?? null}} &nbsp;&nbsp;
+                            <strong>2nd Pilot:</strong> {{ $flights->instructor ?? null}} &nbsp;&nbsp;
+                            <strong>OPS:</strong> {{ $flights->ops ?? null}}
                             <br>
-                            <strong>VO:</strong> {{ $flights->vo }} &nbsp;&nbsp;
-                            <strong>PO:</strong> {{ $flights->po }} &nbsp;&nbsp;
-                            <strong>Kits:</strong> {{ $flights->kits->name ?? ''}}
+                            <strong>VO:</strong> {{ $flights->vo ?? null}} &nbsp;&nbsp;
+                            <strong>PO:</strong> {{ $flights->po ?? null}} &nbsp;&nbsp;
+                            <strong>Kits:</strong> {{ $flights->kits->name ?? null}}
                         </td>
                     </tr>
                     <tr class="detail-row">
                         <td colspan="6">
-                            <strong>Battery:</strong> {{ $flights->battreis->name ?? '' }} &nbsp;&nbsp;
-                            <strong>Equipment:</strong> {{ $flights->equidments->name ?? '' }} 
+                            @foreach ($flights->battreis as $battery)
+                                <strong>Battery:</strong> {{ $battery->name}}@if(!$loop->last), @endif
+                            @endforeach
+                            @foreach ($flights->equidments as $equipment)
+                                <strong>Equipment:</strong> {{ $equipment->name}}@if(!$loop->last), @endif
+                            @endforeach
                             <br>
-                            <strong>Fuel Used:</strong> {{ $flights->fuel_used }} &nbsp;&nbsp;
-                            <strong>Landings:</strong> {{ $flights->landings }}&nbsp;&nbsp;
-                            <strong>Pre-Volt:</strong> {{ $flights->pre_volt }}
+                            <strong>Fuel Used:</strong> {{ $flights->fuel_used ?? null}} &nbsp;&nbsp;
+                            <strong>Landings:</strong> {{ $flights->landings ?? null}}&nbsp;&nbsp;
+                            <strong>Pre-Volt:</strong> {{ $flights->pre_volt ?? null}}
                         </td>
                     </tr>
                 </tbody>

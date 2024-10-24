@@ -123,7 +123,7 @@ class DroneResource extends Resource
                             ->searchable()
                             ->required()
                             ->columnSpanFull(),
-                        Forms\Components\TextInput::make('firmware_v')->label('Firmware version')
+                        Forms\Components\TextInput::make('firmware_v')->label('Firmware Version')
                             ->required()
                             ->maxLength(255),
                         Forms\Components\TextInput::make('hardware_v')->label('Hardware Version')
@@ -152,7 +152,7 @@ class DroneResource extends Resource
                         Forms\Components\TextInput::make('serial_i')->label('Serial Internal')
                             ->required()
                             ->numeric(),
-                        Forms\Components\TextInput::make('flight_c')->label('Flight controller')
+                        Forms\Components\TextInput::make('flight_c')->label('Flight Controller')
                             ->required()
                             ->maxLength(255),
                         Forms\Components\TextInput::make('remote_c')->label('Remote Controller')

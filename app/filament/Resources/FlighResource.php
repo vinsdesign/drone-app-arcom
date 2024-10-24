@@ -29,6 +29,7 @@ use Filament\Support\Colors\Color;
 use Filament\Widgets\StatsOverviewWidget\Card;
 use App\Filament\Widgets\FlightChart;
 use Carbon\Carbon;
+use Filament\Facades\Filament;
 use Filament\Forms\Components\Button;
 use Filament\Forms\Components\View;
 
@@ -248,14 +249,38 @@ class FlighResource extends Resource
                             })
                             ->pluck('name', 'id');
                     })
-                    // ->afterStateUpdated(function ($state, callable $set){
-                    //     if ($state){
-                    //         $kits = kits::where('drone_id', $state)->pluck('id', 'name');
-                    //         if ($kits){
-                    //             $set('kits_id', $kits->keys()->first());
-                    //         }
-                    //     }
-                    // })
+                    ->afterStateUpdated(function ($state, callable $set) {
+                        if ($state) {
+                            $kit = kits::where('drone_id', $state)->get();
+                            
+                            if ($kit) {
+                                $firstDroneKits = $kit->first();
+                                $set('kits_id', $firstDroneKits->id);
+                
+                                if ($firstDroneKits->type === 'battery') {
+                                    $batteries = $firstDroneKits->battrei()->pluck('name')->join(', ');
+                                    $set('battery_name', $batteries);
+                                    $set('camera_gimbal', null); 
+                                    $set('others', null); 
+                                }
+                
+                                if ($firstDroneKits->type === 'mix') {
+                                    $battery = $firstDroneKits->battrei()->pluck('name')->join(', ');
+                                    $cameraGimbal = $firstDroneKits->equidment()->whereIn('type', ['camera', 'gimbal'])->pluck('type')->join(', ');
+                                    $others = $firstDroneKits->equidment()->whereNotIn('type', ['camera', 'gimbal'])->pluck('type')->join(', ');
+                
+                                    $set('battery_name', $battery);
+                                    $set('camera_gimbal', $cameraGimbal);
+                                    $set('others', $others);
+                                }
+                            } else {
+                                $set('kits_id', null);
+                                $set('battery_name', null);
+                                $set('camera_gimbal', null);
+                                $set('others', null);
+                            }
+                        }
+                    })
                     ->searchable()
                     ->columnSpanFull(),
 
@@ -272,12 +297,17 @@ class FlighResource extends Resource
                     ->options(function (callable $get) use ($currentTeamId) { 
                         $startDate = $get('start_date_flight');
                         $endDate = $get('end_date_flight');
-                        //$droneId = $get('drones_id');
+                        $droneId = $get('drones_id');
+                        $showAllKits = $get('show_all_kits');
+
+                        if ($showAllKits){
+                            return kits::pluck('name', 'id');
+                        }
                         
                         return kits::where('teams_id', $currentTeamId)
-                            // ->when($droneId, function ($query) use ($droneId){
-                            //     $query->where('drone_id', $droneId);
-                            // })
+                            ->when($droneId, function ($query) use ($droneId){
+                                $query->where('drone_id', $droneId);
+                            })
                             ->when($startDate && $endDate, function ($query) use ($startDate, $endDate) {
                                 $query->whereDoesntHave('fligh', function ($query) use ($startDate, $endDate) {
                                     $query->where(function ($query) use ($startDate, $endDate) {
@@ -305,8 +335,8 @@ class FlighResource extends Resource
                 
                                 if ($kit->type === 'mix') {
                                     $battery = $kit->battrei()->pluck('name')->join(', ');
-                                    $cameraGimbal = $kit->equidment()->where('type', 'camera')->pluck('type')->join(', ');
-                                    $others = $kit->equidment()->whereNotIn('type', ['camera'])->pluck('type')->join(', ');
+                                    $cameraGimbal = $kit->equidment()->whereIn('type', ['camera', 'gimbal'])->pluck('type')->join(', ');
+                                    $others = $kit->equidment()->whereNotIn('type', ['camera', 'gimbal'])->pluck('type')->join(', ');
                 
                                     $set('camera_gimbal', $cameraGimbal);
                                     $set('others', $others);
@@ -319,6 +349,14 @@ class FlighResource extends Resource
                             }
                         }
                     }),
+                Forms\Components\Checkbox::make('show_all_kits') 
+                        ->label('Show All Kits')
+                        ->reactive() 
+                        ->afterStateUpdated(function ($state, callable $set) {
+                            if ($state){
+                                $set('kits_id', null);
+                            }
+                        }),
                 Forms\Components\TextInput::make('battery_name')
                         ->label('Battery')
                         ->helperText('Automatically filled when selecting kits')
@@ -330,10 +368,8 @@ class FlighResource extends Resource
                 Forms\Components\TextInput::make('others')
                         ->helperText('Automatically filled when selecting kits')
                         ->label('Others')
-
                         ->disabled(),
                 
-            
                 //grid battery
                 Forms\Components\Grid::make(1)->schema([
                     View::make('component.button-battery'),
@@ -434,7 +470,7 @@ class FlighResource extends Resource
                     ->numeric()    
                     ->required()
                     ->default('1'),
-                    ])->columns(2),
+                    ])->columns(3),
                 //Forms\Components\TextInput::make('wheater_id')
                     //->required()
                     //->numeric(),
@@ -462,6 +498,7 @@ class FlighResource extends Resource
                     ->sortable(),
                 Tables\Columns\TextColumn::make('duration'),
                 Tables\Columns\TextColumn::make('fligh_location.name')
+                    ->label('Flight Location')
                     ->numeric()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('projects.case')
