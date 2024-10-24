@@ -42,12 +42,14 @@
             </div>
     
             <!-- Action buttons -->
-            <div class="flex space-x-4">
-                
+            
+            @if (Auth::user()->can('create', App\Models\battrei::class)) 
+                <div class="flex space-x-4">
                     <a href="{{ route('filament.admin.resources.battreis.create', ['tenant' => auth()->user()->teams()->first()->id]) }}"><button class="filament-button px-6 py-2 text-sm font-semibold text-white bg-primary-600 dark:bg-primary-500 border border-transparent rounded-md hover:bg-primary-700 dark:hover:bg-primary-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-600 dark:focus:ring-offset-gray-800">
-                        Add Batteries</button></a>
-                
-            </div>
+                        Add Batteries</button></a> 
+                </div>
+            @endif
+ 
         </div>
     </div>
     

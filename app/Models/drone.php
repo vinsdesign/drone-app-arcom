@@ -32,6 +32,9 @@ class drone extends Model
         'color',
         'remote',
         'conn_card',
+        'initial_flight',
+        'initial_flight_time',
+        'max_flight_time',
         'teams_id'
     ];
 

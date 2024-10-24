@@ -25,12 +25,12 @@
             <!-- Status indicators (Airworthy, Maintenance, Retired) -->
             <div class="flex space-x-12">
                 <div class="text-center">
-                    <h2 class="text-sm font-semibold text-gray-500 dark:text-gray-400">Airworthy</h2>
+                    <h2 class="text-sm font-semibold text-gray-500 dark:text-gray-400">Complate</h2>
                     <h1 class="text-3xl font-bold text-green-600 dark:text-green-400">{{ $complate }}</h1>
                 </div>
                 <br>
                 <div class="text-center">
-                    <h2 class="text-sm font-semibold text-gray-500 dark:text-gray-400">Maintenance</h2>
+                    <h2 class="text-sm font-semibold text-gray-500 dark:text-gray-400">In Progress</h2>
                     <h1 class="text-3xl font-bold text-blue-600 dark:text-blue-400">{{ $inProgres }}</h1>
                 </div>
                 <br>
@@ -41,11 +41,12 @@
             </div>
     
             <!-- Action buttons -->
-            <div class="flex space-x-4">
-                <button class="filament-button px-6 py-2 text-sm font-semibold text-white bg-primary-600 dark:bg-primary-500 border border-transparent rounded-md hover:bg-primary-700 dark:hover:bg-primary-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-600 dark:focus:ring-offset-gray-800">
-                    Add Maintenance
-                </button>
-            </div>
+            @if (Auth::user()->can('create', App\Models\maintence_eq::class)) 
+                <div class="flex space-x-4">
+                    <a href="{{ route('filament.admin.resources.maintenance-batteries.create', ['tenant' => auth()->user()->teams()->first()->id]) }}"><button class="filament-button px-6 py-2 text-sm font-semibold text-white bg-primary-600 dark:bg-primary-500 border border-transparent rounded-md hover:bg-primary-700 dark:hover:bg-primary-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-600 dark:focus:ring-offset-gray-800">
+                        Add Maintenance</button></a> 
+                </div>
+            @endif
         </div>
     </div>
     </x-filament::section>

@@ -78,7 +78,7 @@ class FlighResource extends Resource
                     $end = $get('end_date_flight');
                     if ($start && $end) {
                         $diffInSeconds = Carbon::parse($start)->diffInSeconds(Carbon::parse($end));
-                        $duration = gmdate('H:i:s', $diffInSeconds); // Format menjadi hh:mm:ss
+                        $duration = gmdate('H:i:s', $diffInSeconds);
                         $set('duration', $duration);
                     }
                 })->reactive()
@@ -248,6 +248,30 @@ class FlighResource extends Resource
                                 });
                             })
                             ->pluck('name', 'id');
+                    })->saveRelationshipsUsing(function ($state, callable $get) {
+                        $start = $get('start_date_flight');
+                        $end = $get('end_date_flight');
+                        $state = is_array($state) ? $state : [$state];
+                        foreach ($state as $key) {
+                            drone::where('id', $key)->increment('initial_flight');
+                        };
+                                if ($start && $end) {
+                                    $diffInSeconds = Carbon::parse($start)->diffInSeconds(Carbon::parse($end));
+                                    $duration = gmdate('H:i:s', $diffInSeconds);
+                                    $durationArray = is_array($duration) ? $duration : [$duration];
+                                    
+                                    foreach ($state as $key) {
+                                        $drone = drone::find($key);
+                                        if ($drone) { // Check if drone exists
+                                            $currentFlightTime = Carbon::parse($drone->initial_flight_time)->secondsSinceMidnight();
+                                            $newDurationInSeconds = Carbon::parse($durationArray[0])->secondsSinceMidnight();
+                                            $totalFlightTimeInSeconds = $currentFlightTime + $newDurationInSeconds;
+                                            $totalFlightTime = gmdate('H:i:s', $totalFlightTimeInSeconds);
+                                            $drone->update(['initial_flight_time' => $totalFlightTime]);
+                                        }
+                                    }
+                                };
+  
                     })
                     ->afterStateUpdated(function ($state, callable $set) {
                         if ($state) {
@@ -283,7 +307,7 @@ class FlighResource extends Resource
                     })
                     ->searchable()
                     ->columnSpanFull(),
-
+                    //end flight
                 ]), 
                 //kits
                 Forms\Components\Select::make('kits_id')
@@ -406,6 +430,9 @@ class FlighResource extends Resource
                     ->searchable()
                     ->saveRelationshipsUsing(function ($component, $state) {
                         $component->getRecord()->battreis()->sync($state);
+                        foreach ($state as $key){
+                            battrei::where('id',$key)->increment('initial_Cycle_count');
+                        }
                     }),
                     // ->options(function (callable $get) use ($currentTeamId) {
                     //     $flightDate = $get('flight_date'); // Ambil tanggal flight
