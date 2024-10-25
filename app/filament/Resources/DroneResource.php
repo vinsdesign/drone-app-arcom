@@ -24,6 +24,7 @@ class DroneResource extends Resource
     protected static ?string $navigationLabel = 'Drone';
     protected static ?string $navigationIcon = 'heroicon-m-rocket-launch';
     public static ?string $tenantOwnershipRelationshipName = 'teams';
+    protected static bool $isLazy = false;
 
     public static function form(Form $form): Form
     {

@@ -29,6 +29,7 @@ class UserResource extends Resource
     public static ?int $navigationSort = 2;
     public static ?string $navigationGroup = ' ';
     public static ?string $tenantOwnershipRelationshipName = 'teams';
+    protected static bool $isLazy = false;
 
     public static function form(Form $form): Form
     {

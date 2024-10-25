@@ -34,6 +34,7 @@ class MaintenceResource extends Resource
     protected static ?string $navigationIcon = 'heroicon-s-wrench-screwdriver';
     public static ?string $tenantOwnershipRelationshipName = 'teams';
     public static ?int $navigationSort = 5;
+    protected static bool $isLazy = false;
 
     public static function form(Form $form): Form
     {

@@ -37,6 +37,7 @@ class EquidmentResource extends Resource
     protected static?string $modelLabel = 'Equipment';
 
     public static ?string $tenantOwnershipRelationshipName = 'teams';
+    protected static bool $isLazy = false;
 
     public static function form(Form $form): Form
     {

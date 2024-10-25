@@ -25,9 +25,9 @@ return new class extends Migration
             $table->string('category')->nullable();
             $table->string('address')->nullable();
             $table->string('state')->nullable();
-            $table->string('city')->nullable();
+            $table->foreignId('cities_id')->constrainedTo('cities')->nullable()->cascadeOnDelete('set null');
             $table->string('postal_code')->nullable();
-            $table->string('country')->nullable();
+            $table->foreignId('countries_id')->constrainedTo('countries')->nullable()->cascadeOnDelete('set null');
             $table->boolean('insurance')->nullable();
             $table->integer('insurance_amount')->nullable();
             $table->string('activity')->nullable();

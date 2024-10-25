@@ -33,6 +33,7 @@ class MaintenanceBatteryResource extends Resource
     public static ?string $tenantOwnershipRelationshipName = 'teams';
     public static ?int $navigationSort = 6;
     public static ?string $navigationGroup = 'Maintenance';
+    protected static bool $isLazy = false;
 
     
 

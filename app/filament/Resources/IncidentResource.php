@@ -8,6 +8,7 @@ use App\Models\drone;
 use App\Models\fligh_location;
 use App\Models\Incident;
 use App\Models\project;
+use App\Models\User;
 use Filament\Forms;
 use Filament\Infolists\Components\Section;
 use Filament\Forms\Form;
@@ -29,6 +30,7 @@ class IncidentResource extends Resource
     public static ?string $tenantOwnershipRelationshipName = 'teams';
     public static ?int $navigationSort = 7;
     public static ?string $navigationGroup = 'flight';
+    protected static bool $isLazy = false;
 
 
     public static function form(Form $form): Form
@@ -60,7 +62,7 @@ class IncidentResource extends Resource
                             return fligh_location::where('teams_id', $currentTeamId)->pluck('name', 'id');
                         })
                         ->searchable()
-                        ->label('Flight Location')
+                        ->label('Flight Locations')
                         ->required(),
                         // ->searchable(),
                      Forms\Components\Select::make('drone_id')
@@ -79,24 +81,30 @@ class IncidentResource extends Resource
                         })
                         ->searchable()
                         ->required(),
-                    Forms\Components\TextInput::make('personel_involved_id')
-                        ->required()
-                        ->numeric()->columnSpanFull(),
+                    Forms\Components\Select::make('personel_involved_id')->label('Organization Personnel Involved ')
+                        ->options(
+                            function (Builder $query) use ($currentTeamId) {
+                                return User::whereHas('teams', function (Builder $query) use ($currentTeamId) {
+                                    $query->where('team_user.team_id', $currentTeamId); 
+                            })->pluck('name','id');
+                        }  
+                        )->searchable()
+                        ->columnSpanFull(),
                     ])->columns(2),
                     //section 2
                 Forms\Components\Section::make('Insiden Description')
                     ->description('')
                     ->schema([
-                        Forms\Components\TextArea::make('aircraft_damage')
+                        Forms\Components\TextArea::make('aircraft_damage')->label('Aircraft Damage')
                         ->required()
                         ->maxLength(255),
-                    Forms\Components\TextArea::make('other_damage')
+                    Forms\Components\TextArea::make('other_damage')->label('Other Damage')
                         ->required()
                         ->maxLength(255),
-                    Forms\Components\TextArea::make('description')
+                    Forms\Components\TextArea::make('description')->label('Description')
                         ->required()
                         ->maxLength(255)->columnSpanFull(),
-                    Forms\Components\TextInput::make('incuration_type')
+                    Forms\Components\TextInput::make('incuration_type')->label('Incursions (people, aircraft...)')
                         ->required()
                         ->maxLength(255)->columnSpanFull(),
                     ])->columns(2),
@@ -104,12 +112,12 @@ class IncidentResource extends Resource
                 Forms\Components\Section::make('Incident Rectification')
                 ->description('')
                 ->schema([
-                    Forms\Components\TextInput::make('rectification_note')
+                    Forms\Components\TextInput::make('rectification_note')->label('Rectification Notes')
                         ->required()
                         ->maxLength(255)->columnSpanFull(),
-                    Forms\Components\DatePicker::make('rectification_date')
+                    Forms\Components\DatePicker::make('rectification_date')->label('Rectification Date')
                         ->required(),
-                    Forms\Components\TextInput::make('Technician')
+                    Forms\Components\TextInput::make('Technician')->label('Technician')
                         ->required()
                         ->maxLength(255),
                 ])->columns(2),

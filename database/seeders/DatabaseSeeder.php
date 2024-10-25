@@ -13,8 +13,11 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-
-        $this->call(EquidmentSeeder::class);
+        $this->call(FlighLocationSeeder::class);
+        // $this->call(DroneSeeder::class);
+        // $this->call(EquidmentSeeder::class);
+        
+        // $this->call(BattreiSeeder::class);
         
     }
     

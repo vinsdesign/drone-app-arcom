@@ -27,6 +27,8 @@ class DocumentResource extends Resource
 
     public static ?int $navigationSort = 3;
     public static ?string $navigationGroup = ' ';
+    protected static bool $isLazy = false;
+    
 
     public static function getNavigationLabel(): string
     {

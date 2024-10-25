@@ -11,6 +11,7 @@ class AStatsOverview extends BaseWidget
 {
     public static ?string $tenantOwnershipRelationshipName = 'teams';
     protected static bool $isLazy = false;
+    protected static ?int $sort = 3;
     protected function getStats(): array
     {
         $tenant_id = Auth()->user()->teams()->first()->id;

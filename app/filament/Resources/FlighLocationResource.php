@@ -26,6 +26,7 @@ class FlighLocationResource extends Resource
     protected static ?string $navigationLabel = 'Location';
     protected static ?string $modelLabel = 'Locations';
     public static ?string $tenantOwnershipRelationshipName = 'teams';
+    protected static bool $isLazy = false;
 
     public static function form(Form $form): Form
     {

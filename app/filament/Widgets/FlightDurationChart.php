@@ -13,6 +13,7 @@ class FlightDurationChart extends ChartWidget
     protected static ?string $heading = 'Duration Flight Hours';
     protected static string $color = 'success';
     protected static bool $isLazy = false;
+    protected static ?int $sort = 4;
 
     protected function getData(): array
     {
@@ -21,7 +22,7 @@ class FlightDurationChart extends ChartWidget
         ->whereBetween('start_date_flight', [now()->startOfYear(), now()->endOfYear()])
         ->get();
         $data = $teams->groupBy(function ($item) {
-            return Carbon::parse($item->date_flight)->format('Y-m-d');
+            return Carbon::parse($item->start_date_flight)->format('Y-m-d');
         })->map(function ($group) {
             $totalSeconds = 0;
             foreach ($group as $flight) {
@@ -44,6 +45,11 @@ class FlightDurationChart extends ChartWidget
             [
                 'label' => 'Total Flight Duration (Hours)',
                 'data' => $data->values(),
+                'backgroundColor' => 'rgba(255, 99, 132, 0.2)',
+                'borderColor' => 'rgba(255, 99, 132, 1)',
+                'borderWidth' => 2,
+                'fill' => false, // untuk line chart
+                'tension' => 0.4, // membuat garis lebih halus
             ],
         ],
         'labels' => $data->keys(),
