@@ -277,10 +277,12 @@ class FlighResource extends Resource
                         if ($state) {
                             $kit = kits::where('drone_id', $state)->get();
                             
-                            if ($kit) {
+                            if ($kit->isNotEmpty()) {
                                 $firstDroneKits = $kit->first();
-                                $set('kits_id', $firstDroneKits->id);
-                
+
+                                if ($firstDroneKits){
+                                    $set('kits_id', $firstDroneKits->id);
+                                
                                 if ($firstDroneKits->type === 'battery') {
                                     $batteries = $firstDroneKits->battrei()->pluck('name')->join(', ');
                                     $set('battery_name', $batteries);
@@ -304,6 +306,7 @@ class FlighResource extends Resource
                                 $set('others', null);
                             }
                         }
+                    }
                     })
                     ->searchable()
                     ->columnSpanFull(),

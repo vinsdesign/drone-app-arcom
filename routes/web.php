@@ -15,5 +15,6 @@ Route::post('/send-email', [ContactController::class, 'sendEmail'])->name('sendE
 Route::get('/report', Report::class)->name('filament.report');
 Route::post('/report/download', [Report::class, 'downloadReport'])->name('filament.report.download');
 Route::post('/filament/report/inventory/download', [Report::class, 'downloadInventoryReport'])->name('filament.report.inventory.download');
+Route::post('/filament/report/incomeExpense/download', [Report::class, 'downloadIncomeExpenseReport'])->name('filament.report.incomeExpense.download');
 Route::get('/drone-statistik/{drone_id}', [DroneStatistik::class, 'showDroneStatistik'])->name('drone.statistik');
 Route::get('/battery-statistik/{battery_id}', [BatteryStatistik::class, 'showBatteryStatistik'])->name('battery.statistik');

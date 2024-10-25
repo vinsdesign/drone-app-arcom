@@ -58,7 +58,7 @@
             background-color: #315a39;
             color: white;
         }
-        .summary-row {
+        .summary-row, .type1, .type2 {
             background-color: #acd1af;
         }
         .detail-row{
@@ -131,21 +131,52 @@
 
         <table class="drone-table">
             <thead>
-                    <th colspan="3" class="header-title">Drone</th>
+                    <th colspan="7" class="header-title">Drone</th>
                 <tr class="drone">
-                    <th>Name</th>
-                    <th>Type</th>
-                    <th>Geometry</th>
+                    <th colspan="2">Name</th>
+                    <th colspan="2">Type</th>
+                    <th colspan="3">Geometry</th>
                 </tr>
             </thead>
             <tbody>
+                @php
+                    $droneType = $drone->groupBy('type')->map(function ($group){
+                        return $group->count();
+                    });
+                    $type1 = ['aircraft', 'autoPilot', 'boat', 'fixed_wing', 'flight controller', 'flying-wings', 'fpv'];
+                    $type2 = ['hexsacopter', 'home-made', 'multi-rotors', 'quadcopter', 'rover', 'rpa', 'Submersible'];
+                @endphp
+
                 @foreach($drone as $drones)
                     <tr>
-                        <td>{{ $drones->name ?? null}}</td>
-                        <td>{{ $drones->type ?? null}}</td>
-                        <td>{{ $drones->geometry ?? null}}</td>
+                        <td colspan="2">{{ $drones->name ?? null}}</td>
+                        <td colspan="2">{{ $drones->type ?? null}}</td>
+                        <td colspan="3">{{ $drones->geometry ?? null}}</td>
                     </tr>
                 @endforeach
+                <tr>
+                    <td colspan="7" style="text-align: center;" class="header-title"><strong>Total PerType:</strong></td>
+                </tr>
+                <tr class="type1">
+                    @foreach($type1 as $types1)
+                        <td><strong>{{ ucfirst(str_replace('_', ' ', $types1)) }}</strong></td>
+                    @endforeach
+                </tr>
+                <tr>
+                    @foreach($type1 as $types1)
+                        <td>{{ $droneType[$types1] ?? 0 }}</td>
+                    @endforeach
+                </tr>
+                <tr class="type2">
+                    @foreach($type2 as $types2)
+                        <td><strong>{{ ucfirst(str_replace('_', ' ', $types2)) }}</strong></td>
+                    @endforeach
+                </tr>
+                <tr>
+                    @foreach($type2 as $types2)
+                        <td>{{ $droneType[$types2] ?? 0 }}</td>
+                    @endforeach
+                </tr>
             </tbody>
         </table>
 
