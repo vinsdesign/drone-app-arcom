@@ -280,9 +280,8 @@ class FlighResource extends Resource
                             
                             if ($kit->isNotEmpty()) {
                                 $firstDroneKits = $kit->first();
-                               
-                                
-                                if($firstDroneKits){
+
+                                if ($firstDroneKits){
                                     $set('kits_id', $firstDroneKits->id);
                                 
                                 if ($firstDroneKits->type === 'battery') {
@@ -309,6 +308,7 @@ class FlighResource extends Resource
                             }
                             }
                         }
+                    }
                     })
                     ->searchable()
                     ->columnSpanFull(),

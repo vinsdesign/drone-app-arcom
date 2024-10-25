@@ -6,6 +6,9 @@ use App\Models\battrei;
 use App\Models\drone;
 use App\Models\equidment;
 use App\Models\fligh;
+use App\Models\maintence_drone;
+use App\Models\maintence_eq;
+use App\Models\Projects;
 use App\Models\team;
 use App\Models\User;
 use Filament\Pages\Page;
@@ -65,4 +68,25 @@ class Report extends Page
     $pdf = PDF::loadView('report.inventory_report', compact('user', 'drone', 'battery', 'equipment', 'reportDate', 'team'));
     return $pdf->download('inventory_report.pdf');
 }
+
+    public function downloadIncomeExpenseReport(Request $request){
+        $currentTeamId = auth()->user()->teams()->first()->id;
+        $startDate = $request->input('start_date');
+        $endDate = $request->input('end_date');
+
+        $project = Projects::whereHas('teams', function ($query) use ($currentTeamId) {
+            $query->where('id', $currentTeamId);
+        })->get();
+        $maintenance_drone = maintence_drone::whereHas('teams', function ($query) use ($currentTeamId){
+            $query->where('id', $currentTeamId);
+        })->get();
+        $maintenance_eq = maintence_eq::whereHas('teams', function ($query) use ($currentTeamId){
+            $query->where('id', $currentTeamId);
+        })->get();
+        $team = team::where('id', $currentTeamId)->get();
+        $reportDate = now()->format('F j, Y');
+        $pdf = PDF::loadView('report.income_expense', compact('startDate', 'endDate', 'project', 'maintenance_drone', 'maintenance_eq', 'team', 'reportDate'));
+        return $pdf->download('Income Expense Report.pdf');
+
+    }
 }
