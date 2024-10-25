@@ -15,6 +15,7 @@ class ContactResource extends Resource
     protected static ?string $navigationGroup = 'Contact';
     protected static ?string $modelLabel = 'Contact';
     protected static ?string $navigationIcon = 'heroicon-m-chat-bubble-left-right';
+    protected static bool $isLazy = false;
     public static function getPages(): array
     {
         return [

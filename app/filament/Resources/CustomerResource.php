@@ -26,6 +26,7 @@ class CustomerResource extends Resource
     public static ?string $tenantOwnershipRelationshipName = 'teams';
     public static ?int $navigationSort = 1;
     public static ?string $navigationGroup = ' ';
+    protected static bool $isLazy = false;
 
     public static function form(Form $form): Form
 

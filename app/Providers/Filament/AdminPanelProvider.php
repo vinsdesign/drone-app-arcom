@@ -4,6 +4,12 @@ namespace App\Providers\Filament;
 use App\Filament\Pages\Report;
 use App\Filament\Resources\CustomerResource;
 use App\Filament\Resources\DocumentResource;
+use App\Filament\Widgets\AStatsOverview;
+use App\Filament\Widgets\FlightChart;
+use App\Filament\Widgets\FlightDurationChart;
+use App\Filament\Widgets\HeaderDasboard;
+use App\Filament\Widgets\InventoryOverview;
+use App\Filament\Widgets\InventoryStats;
 use App\Models\Team;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\DisableBladeIconComponents;
@@ -96,6 +102,13 @@ class AdminPanelProvider extends PanelProvider
             ])
             ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\\Filament\\Widgets')
             ->widgets([
+                HeaderDasboard::class,
+                AStatsOverview::class,
+                FlightChart::class,
+                FlightDurationChart::class,
+                InventoryOverview::class,
+                InventoryStats::class,
+                
                 // Widgets\AccountWidget::class,
                 // Widgets\FilamentInfoWidget::class,
             ])

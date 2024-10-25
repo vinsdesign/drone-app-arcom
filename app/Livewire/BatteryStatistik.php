@@ -40,7 +40,7 @@ class BatteryStatistik extends ChartWidget
             ->get();
     
         $data = $flights->groupBy(function ($item) {
-            return Carbon::parse($item->date_flight)->format('Y-m-d');
+            return Carbon::parse($item->start_date_flight)->format('Y-m-d');
         })->map(function ($group) {
             $totalFlights = $group->count();
             $totalDuration = $group->sum(function ($flight) {
@@ -82,7 +82,7 @@ class BatteryStatistik extends ChartWidget
             ->whereBetween('start_date_flight', [now()->startOfYear(), now()->endOfYear()])
             ->get();
             $data = $flights->groupBy(function ($item) {
-                return Carbon::parse($item->date_flight)->format('Y-m'); // Grup per bulan
+                return Carbon::parse($item->start_date_flight)->format('Y-m'); // Grup per bulan
             })->map(function ($group) {
                 $totalFlights = $group->count();
                 $totalDurationInSeconds = $group->sum(function ($flight) {

@@ -15,4 +15,7 @@ class citie extends Model
     public function users(){
         return $this->hasMany(User::class);
     }
+    public function teams(){
+        return $this->hasMany(team::class);
+    }
 }

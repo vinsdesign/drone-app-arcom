@@ -48,6 +48,7 @@ class FlighResource extends Resource
     public static ?int $navigationSort = 4;
     protected static ?string $navigationIcon = 'heroicon-s-clipboard-document-list';
     public static ?string $navigationGroup = 'flight';
+    protected static bool $isLazy = false;
 
 
     public static function form(Form $form): Form
@@ -305,85 +306,92 @@ class FlighResource extends Resource
                                 $set('camera_gimbal', null);
                                 $set('others', null);
                             }
+                            }
                         }
                     }
                     })
                     ->searchable()
                     ->columnSpanFull(),
                     //end flight
-                ]), 
-                //kits
-                Forms\Components\Select::make('kits_id')
-                    ->label('Kits')
-                    // ->relationship('kits', 'name', function (Builder $query) {
-                    //     $currentTeamId = auth()->user()->teams()->first()->id;
-                    //     $query->whereHas('teams', function (Builder $query) use ($currentTeamId){
-                    //         $query->where('team_id', $currentTeamId);
-                    //     });
-                    // })
-                    ->options(function (callable $get) use ($currentTeamId) { 
-                        $startDate = $get('start_date_flight');
-                        $endDate = $get('end_date_flight');
-                        $droneId = $get('drones_id');
-                        $showAllKits = $get('show_all_kits');
+                ])->columnSpan(2), 
+                //grid Kits
+                Forms\Components\Grid::make(1)->schema([
 
-                        if ($showAllKits){
-                            return kits::pluck('name', 'id');
-                        }
-                        
-                        return kits::where('teams_id', $currentTeamId)
-                            ->when($droneId, function ($query) use ($droneId){
-                                $query->where('drone_id', $droneId);
-                            })
-                            ->when($startDate && $endDate, function ($query) use ($startDate, $endDate) {
-                                $query->whereDoesntHave('fligh', function ($query) use ($startDate, $endDate) {
+                Forms\Components\Checkbox::make('show_all_kits') 
+                ->label('Show All Kits')
+                ->reactive() 
+                ->afterStateUpdated(function ($state, callable $set) {
+                    if ($state){
+                        $set('kits_id', null);
+                    }
+                }),
+                    //kits
+                Forms\Components\Select::make('kits_id')
+                ->label('Kits')
+                // ->relationship('kits', 'name', function (Builder $query) {
+                //     $currentTeamId = auth()->user()->teams()->first()->id;
+                //     $query->whereHas('teams', function (Builder $query) use ($currentTeamId){
+                //         $query->where('team_id', $currentTeamId);
+                //     });
+                // })
+                ->options(function (callable $get) use ($currentTeamId) { 
+                    $startDate = $get('start_date_flight');
+                    $endDate = $get('end_date_flight');
+                    $droneId = $get('drones_id');
+                    $showAllKits = $get('show_all_kits');
+
+                    if ($showAllKits){
+                        return kits::pluck('name', 'id');
+                    }
+                    
+                    return kits::where('teams_id', $currentTeamId)
+                        ->when($droneId, function ($query) use ($droneId){
+                            $query->where('drone_id', $droneId);
+                        })
+                        ->when($startDate && $endDate, function ($query) use ($startDate, $endDate) {
+                            $query->whereDoesntHave('fligh', function ($query) use ($startDate, $endDate) {
+                                $query->where(function ($query) use ($startDate, $endDate) {
                                     $query->where(function ($query) use ($startDate, $endDate) {
-                                        $query->where(function ($query) use ($startDate, $endDate) {
-                                            $query->where('start_date_flight', '<=', $endDate)
-                                                  ->where('end_date_flight', '>=', $startDate);
-                                        });
+                                        $query->where('start_date_flight', '<=', $endDate)
+                                              ->where('end_date_flight', '>=', $startDate);
                                     });
                                 });
-                            })
-                            ->pluck('name', 'id'); 
-                    })                                   
-                    ->searchable()
-                    ->reactive()
-                    ->afterStateUpdated(function ($state, callable $set) {
-                        if ($state) {
-                            $kit = kits::find($state);
-                            if ($kit) {
-                                if ($kit->type === 'battery') {
-                                    $batteries = $kit->battrei()->pluck('name')->join(', ');
-                                    $set('battery_name', $batteries);
-                                    $set('camera_gimbal', null); 
-                                    $set('others', null); 
-                                }
-                
-                                if ($kit->type === 'mix') {
-                                    $battery = $kit->battrei()->pluck('name')->join(', ');
-                                    $cameraGimbal = $kit->equidment()->whereIn('type', ['camera', 'gimbal'])->pluck('type')->join(', ');
-                                    $others = $kit->equidment()->whereNotIn('type', ['camera', 'gimbal'])->pluck('type')->join(', ');
-                
-                                    $set('camera_gimbal', $cameraGimbal);
-                                    $set('others', $others);
-                                    $set('battery_name', $battery);
-                                }
-                            } else {
-                                $set('battery_name', null);
-                                $set('camera_gimbal', null);
-                                $set('others', null);
+                            });
+                        })
+                        ->pluck('name', 'id'); 
+                })                                   
+                ->searchable()
+                ->reactive()
+                ->afterStateUpdated(function ($state, callable $set) {
+                    if ($state) {
+                        $kit = kits::find($state);
+                        if ($kit) {
+                            if ($kit->type === 'battery') {
+                                $batteries = $kit->battrei()->pluck('name')->join(', ');
+                                $set('battery_name', $batteries);
+                                $set('camera_gimbal', null); 
+                                $set('others', null); 
                             }
+            
+                            if ($kit->type === 'mix') {
+                                $battery = $kit->battrei()->pluck('name')->join(', ');
+                                $cameraGimbal = $kit->equidment()->whereIn('type', ['camera', 'gimbal'])->pluck('type')->join(', ');
+                                $others = $kit->equidment()->whereNotIn('type', ['camera', 'gimbal'])->pluck('type')->join(', ');
+            
+                                $set('camera_gimbal', $cameraGimbal);
+                                $set('others', $others);
+                                $set('battery_name', $battery);
+                            }
+                        } else {
+                            $set('battery_name', null);
+                            $set('camera_gimbal', null);
+                            $set('others', null);
                         }
-                    }),
-                Forms\Components\Checkbox::make('show_all_kits') 
-                        ->label('Show All Kits')
-                        ->reactive() 
-                        ->afterStateUpdated(function ($state, callable $set) {
-                            if ($state){
-                                $set('kits_id', null);
-                            }
-                        }),
+                    }
+                }),
+                ])->columnSpan(1),
+                
+                //end grid Kits
                 Forms\Components\TextInput::make('battery_name')
                         ->label('Battery')
                         ->helperText('Automatically filled when selecting kits')
@@ -485,7 +493,7 @@ class FlighResource extends Resource
                     ->saveRelationshipsUsing(function ($component, $state) {
                         $component->getRecord()->equidments()->sync($state);
                     }),
-                  ])->columnSpan(1),
+                  ])->columnSpan(2),
 
                             // ->whereDoesntHave('fligh', function ($query) use ($flightDate) {
                             //     $query->whereDate('date_flight', $flightDate); // Pastikan equipment tidak digunakan di tanggal flight yang sama
@@ -499,8 +507,9 @@ class FlighResource extends Resource
                 Forms\Components\TextInput::make('fuel_used')
                     ->numeric()    
                     ->required()
-                    ->default('1'),
-                    ])->columns(3),
+                    ->placeholder('0')
+                    ->default('1')->columnSpan(2),
+                ])->columns(3),
                 //Forms\Components\TextInput::make('wheater_id')
                     //->required()
                     //->numeric(),

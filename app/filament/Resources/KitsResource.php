@@ -30,6 +30,7 @@ class KitsResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-c-briefcase';
     public static ?string $tenantOwnershipRelationshipName = 'teams';
+    protected static bool $isLazy = false;
 
     public static function form(Form $form): Form
     {

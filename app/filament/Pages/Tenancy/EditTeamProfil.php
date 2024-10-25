@@ -1,6 +1,8 @@
 <?php
 namespace App\Filament\Pages\Tenancy;
  
+use App\Models\citie;
+use App\Models\countrie;
 use App\Models\team;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Select;
@@ -9,6 +11,7 @@ use Filament\Forms\Components\Checkbox;
 use Filament\Forms\Components\TextArea;
 use Filament\Forms\Form;
 use Filament\Pages\Tenancy\EditTenantProfile;
+use Illuminate\Validation\Rule;
  
 class EditTeamProfil extends EditTenantProfile
 {
@@ -26,11 +29,21 @@ class EditTeamProfil extends EditTenantProfile
                 ->schema([
                     TextInput::make('name')->label('Organization Name')->columnSpan(2),
                     TextInput::make('email')->email()->label('Email Address')
-                    ->unique(Team::class, 'email') // Validasi unique
-                    ->rules(['unique:users,email']),
+                    ->rules(function ($get) {
+                        return [
+                            'email',
+                            Rule::unique('teams', 'email')
+                                ->ignore($get('id')),
+                        ];
+                    }),
                     TextInput::make('phone')->label('Phone Number')
-                    ->unique(Team::class, 'phone') // Validasi unique
-                    ->rules(['unique:users,phone']),
+                    ->rules(function ($get) {
+                        return [
+                            'numeric',
+                            Rule::unique('teams', 'phone')
+                                ->ignore($get('id')),
+                        ];
+                    }),
                     TextInput::make('owner')->label('Incorporation Name')->columnSpan(2),
                     TextInput::make('website')->label('Website'),
                     TextInput::make('company_size')->label('Company Size')->numeric(),
@@ -44,11 +57,31 @@ class EditTeamProfil extends EditTenantProfile
                         'easa specific' => 'EASA SPECIFIC',
                         'easa certified' => 'EASA CERTIFIED',
                     ])->label('Category'),
-                    TextInput::make('address')->label('Address')->columnSpan(2),
-                    TextInput::make('city')->label('City')->columnSpan(2),
-                    TextInput::make('state')->label('State')->columnSpan(2),
+                    //country
+                    Select::make('countries_id')->label('Country')
+                        ->options(countrie::all()->pluck('name','id'))
+                        ->reactive()
+                        ->afterStateUpdated(fn(callable $set)=>$set('cities_id',null))
+                        ->placeholder('Select a Country')
+                        ->searchable()->columnSpan(2),
+                    //end
+                    //city
+                    Select::make('cities_id')->label('City')
+                    ->options(function ($get) {
+                            $countryId = $get('countries_id');
+                            if ($countryId) {
+                                return citie::where('country_id', $countryId)->pluck('name', 'id');
+                            }
+                            return citie::pluck('name', 'id');
+                        })
+                    ->searchable()
+                    ->reactive()
+                    ->placeholder('Select a City')
+                    ->disabled(fn ($get) => !$get('countries_id')),
+                    //end
                     TextInput::make('postal_code')->label('Postal Code'),
-                    TextInput::make('country')->label('Country'),
+                    TextInput::make('state')->label('State')->columnSpan(2),
+                    TextInput::make('address')->label('Address')->columnSpan(2),
                     CheckBox::make('insurance')->default(1)->label('Insurance')->columnSpan(2),
                     TextInput::make('insurance_amount')->label('Insurance Amount'),
                     TextInput::make('activity')->label('Activity'),

@@ -24,9 +24,9 @@ class team extends Model
         'address',
         'category',
         'state',
-        'city',
+        'cities_id',
         'postal_code',
-        'country',
+        'countries_id',
         'insurance',
         'insurance_amount',
         'activity',
@@ -71,5 +71,11 @@ class team extends Model
     }
     public function flighLocations(){
         return $this->belongsToMany(Fligh_location::class);
+    }
+    public function countries(){
+        return $this->belongsTo(countrie::class);
+    }
+    public function cities(){
+        return $this->belongsTo(citie::class);
     }
 }

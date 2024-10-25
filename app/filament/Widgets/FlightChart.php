@@ -12,6 +12,7 @@ class FlightChart extends ChartWidget
 {
     protected static ?string $heading = 'Flight';
     protected static bool $isLazy = false;
+    protected static ?int $sort = 3;
 
     protected function getData(): array
     {
@@ -21,7 +22,7 @@ class FlightChart extends ChartWidget
         ->whereBetween('Start_date_flight', [now()->startOfYear(), now()->endOfYear()])
         ->get();
         $data = $teams->groupBy(function ($item) {
-            return Carbon::parse($item->date_flight)->format('Y-m-d');
+            return Carbon::parse($item->start_date_flight)->format('Y-m-d');
         })->map(function ($group) {
             return $group->count();
         });
@@ -31,6 +32,11 @@ class FlightChart extends ChartWidget
             [
                 'label' => 'Flight PerDay',
                 'data' => $data->map(fn ($value) => round($value))->values(),
+                'backgroundColor' => 'rgba(75, 192, 192, 0.6)',
+                'borderColor' => 'rgba(255, 99, 132, 1)',
+                'borderWidth' => 2,
+                'fill' => false,
+                'tension' => 0.4,
             ],
         ],
         'labels' => $data->map(fn ($value) => round($value))->keys(),

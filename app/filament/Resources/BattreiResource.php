@@ -30,6 +30,7 @@ class BattreiResource extends Resource
     protected static ?string $modelLabel = 'Batteries';
     protected static ?string $navigationIcon = 'heroicon-s-battery-100';
     public static ?string $tenantOwnershipRelationshipName = 'teams';
+    protected static bool $isLazy = false;
 
     public static function form(Form $form): Form
     {
