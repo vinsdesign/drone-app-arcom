@@ -55,4 +55,7 @@ class incident extends Model
     public function fligh_locations(){
         return $this->belongsTo(fligh_location::class,'location_id');
     }
+    public function users(){
+        return $this->belongsTo(User::class, 'personel_involved_id');
+    }
 }

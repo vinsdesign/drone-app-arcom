@@ -11,6 +11,4 @@ class ContactPage extends Page
     protected static ?string $modelLabel = 'Contact';
     protected static string $resource = ContactResource::class;
     protected static string $view = 'filament.contact-resource.pages.contact-page';
-    
-
 }

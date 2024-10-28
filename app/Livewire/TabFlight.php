@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Filament\Widgets;
+namespace App\Livewire;
 
 use App\Models\battrei;
 use App\Models\drone;
@@ -12,7 +12,7 @@ use Filament\Widgets\ChartWidget;
 
 class TabFlight extends ChartWidget
 {
-    protected static ?string $heading = 'Drone Inventory';
+    // protected static ?string $heading = 'Drone Inventory';
     protected static bool $isLazy = false;
     // protected static string $view = 'filament.widgets.tab-flight';
 
@@ -43,21 +43,21 @@ class TabFlight extends ChartWidget
             $color[] = '#' . substr(md5(uniqid(rand(), true)), 0, 6);
         };
         //drone
-        $flightsDrone = fligh::where('teams_id', $tenant_id)
-        ->selectRaw('drones_id, COUNT(id) as flight_count')
-        ->groupBy('drones_id')
-        ->with('drones') // Pastikan ada relasi drone di model flight
-        ->get();
+        // $flightsDrone = fligh::where('teams_id', $tenant_id)
+        // ->selectRaw('drones_id, COUNT(id) as flight_count')
+        // ->groupBy('drones_id')
+        // ->with('drones') // Pastikan ada relasi drone di model flight
+        // ->get();
 
-        $droneLabels = [];
-        $droneData = [];
-        $droneColors = [];
+        // $droneLabels = [];
+        // $droneData = [];
+        // $droneColors = [];
 
-        foreach ($flightsDrone as $flight) {
-            $droneLabels[] = $flight->drones->name;
-            $droneData[] = $flight->flight_count;
-            $droneColors[] = '#' . substr(md5(uniqid(rand(), true)), 0, 6);
-        }
+        // foreach ($flightsDrone as $flight) {
+        //     $droneLabels[] = $flight->drones->name;
+        //     $droneData[] = $flight->flight_count;
+        //     $droneColors[] = '#' . substr(md5(uniqid(rand(), true)), 0, 6);
+        // }
         //end
         return [
             'datasets' => [
@@ -68,20 +68,41 @@ class TabFlight extends ChartWidget
                     'borderColor' => 'rgba(255, 99, 132, 1)',
                     'borderWidth' => 2,
                 ],
-                [
-                    'label' => 'Flight Per Drone',
-                    'data' => [$droneData],
-                    'backgroundColor' => $droneColors,
-                    'borderColor' => 'rgba(255, 99, 132, 1)',
-                    'borderWidth' => 2,
-                ],
+                // [
+                //     'label' => 'Flight Per Drone',
+                //     'data' => [$droneData],
+                //     'backgroundColor' => $droneColors,
+                //     'borderColor' => 'rgba(255, 99, 132, 1)',
+                //     'borderWidth' => 2,
+                // ],
             ],
-            'labels' => [$label,$droneLabels]
+            'labels' => [$label]
         ];
     }
 
     protected function getType(): string
     {
         return 'doughnut';
+    }
+    protected function getOptions(): array
+    {
+        $tenant_id = Auth()->User()->teams()->first()->id;
+        //drone
+        $totalProject = fligh::where('teams_id', $tenant_id)
+        ->distinct('projects_id')
+        ->count('projects_id');
+        $totalFlight = fligh::where('teams_id', $tenant_id)->count('name');
+
+        return [
+        'plugins' => [
+                'title' => [
+                    'display' => true,
+                    'text' => "$totalProject Project \f $totalFlight Flight",
+                    'font' => [
+                        'size' => 16,
+                    ],
+                ],
+            ],
+        ];
     }
 }

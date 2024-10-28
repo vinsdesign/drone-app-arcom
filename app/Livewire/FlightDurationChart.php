@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Filament\Widgets;
+namespace App\Livewire;
 
 use App\Models\fligh;
 use Carbon\Carbon;

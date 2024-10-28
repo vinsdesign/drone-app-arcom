@@ -66,7 +66,7 @@ class MaintenceResource extends Resource
                         Forms\Components\Select::make('status')
                             ->label('Status')
                             ->options([
-                                'Schedule'=> 'Schedule',
+                                'schedule'=> 'Schedule',
                                 'in_progress'=> 'In Progress',
                                 'completed'=> 'Completed',
                             ]),
@@ -178,7 +178,7 @@ class MaintenceResource extends Resource
                 Tables\Columns\TextColumn::make('status')
                     ->color(fn ($record) => match ($record->status){
                         'completed' => Color::Green,
-                        'Schedule' =>Color::Red,
+                        'schedule' =>Color::Red,
                         'in_progress' => Color::Zinc
                     })
                     ->searchable(),
