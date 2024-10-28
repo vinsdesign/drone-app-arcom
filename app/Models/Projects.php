@@ -37,5 +37,8 @@ class Projects extends Model
     public function currencies(){
         return $this->belongsTo(currencie::class);
     }
+    public function flighs(){
+        return $this->hasMany(fligh::class, 'projects_id');
+    }
 
 }

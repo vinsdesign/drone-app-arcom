@@ -2,6 +2,7 @@
 
 namespace App\Filament\Pages;
 
+use App\Filament\Resources\ReportResource;
 use App\Models\battrei;
 use App\Models\drone;
 use App\Models\equidment;
@@ -11,13 +12,14 @@ use App\Models\maintence_eq;
 use App\Models\Projects;
 use App\Models\team;
 use App\Models\User;
-use Filament\Pages\Page;
+use Filament\Resources\Pages\Page;
 use Illuminate\Http\Request;
 use Illuminate\Database\Eloquent\Builder;
 use PDF;
 
 class Report extends Page
 {
+    protected static string $resource = ReportResource::class;
     protected static ?string $navigationIcon = 'heroicon-o-document-text';
     public static ?string $tenantOwnershipRelationshipName = 'teams';
     public static ?int $navigationSort = 9;
