@@ -308,7 +308,7 @@ class FlighResource extends Resource
                             }
                             }
                         }
-                    }) 
+                    })
                     ->searchable()
                     ->columnSpanFull(),
                     //end flight

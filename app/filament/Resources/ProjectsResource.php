@@ -69,12 +69,20 @@ class ProjectsResource extends Resource
             ->columns([
                 Tables\Columns\TextColumn::make('case')
                     ->searchable(),
+                Tables\Columns\TextColumn::make('flight_date')
+                    ->label('Last Flight Date')
+                    ->getStateUsing(function ($record) {
+                        $lastFlight = $record->flighs()->orderBy('start_date_flight', 'desc')->first();
+                        $totalFlights = $record->flighs()->count();
+                        $lastFlightDate = optional($lastFlight)->start_date_flight ? $lastFlight->start_date_flight : '';
+                        return "({$totalFlights}) Flights<br> {$lastFlightDate}";
+                    })
+                    ->sortable()
+                    ->html(),
                 Tables\Columns\TextColumn::make('revenue')
                     ->numeric()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('currencies.iso')
-                    ->searchable(),
-                Tables\Columns\TextColumn::make('description')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('customers.name')
                     ->numeric()
@@ -111,6 +119,13 @@ class ProjectsResource extends Resource
         return $infolist
         ->schema([
             TextEntry::make('case')->label('Case'),
+            TextEntry::make('flight_date')->label('Last Flight Date')
+            ->getStateUsing(function ($record) {
+                $lastFlight = $record->flighs()->orderBy('start_date_flight', 'desc')->first();
+                $totalFlights = $record->flighs()->count();
+                $lastFlightDate = optional($lastFlight)->start_date_flight ? $lastFlight->start_date_flight : '';
+                return "({$totalFlights}) Flights {$lastFlightDate}";
+            }),
             TextEntry::make('revenue')->label('Revenue'),
             TextEntry::make('currencies.iso')->label('Currency'),
             TextEntry::make('customers.name')->label('Customers')
