@@ -76,26 +76,30 @@
                 <th>Type</th>
                 <th>Brand</th>
                 <th>Model</th>
-                <th>ID Legal</th>
+                <th>Legal ID</th>
             </tr>
         </thead>
         <tbody>
             @foreach ($drone as $drones)
                 <tr class="drone">
-                    <td>{{ $drones->name }}</td>
-                    <td>{{ $drones->status }}</td>
-                    <td>{{ $drones->type }}</td>
-                    <td>{{ $drones->brand }}</td>
-                    <td>{{ $drones->model }}</td>
-                    <td>{{ $drones->idlegal }}</td>
+                    <td>{{ $drones->name ?? null}}</td>
+                    <td>{{ $drones->status ?? null}}</td>
+                    <td>{{ $drones->type ?? null}}</td>
+                    <td>{{ $drones->brand ?? null}}</td>
+                    <td>{{ $drones->model ?? null}}</td>
+                    <td>{{ $drones->idlegal ?? null}}</td>
                 </tr>
                 <tr>
                     <td colspan="6" class="row-span">
-                        <strong>Drone Geometry:</strong> {{ $drones->geometry }} &nbsp;&nbsp;
-                        <strong>Owner:</strong> {{ $drones->users->name }}
+                        <strong>Drone Geometry:</strong> {{ $drones->geometry ?? null}} &nbsp;&nbsp;
+                        <strong>Owner:</strong> {{ $drones->users->name ?? null}}
                         <br>
-                        <strong>Initial Flight Count:</strong> {{ $drones->flight_c }} &nbsp;&nbsp; 
-                        <strong>Inventory/Asset:</strong> {{ $drones->inventory_asset ?? null}}
+                        <strong>Initial Flight Count:</strong> {{ $drones->flight_c ?? null}} &nbsp;&nbsp; 
+                        <strong>Initial Flying Time:</strong> {{ $drones->total_flying_time ?? '00:00:00'}}
+                        <br>
+                        <strong>Inventory/Asset:</strong> {{ $drones->inventory_asset ?? null}} &nbsp;&nbsp;
+                        <strong>Serial Printed:</strong> {{ $drones->serial_p ?? null}} &nbsp;&nbsp;
+                        <strong>Serial Internal:</strong> {{ $drones->serial_i ?? null}}
                         <br>
                         <strong>Description:</strong> {{ $drones->description ?? null}}
                     </td>
@@ -126,13 +130,17 @@
             </tr>
             <tr>
                 <td colspan="5" class="row-span">
-                    <strong>Status:</strong> {{ $batteries->status }} &nbsp;&nbsp; 
-                    <strong>Owner:</strong> {{ $batteries->users->name }} &nbsp;&nbsp; 
+                    <strong>Status:</strong> {{ $batteries->status ?? null}} &nbsp;&nbsp; 
+                    <strong>Owner:</strong> {{ $batteries->users->name ?? null}} &nbsp;&nbsp; 
                     <br>
-                    <strong>Initial Cycle Count:</strong> {{ $batteries->initial_Cycle_count }} &nbsp;&nbsp; 
-                    <strong>Inventory/Asset:</strong> {{ $batteries->asset_inventory }}
+                    <strong>Initial Cycle Count:</strong> {{ $batteries->initial_Cycle_count ?? null}} &nbsp;&nbsp; 
+                    <strong>Inventory/Asset:</strong> {{ $batteries->asset_inventory ?? null}}
                     <br>
-                    <strong>Description:</strong> {{ $batteries->description }}
+                    <strong>Weight:</strong> {{ $batteries->wight ?? null}} &nbsp;&nbsp; 
+                    <strong>Firmware:</strong> {{ $batteries->firmware_version ?? null}} &nbsp;&nbsp; 
+                    <strong>Hardware:</strong> {{ $batteries->hardware_version ?? null}}
+                    <br>
+                    <strong>Description:</strong> {{ $batteries->description ?? null}}
                 </td>
             </tr>
         @endforeach
@@ -153,21 +161,20 @@
     <tbody>
         @foreach ($equipment as $equipments)
             <tr class="equipment">
-                <td>{{ $equipments->name }}</td>
-                <td>{{ $equipments->model }}</td>
-                <td>{{ $equipments->type }}</td>
-                <td>{{ $equipments->purchase_date }}</td>
-                <td>{{ $equipments->drones->name }}</td>
+                <td>{{ $equipments->name ?? null}}</td>
+                <td>{{ $equipments->model ?? null}}</td>
+                <td>{{ $equipments->type ?? null}}</td>
+                <td>{{ $equipments->purchase_date ?? null}}</td>
+                <td>{{ $equipments->drones->name ?? null}}</td>
             </tr>
             <tr>
                 <td colspan="5" class="row-span">
-                    <strong>Status:</strong> {{ $equipments->status }} &nbsp;&nbsp; 
-                    <strong>Owner:</strong> {{ $equipments->users->name }} 
+                    <strong>Status:</strong> {{ $equipments->status ?? null}} 
                     <br>
-                    <strong>Insurable Value:</strong> {{ $equipments->insurable_value }} &nbsp;&nbsp;
-                    <strong>Inventory/Asset number:</strong> {{ $equipments->inventory_asset }}
+                    <strong>Owner:</strong> {{ $equipments->users->name ?? null}} &nbsp;&nbsp;
+                    <strong>Inventory/Asset number:</strong> {{ $equipments->inventory_asset ?? null}}
                     <br>
-                    <strong>Description:</strong> {{ $equipments->description }} &nbsp;&nbsp;
+                    <strong>Description:</strong> {{ $equipments->description ?? null}} &nbsp;&nbsp;
                     
                 </td>
             </tr>

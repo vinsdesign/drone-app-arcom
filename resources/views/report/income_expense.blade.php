@@ -53,8 +53,8 @@
         <p style="text-align: center">{{ $reportDate }}</p>
         <div class="team-info">
             @foreach($team as $teams)
-                <p>{{ $teams->name }}</p>
-                <p>{{ $teams->address }}</p>
+                <p>{{ $teams->name ?? null}}</p>
+                <p>{{ $teams->address ?? null}}</p>
             @endforeach
             <p class="report-date" style="text-align: left;">
                 <strong>Reporting Period: </strong>{{ $startDate ?? null }} <strong>to</strong> {{ $endDate ?? null }}
@@ -117,10 +117,10 @@
                 <tbody>
                     @foreach ($maintenance_drone as $m_drone)
                         <tr>
-                            <td style="padding: 8px;">{{ $m_drone->date }}</td>
-                            <td style="padding: 8px;">{{ $m_drone->name }}</td>
-                            <td style="padding: 8px;">{{ $m_drone->currencies->name }}</td>
-                            <td style="padding: 8px;">Rp. {{ number_format($m_drone->cost, 0, ',', '.') }}</td>
+                            <td style="padding: 8px;">{{ $m_drone->date ?? null}}</td>
+                            <td style="padding: 8px;">{{ $m_drone->name ?? null}}</td>
+                            <td style="padding: 8px;">{{ $m_drone->currencies->name ?? null}}</td>
+                            <td style="padding: 8px;">Rp. {{ number_format($m_drone->cost, 0, ',', '.') ?? null}}</td>
                         </tr>
                     @endforeach
                 </tbody>
@@ -154,10 +154,10 @@
                 <tbody>
                     @foreach ($maintenance_eq as $m_eq)
                         <tr>
-                            <td style="padding: 8px;">{{ $m_eq->date }}</td>
-                            <td style="padding: 8px;">{{ $m_eq->name }}</td>
-                            <td style="padding: 8px;">{{ $m_eq->currencies->name }}</td>
-                            <td style="padding: 8px;">Rp. {{ number_format($m_eq->cost, 0, ',', '.') }}</td>
+                            <td style="padding: 8px;">{{ $m_eq->date ?? null}}</td>
+                            <td style="padding: 8px;">{{ $m_eq->name ?? null}}</td>
+                            <td style="padding: 8px;">{{ $m_eq->currencies->name ?? null}}</td>
+                            <td style="padding: 8px;">Rp. {{ number_format($m_eq->cost, 0, ',', '.') ?? null}}</td>
                         </tr>
                     @endforeach
                 </tbody>

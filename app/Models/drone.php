@@ -69,4 +69,21 @@ class drone extends Model
         return $this->hasMany(fligh::class, 'drones_id');
     }
 
+
+    
+    public function getTotalFlyingTimeAttribute()
+    {
+        $totalSeconds = 0;
+        foreach ($this->fligh as $flight) {
+            if (preg_match('/^(\d+):(\d{2}):(\d{2})$/', trim($flight->duration), $matches)) {
+                list(, $hours, $minutes, $seconds) = $matches;
+                $totalSeconds += ($hours * 3600) + ($minutes * 60) + (int)$seconds;
+            }
+        }
+        $hours = floor($totalSeconds / 3600);
+        $minutes = floor(($totalSeconds % 3600) / 60);
+        $seconds = $totalSeconds % 60;
+        return sprintf('%02d:%02d:%02d', $hours, $minutes, $seconds);
+    }
+
 }

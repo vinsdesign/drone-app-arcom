@@ -78,4 +78,20 @@ class team extends Model
     public function cities(){
         return $this->belongsTo(citie::class);
     }
+
+
+    public function getTotalFlightDurationAttribute()
+    {
+        $totalDurationInSeconds = $this->flighs->sum(function ($flight) {
+            list($hours, $minutes, $seconds) = explode(':', $flight->duration);
+            return ($hours * 3600) + ($minutes * 60) + $seconds;
+        });
+
+        $totalHours = floor($totalDurationInSeconds / 3600);
+        $totalMinutes = floor(($totalDurationInSeconds % 3600) / 60);
+        $totalSeconds = $totalDurationInSeconds % 60;
+
+        // Format total durasi ke dalam HH:MM:SS
+        return sprintf('%02d:%02d:%02d', $totalHours, $totalMinutes, $totalSeconds);
+    }
 }
