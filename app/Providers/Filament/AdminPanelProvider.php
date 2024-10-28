@@ -102,12 +102,10 @@ class AdminPanelProvider extends PanelProvider
             ])
             ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\\Filament\\Widgets')
             ->widgets([
-                HeaderDasboard::class,
-                AStatsOverview::class,
-                FlightChart::class,
-                FlightDurationChart::class,
-                InventoryOverview::class,
-                InventoryStats::class,
+                // HeaderDasboard::class,
+                // AStatsOverview::class,
+                // InventoryOverview::class,
+                // InventoryStats::class,
                 
                 // Widgets\AccountWidget::class,
                 // Widgets\FilamentInfoWidget::class,
