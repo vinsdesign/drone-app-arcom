@@ -67,6 +67,9 @@ class TabFlight extends ChartWidget
                     'backgroundColor' => $color,
                     'borderColor' => 'rgba(255, 99, 132, 1)',
                     'borderWidth' => 2,
+                    // 'hoverBackgroundColor' => 'rgba(255, 99, 132, 0.8)', // Change color on hover
+                    // 'hoverBorderColor'=>'rgba(255, 255, 255, 1)', // Change border color on hover
+                    // 'hoverBorderWidth'=> 4,
                 ],
                 // [
                 //     'label' => 'Flight Per Drone',
@@ -76,7 +79,8 @@ class TabFlight extends ChartWidget
                 //     'borderWidth' => 2,
                 // ],
             ],
-            'labels' => $label
+            'labels' =>$label
+
         ];
     }
 

@@ -6,8 +6,9 @@ use App\Filament\Resources\MaintenceResource;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Filament\Models\Contracts\HasAvatar;
 
-class team extends Model
+class team extends Model implements HasAvatar
 {
     use HasFactory;
 
@@ -30,8 +31,14 @@ class team extends Model
         'insurance',
         'insurance_amount',
         'activity',
-        'note'
+        'note',
+        'avatar_url'
     ];
+
+    public function getFilamentAvatarUrl(): ?string
+    {
+        return "/storage/{{$this->avatar_url}}";
+    }
     public function users():BelongsToMany
     {
         return $this->belongsToMany(User::class);
