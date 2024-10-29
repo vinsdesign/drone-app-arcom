@@ -69,8 +69,8 @@ class team extends Model
     public function kits(){
         return $this->belongsToMany(kits::class);
     }
-    public function flighLocations(){
-        return $this->belongsToMany(Fligh_location::class);
+    public function fligh_location(){
+        return $this->belongsToMany(fligh_location::class);
     }
     public function countries(){
         return $this->belongsTo(countrie::class);

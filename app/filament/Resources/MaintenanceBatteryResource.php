@@ -177,7 +177,7 @@ class MaintenanceBatteryResource extends Resource
                     })
                     ->requiresConfirmation()
                     ->visible(function ($record){
-                        return $record->status !== 'completed';
+                        return $record->status !== 'completed' && auth()->user()->hasRole(['maintenance', 'panel_user']);
                     })
             ])
             ->bulkActions([

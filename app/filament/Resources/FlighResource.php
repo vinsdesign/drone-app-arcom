@@ -79,7 +79,10 @@ class FlighResource extends Resource
                     $end = $get('end_date_flight');
                     if ($start && $end) {
                         $diffInSeconds = Carbon::parse($start)->diffInSeconds(Carbon::parse($end));
-                        $duration = gmdate('H:i:s', $diffInSeconds);
+                        $hours = floor($diffInSeconds / 3600);
+                        $minutes = floor(($diffInSeconds % 3600) / 60);
+                        $seconds = $diffInSeconds % 60;
+                        $duration = sprintf('%02d:%02d:%02d', $hours, $minutes, $seconds);
                         $set('duration', $duration);
                     }
                 })->reactive()
@@ -184,25 +187,30 @@ class FlighResource extends Resource
                             $currentTeamId = auth()->user()->teams()->first()->id;
                             $startDate = $get('start_date_flight');
                             $endDate = $get('end_date_flight');
-
-                            if ($startDate && $endDate){
-                                    $query->whereHas('teams', function (Builder $query) use ($currentTeamId){
-                                        $query->where('team_id', $currentTeamId);
-                            })
-                            ->whereHas('roles', function (Builder $query) {
-                                $query->where('roles.name', 'Pilot');
-                            })
-
-                            ->whereDoesntHave('fligh', function ($query) use ($startDate, $endDate) {
-                                $query->where(function ($query) use ($startDate, $endDate) {
+                        
+                            if (!$startDate || !$endDate) {
+                                return $query->whereHas('teams', function (Builder $query) use ($currentTeamId) {
+                                    $query->where('team_id', $currentTeamId);
+                                    })->whereHas('roles', function (Builder $query){
+                                        $query->where('roles.name', 'Pilot');
+                                });
+                            }
+                        
+                            return $query->whereHas('teams', function (Builder $query) use ($currentTeamId) {
+                                    $query->where('team_id', $currentTeamId);
+                                })
+                                ->whereHas('roles', function (Builder $query) {
+                                    $query->where('roles.name', 'Pilot');
+                                })
+                                ->whereDoesntHave('fligh', function ($query) use ($startDate, $endDate) {
                                     $query->where(function ($query) use ($startDate, $endDate) {
-                                        $query->where('start_date_flight', '<=', $endDate)
-                                              ->where('end_date_flight', '>=', $startDate);
+                                        $query->where(function ($query) use ($startDate, $endDate) {
+                                            $query->where('start_date_flight', '<=', $endDate)
+                                                  ->where('end_date_flight', '>=', $startDate);
+                                        });
                                     });
                                 });
-                            });
-                        }
-                    })  
+                        })
                     ->required(),
                 Forms\Components\TextInput::make('instructor')->label('Instructor')
                     ->required()

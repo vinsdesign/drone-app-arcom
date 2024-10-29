@@ -35,6 +35,8 @@ use App\Livewire\MyCustomComponent;
 use TomatoPHP\FilamentSubscriptions\FilamentSubscriptionsProvider;
 use TomatoPHP\FilamentSubscriptions\Filament\Pages\Billing;
 use Filament\Facades\Filament;
+use TomatoPHP\FilamentSettingsHub\Facades\FilamentSettingsHub;
+use TomatoPHP\FilamentSettingsHub\Services\Contracts\SettingHold;
 
 class AdminPanelProvider extends PanelProvider
 {
@@ -78,9 +80,10 @@ class AdminPanelProvider extends PanelProvider
                 'Inventory',
                 'flight',
                 'Maintenance',
-                'report',
+                'Report',
                 'Contact',
                 'Filament Shield',
+                'Teams List',
                 'Payment',
 
     ])

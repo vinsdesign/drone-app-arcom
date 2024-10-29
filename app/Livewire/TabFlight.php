@@ -63,7 +63,7 @@ class TabFlight extends ChartWidget
             'datasets' => [
                 [
                     'label' => 'Flight Per Project',
-                    'data' => [$data],
+                    'data' => $data,
                     'backgroundColor' => $color,
                     'borderColor' => 'rgba(255, 99, 132, 1)',
                     'borderWidth' => 2,
@@ -76,7 +76,7 @@ class TabFlight extends ChartWidget
                 //     'borderWidth' => 2,
                 // ],
             ],
-            'labels' => [$label]
+            'labels' => $label
         ];
     }
 
