@@ -4,6 +4,7 @@ namespace App\Filament\Pages\Tenancy;
 use App\Models\citie;
 use App\Models\countrie;
 use App\Models\team;
+use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Section;
@@ -27,6 +28,9 @@ class EditTeamProfil extends EditTenantProfile
                 Section::make('Organization Information')
                 ->description('')
                 ->schema([
+                    FileUpload::make('avatar_url')->label('Your Avatar')
+                    ->acceptedFileTypes(['image/jpeg', 'image/png', 'image/gif'])
+                    ->helperText('Please choose image type jpg/jpeg/png'),
                     TextInput::make('name')->label('Organization Name')->columnSpan(2),
                     TextInput::make('email')->email()->label('Email Address')
                     ->rules(function ($get) {

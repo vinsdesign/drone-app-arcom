@@ -105,13 +105,13 @@ $incident = App\Models\incident::whereHas('teams', function ($query) use ($curre
 <div class="container tab-border-warna">
     <!-- Tab headers -->
     <div class="container mx-auto p-5">
-        <div class="flex space-x-4 border border-gray-300 rounded-lg p-2 bg-black">
-            <button id="tab0" class="tab-button active text-white bg-gray-800 hover:bg-gray-700 px-4 py-2 rounded">Summary</button>
-            <button id="tab1" class="tab-button text-white bg-gray-800 hover:bg-gray-700 px-4 py-2 rounded">Flights</button>
-            <button id="tab2" class="tab-button text-white bg-gray-800 hover:bg-gray-700 px-4 py-2 rounded">Maintenance</button>
-            <button id="tab3" class="tab-button text-white bg-gray-800 hover:bg-gray-700 px-4 py-2 rounded">Inventory</button>
-            <button id="tab4" class="tab-button text-white bg-gray-800 hover:bg-gray-700 px-4 py-2 rounded">Documents</button>
-            <button id="tab5" class="tab-button text-white bg-gray-800 hover:bg-gray-700 px-4 py-2 rounded">Incidents</button>
+        <div class="flex flex-wrap gap-2 border border-gray-300 rounded-lg p-2 bg-black">
+            <button id="tab0" class="tab-button active text-white bg-gray-800 hover:bg-gray-700 px-4 py-2 rounded text-sm sm:text-base w-full sm:w-auto mb-2 mt-2">Summary</button>
+            <button id="tab1" class="tab-button text-white bg-gray-800 hover:bg-gray-700 px-4 py-2 rounded text-sm sm:text-base w-full sm:w-auto mb-2 mt-2">Flights</button>
+            <button id="tab2" class="tab-button text-white bg-gray-800 hover:bg-gray-700 px-4 py-2 rounded text-sm sm:text-base w-full sm:w-auto mb-2 mt-2">Maintenance</button>
+            <button id="tab3" class="tab-button text-white bg-gray-800 hover:bg-gray-700 px-4 py-2 rounded text-sm sm:text-base w-full sm:w-auto mb-2 mt-2">Inventory</button>
+            <button id="tab4" class="tab-button text-white bg-gray-800 hover:bg-gray-700 px-4 py-2 rounded text-sm sm:text-base w-full sm:w-auto mb-2 mt-2">Documents</button>
+            <button id="tab5" class="tab-button text-white bg-gray-800 hover:bg-gray-700 px-4 py-2 rounded text-sm sm:text-base w-full sm:w-auto mb-2 mt-2">Incidents</button>
         </div>
 
     <!-- Tab content -->
@@ -134,6 +134,17 @@ $incident = App\Models\incident::whereHas('teams', function ($query) use ($curre
                     <div class=""></div>
                     {{-- end buttom --}}
                 </div>
+                {{-- buttom Summary --}}
+                <div class="flex flex-wrap space-x-4 border border-gray-300 rounded-lg p-2 bg-yellow-200">
+                    <h1 class="text-2xl font-bold mb-4 w-full dark:text-gray-700">Quick Actions</h1>
+                    <a href="{{route('filament.admin.resources.flighs.create',['tenant' => auth()->user()->teams()->first()->id])}}" class="mb-2"><button id="" class="text-white bg-yellow-500 hover:bg-yellow-400 px-4 py-2 rounded text-sm sm:text-base">Add New <br>Flights</button></a>
+                    <a href="{{route('filament.admin.resources.users.index',['tenant' => auth()->user()->teams()->first()->id])}}" class="mb-2"><button id="" class="text-white bg-yellow-500 hover:bg-yellow-400 px-4 py-2 rounded text-sm sm:text-base">View My <br>Personnel Page</button></a>
+                    <a href="{{route('filament.admin.resources.incidents.index',['tenant' => auth()->user()->teams()->first()->id])}}" class="mb-2"><button id="" class="text-white bg-yellow-500 hover:bg-yellow-400 px-4 py-2 rounded text-sm sm:text-base">Log An <br>Incident</button></a>
+                    <a href="{{route('filament.admin.resources.maintences.index',['tenant' => auth()->user()->teams()->first()->id])}}" class="mb-2"><button id="" class="text-white bg-yellow-500 hover:bg-yellow-400 px-4 py-2 rounded text-sm sm:text-base">Check <br>Maintenance Drone</button></a>
+                    <a href="{{route('filament.admin.resources.maintenance-batteries.index',['tenant' => auth()->user()->teams()->first()->id])}}" class="mb-2"><button id="" class="text-white bg-yellow-500 hover:bg-yellow-400 px-4 py-2 rounded text-sm sm:text-base">Check <br>Maintenance Equipment</button></a>
+                </div>
+                
+                {{-- end buttom Summary --}}
             </div>
 
                 <div id="content1" class="tab-content">
@@ -155,6 +166,9 @@ $incident = App\Models\incident::whereHas('teams', function ($query) use ($curre
                             {{-- tabel Flight --}}
                             <div class="container mx-auto p-4">
                             <h2 class="text-2xl font-bold mb-4">Latest Flights (Last 20)</h2>
+                            <div class="mt-4 flex justify-end mb-4">
+                                <a href="{{route('filament.admin.resources.flighs.index',['tenant' => auth()->user()->teams()->first()->id])}}" class="inline-block px-4 py-2 bg-gray-800 text-white rounded hover:bg-gray-700">View All</a>
+                            </div>
                             <div class="overflow-x-auto">
                                 <table class="min-w-full bg-gray-100 dark:bg-gray-800 rounded-lg shadow-lg">
                                     <thead>
@@ -179,11 +193,8 @@ $incident = App\Models\incident::whereHas('teams', function ($query) use ($curre
                                     </tbody>
                                 </table>
                             </div>
-                            <div class="mt-4">
-                                <a href="#" class="inline-block px-4 py-2 bg-gray-800 text-white rounded hover:bg-gray-700">View All</a>
                             </div>
-                            </div>
-                        {{-- end tabel --}}
+                            {{-- end tabel --}}
                     </div>
                 </div>
                 
@@ -197,6 +208,9 @@ $incident = App\Models\incident::whereHas('teams', function ($query) use ($curre
                                {{-- tabel --}}
                                <div class="container mx-auto p-4">
                                 <h2 class="text-2xl font-bold mb-4">Maintenance Overdue</h2>
+                                <div class="mt-4 flex justify-end mb-4">
+                                    <a href="{{route('filament.admin.resources.maintences.index',['tenant' => auth()->user()->teams()->first()->id])}}" class="inline-block px-4 py-2 bg-gray-800 text-white rounded hover:bg-gray-700">View All</a>
+                                </div>
                                 <div class="overflow-x-auto">
                                     <table class="min-w-full bg-gray-100 dark:bg-gray-800 rounded-lg shadow-lg">
                                         <thead>
@@ -288,9 +302,6 @@ $incident = App\Models\incident::whereHas('teams', function ($query) use ($curre
                                         </tbody>
                                     </table>
                                 </div>
-                                <div class="mt-4">
-                                    <a href="#" class="inline-block px-4 py-2 bg-gray-800 text-white rounded hover:bg-gray-700">View All</a>
-                                </div>
                             </div>
                             {{-- end tabel --}}
                         </div>
@@ -319,6 +330,9 @@ $incident = App\Models\incident::whereHas('teams', function ($query) use ($curre
                         {{-- tabel Inventory --}}
                         <div class="container mx-auto p-4">
                         <h2 class="text-2xl font-bold mb-4">Latest Battery / Equipment Used (Last 20)</h2>
+                        <div class="mt-4 flex justify-end mb-4">
+                            <a href="{{route('filament.admin.resources.battreis.index',['tenant' => auth()->user()->teams()->first()->id])}}" class="inline-block px-4 py-2 bg-gray-800 text-white rounded hover:bg-gray-700">View All</a>
+                        </div>
                         <div class="overflow-x-auto">
                             <table class="min-w-full bg-gray-100 dark:bg-gray-800 rounded-lg shadow-lg">
                                 <thead>
@@ -353,17 +367,18 @@ $incident = App\Models\incident::whereHas('teams', function ($query) use ($curre
                                 </tbody>
                             </table>
                         </div>
-                        <div class="mt-4">
-                            <a href="#" class="inline-block px-4 py-2 bg-gray-800 text-white rounded hover:bg-gray-700">View All</a>
-                        </div>
                         </div>
                     {{-- end tabel --}}      
                 </div>
 
                 <div id="content4" class="tab-content">
                     {{-- tabel Inventory --}}
+
                     <div class="container mx-auto p-4">
                         <h2 class="text-2xl font-bold mb-4">Document Overview</h2>
+                        <div class="mt-4 flex justify-end mb-4">
+                            <a href="{{route('filament.admin.resources.documents.index',['tenant' => auth()->user()->teams()->first()->id])}}" class="inline-block px-4 py-2 bg-gray-800 text-white rounded hover:bg-gray-700">View All</a>
+                        </div>
                         <div class="overflow-x-auto">
                             <table class="min-w-full bg-gray-100 dark:bg-gray-800 rounded-lg shadow-lg">
                                 <thead>
@@ -382,14 +397,17 @@ $incident = App\Models\incident::whereHas('teams', function ($query) use ($curre
                                         <td class="py-2 px-4">{{$item->users->name ?? null}}</td>
                                         <td class="py-2 px-4">{{$item->scope?? null}}</td>
                                         <td class="py-2 px-4">{{$item->type?? null}}</td>
-                                        <td class="py-2 px-4"><a href='/storage/{{$item->doc}}' target='_blank' rel='noopener noreferrer' style='padding:5px 10px; background-color:#ff8303; color:white; border-radius:5px;'>Open Document</a></td>
+                                        <td class="py-2 px-4">
+                                            <a href='/storage/{{$item->doc}}' target='_blank' rel='noopener noreferrer' 
+                                               class="inline-block bg-orange-500 text-white rounded-lg sm:rounded-md md:rounded px-3 py-2 sm:px-4 sm:py-2 text-sm sm:text-base" 
+                                               style="background-color:#ff8303;">
+                                                Open Document
+                                            </a>
+                                        </td>
                                     </tr>
                                     @endforeach
                                 </tbody>
                             </table>
-                        </div>
-                        <div class="mt-4">
-                            <a href="#" class="inline-block px-4 py-2 bg-gray-800 text-white rounded hover:bg-gray-700">View All</a>
                         </div>
                         </div>
                     {{-- end tabel --}}  
@@ -397,8 +415,12 @@ $incident = App\Models\incident::whereHas('teams', function ($query) use ($curre
 
                 <div id="content5" class="tab-content">
                     {{-- tabel Inventory --}}
+
                     <div class="container mx-auto p-4">
                     <h2 class="text-2xl font-bold mb-4">Recent Incidents (Last 10)</h2>
+                    <div class="mt-4 flex justify-end mb-4">
+                        <a href="{{route('filament.admin.resources.incidents.index',['tenant' => auth()->user()->teams()->first()->id])}}" class="inline-block px-4 py-2 bg-gray-800 text-white rounded hover:bg-gray-700">View All</a>
+                    </div>
                     <div class="overflow-x-auto">
                         <table class="min-w-full bg-gray-100 dark:bg-gray-800 rounded-lg shadow-lg">
                             <thead>
@@ -431,9 +453,6 @@ $incident = App\Models\incident::whereHas('teams', function ($query) use ($curre
                                 @endforeach
                             </tbody>
                         </table>
-                    </div>
-                    <div class="mt-4">
-                        <a href="#" class="inline-block px-4 py-2 bg-gray-800 text-white rounded hover:bg-gray-700">View All</a>
                     </div>
                     </div>
                 {{-- end tabel --}}  
