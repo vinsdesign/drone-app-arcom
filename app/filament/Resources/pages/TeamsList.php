@@ -7,6 +7,8 @@ use App\Models\team;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables;
 use Filament\Resources\Pages\Page;
+use Filament\Tables\Actions\Action;
+use Filament\Tables\Columns\IconColumn;
 
 class TeamsList extends Page implements Tables\Contracts\HasTable
 {
@@ -22,7 +24,7 @@ class TeamsList extends Page implements Tables\Contracts\HasTable
 
     public function getTableQuery()
     {
-        return team::withCount('customers', 'flighs');
+        return team::withCount('customers', 'flighs', 'drones', 'battreis', 'equidments', 'fligh_location');
     }
 
     protected function getTableColumns(): array
@@ -44,9 +46,35 @@ class TeamsList extends Page implements Tables\Contracts\HasTable
             ->label('Total Flying Time')
             ->getStateUsing(fn($record) => $record->total_flight_duration)
             ->sortable(),
-            // TextColumn::make('address')
-            // ->label('Address')
-            // ->searchable()
+            IconColumn::make('details')
+                ->label(' ')
+                ->icon('heroicon-o-eyes')
+                ->action(fn($record) => $this->showDetailsModal($record))
+        ];
+    }
+
+    protected function getTableActions(): array
+    {
+        return [
+            Action::make('showDetails')
+                ->label('Show Details')
+                ->modalHeading('Details Data')
+                ->modalSubheading(fn ($record) => "{$record->name}")
+                ->modalContent(function ($record) {
+                    return view('filament.modals.team-details', [
+                        'owner' => $record->owner,
+                        'customers_count' => $record->customers_count,
+                        'flighs_count' => $record->flighs_count,
+                        'total_flight_duration' => $record->total_flight_duration,
+                        'drones_count' => $record->drones_count,
+                        'battreis_count' => $record->battreis_count,
+                        'equidments_count' => $record->equidments_count,
+                        'fligh_location_count' => $record->fligh_location_count,
+                    ]);
+                })
+                ->icon('heroicon-o-eye')
+                ->modalSubmitAction(false) 
+                ->modalCancelAction(false) 
         ];
     }
 }

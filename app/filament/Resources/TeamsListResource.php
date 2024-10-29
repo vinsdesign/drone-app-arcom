@@ -24,10 +24,9 @@ class TeamsListResource extends Resource
         ];
     }
 
-    // Menonaktifkan table actions dan columns
     public static function table(Table $table): Table
     {
-        return $table->columns([])  // Tidak menampilkan kolom
-                     ->actions([]); // Tidak menampilkan aksi
+        return $table->columns([])  
+                     ->actions([]); 
     }
 }
