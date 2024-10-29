@@ -80,6 +80,7 @@ class TabFlight extends ChartWidget
                 // ],
             ],
             'labels' =>$label
+
         ];
     }
 

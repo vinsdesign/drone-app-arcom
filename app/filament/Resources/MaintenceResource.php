@@ -178,7 +178,7 @@ class MaintenceResource extends Resource
                 Tables\Columns\TextColumn::make('status')
                     ->color(fn ($record) => match ($record->status){
                         'completed' => Color::Green,
-                        'schedule' =>Color::Red,
+                        'Schedule' =>Color::Red,
                         'in_progress' => Color::Zinc
                     })
                     ->searchable(),
