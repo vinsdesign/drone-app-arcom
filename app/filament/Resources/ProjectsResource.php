@@ -47,7 +47,11 @@ class ProjectsResource extends Resource
                         ->options(currencie::all()->mapWithKeys(function ($currency) {
                             return [$currency->id => "{$currency->name} - {$currency->iso}"];}))
                             ->searchable()
-                            ->required(),
+                            ->required()
+                            ->default(function (){
+                                $currentTeam = auth()->user()->teams()->first();
+                                return $currentTeam ? $currentTeam->currencies_id : null;
+                            }),
                         Forms\Components\Select::make('customers_id')->label('Customer Name') 
                             ->options(customer::where('teams_id', auth()->user()->teams()->first()->id)
                             ->pluck('name', 'id')

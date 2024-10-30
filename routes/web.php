@@ -1,9 +1,11 @@
 <?php
 
 use App\Filament\Pages\Report;
+use App\Filament\Pages\Settings;
 use Illuminate\Support\Facades\Route;
 use Filament\Http\Livewire\Auth\Login;
 use App\Http\Controllers\ContactController;
+use App\Http\Controllers\CurrencySettingController;
 use App\Livewire\DroneStatistik;
 use App\Livewire\BatteryStatistik;
 
@@ -18,3 +20,8 @@ Route::post('/filament/report/inventory/download', [Report::class, 'downloadInve
 Route::post('/filament/report/incomeExpense/download', [Report::class, 'downloadIncomeExpenseReport'])->name('filament.report.incomeExpense.download');
 Route::get('/drone-statistik/{drone_id}', [DroneStatistik::class, 'showDroneStatistik'])->name('drone.statistik');
 Route::get('/battery-statistik/{battery_id}', [BatteryStatistik::class, 'showBatteryStatistik'])->name('battery.statistik');
+
+// Route::get('admin/{tenant}/settings', [CurrencySettingController::class, 'index'])->name('settings');
+Route::get('/currency-settings', [CurrencySettingController::class, 'showCurrencyForm'])->name('currency-settings');
+Route::post('/currency-settings/store', [CurrencySettingController::class, 'store'])->name('currency-store');
+

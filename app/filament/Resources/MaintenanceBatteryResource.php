@@ -79,7 +79,11 @@ class MaintenanceBatteryResource extends Resource
                         ->options(currencie::all()->mapWithKeys(function ($currency) {
                             return [$currency->id => "{$currency->name} - {$currency->iso}"];}))
                             ->searchable()
-                            ->label('Currency'),
+                            ->label('Currency')
+                            ->default(function (){
+                                $currentTeam = auth()->user()->teams()->first();
+                                return $currentTeam ? $currentTeam->currencies_id : null;
+                            }),
                         Forms\Components\TextArea::make('notes')
                             ->label('Notes')
                             ->columnSpanFull(),

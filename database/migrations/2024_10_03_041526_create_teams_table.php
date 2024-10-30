@@ -32,6 +32,7 @@ return new class extends Migration
             $table->integer('insurance_amount')->nullable();
             $table->string('activity')->nullable();
             $table->string('note')->nullable();
+            $table->foreignId('currencies_id')->nullable()->constrained('currencies')->onDelete('set null');
             $table->timestamps();
         });
         Schema::create('team_user', function (Blueprint $table) {

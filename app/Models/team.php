@@ -85,6 +85,9 @@ class team extends Model implements HasAvatar
     public function cities(){
         return $this->belongsTo(citie::class);
     }
+    public function currencie(){
+        return $this->belongsTo(currencie::class);
+    }
 
 
     public function getTotalFlightDurationAttribute()
