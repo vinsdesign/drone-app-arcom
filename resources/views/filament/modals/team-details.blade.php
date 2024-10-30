@@ -1,4 +1,3 @@
-<!-- resources/views/filament/modals/team-details.blade.php -->
 <div class="bg-gray-100 dark:bg-gray-800 p-4 rounded-md shadow">
     <div class="flex justify-between">
         <div class="text-center flex-1">
