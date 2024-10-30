@@ -60,6 +60,7 @@ class AdminPanelProvider extends PanelProvider
             //shield
             ->plugins([
                 \BezhanSalleh\FilamentShield\FilamentShieldPlugin::make()
+                
             ])
             ->plugin(
                 BreezyCore::make()

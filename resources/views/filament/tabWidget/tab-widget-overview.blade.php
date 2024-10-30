@@ -101,7 +101,6 @@ $incident = App\Models\incident::whereHas('teams', function ($query) use ($curre
     </style>
 </head>
 <x-filament-widgets::widget>
-    <x-filament::section>
 <div class="container tab-border-warna">
     <!-- Tab headers -->
     <div class="container mx-auto p-5">
@@ -152,50 +151,58 @@ $incident = App\Models\incident::whereHas('teams', function ($query) use ($curre
                 
                     {{-- untuk tampilan 2 atau lebih widgets --}}
                     <div class="space-y-4">
-                        <div class="flex flex-wrap justify-center gap-6">
-                            <div class="bg-white rounded-lg shadow-lg p-4 flex-1 max-w-xs sm:max-w-sm md:max-w-md lg:max-w-sm">
+                        <div class="flex flex-nowrap justify-center gap-4 md:gap-6">
+                            <div class="rounded-lg shadow-lg p-2 sm:p-4 flex-1 max-w-xs sm:max-w-sm md:max-w-md lg:max-w-sm w-full">
                                 @livewire(App\Livewire\TabFlight::class)
                             </div>
-                            <div class="bg-white rounded-lg shadow-lg p-4 flex-1 max-w-xs sm:max-w-sm md:max-w-md lg:max-w-sm">
+                            <div class="rounded-lg shadow-lg p-2 sm:p-4 flex-1 max-w-xs sm:max-w-sm md:max-w-md lg:max-w-sm w-full">
                                 @livewire(App\Livewire\TabFlightDrone::class)
                             </div>
-                            <div class="bg-white rounded-lg shadow-lg p-4 flex-1 max-w-xs sm:max-w-sm md:max-w-md lg:max-w-full">
+                            <div class="rounded-lg shadow-lg p-2 sm:p-4 flex-1 max-w-xs sm:max-w-sm md:max-w-md lg:max-w-sm w-full">
                                 @livewire(App\Livewire\TabFlightChartBar::class)
                             </div>
                         </div>
-                            {{-- tabel Flight --}}
-                            <div class="container mx-auto p-4">
-                            <h2 class="text-2xl font-bold mb-4">Latest Flights (Last 20)</h2>
-                            <div class="mt-4 flex justify-end mb-4">
-                                <a href="{{route('filament.admin.resources.flighs.index',['tenant' => auth()->user()->teams()->first()->id])}}" class="inline-block px-4 py-2 bg-gray-800 text-white rounded hover:bg-gray-700">View All</a>
+                        
+                                {{-- tabel Flight --}}
+                                <div class="container mx-auto p-4">
+                                <h2 class="text-2xl font-bold mb-4">Latest Flights (Last 20)</h2>
+                                <div class="mt-4 flex justify-end mb-4">
+                                    <a href="{{route('filament.admin.resources.flighs.index',['tenant' => auth()->user()->teams()->first()->id])}}" class="inline-block px-4 py-2 bg-gray-800 text-white rounded hover:bg-gray-700">View All</a>
+                                </div>
                             </div>
-                            <div class="overflow-x-auto">
-                                <table class="min-w-full bg-gray-100 dark:bg-gray-800 rounded-lg shadow-lg">
-                                    <thead>
-                                        <tr class="w-full bg-gray-300 dark:bg-gray-700 text-gray-800 dark:text-gray-200">
-                                            <th class="py-3 px-4 text-left">Name</th>
-                                            <th class="py-3 px-4 text-left">Duration</th>
-                                            <th class="py-3 px-4 text-left">Date</th>
-                                            <th class="py-3 px-4 text-left">Drone</th>
-                                            <th class="py-3 px-4 text-left">Location</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        @foreach($flight as $item)
-                                        <tr class="hover:bg-gray-200 dark:hover:bg-gray-700">
-                                            <td class="py-2 px-4">{{$item->name ?? null}}</td>
-                                            <td class="py-2 px-4">{{$item->duration ?? null}}</td>
-                                            <td class="py-2 px-4">{{$item->start_date_flight?? null}}</td>
-                                            <td class="py-2 px-4">{{$item->drones->name?? null}}</td>
-                                            <td class="py-2 px-4">{{$item->fligh_location->name?? null}}</td>
-                                        </tr>
-                                        @endforeach
-                                    </tbody>
-                                </table>
+                        </div>
+                        @foreach($flight as $item)
+                            <div class="flex flex-wrap space-x-4 border border-gray-300 rounded-lg p-2 bg-gray-100 dark:bg-gray-800 max-w-[800px] mx-auto mb-4 shadow-lg"">
+                                <div class="flex-1 min-w-[150px] mb-2 border-r border-gray-300 pr-2">
+                                    <p class="text-sm text-gray-800 dark:text-gray-200 font-semibold">Flight Name</p>
+                                    <p class="text-sm text-gray-700 dark:text-gray-400">{{$item->name}}</p>
+                                    <div class="flex justify-between items-center rounded">
+                                        <p class="text-sm text-gray-700 dark:text-gray-400 border border-gray-300 dark:border-gray-700">{{ $item->duration ?? null }}</p>
+                                        <p class="text-sm text-gray-700 dark:text-gray-400">{{ $item->start_date_flight ?? null }}</p>
+                                    </div>
+                                    
+                                    <p class="text-sm text-gray-700 dark:text-gray-400">Pilot : {{$item->users->name??null}}</p>
+                                </div>
+                                <div class="flex-1 min-w-[150px] mb-2 border-r border-gray-300 pr-2">
+                                    <p class="text-sm text-gray-800 dark:text-gray-200 font-semibold">Drone</p>
+                                    <p class="text-sm text-gray-700 dark:text-gray-400">{{$item->drones->name?? null}}</p>
+                                    <p class="text-sm text-gray-700 dark:text-gray-400">{{$item->drones->brand?? null}} / {{$item->drones->model??null}}</p>
+                                    
+                                </div>
+                            
+                                <div class="flex-1 min-w-[150px] mb-2 border-r border-gray-300 pr-2">
+                                    <p class="text-sm text-gray-800 dark:text-gray-200 font-semibold">Flight Type</p>
+                                    <p class="text-sm text-gray-700 dark:text-gray-400">{{$item->type??null}}</p>
+                                </div>
+                            
+                                <div class="flex-1 min-w-[150px] mb-2 border-r border-gray-300 pr-2">
+                                    <p class="text-sm text-gray-800 dark:text-gray-200 font-semibold">Flight Location</p>
+                                    <p class="text-sm text-gray-700 dark:text-gray-400">{{$item->fligh_location->name?? null}}</p>
+                                </div>
+                        
                             </div>
-                            </div>
-                            {{-- end tabel --}}
-                    </div>
+                        @endforeach
+                        {{-- end tabel --}}
                 </div>
                 
                 <div id="content2" class="tab-content">
@@ -211,97 +218,118 @@ $incident = App\Models\incident::whereHas('teams', function ($query) use ($curre
                                 <div class="mt-4 flex justify-end mb-4">
                                     <a href="{{route('filament.admin.resources.maintences.index',['tenant' => auth()->user()->teams()->first()->id])}}" class="inline-block px-4 py-2 bg-gray-800 text-white rounded hover:bg-gray-700">View All</a>
                                 </div>
-                                <div class="overflow-x-auto">
-                                    <table class="min-w-full bg-gray-100 dark:bg-gray-800 rounded-lg shadow-lg">
-                                        <thead>
-                                            <tr class="w-full bg-gray-300 dark:bg-gray-700 text-gray-800 dark:text-gray-200">
-                                                <th class="py-3 px-4 text-left">Name</th>
-                                                <th class="py-3 px-4 text-left">Next Scheduled</th>
-                                                <th class="py-3 px-4 text-left">Details</th>
-                                                <th class="py-3 px-4 text-left">Items</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            @foreach($maintenance_drone as $item)
-                                            <tr class="hover:bg-gray-200 dark:hover:bg-gray-700">
-                                                <td class="py-2 px-4">{{$item->name ?? null}}</td>
-                                                <td class="py-2 px-4">{{$item->date ?? null}}</td>
-                                                <td class="py-2 px-4">
-                                                    @php
-                                                        $now = Carbon\Carbon::now();
-                                                        $formatDate = \Carbon\Carbon::parse($item->date)->format('Y-m-d');
-                                                        $daysOverdueDiff = $now->diffInDays($item->date, false);
-                                                    @endphp
-                                                        @if($daysOverdueDiff < 0) 
-                                                        @php
-                                                            $daysOverdueDiff = abs(intval($daysOverdueDiff));
-                                                        @endphp
-                                                            <span style="
-                                                                display: inline-block;
-                                                                background-color: red; 
-                                                                color: white; 
-                                                                padding: 3px 6px;
-                                                                border-radius: 5px;
-                                                                font-weight: bold;
-                                                            ">
-                                                                Overdue: {{ $daysOverdueDiff }} days
-                                                            </span>
-                                                        </span>
-                                                    @else
-                                                        <span class="bg-green-600 text-white py-1 px-2 rounded">{{ $formatDate }}</span>
-                                                    @endif
-                                                </td>
-                                                <td class="py-2 px-4">
-                                                    @if($item->equipment == null)
-                                                        {{ $item->battrei->name ?? null }}
-                                                    @else
-                                                        {{ $item->equipment->name ?? null }}
-                                                    @endif
-                                                </td>
-                                            </tr>
-                                            @endforeach
-                                            @foreach($maintenance_eq as $item)
-                                            <tr class="hover:bg-gray-200 dark:hover:bg-gray-700">
-                                                <td class="py-2 px-4">{{$item->name ?? null}}</td>
-                                                <td class="py-2 px-4">{{$item->date ?? null}}</td>
-                                                <td class="py-2 px-4">
-                                                    @php
-                                                        $now = Carbon\Carbon::now();
-                                                        $formatDate = \Carbon\Carbon::parse($item->date)->format('Y-m-d');
-                                                        $daysOverdueDiff = $now->diffInDays($item->date, false);
-                                                    @endphp
-                                                        @if($daysOverdueDiff < 0) 
-                                                        @php
-                                                            $daysOverdueDiff = abs(intval($daysOverdueDiff));
-                                                        @endphp
-                                                            <span style="
-                                                                display: inline-block;
-                                                                background-color: red; 
-                                                                color: white; 
-                                                                padding: 3px 6px;
-                                                                border-radius: 5px;
-                                                                font-weight: bold;
-                                                            ">
-                                                                Overdue: {{ $daysOverdueDiff }} days
-                                                            </span>
-                                                        </span>
-                                                    @else
-                                                        <span class="bg-green-600 text-white py-1 px-2 rounded">{{ $formatDate }}</span>
-                                                    @endif
-                                                </td>
-                                                <td class="py-2 px-4">
-                                                    @if($item->equipment == null)
-                                                        {{ $item->battrei->name ?? null }}
-                                                    @else
-                                                        {{ $item->equipment->name ?? null }}
-                                                    @endif
-                                                </td>
-                                                
-                                            </tr>
-                                            @endforeach
-                                        </tbody>
-                                    </table>
-                                </div>
+                                @foreach($maintenance_drone as $item)
+                                <div class="flex flex-wrap space-x-4 border border-gray-300 rounded-lg p-2 bg-gray-100 dark:bg-gray-800 max-w-[800px] mx-auto mb-4 shadow-lg">
+                                    <div class="flex-1 min-w-[150px] mb-2 border-r border-gray-300 pr-2">
+                                        <p class="text-sm text-gray-800 dark:text-gray-200 font-semibold">Maintenance Name</p>
+                                        <p class="text-sm text-gray-700 dark:text-gray-400">{{$item->name??null}}</p>
+                                        <p class="text-sm text-gray-700 dark:text-gray-400">{{$item->date??null}}</p>
+                                    </div>
+                                
+                                    <div class="flex-1 min-w-[150px] mb-2 border-r border-gray-300 pr-2">
+                                        <p class="text-sm text-gray-800 dark:text-gray-200 font-semibold">Next Scheduled: <span class="text-sm text-gray-700 dark:text-gray-400">{{$item->date?? null}}</span></p>
+                                        <p class="text-sm text-gray-700 dark:text-gray-400">
+                                            @php
+                                                $now = Carbon\Carbon::now();
+                                                $formatDate = \Carbon\Carbon::parse($item->date)->format('Y-m-d');
+                                                $daysOverdueDiff = $now->diffInDays($item->date, false);
+                                            @endphp
+                                                @if($daysOverdueDiff < 0) 
+                                                @php
+                                                    $daysOverdueDiff = abs(intval($daysOverdueDiff));
+                                                @endphp
+                                                    <span style="
+                                                        display: inline-block;
+                                                        background-color: red; 
+                                                        color: white; 
+                                                        padding: 3px 6px;
+                                                        border-radius: 5px;
+                                                        font-weight: bold;
+                                                    ">
+                                                        Overdue: {{ $daysOverdueDiff }} days
+                                                    </span>
+                                                </span>
+                                            @else
+                                                <span class="bg-green-600 text-white py-1 px-2 rounded">{{ $formatDate }}</span>
+                                            @endif
+                                        </p>    
+                                    </div>
+                                
+                                    <div class="flex-1 min-w-[150px] mb-2 border-r border-gray-300 pr-2">
+                                        <p class="text-sm text-gray-800 dark:text-gray-200 font-semibold">Drone</p>
+                                        <p class="text-sm text-gray-700 dark:text-gray-400">{{$item->drone->name??null}}</p>
+                                        <p class="text-sm text-gray-700 dark:text-gray-400">{{$item->drone->brand?? null}}/{{$item->drone->model??null}}</p>
+                                        
+                                        
+                                    </div>
+                                
+                                    <div class="flex-1 min-w-[150px] mb-2 border-r border-gray-300 pr-2">
+                                        <p class="text-sm text-gray-800 dark:text-gray-200 font-semibold">Technician</p>
+                                        <p class="text-sm text-gray-700 dark:text-gray-400">{{$item->technician??null}}</p>
+                                    </div>
+                                </div> 
+                                @endforeach
+                                @foreach($maintenance_eq as $item)
+                                <div class="flex flex-wrap space-x-4 border border-gray-300 rounded-lg p-2 bg-gray-100 dark:bg-gray-800 max-w-[800px] mx-auto mb-4 shadow-lg"">
+                                    <div class="flex-1 min-w-[150px] mb-2 border-r border-gray-300 pr-2">
+                                        <p class="text-sm text-gray-800 dark:text-gray-200 font-semibold">Maintenance Name</p>
+                                        <p class="text-sm text-gray-700 dark:text-gray-400">{{$item->name??null}}</p>
+                                        <p class="text-sm text-gray-700 dark:text-gray-400">{{$item->date??null}}</p>
+                                    </div>
+                                
+                                    <div class="flex-1 min-w-[150px] mb-2 border-r border-gray-300 pr-2">
+                                        <p class="text-sm text-gray-800 dark:text-gray-200 font-semibold">Next Scheduled: <span class="text-sm text-gray-700 dark:text-gray-400">{{$item->date?? null}}</span></p>
+                                        <p class="text-sm text-gray-700 dark:text-gray-400">
+                                            @php
+                                                $now = Carbon\Carbon::now();
+                                                $formatDate = \Carbon\Carbon::parse($item->date)->format('Y-m-d');
+                                                $daysOverdueDiff = $now->diffInDays($item->date, false);
+                                            @endphp
+                                                @if($daysOverdueDiff < 0) 
+                                                @php
+                                                    $daysOverdueDiff = abs(intval($daysOverdueDiff));
+                                                @endphp
+                                                    <span style="
+                                                        display: inline-block;
+                                                        background-color: red; 
+                                                        color: white; 
+                                                        padding: 3px 6px;
+                                                        border-radius: 5px;
+                                                        font-weight: bold;
+                                                    ">
+                                                        Overdue: {{ $daysOverdueDiff }} days
+                                                    </span>
+                                                </span>
+                                            @else
+                                                <span class="bg-green-600 text-white py-1 px-2 rounded">{{ $formatDate }}</span>
+                                            @endif
+                                        </p>    
+                                    </div>
+                                
+                                    <div class="flex-1 min-w-[150px] mb-2 border-r border-gray-300 pr-2">
+                                        <p class="text-sm text-gray-800 dark:text-gray-200 font-semibold">Batteri / Equipment</p>
+                                        <p class="text-sm text-gray-700 dark:text-gray-400">
+                                            @if($item->equipment == null)
+                                                {{ $item->battrei->name ?? null }}
+                                            @else
+                                                {{ $item->equipment->name ?? null }}
+                                            @endif
+                                        </p>
+                                        <p class="text-sm text-gray-700 dark:text-gray-400">
+                                            @if($item->equipment == null)
+                                                {{ $item->battrei->model ?? null }}
+                                            @else
+                                                {{ $item->equipment->model?? null }}
+                                            @endif
+                                        </p>
+                                    </div>
+                                
+                                    <div class="flex-1 min-w-[150px] mb-2 border-r border-gray-300 pr-2">
+                                        <p class="text-sm text-gray-800 dark:text-gray-200 font-semibold">Technician</p>
+                                        <p class="text-sm text-gray-700 dark:text-gray-400">{{$item->technician??null}}</p>
+                                    </div>
+                                </div> 
+                                @endforeach
                             </div>
                             {{-- end tabel --}}
                         </div>
@@ -333,82 +361,156 @@ $incident = App\Models\incident::whereHas('teams', function ($query) use ($curre
                         <div class="mt-4 flex justify-end mb-4">
                             <a href="{{route('filament.admin.resources.battreis.index',['tenant' => auth()->user()->teams()->first()->id])}}" class="inline-block px-4 py-2 bg-gray-800 text-white rounded hover:bg-gray-700">View All</a>
                         </div>
-                        <div class="overflow-x-auto">
-                            <table class="min-w-full bg-gray-100 dark:bg-gray-800 rounded-lg shadow-lg">
-                                <thead>
-                                    <tr class="w-full bg-gray-300 dark:bg-gray-700 text-gray-800 dark:text-gray-200">
-                                        <th class="py-3 px-4 text-left">Name</th>
-                                        <th class="py-3 px-4 text-left">Flight</th>
-                                        <th class="py-3 px-4 text-left">Project</th>
-                                        <th class="py-3 px-4 text-left">Duration</th>
-                                        <th class="py-3 px-4 text-left">Drone</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @foreach($inventory as $item)
-                                    <tr class="hover:bg-gray-200 dark:hover:bg-gray-700">
-                                        <td class="py-2 px-4">
-                                            @if ($item->equidments->isEmpty())
-                                            @foreach ($item->battries as $battery)
-                                                {{ $battery->name ?? 'No Battery' }}
-                                            @endforeach
-                                        @else
-                                            @foreach ($item->equidments as $equipment)
-                                                {{ $equipment->name ?? 'No Equipment' }}
-                                            @endforeach
-                                        @endif
-                                        </td>
-                                        <td class="py-2 px-4">{{$item->name ?? null}}</td>
-                                        <td class="py-2 px-4">{{$item->projects->case?? null}}</td>
-                                        <td class="py-2 px-4">{{$item->duration?? null}}</td>
-                                        <td class="py-2 px-4">{{$item->drones->name?? null}}</td>
-                                    </tr>
+                        @foreach($inventory as $item)
+                        <div class="flex flex-wrap space-x-4 border border-gray-300 rounded-lg p-2 bg-gray-100 dark:bg-gray-800 max-w-[800px] mx-auto mb-4 shadow-lg">
+                            <div class="flex-1 min-w-[150px] mb-2 border-r border-gray-300 pr-2">
+                                <p class="text-sm text-gray-800 dark:text-gray-200 font-semibold">Item:</p>
+                                <p class="text-sm text-gray-700 dark:text-gray-400">
+                                @if ($item->equidments->isEmpty())
+                                    @foreach ($item->battries as $battery)
+                                        <p class="text-sm text-gray-700 dark:text-gray-400">{{ $battery->name ?? 'No Battery' }} : Battereis</p>
                                     @endforeach
-                                </tbody>
-                            </table>
-                        </div>
+                                @else
+                                    @foreach ($item->equidments as $equipment)
+                                    <p class="text-sm text-gray-700 dark:text-gray-400">{{ $equipment->name ?? 'No Equipment' }} : {{$equipment->type?? null}}</p>
+                                    @endforeach
+                                @endif
+                                </p>
+                            </div>
+                        
+                            <div class="flex-1 min-w-[150px] mb-2 border-r border-gray-300 pr-2">
+                                <p class="text-sm text-gray-800 dark:text-gray-200 font-semibold">Flight</p>
+                                <p class="text-sm text-gray-700 dark:text-gray-400">{{$item->name}}</p>
+                                <div class="flex justify-between items-center rounded">
+                                    <p class="text-sm text-gray-700 dark:text-gray-400">{{$item->duration}}</p> 
+                                    <p class="text-sm text-gray-700 dark:text-gray-400">{{$item->start_date_flight}}</p> 
+                                </div>
+                                   
+                            </div>
+                        
+                            <div class="flex-1 min-w-[150px] mb-2 border-r border-gray-300 pr-2">
+                                <p class="text-sm text-gray-800 dark:text-gray-200 font-semibold">Serial #</p>
+                                <p class="text-sm text-gray-700 dark:text-gray-400">
+                                    @if ($item->equidments->isEmpty())
+                                    @foreach ($item->battries as $battery)
+                                        {{ $battery->serial_I ?? 'N/A' }}
+                                    @endforeach
+                                @else
+                                    @foreach ($item->equidments as $equipment)
+                                        {{ $equipment->serial ?? 'N/A' }}
+                                    @endforeach
+                                @endif
+                                </p>
+                            </div>
+                        
+                            <div class="flex-1 min-w-[150px] mb-2 border-r border-gray-300 pr-2">
+                                <p class="text-sm text-gray-800 dark:text-gray-200 font-semibold">Drone</p>
+                                <p class="text-sm text-gray-700 dark:text-gray-400">{{$item->drones->name??null}}</p>
+                                <p class="text-sm text-gray-700 dark:text-gray-400">{{$item->drones->brand??null}} - {{$item->drones->model}}</p>
+                            </div>
+                        </div> 
+                        @endforeach
+                        @foreach($inventory as $item)
+                        <div class="flex flex-wrap space-x-4 border border-gray-300 rounded-lg p-2 bg-gray-100 dark:bg-gray-800 max-w-[800px] mx-auto mb-4 shadow-lg">
+                            <div class="flex-1 min-w-[150px] mb-2 border-r border-gray-300 pr-2">
+                                <p class="text-sm text-gray-800 dark:text-gray-200 font-semibold">Item:</p>
+                                <p class="text-sm text-gray-700 dark:text-gray-400">
+                                @if ($item->battreis->isEmpty())
+                                    @foreach ($item->battreis as $battery)
+                                    <p class="text-sm text-gray-700 dark:text-gray-400">{{ $equipment->name ?? 'No Equipment' }} : {{$equipment->type?? null}}</p>
+                                       
+                                    @endforeach
+                                @else
+                                    @foreach ($item->battreis as $battery)
+                                    <p class="text-sm text-gray-700 dark:text-gray-400">{{ $battery->name ?? 'No Battery' }} : Battereis</p>
+                                    @endforeach
+                                @endif
+                                </p>
+                            </div>
+                        
+                            <div class="flex-1 min-w-[150px] mb-2 border-r border-gray-300 pr-2">
+                                <p class="text-sm text-gray-800 dark:text-gray-200 font-semibold">Flight</p>
+                                <p class="text-sm text-gray-700 dark:text-gray-400">{{$item->name}}</p>
+                                <div class="flex justify-between items-center rounded">
+                                    <p class="text-sm text-gray-700 dark:text-gray-400">{{$item->duration}}</p> 
+                                    <p class="text-sm text-gray-700 dark:text-gray-400">{{$item->start_date_flight}}</p> 
+                                </div>
+                                   
+                            </div>
+                        
+                            <div class="flex-1 min-w-[150px] mb-2 border-r border-gray-300 pr-2">
+                                <p class="text-sm text-gray-800 dark:text-gray-200 font-semibold">Serial #</p>
+                                <p class="text-sm text-gray-700 dark:text-gray-400">
+                                    @if ($item->equidments->isEmpty())
+                                    @foreach ($item->battries as $battery)
+                                        {{ $battery->serial_I ?? 'N/A' }}
+                                    @endforeach
+                                @else
+                                    @foreach ($item->equidments as $equipment)
+                                        {{ $equipment->serial ?? 'N/A' }}
+                                    @endforeach
+                                @endif
+                                </p>
+                            </div>
+                        
+                            <div class="flex-1 min-w-[150px] mb-2 border-r border-gray-300 pr-2">
+                                <p class="text-sm text-gray-800 dark:text-gray-200 font-semibold">Drone</p>
+                                <p class="text-sm text-gray-700 dark:text-gray-400">{{$item->drones->name??null}}</p>
+                                <p class="text-sm text-gray-700 dark:text-gray-400">{{$item->drones->brand??null}} - {{$item->drones->model}}</p>
+                            </div>
+                        </div> 
+                        @endforeach
                         </div>
                     {{-- end tabel --}}      
                 </div>
 
                 <div id="content4" class="tab-content">
-                    {{-- tabel Inventory --}}
+                    {{-- tabel Document --}}
 
                     <div class="container mx-auto p-4">
                         <h2 class="text-2xl font-bold mb-4">Document Overview</h2>
                         <div class="mt-4 flex justify-end mb-4">
                             <a href="{{route('filament.admin.resources.documents.index',['tenant' => auth()->user()->teams()->first()->id])}}" class="inline-block px-4 py-2 bg-gray-800 text-white rounded hover:bg-gray-700">View All</a>
                         </div>
-                        <div class="overflow-x-auto">
-                            <table class="min-w-full bg-gray-100 dark:bg-gray-800 rounded-lg shadow-lg">
-                                <thead>
-                                    <tr class="w-full bg-gray-300 dark:bg-gray-700 text-gray-800 dark:text-gray-200">
-                                        <th class="py-3 px-4 text-left">Name</th>
-                                        <th class="py-3 px-4 text-left">Owner</th>
-                                        <th class="py-3 px-4 text-left">Scope</th>
-                                        <th class="py-3 px-4 text-left">Type</th>
-                                        <th class="py-3 px-4 text-left">Link</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @foreach($document as $item)
-                                    <tr class="hover:bg-gray-200 dark:hover:bg-gray-700">
-                                        <td class="py-2 px-4">{{$item->name}}</td>
-                                        <td class="py-2 px-4">{{$item->users->name ?? null}}</td>
-                                        <td class="py-2 px-4">{{$item->scope?? null}}</td>
-                                        <td class="py-2 px-4">{{$item->type?? null}}</td>
-                                        <td class="py-2 px-4">
-                                            <a href='/storage/{{$item->doc}}' target='_blank' rel='noopener noreferrer' 
-                                               class="inline-block bg-orange-500 text-white rounded-lg sm:rounded-md md:rounded px-3 py-2 sm:px-4 sm:py-2 text-sm sm:text-base" 
-                                               style="background-color:#ff8303;">
-                                                Open Document
-                                            </a>
-                                        </td>
-                                    </tr>
-                                    @endforeach
-                                </tbody>
-                            </table>
+                        @foreach($document as $item)
+                        <div class="flex flex-wrap space-x-4 border border-gray-300 rounded-lg p-2 bg-gray-100 dark:bg-gray-800 max-w-[800px] mx-auto mb-4 shadow-lg">
+                            
+                            <!-- Kolom Name -->
+                            <div class="flex-1 min-w-[150px] mb-2 border-r border-gray-300 pr-2">
+                                <p class="text-sm text-gray-800 dark:text-gray-200 font-semibold">Name:</p>
+                                <p class="text-sm text-gray-700 dark:text-gray-400">{{ $item->name ?? 'No Name' }}</p>
+                            </div>
+                    
+                            <!-- Kolom Owner -->
+                            <div class="flex-1 min-w-[150px] mb-2 border-r border-gray-300 pr-2">
+                                <p class="text-sm text-gray-800 dark:text-gray-200 font-semibold">Owner:</p>
+                                <p class="text-sm text-gray-700 dark:text-gray-400">{{ $item->users->name ?? 'No Owner' }}</p>
+                            </div>
+                    
+                            <!-- Kolom Scope -->
+                            <div class="flex-1 min-w-[150px] mb-2 border-r border-gray-300 pr-2">
+                                <p class="text-sm text-gray-800 dark:text-gray-200 font-semibold">Scope:</p>
+                                <p class="text-sm text-gray-700 dark:text-gray-400">{{ $item->scope ?? 'No Scope' }}</p>
+                            </div>
+                    
+                            <!-- Kolom Type -->
+                            <div class="flex-1 min-w-[150px] mb-2 border-r border-gray-300 pr-2">
+                                <p class="text-sm text-gray-800 dark:text-gray-200 font-semibold">Type:</p>
+                                <p class="text-sm text-gray-700 dark:text-gray-400">{{ $item->type ?? 'No Type' }}</p>
+                            </div>
+                    
+                            <!-- Kolom Link -->
+                            <div class="flex-1 min-w-[150px] mb-2">
+                                <p class="text-sm text-gray-800 dark:text-gray-200 font-semibold">Link:</p>
+                                <a href="/storage/{{ $item->doc }}" target="_blank" rel="noopener noreferrer" 
+                                   class="inline-block text-sm bg-orange-500 text-white rounded px-3 py-2 hover:bg-orange-600"
+                                   style="background-color:#ff8303;">
+                                    Open Document
+                                </a>
+                            </div>
+                    
                         </div>
+                        @endforeach
                         </div>
                     {{-- end tabel --}}  
                 </div>
@@ -421,39 +523,50 @@ $incident = App\Models\incident::whereHas('teams', function ($query) use ($curre
                     <div class="mt-4 flex justify-end mb-4">
                         <a href="{{route('filament.admin.resources.incidents.index',['tenant' => auth()->user()->teams()->first()->id])}}" class="inline-block px-4 py-2 bg-gray-800 text-white rounded hover:bg-gray-700">View All</a>
                     </div>
-                    <div class="overflow-x-auto">
-                        <table class="min-w-full bg-gray-100 dark:bg-gray-800 rounded-lg shadow-lg">
-                            <thead>
-                                <tr class="w-full bg-gray-300 dark:bg-gray-700 text-gray-800 dark:text-gray-200">
-                                    <th class="py-3 px-4 text-left">Name</th>
-                                    <th class="py-3 px-4 text-left">Item</th>
-                                    <th class="py-3 px-4 text-left">Personnel Involved</th>
-                                    <th class="py-3 px-4 text-left">Location</th>
-                                    <th class="py-3 px-4 text-left">Project</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @foreach($incident as $item)
-                                <tr class="hover:bg-gray-200 dark:hover:bg-gray-700">
-                                    <td class="py-2 px-4">
-                                        {{$item->cause}}<br>
-                                        <span class="bg-gray-300">{{$item->incident_date}}</span>
-                                        @if($item->status == "closed")
-                                        <span class="bg-green-400">{{$item->status}}</span><br>
-                                        @else
-                                            <span class="bg-red-400">{{$item->status}}</span><br>
-                                        @endif
-                                    
-                                    </td>
-                                    <td class="py-2 px-4">{{$item->drone->name ?? null}}</td>
-                                    <td class="py-2 px-4">{{$item->users->name ?? null}}</td>
-                                    <td class="py-2 px-4">{{$item->fligh_locations->name?? null}}</td>
-                                    <td class="py-2 px-4">{{$item->project->case}}</td>
-                                </tr>
-                                @endforeach
-                            </tbody>
-                        </table>
+                    @foreach($incident as $item)
+                    <div class="flex flex-wrap space-x-4 border border-gray-300 rounded-lg p-4 bg-gray-100 dark:bg-gray-800 max-w-[800px] mx-auto mb-4 shadow-lg">
+                        
+                        <!-- Kolom Cause dan Status -->
+                        <div class="flex-1 min-w-[150px] mb-2 border-r border-gray-300 pr-2">
+                            <p class="text-sm text-gray-800 dark:text-gray-200 font-semibold">Cause:</p>
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <p class="text-sm text-gray-700 dark:text-gray-400">{{ $item->cause }}</p>
+                                    <p class="text-xs text-gray-500 dark:text-gray-300">Date: {{ $item->incident_date }}</p>
+                                </div>
+                                <span class="px-2 py-1 rounded text-white text-xs {{ $item->status == 'closed' ? 'bg-green-500' : 'bg-red-500' }}">
+                                    {{ ucfirst($item->status) }}
+                                </span>
+                            </div>
+                        </div>
+                
+                        <!-- Kolom Drone Name -->
+                        <div class="flex-1 min-w-[150px] mb-2 border-r border-gray-300 pr-2">
+                            <p class="text-sm text-gray-800 dark:text-gray-200 font-semibold">Drone:</p>
+                            <p class="text-sm text-gray-700 dark:text-gray-400">{{ $item->drone->name ?? 'No Drone' }}</p>
+                            <p class="text-sm text-gray-700 dark:text-gray-400">{{ $item->drone->brand ?? 'No Drone' }} / {{$item->drone->model}}</p>
+                        </div>
+                
+                        <!-- Kolom Personnel Involved -->
+                        <div class="flex-1 min-w-[150px] mb-2 border-r border-gray-300 pr-2">
+                            <p class="text-sm text-gray-800 dark:text-gray-200 font-semibold">Personnel Involved:</p>
+                            <p class="text-sm text-gray-700 dark:text-gray-400">{{ $item->users->name ?? 'No Personnel' }}</p>
+                        </div>
+                
+                        <!-- Kolom Location -->
+                        <div class="flex-1 min-w-[150px] mb-2 border-r border-gray-300 pr-2">
+                            <p class="text-sm text-gray-800 dark:text-gray-200 font-semibold">Location:</p>
+                            <p class="text-sm text-gray-700 dark:text-gray-400">{{ $item->fligh_locations->name ?? 'No Location' }}</p>
+                        </div>
+                
+                        <!-- Kolom Project -->
+                        <div class="flex-1 min-w-[150px] mb-2">
+                            <p class="text-sm text-gray-800 dark:text-gray-200 font-semibold">Project:</p>
+                            <p class="text-sm text-gray-700 dark:text-gray-400">{{ $item->project->case ?? 'No Project' }}</p>
+                        </div>
+                
                     </div>
+                @endforeach
                     </div>
                 {{-- end tabel --}}  
                 </div>
@@ -476,6 +589,5 @@ $incident = App\Models\incident::whereHas('teams', function ($query) use ($curre
         });
     });
 </script>
-</x-filament::section>
 </x-filament-widgets::widget>
 
