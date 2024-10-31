@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Providers\Filament;
+namespace App\Providers\Filament;;
 use App\Filament\Pages\Report;
 use App\Filament\Resources\CustomerResource;
 use App\Filament\Resources\DocumentResource;
