@@ -133,6 +133,16 @@ class UserResource extends Resource
                 Tables\Columns\ImageColumn::make('image'),
                 Tables\Columns\TextColumn::make('roles.name')
                     ->searchable(),
+                Tables\Columns\TextColumn::make('flight_date')
+                    ->label('Flights')
+                    ->getStateUsing(function ($record) {
+                        $lastFlight = $record->fligh()->orderBy('start_date_flight', 'desc')->first();
+                        $totalFlights = $record->fligh()->count();
+                        $lastFlightDate = optional($lastFlight)->start_date_flight ? $lastFlight->start_date_flight : '';
+                        return "({$totalFlights}) Flights<br> {$lastFlightDate}";
+                    })
+                    ->sortable()
+                    ->html(),
             ])
             ->filters([
                 //
