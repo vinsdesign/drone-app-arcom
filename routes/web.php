@@ -22,6 +22,6 @@ Route::get('/drone-statistik/{drone_id}', [DroneStatistik::class, 'showDroneStat
 Route::get('/battery-statistik/{battery_id}', [BatteryStatistik::class, 'showBatteryStatistik'])->name('battery.statistik');
 
 // Route::get('admin/{tenant}/settings', [CurrencySettingController::class, 'index'])->name('settings');
-Route::get('/currency-settings', [CurrencySettingController::class, 'showCurrencyForm'])->name('currency-settings');
+Route::get('admin/{tenant}/settings/currency-settings', [CurrencySettingController::class, 'showCurrencyForm'])->name('currency-settings');
 Route::post('/currency-settings/store', [CurrencySettingController::class, 'store'])->name('currency-store');
 
