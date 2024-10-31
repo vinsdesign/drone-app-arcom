@@ -91,8 +91,9 @@ class EditTeamProfil extends EditTenantProfile
                     TextInput::make('activity')->label('Activity'),
                     TextArea::make('note')->label('Note')->columnSpanFull(),
                 ])->columns(4),
-                
                 // ...
+        
             ]);
     }
+    
 }

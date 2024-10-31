@@ -516,7 +516,7 @@ $incident = App\Models\incident::whereHas('teams', function ($query) use ($curre
                 </div>
 
                 <div id="content5" class="tab-content">
-                    {{-- tabel Inventory --}}
+                    {{-- tabel INcident --}}
 
                     <div class="container mx-auto p-4">
                     <h2 class="text-2xl font-bold mb-4">Recent Incidents (Last 10)</h2>
