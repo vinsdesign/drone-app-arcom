@@ -2,6 +2,7 @@
 
 use App\Filament\Pages\Report;
 use App\Filament\Pages\Settings;
+use App\Http\Controllers\importDefaultValue;
 use Illuminate\Support\Facades\Route;
 use Filament\Http\Livewire\Auth\Login;
 use App\Http\Controllers\ContactController;
@@ -24,4 +25,5 @@ Route::get('/battery-statistik/{battery_id}', [BatteryStatistik::class, 'showBat
 // Route::get('admin/{tenant}/settings', [CurrencySettingController::class, 'index'])->name('settings');
 Route::get('admin/{tenant}/settings/currency-settings', [CurrencySettingController::class, 'showCurrencyForm'])->name('currency-settings');
 Route::post('/currency-settings/store', [CurrencySettingController::class, 'store'])->name('currency-store');
+Route::post('/default-value',[importDefaultValue::class,'store'])->name('default-value');
 

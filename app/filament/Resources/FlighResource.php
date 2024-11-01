@@ -112,6 +112,10 @@ class FlighResource extends Resource
                         'test_flight' => 'Test Flight',
                         'training_flight' => 'Training Flight',
                     ])->searchable()
+                    ->default(function (){
+                        $currentTeam = auth()->user()->teams()->first();
+                        return $currentTeam ? $currentTeam->flight_type : null;
+                    })
                     ->required(),
                 Forms\Components\Select::make('ops')->label('Ops')
                     ->options([
@@ -146,6 +150,10 @@ class FlighResource extends Resource
                             $set('customers_name', null);
                         }
                     })
+                    ->default(function (){
+                        $currentTeam = auth()->user()->teams()->first();
+                        return $currentTeam ? $currentTeam->id_customers : null;
+                    })
                     ->options(Projects::where('teams_id', auth()->user()->teams()->first()->id)
                             ->pluck('case', 'id')
                             )->searchable(),
@@ -175,6 +183,10 @@ class FlighResource extends Resource
                     //->relationship('customers', 'name')
                     ->required()
                     ->disabled()
+                    ->default(function (){
+                        $currentTeam = auth()->user()->teams()->first();
+                        return $currentTeam ? $currentTeam->getNameCustomer->name : null;
+                    })
                     ->columnSpanFull(),
  
                 ])->columns(3),
