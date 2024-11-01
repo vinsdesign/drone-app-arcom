@@ -77,7 +77,7 @@ class team extends Model implements HasAvatar
     public function kits(){
         return $this->belongsToMany(kits::class);
     }
-    public function fligh_location(){
+    public function flighLocations(){
         return $this->belongsToMany(fligh_location::class);
     }
     public function countries(){

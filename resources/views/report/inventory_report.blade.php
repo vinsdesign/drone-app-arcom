@@ -91,7 +91,8 @@
                 </tr>
                 <tr>
                     <td colspan="6" class="row-span">
-                        <strong>Drone Geometry:</strong> {{ $drones->geometry ?? null}} &nbsp;&nbsp;
+                        <strong>Drone Geometry:</strong> {{ $drones->geometry ?? null}} 
+                        <br>
                         <strong>Owner:</strong> {{ $drones->users->name ?? null}}
                         <br>
                         <strong>Initial Flight Count:</strong> {{ $drones->flight_c ?? null}} &nbsp;&nbsp; 

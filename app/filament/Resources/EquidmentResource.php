@@ -164,6 +164,14 @@ class EquidmentResource extends Resource
                      ->searchable(),
                 Tables\Columns\TextColumn::make('type')
                      ->searchable(),
+                Tables\Columns\TextColumn::make('flight_time')
+                     ->label('Flights')
+                     ->getStateUsing(function ($record) {
+                        $totalFlights = $record->fligh()->count() + $record->kits()->with('fligh')->get()->pluck('fligh')->flatten()->unique('id')->count();
+                         return "({$totalFlights}) Flights";
+                     })
+                     ->sortable()
+                     ->html(),
                 Tables\Columns\TextColumn::make('status')->label('Status')
                      ->color(fn ($record) => match ($record->status){
                          'airworthy' => Color::Green,

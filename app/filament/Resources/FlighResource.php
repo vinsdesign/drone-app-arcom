@@ -348,7 +348,7 @@ class FlighResource extends Resource
                     $showAllKits = $get('show_all_kits');
 
                     if ($showAllKits){
-                        return kits::pluck('name', 'id');
+                        return Kits::where('teams_id', $currentTeamId)->pluck('name', 'id');
                     }
                     
                     return kits::where('teams_id', $currentTeamId)
@@ -629,7 +629,7 @@ class FlighResource extends Resource
     public static function infolist(Infolist $infolist): Infolist
     {
         return $infolist
-        
+
         ->schema([
             Section::make('Flight Detail')
                 ->schema([
@@ -700,6 +700,7 @@ class FlighResource extends Resource
             'index' => Pages\ListFlighs::route('/'),
             'create' => Pages\CreateFligh::route('/create'),
             'edit' => Pages\EditFligh::route('/{record}/edit'),
+            'view' => Pages\ViewFligh::route('/{record}'),
         ];
     }
 }

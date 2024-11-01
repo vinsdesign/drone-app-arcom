@@ -21,8 +21,8 @@ class fligh_location extends Model
         'longitude',
         'altitude',
         'teams_id',
-        'customer_id',
-        'project_id',
+        'customers_id',
+        'projects_id',
     ];
     public function teams(){
         return $this->belongsTo(Team::class);
