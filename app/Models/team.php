@@ -33,7 +33,11 @@ class team extends Model implements HasAvatar
         'insurance_amount',
         'activity',
         'note',
-        'avatar_url'
+        'avatar_url',
+        'customers_id',
+        'projects_id',
+        'set_pilot',
+        'flight_type',
     ];
 
     public function getFilamentAvatarUrl(): ?string
@@ -45,7 +49,7 @@ class team extends Model implements HasAvatar
         return $this->belongsToMany(User::class);
     }
     public function customers(){
-        return $this->belongsToMany(Customer::class);
+        return $this->belongsToMany(Customer::class,);
        }
     public function documents(){
         return $this->belongsToMany(Document::class);
@@ -88,6 +92,12 @@ class team extends Model implements HasAvatar
     }
     public function currencie(){
         return $this->belongsTo(currencie::class);
+    }
+    public function getNameCustomer(){
+        return $this->belongsTo(customer::class, 'id_customers');
+    }
+    public function getNameProject(){
+        return $this->belongsTo(Projects::class, 'id_projects');
     }
 
 

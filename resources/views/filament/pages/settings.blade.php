@@ -2,6 +2,13 @@
     $teams = Auth()->user()->teams()->first()->id;
     $customer = App\Models\customer::where('teams_id',$teams)->get();
     $project = App\Models\projects::where('teams_id',$teams)->get();
+    $default = App\Models\team::where('id',$teams)->get();
+    $defaultCountCustomer = App\Models\team::where('id',$teams)->count('id_customers');
+    $defaultCountProject = App\Models\team::where('id',$teams)->count('id_projects');
+    $defaultCountType = App\Models\team::where('id',$teams)->count('flight_type');
+    $team = App\Models\Team::where('id', $teams)->first();
+    $defaultPilot = $team ? $team->set_pilot : false;
+    $isChecked = $defaultPilot;
 ?>
 <x-filament-panels::page>
     <head>
@@ -129,7 +136,8 @@
             <div class="tab-contents">
                 {{-- menu profile --}}
                 <div id="content0" class="tab-content active">
-                    {{-- @include('vendor.filament-breezy.filament.pages.my-profile') --}}
+                    @livewire('personal-info')
+                    @livewire('my-custom-component')
                 </div>
                 {{-- menu Team --}}
                 <div id="content1" class="tab-content">
@@ -141,16 +149,21 @@
                     <p class="mb-3 text-gray-600 dark:text-gray-400">These rules will be automatically set for all logs on new imported flights.<br>Rules will be applied in these flight log importers:</p>
                     
                     <ul class="list-disc pl-5 mb-6">
-                        <li><a href="#" class="text-blue-600 dark:text-blue-400 hover:underline">Manual Multiple Importer</a></li>
+                        <li><a href="{{route('filament.admin.resources.manual-imports.index',[Auth()->user()->teams()->first()->id])}}" class="text-blue-600 dark:text-blue-400 hover:underline">Manual Multiple Importer</a></li>
                         <li><a href="#" class="text-blue-600 dark:text-blue-400 hover:underline">Dji Cloud Importer</a></li>
                     </ul>
-                
                     <h1 class="text-2xl font-semibold mb-4 text-gray-800 dark:text-gray-200">Default Value</h1>
-                    <form class="space-y-4">
+                    <form class="space-y-4" action="{{route('default-value')}}" method="POST">
+                        @csrf
                         <div class="form-group">
-                            <label for="default_customer" class="font-medium text-gray-700 dark:text-gray-300">Default Customer</label>
-                            <select id="default_customer" class="border border-gray-300 dark:border-gray-600 rounded-lg w-full p-2 mt-1 bg-white dark:bg-gray-700 text-gray-800 dark:text-gray-200 focus:outline-none focus:border-blue-500 dark:focus:border-blue-400">
-                                <option value="null">-- None --</option>
+                            <label for="customer" class="font-medium text-gray-700 dark:text-gray-300">Default Customer</label>
+                            <select name="customer" id="customer" class="border border-gray-300 dark:border-gray-600 rounded-lg w-full p-2 mt-1 bg-white dark:bg-gray-700 text-gray-800 dark:text-gray-200 focus:outline-none focus:border-blue-500 dark:focus:border-blue-400">
+                                @if($defaultCountCustomer > 0)
+                                    @foreach($default as $key)
+                                    <option value="{{$key->id_customers}}">-- {{$key->getNameCustomer->name}} --</option>
+                                    @endforeach  
+                                @endif
+                                <option value="">-- None --</option>
                                 @foreach($customer as $item)
                                 <option value="{{$item->id}}">{{$item->name}}</option>
                                 @endforeach
@@ -158,9 +171,14 @@
                         </div>
                 
                         <div class="form-group">
-                            <label for="default_project" class="font-medium text-gray-700 dark:text-gray-300">Default Project/Job</label>
-                            <select id="default_project" class="border border-gray-300 dark:border-gray-600 rounded-lg w-full p-2 mt-1 bg-white dark:bg-gray-700 text-gray-800 dark:text-gray-200 focus:outline-none focus:border-blue-500 dark:focus:border-blue-400">
-                                <option value="null">-- None --</option>
+                            <label for="projects" class="font-medium text-gray-700 dark:text-gray-300">Default Project/Job</label>
+                            <select name="projects" id="projects" class="border border-gray-300 dark:border-gray-600 rounded-lg w-full p-2 mt-1 bg-white dark:bg-gray-700 text-gray-800 dark:text-gray-200 focus:outline-none focus:border-blue-500 dark:focus:border-blue-400">
+                                @if($defaultCountProject > 0)
+                                    @foreach($default as $key)
+                                    <option value="{{$key->id_projects}}">-- {{$key->getNameProject->case}} --</option>
+                                    @endforeach  
+                                @endif
+                                <option value="">-- None --</option>
                                 @foreach($project as $item)
                                 <option value="{{$item->id}}">{{$item->case}}</option>
                                 @endforeach
@@ -168,17 +186,40 @@
                         </div>
                 
                         <div class="form-group">
-                            <label for="default_flight_type" class="font-medium text-gray-700 dark:text-gray-300">Default Flight Type</label>
-                            <select id="default_flight_type" class="border border-gray-300 dark:border-gray-600 rounded-lg w-full p-2 mt-1 bg-white dark:bg-gray-700 text-gray-800 dark:text-gray-200 focus:outline-none focus:border-blue-500 dark:focus:border-blue-400">
-                                <option value="null">-- None --</option>
-                                <option value="text">Text</option>
-                                <option value="json">JSON</option>
+                            <label for="Sflight_type" class="font-medium text-gray-700 dark:text-gray-300">Default Flight Type</label>
+                            <select name="flight_type" id="flight_type" class="border border-gray-300 dark:border-gray-600 rounded-lg w-full p-2 mt-1 bg-white dark:bg-gray-700 text-gray-800 dark:text-gray-200 focus:outline-none focus:border-blue-500 dark:focus:border-blue-400">
+                                @if($defaultCountType > 0)
+                                    @foreach($default as $key)
+                                    <option value="{{$key->flight_type}}">-- {{$key->flight_type}} --</option>
+                                    @endforeach  
+                                @endif
+                                <option value="">-- None --</option>
+                                <option value="commercial-agriculture">Commercial-Agriculture</option>
+                                <option value="commercial-inspection">Commercial-Inspection</option>
+                                <option value="commercial-mapping/survey">Commercial-Mapping/Survey</option>
+                                <option value="commercial-other">Commercial-Other</option>
+                                <option value="commercial-photo/video">Commercial-Photo/Video</option>
+                                <option value="emergency">Emergency</option>
+                                <option value="hobby-entertainment">Hobby-Entertainment</option>
+                                <option value="maintenance">Maintenance</option>
+                                <option value="mapping_hr">Mapping HR</option>
+                                <option value="mapping_uhr">Mapping UHR</option>
+                                <option value="photogrammetry">Photogrammetry</option>
+                                <option value="science">Science</option>
+                                <option value="search_rescue">Search and Rescue</option>
+                                <option value="simulator">Simulator</option>
+                                <option value="situational_awareness">Situational Awareness</option>
+                                <option value="spreading">Spreading</option>
+                                <option value="surveillance/patrol">Surveillance or Patrol</option>
+                                <option value="survey">Survey</option>
+                                <option value="test_flight">Test Flight</option>
+                                <option value="training_flight">Training Flight</option>          
                             </select>
                         </div>
                 
                         <div class="form-group flex items-center space-x-2">
-                            <input type="checkbox" id="default_pilot" class="form-checkbox h-5 w-5 text-blue-600 dark:text-blue-400 focus:ring-blue-500 dark:focus:ring-blue-400">
-                            <label for="default_pilot" class="font-medium text-gray-700 dark:text-gray-300">If Pilot not set upfront, set Auto-detected Drone Owner As Pilot</label>
+                            <input name="pilot" type="checkbox"  id="pilot" class="form-checkbox h-5 w-5 text-blue-600 dark:text-blue-400 focus:ring-blue-500 dark:focus:ring-blue-400"{{ $isChecked ? 'checked' : '' }}>
+                            <label for="pilot" class="font-medium text-gray-700 dark:text-gray-300">If Pilot not set upfront, set Auto-detected Drone Owner As Pilot</label>
                         </div>  
                         <button type="submit" class="bg-blue-600 dark:bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-700 dark:hover:bg-blue-600 transition-all duration-200 ease-in-out">
                             Submit
@@ -219,7 +260,7 @@
         <div class="max-w-lg w-full p-6 rounded-lg shadow-md border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800">
             <h1 class="text-2xl font-bold mb-4 text-gray-800 dark:text-gray-200">Currency Settings</h1>
     
-            <form action="{{ route('currency-store') }}" method="POST">
+            <form action="{{route('currency-store')}}" method="POST">
                 @csrf
                 
                 <div class="mb-4">

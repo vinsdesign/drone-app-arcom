@@ -86,8 +86,7 @@ class AdminPanelProvider extends PanelProvider
                 'Filament Shield',
                 'Teams List',
                 'Payment',
-
-    ])
+            ])
             //end Navigation Group
             ->tenant(Team::class, ownershipRelationship: 'team')
             ->tenantRegistration(RegisterTeam::class)
