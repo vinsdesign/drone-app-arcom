@@ -32,8 +32,8 @@
             <p class="text-gray-700 dark:text-white">{{ $equidments_count }}</p>
         </div>
         <div class="text-center flex-1">
-            {{-- <p class="font-medium text-gray-900 dark:text-white">Total Flight Locations</p>
-            <p class="text-gray-700 dark:text-white">{{ $flighLocations_count }}</p> --}}
+            <p class="font-medium text-gray-900 dark:text-white">Total Flight Locations</p>
+            <p class="text-gray-700 dark:text-white">{{ $fligh_location_count }}</p>
         </div>
     </div>
 </div>

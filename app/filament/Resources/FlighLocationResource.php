@@ -20,12 +20,13 @@ use Filament\Support\Colors\Color;
 class FlighLocationResource extends Resource
 {
     protected static ?string $model = fligh_location::class;
-
+    
     protected static ?string $navigationIcon = 'heroicon-s-map-pin';
     protected static?string $navigationGroup = 'Inventory';
     protected static ?string $navigationLabel = 'Location';
     protected static ?string $modelLabel = 'Locations';
     public static ?string $tenantOwnershipRelationshipName = 'teams';
+    protected static ?string $tenantRelationshipName = 'fligh_location';
     protected static bool $isLazy = false;
 
     public static function form(Form $form): Form

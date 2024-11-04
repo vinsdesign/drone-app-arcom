@@ -5,6 +5,7 @@ namespace App\Filament\Resources;
 use App\Filament\Resources\IncidentResource\Pages;
 use App\Filament\Resources\IncidentResource\RelationManagers;
 use App\Models\drone;
+use App\Models\fligh;
 use App\Models\fligh_location;
 use App\Models\Incident;
 use App\Models\project;
@@ -20,6 +21,7 @@ use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Filament\Support\Colors\Color;
+use Filament\Tables\Actions\Action;
 
 class IncidentResource extends Resource
 {
@@ -189,6 +191,30 @@ class IncidentResource extends Resource
                 //
             ])
             ->actions([
+                Action::make('viewFlight')
+                ->label('View Flight')
+                ->url(function ($record) {
+                    $flight = fligh::where('projects_id', $record->project_id)
+                        ->where('location_id', $record->location_id)
+                        ->where('drones_id', $record->drone_id)
+                        ->orderBy('start_date_flight', 'desc')
+                        ->first();
+
+                    if (!$flight) {
+                            $flight = fligh::where('drones_id', $record->drone_id)
+                                ->orderBy('start_date_flight', 'desc')
+                                ->first();
+                        }
+
+                    return $flight
+                        ? route('filament.admin.resources.flighs.view', [
+                            'tenant' => auth()->user()->teams()->first()->id,
+                            'record' => $flight->id,
+                        ])
+                        : null; 
+                })
+                ->button()
+                ->requiresConfirmation(),
                 Tables\Actions\ViewAction::make(),
                 Tables\Actions\EditAction::make(),
             ])

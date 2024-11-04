@@ -20,6 +20,7 @@ use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Filament\Infolists\Infolist;
 use Filament\Infolists\Components\TextEntry;
 use Filament\Infolists\Components\Section;
+use Carbon\Carbon;
 
 
 class BattreiResource extends Resource
@@ -154,6 +155,42 @@ class BattreiResource extends Resource
                        'retired' => Color::Zinc
                      })
                     ->searchable(),
+                Tables\Columns\TextColumn::make('flight_time')
+                    ->label('Flights & Flying Time')
+                    ->getStateUsing(function ($record) {
+                       $flights = $record->fligh()
+                           ->whereHas('teams', function ($query) {
+                               $query->where('id', auth()->user()->teams()->first()->id);
+                           })
+                           ->get()
+                           ->merge(
+                               $record->kits()->with(['fligh' => function ($query) {
+                                   $query->whereHas('teams', function ($query) {
+                                       $query->where('id', auth()->user()->teams()->first()->id);
+                                   });
+                               }])->get()->pluck('fligh')->flatten()
+                           );
+                   
+                       $totalSeconds = 0;
+                       foreach ($flights as $flight) {
+                           $start = $flight->start_date_flight;
+                           $end = $flight->end_date_flight;
+                           if ($start && $end) {
+                               $totalSeconds += Carbon::parse($start)->diffInSeconds(Carbon::parse($end));
+                           }
+                       }
+                   
+                       $hours = floor($totalSeconds / 3600);
+                       $minutes = floor(($totalSeconds % 3600) / 60);
+                       $seconds = $totalSeconds % 60;
+                       $totalDuration = sprintf('%02d:%02d:%02d', $hours, $minutes, $seconds);
+                   
+                       $totalFlights = $flights->unique('id')->count();
+                    return "<div> {$totalFlights} Flight(s) <div style='border: 1px solid #ccc; padding: 3px; display: inline-block; border-radius: 5px; background-color: #D4D4D4;'>
+                            <strong>{$totalDuration}</strong></div>";
+                   })
+                    ->sortable()
+                    ->html(),
                 // Tables\Columns\TextColumn::make('asset_inventory')->label('Inventory/Asset')
                 //     ->searchable(),
                 // Tables\Columns\TextColumn::make('serial_P')->label('Serial Printed')
