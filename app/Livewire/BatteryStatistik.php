@@ -3,6 +3,7 @@
 namespace App\Livewire;
 
 use App\Models\battrei;
+use DB;
 use Filament\Widgets\ChartWidget;
 use App\Models\fligh;
 use Illuminate\Support\Carbon;
@@ -33,14 +34,18 @@ class BatteryStatistik extends ChartWidget
 }
     protected function getData(): array
     {
-        $batteryID = session('battery_id');
         $tenant_id = Auth()->user()->teams()->first()->id;
-        $flights = fligh::where('teams_id', $tenant_id)->where('battreis_id', $batteryID)
+        $batteryID = session('battery_id');
+        $pivotBattrei = DB::table('fligh_battrei')->where('battrei_id',$batteryID)
+            ->select('battrei_id')
+            ->get();
+        $uniqu = $pivotBattrei->pluck('battrei_id')->unique();
+        // dd($uniqu);
+        $flights = fligh::where('teams_id', $tenant_id)->whereIn('id', $uniqu)
             ->whereBetween('start_date_flight', [now()->startOfYear(), now()->endOfYear()])
             ->get();
-    
         $data = $flights->groupBy(function ($item) {
-            return Carbon::parse($item->start_date_flight)->format('Y-m-d');
+            return Carbon::parse($item->start_date_flight)->format('Y-m');
         })->map(function ($group) {
             $totalFlights = $group->count();
             $totalDuration = $group->sum(function ($flight) {
@@ -62,13 +67,11 @@ class BatteryStatistik extends ChartWidget
                     'label' => 'Flights Total ',
                     'data' => $data->pluck('totalFlights')->values()->toArray(),
                     'backgroundColor' => 'rgba(75, 192, 192, 0.6)',
-                    'yAxisID' => 'totalFlights',
                 ],
                 [
                     'label' => 'Flight Duration (Hours)',
                     'data' => $data->pluck('totalDuration')->values()->toArray(),
                     'backgroundColor' => 'rgba(255, 99, 132, 0.6)',
-                    'yAxisID' => 'flightDuration',
                 ],
             ],
             'labels' => $data->keys()->toArray(),
@@ -78,9 +81,13 @@ class BatteryStatistik extends ChartWidget
     {
         $batteryID = session('battery_id');
         $tenant_id = Auth()->user()->teams()->first()->id;
-        $flights = fligh::where('teams_id', $tenant_id)->where('battreis_id', $batteryID)
-            ->whereBetween('start_date_flight', [now()->startOfYear(), now()->endOfYear()])
-            ->get();
+        $pivotBattrei = DB::table('fligh_battrei')->where('battrei_id',$batteryID)
+        ->select('battrei_id')
+        ->get();
+        $uniqu = $pivotBattrei->pluck('battrei_id')->unique();
+        $flights = fligh::where('teams_id', $tenant_id)->whereIn('id', $uniqu)
+        ->whereBetween('start_date_flight', [now()->startOfYear(), now()->endOfYear()])
+        ->get();
             $data = $flights->groupBy(function ($item) {
                 return Carbon::parse($item->start_date_flight)->format('Y-m'); // Grup per bulan
             })->map(function ($group) {

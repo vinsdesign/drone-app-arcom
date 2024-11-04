@@ -145,7 +145,7 @@ class MaintenanceBatteryResource extends Resource
                 ->color(fn ($record) => match ($record->status){
                     'completed' => Color::Green,
                    'schedule' =>Color::Red,
-                   'in_progress' => Color::Zinc
+                   'in_progress' => Color::Blue
                  })
                 ->searchable(),
                 Tables\Columns\TextColumn::make('cost')

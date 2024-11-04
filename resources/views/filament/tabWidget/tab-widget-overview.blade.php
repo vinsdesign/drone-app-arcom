@@ -1,53 +1,80 @@
 <?php
-$currentTeamId = Auth()->user()->teams()->first()->id;
-//maintenance
-$maintenance_eq = App\Models\maintence_eq::whereHas('teams', function ($query) use ($currentTeamId) {
-        $query->where('id', $currentTeamId);
-    })
-    ->whereNotIn('status', ['completed'])
-    ->whereRaw('DATE(date) < ?', [Carbon\Carbon::now()->format('Y-m-d')])
-    ->get();
+            $currentTeamId = Auth()->user()->teams()->first()->id;
+            //maintenance
+            $maintenance_eq = App\Models\maintence_eq::whereHas('teams', function ($query) use ($currentTeamId) {
+                $query->where('id', $currentTeamId);
+            })
+            ->whereNotIn('status', ['completed'])
+            ->whereRaw('DATE(date) < ?', [Carbon\Carbon::now()->format('Y-m-d')])
+            ->get();
 
 
-$maintenance_drone = App\Models\maintence_drone::whereHas('teams', function ($query) use ($currentTeamId){
-    $query->where('id', $currentTeamId);
-})->whereNotIn('status', ['completed'])
-->whereRaw('DATE(date) < ?', [Carbon\Carbon::now()->format('Y-m-d')])
-->get();
+            $maintenance_drone = App\Models\maintence_drone::whereHas('teams', function ($query) use ($currentTeamId){
+            $query->where('id', $currentTeamId);
+            })->whereNotIn('status', ['completed'])
+            ->whereRaw('DATE(date) < ?', [Carbon\Carbon::now()->format('Y-m-d')])
+            ->get();
 
-//end maintenance
+            //end maintenance
 
-//flight
-$flight = App\Models\fligh::whereHas('teams', function ($query) use ($currentTeamId){
-    $query->where('id', $currentTeamId);
-})->orderBy('created_at', 'desc')
-->limit(20)
-->get();
-//end flight
-//inventory
-$inventory = App\Models\fligh::whereHas('teams', function ($query) use ($currentTeamId){
-    $query->where('id', $currentTeamId);
-})->orderBy('created_at', 'desc')->where('kits_id',null)
-->with(['battreis','equidments'])
-->limit(20)
-->get();
-//end inventory
+            //flight
+            $flight = App\Models\fligh::whereHas('teams', function ($query) use ($currentTeamId){
+            $query->where('id', $currentTeamId);
+            })->orderBy('created_at', 'desc')
+            ->limit(20)
+            ->get();
+            //end flight
+            //inventory
+            $inventory = App\Models\fligh::whereHas('teams', function ($query) use ($currentTeamId){
+            $query->where('id', $currentTeamId);
+            })->orderBy('created_at', 'desc')->where('kits_id',null)
+            ->with(['battreis','equidments'])
+            ->limit(20)
+            ->get();
+            //end inventory
 
-//document
-$document = App\Models\document::whereHas('teams', function ($query) use ($currentTeamId){
-    $query->where('id', $currentTeamId);
-})->orderBy('created_at', 'desc')
-->limit(20)
-->get();
-//end document
-//incident
-$incident = App\Models\incident::whereHas('teams', function ($query) use ($currentTeamId){
-    $query->where('id', $currentTeamId);
-})->orderBy('created_at', 'desc')
-->limit(10)
-->get();
-//end incident
+            //document
+            $document = App\Models\document::whereHas('teams', function ($query) use ($currentTeamId){
+            $query->where('id', $currentTeamId);
+            })->orderBy('created_at', 'desc')
+            ->limit(20)
+            ->get();
+            //end document
+            //incident
+            $incident = App\Models\incident::whereHas('teams', function ($query) use ($currentTeamId){
+            $query->where('id', $currentTeamId);
+            })->orderBy('created_at', 'desc')
+            ->limit(10)
+            ->get();
+            //end incident
 
+            //edi inventory data
+
+            $LastBattrei = DB::table('fligh_battrei')
+                    ->select('battrei_id')
+                    ->orderBy('updated_at', 'desc')
+                    ->limit(5)
+                    ->get();
+                $uniqId = $LastBattrei->pluck('battrei_id')->unique();
+                $battreiUsage = App\Models\Battrei::whereIn('id', $uniqId)
+                    ->withCount('fligh as usage_count')
+                    ->with('fligh')
+                    ->get();
+
+            $lastEquipment = DB::table('fligh_equidment')
+                    ->select('equidment_id')
+                    ->orderBy('updated_at', 'desc')
+                    ->limit(5)
+                    ->get();
+                $uniqIdEquipment = $lastEquipment->pluck('equidment_id')->unique();
+                $equipmentUsage = App\Models\Equidment::whereIn('id', $uniqIdEquipment)
+                    ->withCount('fligh as usage_count')
+                    ->with('fligh')
+                    ->get();
+                        
+
+                // Debugging output
+                // dd($battreiUsage);
 
 ?>
 <head>
@@ -212,7 +239,7 @@ $incident = App\Models\incident::whereHas('teams', function ($query) use ($curre
                             <div class="bg-white rounded-lg shadow-lg p-4 flex-1 max-w-xs sm:max-w-sm md:max-w-md lg:max-w-sm">
                                 @livewire(App\Livewire\TabMaintenance::class)
                             </div>
-                               {{-- tabel --}}
+                               {{-- tabel Maintenance --}}
                                <div class="container mx-auto p-4">
                                 <h2 class="text-2xl font-bold mb-4">Maintenance Overdue</h2>
                                 <div class="mt-4 flex justify-end mb-4">
@@ -331,7 +358,7 @@ $incident = App\Models\incident::whereHas('teams', function ($query) use ($curre
                                 </div> 
                                 @endforeach
                             </div>
-                            {{-- end tabel --}}
+                            {{-- end tabel Maintenance --}}
                         </div>
                     </div>
                 </div>
@@ -361,104 +388,120 @@ $incident = App\Models\incident::whereHas('teams', function ($query) use ($curre
                         <div class="mt-4 flex justify-end mb-4">
                             <a href="{{route('filament.admin.resources.battreis.index',['tenant' => auth()->user()->teams()->first()->id])}}" class="inline-block px-4 py-2 bg-gray-800 text-white rounded hover:bg-gray-700">View All</a>
                         </div>
-                        @foreach($inventory as $item)
+                        @foreach($battreiUsage as $item)
                         <div class="flex flex-wrap space-x-4 border border-gray-300 rounded-lg p-2 bg-gray-100 dark:bg-gray-800 max-w-[800px] mx-auto mb-4 shadow-lg">
                             <div class="flex-1 min-w-[150px] mb-2 border-r border-gray-300 pr-2">
                                 <p class="text-sm text-gray-800 dark:text-gray-200 font-semibold">Item:</p>
                                 <p class="text-sm text-gray-700 dark:text-gray-400">
-                                @if ($item->equidments->isEmpty())
-                                    @foreach ($item->battries as $battery)
-                                        <p class="text-sm text-gray-700 dark:text-gray-400">{{ $battery->name ?? 'No Battery' }} : Battereis</p>
-                                    @endforeach
-                                @else
-                                    @foreach ($item->equidments as $equipment)
-                                    <p class="text-sm text-gray-700 dark:text-gray-400">{{ $equipment->name ?? 'No Equipment' }} : {{$equipment->type?? null}}</p>
-                                    @endforeach
-                                @endif
-                                </p>
+                                <a href="{{route('filament.admin.resources.battreis.view', [
+                                    'tenant' => Auth()->user()->teams()->first()->id,
+                                    'record' => $item,])}}">
+                                    <p class="text-sm text-gray-700 dark:text-gray-400">{{ $item->name ?? 'No Battery' }} <br> Battereis</p>
+                                    </p>
+                                    </a>
                             </div>
                         
                             <div class="flex-1 min-w-[150px] mb-2 border-r border-gray-300 pr-2">
                                 <p class="text-sm text-gray-800 dark:text-gray-200 font-semibold">Flight</p>
-                                <p class="text-sm text-gray-700 dark:text-gray-400">{{$item->name}}</p>
+                                <p class="text-sm text-gray-700 dark:text-gray-400"></p>
                                 <div class="flex justify-between items-center rounded">
-                                    <p class="text-sm text-gray-700 dark:text-gray-400">{{$item->duration}}</p> 
-                                    <p class="text-sm text-gray-700 dark:text-gray-400">{{$item->start_date_flight}}</p> 
-                                </div>
-                                   
+                                    <p class="text-sm text-gray-700 dark:text-gray-400">{{$item->usage_count}} Flight</p> 
+                
+                                    @if($item->fligh->isNotEmpty())
+                                    
+                                    @php
+                                        // Menghitung total durasi dalam detik
+                                        $totalDurationInSeconds = $item->fligh->sum(function ($flight) {
+                                            list($hours, $minutes, $seconds) = explode(':', $flight->duration);
+                                            return ($hours * 3600) + ($minutes * 60) + $seconds;
+                                        });
+                
+                                        // Menghitung total jam, menit, dan detik
+                                        $totalHours = floor($totalDurationInSeconds / 3600);
+                                        $totalMinutes = floor(($totalDurationInSeconds % 3600) / 60);
+                                        $totalSeconds = $totalDurationInSeconds % 60;
+                                        // Format total durasi
+                                        $formattedTotalDuration = sprintf('%02d:%02d:%02d', $totalHours, $totalMinutes, $totalSeconds);
+                                    @endphp
+                
+                                    <p class="text-sm text-gray-700 dark:text-gray-400">
+                                       Total Duration: {{ $formattedTotalDuration }} <!-- Menampilkan durasi yang diformat -->
+                                    </p>
+                                @else
+                                    <p class="text-sm text-gray-500">null</p>
+                                @endif
+                                </div>      
                             </div>
                         
                             <div class="flex-1 min-w-[150px] mb-2 border-r border-gray-300 pr-2">
                                 <p class="text-sm text-gray-800 dark:text-gray-200 font-semibold">Serial #</p>
                                 <p class="text-sm text-gray-700 dark:text-gray-400">
-                                    @if ($item->equidments->isEmpty())
-                                    @foreach ($item->battries as $battery)
-                                        {{ $battery->serial_I ?? 'N/A' }}
-                                    @endforeach
-                                @else
-                                    @foreach ($item->equidments as $equipment)
-                                        {{ $equipment->serial ?? 'N/A' }}
-                                    @endforeach
-                                @endif
+                                        {{ $item->serial_I ?? 'N/A' }}
                                 </p>
                             </div>
                         
                             <div class="flex-1 min-w-[150px] mb-2 border-r border-gray-300 pr-2">
-                                <p class="text-sm text-gray-800 dark:text-gray-200 font-semibold">Drone</p>
-                                <p class="text-sm text-gray-700 dark:text-gray-400">{{$item->drones->name??null}}</p>
-                                <p class="text-sm text-gray-700 dark:text-gray-400">{{$item->drones->brand??null}} - {{$item->drones->model}}</p>
+                                    <p class="text-sm text-gray-800 dark:text-gray-200 font-semibold">For Drone</p>
+                                    <p class="text-sm text-gray-700 dark:text-gray-400">{{$item->drone->name??null}}</p>
+                                    <p class="text-sm text-gray-700 dark:text-gray-400">{{$item->drone->brand??null}} - {{$item->drone->model}}</p>
                             </div>
-                        </div> 
+                        </div>
                         @endforeach
-                        @foreach($inventory as $item)
+                        @foreach($equipmentUsage  as $item)
                         <div class="flex flex-wrap space-x-4 border border-gray-300 rounded-lg p-2 bg-gray-100 dark:bg-gray-800 max-w-[800px] mx-auto mb-4 shadow-lg">
                             <div class="flex-1 min-w-[150px] mb-2 border-r border-gray-300 pr-2">
                                 <p class="text-sm text-gray-800 dark:text-gray-200 font-semibold">Item:</p>
                                 <p class="text-sm text-gray-700 dark:text-gray-400">
-                                @if ($item->battreis->isEmpty())
-                                    @foreach ($item->battreis as $battery)
-                                    <p class="text-sm text-gray-700 dark:text-gray-400">{{ $equipment->name ?? 'No Equipment' }} : {{$equipment->type?? null}}</p>
-                                       
-                                    @endforeach
-                                @else
-                                    @foreach ($item->battreis as $battery)
-                                    <p class="text-sm text-gray-700 dark:text-gray-400">{{ $battery->name ?? 'No Battery' }} : Battereis</p>
-                                    @endforeach
-                                @endif
+                                <p class="text-sm text-gray-700 dark:text-gray-400">{{ $item->name ?? 'No Equipment' }} <br> {{$item->type ?? 'test'}}</p>
                                 </p>
                             </div>
                         
                             <div class="flex-1 min-w-[150px] mb-2 border-r border-gray-300 pr-2">
                                 <p class="text-sm text-gray-800 dark:text-gray-200 font-semibold">Flight</p>
-                                <p class="text-sm text-gray-700 dark:text-gray-400">{{$item->name}}</p>
+                                <p class="text-sm text-gray-700 dark:text-gray-400"></p>
                                 <div class="flex justify-between items-center rounded">
-                                    <p class="text-sm text-gray-700 dark:text-gray-400">{{$item->duration}}</p> 
-                                    <p class="text-sm text-gray-700 dark:text-gray-400">{{$item->start_date_flight}}</p> 
-                                </div>
-                                   
+                                    <p class="text-sm text-gray-700 dark:text-gray-400">{{$item->usage_count}} Flight</p> 
+                
+                                    @if($item->fligh->isNotEmpty())
+                                    
+                                    @php
+                                        // Menghitung total durasi dalam detik
+                                        $totalDurationInSeconds = $item->fligh->sum(function ($flight) {
+                                            list($hours, $minutes, $seconds) = explode(':', $flight->duration);
+                                            return ($hours * 3600) + ($minutes * 60) + $seconds;
+                                        });
+                
+                                        // Menghitung total jam, menit, dan detik
+                                        $totalHours = floor($totalDurationInSeconds / 3600);
+                                        $totalMinutes = floor(($totalDurationInSeconds % 3600) / 60);
+                                        $totalSeconds = $totalDurationInSeconds % 60;
+                
+                                        // Format total durasi
+                                        $formattedTotalDuration = sprintf('%02d:%02d:%02d', $totalHours, $totalMinutes, $totalSeconds);
+                                    @endphp
+                
+                                    <p class="text-sm text-gray-700 dark:text-gray-400">
+                                       Total Duration: {{ $formattedTotalDuration }} <!-- Menampilkan durasi yang diformat -->
+                                    </p>
+                                @else
+                                    <p class="text-sm text-gray-500">null</p>
+                                @endif
+                                </div>      
                             </div>
                         
                             <div class="flex-1 min-w-[150px] mb-2 border-r border-gray-300 pr-2">
                                 <p class="text-sm text-gray-800 dark:text-gray-200 font-semibold">Serial #</p>
                                 <p class="text-sm text-gray-700 dark:text-gray-400">
-                                    @if ($item->equidments->isEmpty())
-                                    @foreach ($item->battries as $battery)
-                                        {{ $battery->serial_I ?? 'N/A' }}
-                                    @endforeach
-                                @else
-                                    @foreach ($item->equidments as $equipment)
-                                        {{ $equipment->serial ?? 'N/A' }}
-                                    @endforeach
-                                @endif
+                                        {{ $item->serial ?? 'N/A' }}
                                 </p>
                             </div>
                         
                             <div class="flex-1 min-w-[150px] mb-2 border-r border-gray-300 pr-2">
-                                <p class="text-sm text-gray-800 dark:text-gray-200 font-semibold">Drone</p>
-                                <p class="text-sm text-gray-700 dark:text-gray-400">{{$item->drones->name??null}}</p>
-                                <p class="text-sm text-gray-700 dark:text-gray-400">{{$item->drones->brand??null}} - {{$item->drones->model}}</p>
+                                    <p class="text-sm text-gray-800 dark:text-gray-200 font-semibold">For Drone</p>
+                                    <p class="text-sm text-gray-700 dark:text-gray-400">{{$item->drones->name??null}}</p>
+                                    <p class="text-sm text-gray-700 dark:text-gray-400">{{$item->drones->brand??null}} - {{$item->drones->model??null}}</p>
                             </div>
-                        </div> 
+                        </div>
                         @endforeach
                         </div>
                     {{-- end tabel --}}      
