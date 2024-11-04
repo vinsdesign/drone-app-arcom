@@ -91,4 +91,19 @@ class User extends Authenticatable implements HasTenants, FilamentUser, HasAvata
     public function fligh(){
         return $this->hasMany(fligh::class, 'users_id');
     }
+    
+    //menginjinkan akses login ke seluruh role yang ada
+    public function canAccessPanel(Panel $panel): bool
+    {
+        $allowedRoles = $this->getAllowedRoles();
+
+        return $this->hasAnyRole($allowedRoles);
+    }
+    protected function getAllowedRoles(): array
+    {
+        return \Spatie\Permission\Models\Role::where('guard_name', 'web')
+            ->pluck('name')
+            ->toArray();
+    }
+     //End menginjinkan akses login ke seluruh role yang ada
 }

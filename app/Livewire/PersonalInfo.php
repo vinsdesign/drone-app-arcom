@@ -2,60 +2,73 @@
 
 namespace App\Livewire;
 
-use App\Models\citie;
-use App\Models\countrie;
-use Filament\Forms\Components\FileUpload;
-use Filament\Forms\Components\Grid;
-use Filament\Notifications\Notification;
-use Illuminate\Validation\Rule;
-use Jeffgreco13\FilamentBreezy\Livewire\MyProfileComponent;
-use Filament\Forms\Components\TextInput;
-use Filament\Forms\Components\Select;
-use Filament\Forms\Components\TextArea;
-use Filament\Forms\Form;
 use Filament\Facades\Filament;
-use App\Models\User;
-use Storage;
+use Filament\Forms;
+use Filament\Forms\Form;
+use Filament\Notifications\Notification;
+use Jeffgreco13\FilamentBreezy\Livewire\MyProfileComponent;
 
 class PersonalInfo extends MyProfileComponent
 {
-    protected string $view = "vendor.filament-breezy.livewire.personal-info";
-    public array $only = ['avatar_url', 'name', 'email'];
-    public array $data;
-    public $user;
-    public $record;
-    public bool $hasAvatars = false;
+    protected string $view = 'filament-breezy::livewire.personal-info';
 
-    public function mount()
+    public ?array $data = [];
+
+    public $user;
+
+    public $userClass;
+
+    public bool $hasAvatars;
+
+    public array $only = ['name', 'email'];
+
+    public static $sort = 10;
+
+    public function mount(): void
     {
-        $this->hasAvatars = !empty($this->user->avatar_url);
         $this->user = Filament::getCurrentPanel()->auth()->user();
-        $this->record =Auth()->user()->id;
-        // Mengisi form dengan data user berdasarkan $only
+        $this->userClass = get_class($this->user);
+        $this->hasAvatars = filament('filament-breezy')->hasAvatars();
+
+        if ($this->hasAvatars) {
+            $this->only[] = filament('filament-breezy')->getAvatarUploadComponent()->getStatePath(false);
+        }
+
         $this->form->fill($this->user->only($this->only));
+    }
+
+    protected function getProfileFormSchema(): array
+    {
+        $groupFields = Forms\Components\Group::make([
+            $this->getNameComponent(),
+            $this->getEmailComponent(),
+        ])->columnSpan(2);
+
+        return ($this->hasAvatars)
+            ? [filament('filament-breezy')->getAvatarUploadComponent(), $groupFields]
+            : [$groupFields];
+    }
+
+    protected function getNameComponent(): Forms\Components\TextInput
+    {
+        return Forms\Components\TextInput::make('name')
+            ->required()
+            ->label(__('filament-breezy::default.fields.name'));
+    }
+
+    protected function getEmailComponent(): Forms\Components\TextInput
+    {
+        return Forms\Components\TextInput::make('email')
+            ->required()
+            ->email()
+            ->unique($this->userClass, ignorable: $this->user)
+            ->label(__('filament-breezy::default.fields.email'));
     }
 
     public function form(Form $form): Form
     {
         return $form
-            ->schema([
-                FileUpload::make('avatar_url')->label('Avatar')
-                ->acceptedFileTypes(['image/jpeg', 'image/png', 'image/gif'])
-                ->helperText('Please choose image type jpg/jpeg/png')
-                ->image() // This will render an image preview
-                ->default(fn ($record) => $record->avatar_url ? Storage::url($record->avatar_url) : null),
-                Grid::make(2)->schema([
-                    TextInput::make('name')->label('Name'),
-                    TextInput::make('email')->email()->label('Email')
-                    ->rules(function ($get) {
-                        return [
-                            'email',
-                            Rule::unique('teams', 'email')
-                                ->ignore($get('id')),
-                        ];
-                    }),
-                ]),
-            ])->columns(2)
+            ->schema($this->getProfileFormSchema())->columns(3)
             ->statePath('data');
     }
 
@@ -63,9 +76,14 @@ class PersonalInfo extends MyProfileComponent
     {
         $data = collect($this->form->getState())->only($this->only)->all();
         $this->user->update($data);
+        $this->sendNotification();
+    }
+
+    protected function sendNotification(): void
+    {
         Notification::make()
             ->success()
-            ->title(__('Updated successfully'))
+            ->title(__('filament-breezy::default.profile.personal_info.notify'))
             ->send();
     }
 }

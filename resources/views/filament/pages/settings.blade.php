@@ -16,7 +16,16 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
             <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
             <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-        <style>
+            <!-- Include CSS for Select2 -->
+            <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css" rel="stylesheet" />
+            <!-- Include jQuery (required for Select2) -->
+            <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+            <!-- Include Select2 JS -->
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
+
+
+    <style>
         .main-content {
             display: none; /* Initially hidden */
             padding: 20px;
@@ -83,9 +92,7 @@
                 from { opacity: 0; }
                 to { opacity: 1; }
             }
-
-
-        </style>
+    </style>
     </head>
     {{-- Main Menu --}}
     <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -130,6 +137,7 @@
                 <button id="tab1" class="tab-button border border-gray-300 dark:border-gray-700 rounded-lg py-2 px-4 text-gray-800 dark:text-gray-200">Organization</button>
                 <button id="tab2" class="tab-button border border-gray-300 dark:border-gray-700 rounded-lg py-2 px-4 text-gray-800 dark:text-gray-200">Import Rules</button>
                 <button id="tab3" class="tab-button border border-gray-300 dark:border-gray-700 rounded-lg py-2 px-4 text-gray-800 dark:text-gray-200">API</button>
+                <button id="tab4" class="tab-button border border-gray-300 dark:border-gray-700 rounded-lg py-2 px-4 text-gray-800 dark:text-gray-200">Billing</button>
             </div>
     
             <!-- Tab content on the right -->
@@ -138,6 +146,7 @@
                 <div id="content0" class="tab-content active">
                     @livewire('personal-info')
                     @livewire('my-custom-component')
+                    @livewire('update-password')
                 </div>
                 {{-- menu Team --}}
                 <div id="content1" class="tab-content">
@@ -225,9 +234,7 @@
                             Submit
                         </button>
                     </form>
-                </div>
-                
-                
+                </div> 
                 {{-- form Dji sync --}}
                 <div id="content3" class="tab-content p-6 bg-white dark:bg-gray-800 rounded-lg shadow">
                     <h1 class="text-2xl font-semibold text-gray-800 dark:text-gray-200 mb-4">DJi Sync</h1>
@@ -251,6 +258,10 @@
                             Sync
                         </button>
                     </form>
+                </div>
+                {{--Billing Settings--}}
+                <div id="content4" class="tab-content  p-6 bg-white dark:bg-gray-800 rounded-lg shadow">
+                    @livewire('billing')
                 </div>
             </div>
         </div>
@@ -319,6 +330,15 @@
             }
         });
     }
+
+    //currency
+    $(document).ready(function() {
+        $('#currency').select2({
+            placeholder: "Select a currency",
+            allowClear: true,
+            width: '100%'
+        });
+    });
     </script>
     
     {{--end tab --}}

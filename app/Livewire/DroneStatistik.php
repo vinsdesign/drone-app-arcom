@@ -46,7 +46,7 @@ class DroneStatistik extends ChartWidget
             ->get();
     
         $data = $flights->groupBy(function ($item) {
-            return Carbon::parse($item->start_date_flight)->format('Y-m-d');
+            return Carbon::parse($item->start_date_flight)->format('Y-m');
         })->map(function ($group) {
             $totalFlights = $group->count();
             $totalDuration = $group->sum(function ($flight) {
@@ -68,13 +68,11 @@ class DroneStatistik extends ChartWidget
                     'label' => 'Flights Total ',
                     'data' => $data->pluck('totalFlights')->values()->toArray(),
                     'backgroundColor' => 'rgba(75, 192, 192, 0.6)',
-                    'yAxisID' => 'totalFlights',
                 ],
                 [
                     'label' => 'Flight Duration (Hours)',
                     'data' => $data->pluck('totalDuration')->values()->toArray(),
                     'backgroundColor' => 'rgba(255, 99, 132, 0.6)',
-                    'yAxisID' => 'flightDuration',
                 ],
             ],
             'labels' => $data->keys()->toArray(),
