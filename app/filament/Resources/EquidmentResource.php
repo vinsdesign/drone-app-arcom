@@ -26,6 +26,7 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Columns\Layout\Stack;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Carbon\Carbon;
 
 class EquidmentResource extends Resource
 {
@@ -165,11 +166,39 @@ class EquidmentResource extends Resource
                 Tables\Columns\TextColumn::make('type')
                      ->searchable(),
                 Tables\Columns\TextColumn::make('flight_time')
-                     ->label('Flights')
+                     ->label('Flights & Flying Time')
                      ->getStateUsing(function ($record) {
-                        $totalFlights = $record->fligh()->count() + $record->kits()->with('fligh')->get()->pluck('fligh')->flatten()->unique('id')->count();
-                         return "({$totalFlights}) Flights";
-                     })
+                        $flights = $record->fligh()
+                            ->whereHas('teams', function ($query) {
+                                $query->where('id', auth()->user()->teams()->first()->id);
+                            })
+                            ->get()
+                            ->merge(
+                                $record->kits()->with(['fligh' => function ($query) {
+                                    $query->whereHas('teams', function ($query) {
+                                        $query->where('id', auth()->user()->teams()->first()->id);
+                                    });
+                                }])->get()->pluck('fligh')->flatten()
+                            );
+                    
+                        $totalSeconds = 0;
+                        foreach ($flights as $flight) {
+                            $start = $flight->start_date_flight;
+                            $end = $flight->end_date_flight;
+                            if ($start && $end) {
+                                $totalSeconds += Carbon::parse($start)->diffInSeconds(Carbon::parse($end));
+                            }
+                        }
+                    
+                        $hours = floor($totalSeconds / 3600);
+                        $minutes = floor(($totalSeconds % 3600) / 60);
+                        $seconds = $totalSeconds % 60;
+                        $totalDuration = sprintf('%02d:%02d:%02d', $hours, $minutes, $seconds);
+                    
+                        $totalFlights = $flights->unique('id')->count();
+                        return "<div> {$totalFlights} Flight(s) <div style='border: 1px solid #ccc; padding: 3px; display: inline-block; border-radius: 5px; background-color: #D4D4D4;'>
+                            <strong>{$totalDuration}</strong></div>";
+                    })
                      ->sortable()
                      ->html(),
                 Tables\Columns\TextColumn::make('status')->label('Status')

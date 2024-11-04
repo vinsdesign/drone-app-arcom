@@ -17,6 +17,7 @@ use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Filament\Infolists\Infolist;
 use Filament\Infolists\Components\TextEntry;
 use Filament\Infolists\Components\Section;
+use Carbon\Carbon;
 class DroneResource extends Resource
 {
     protected static ?string $model = Drone::class;
@@ -208,6 +209,35 @@ class DroneResource extends Resource
                    'retired' => Color::Zinc
                  })
                     ->searchable(),
+                Tables\Columns\TextColumn::make('flight_date')
+                    ->label('Last Flight Date')
+                    ->getStateUsing(function ($record) {
+                        $flights = $record->fligh;
+                        $totalFlights = $flights->count();
+                    
+                        $totalSeconds = 0;
+                        foreach ($flights as $flight) {
+                            $start = $flight->start_date_flight;
+                            $end = $flight->end_date_flight;
+                    
+                            if ($start && $end) {
+                                $totalSeconds += Carbon::parse($start)->diffInSeconds(Carbon::parse($end));
+                            }
+                        }
+                    
+                        $hours = floor($totalSeconds / 3600);
+                        $minutes = floor(($totalSeconds % 3600) / 60);
+                        $seconds = $totalSeconds % 60;
+                        $totalDuration = sprintf('%02d:%02d:%02d', $hours, $minutes, $seconds);
+                    
+                        $lastFlight = $flights->sortByDesc('start_date_flight')->first();
+                        $lastFlightDate = optional($lastFlight)->start_date_flight ? $lastFlight->start_date_flight : '';
+                    
+                        return "<div>{$totalFlights} Flight(s) <div style='border: 1px solid #ccc; padding: 3px; display: inline-block; border-radius: 5px; background-color: #D4D4D4; '>
+                            <strong>{$totalDuration}</strong> </div> <br> {$lastFlightDate}</div>";
+                    })
+                    ->sortable()
+                    ->html(),
                 Tables\Columns\TextColumn::make('idlegal')->label('Legal ID')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('users.name')->label('Owners')

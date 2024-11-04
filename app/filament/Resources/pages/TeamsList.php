@@ -24,7 +24,7 @@ class TeamsList extends Page implements Tables\Contracts\HasTable
 
     public function getTableQuery()
     {
-        return team::withCount('customers', 'flighs', 'drones', 'battreis', 'equidments', 'flighLocations');
+        return team::withCount('customers', 'flighs', 'drones', 'battreis', 'equidments', 'fligh_location');
     }
 
     protected function getTableColumns(): array
@@ -69,7 +69,7 @@ class TeamsList extends Page implements Tables\Contracts\HasTable
                         'drones_count' => $record->drones_count,
                         'battreis_count' => $record->battreis_count,
                         'equidments_count' => $record->equidments_count,
-                        'flighLocations_count' => $record->flighLocations_count,
+                        'fligh_location_count' => $record->fligh_location_count,
                     ]);
                 })
                 ->icon('heroicon-o-eye')
