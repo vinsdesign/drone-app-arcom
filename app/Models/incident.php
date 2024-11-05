@@ -24,6 +24,7 @@ class incident extends Model
         'rectification_date',
         'teams_id',
         'Technician',
+        'status'
     ];
 
     protected static function booted()

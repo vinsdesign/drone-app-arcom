@@ -152,7 +152,7 @@ class FlighResource extends Resource
                     })
                     ->default(function (){
                         $currentTeam = auth()->user()->teams()->first();
-                        return $currentTeam ? $currentTeam->id_customers : null;
+                        return $currentTeam ? $currentTeam->id_projects : null;
                     })
                     ->options(Projects::where('teams_id', auth()->user()->teams()->first()->id)
                             ->pluck('case', 'id')
@@ -185,7 +185,7 @@ class FlighResource extends Resource
                     ->disabled()
                     ->default(function (){
                         $currentTeam = auth()->user()->teams()->first();
-                        return $currentTeam ? $currentTeam->getNameCustomer->name : null;
+                        return $currentTeam ? $currentTeam->id_customers  : null;
                     })
                     ->columnSpanFull(),
  

@@ -15,13 +15,13 @@ return new class extends Migration
         Schema::create('maintence_eqs', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->date('date');
-            $table->string('status');
-            $table->integer('cost');
+            $table->date('date')->nullable();
+            $table->string('status')->nullable();
+            $table->integer('cost')->nullable();
             $table->foreignId('currencies_id')->constrained('currencies')->cascadeDelete();
-            $table->string('notes');
-            $table->foreignId('equidment_id')->constrainedTo('equidment')->cascadeDelete();
-            $table->foreignId('battrei_id')->constrainedTo('battrei')->cascadeDelete();
+            $table->string('notes')->nullable();
+            $table->foreignId('equidment_id')->nullable()->constrainedTo('equidment')->cascadeDelete();
+            $table->foreignId('battrei_id')->nullable()->constrainedTo('battrei')->cascadeDelete();
             $table->foreignIdFor(Team::class,'teams_id')->index()->cascadeOnDelete();
             $table->timestamps();
         });

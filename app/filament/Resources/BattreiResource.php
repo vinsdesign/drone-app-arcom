@@ -63,11 +63,9 @@ class BattreiResource extends Resource
                             ])
                             ->required(),
                         Forms\Components\TextInput::make('serial_P')->label('Serial #(Printed)')
-                            ->required()
-                            ->numeric()->columnSpan(2),
+                            ->required()->columnSpan(2),
                         Forms\Components\TextInput::make('serial_I')->label('Serial #(Internal)')
-                            ->required()
-                            ->numeric()->columnSpan(2),
+                            ->required()->columnSpan(2),
                         Forms\Components\BelongsToSelect::make('for_drone')->label('For Drone (Optional)')
 
                             // ->relationship('drone', 'name', function (Builder $query){
@@ -184,7 +182,7 @@ class BattreiResource extends Resource
                        $minutes = floor(($totalSeconds % 3600) / 60);
                        $seconds = $totalSeconds % 60;
                        $totalDuration = sprintf('%02d:%02d:%02d', $hours, $minutes, $seconds);
-                   
+
                        $totalFlights = $flights->unique('id')->count();
                     return "<div> {$totalFlights} Flight(s) <div style='border: 1px solid #ccc; padding: 3px; display: inline-block; border-radius: 5px; background-color: #D4D4D4;'>
                             <strong>{$totalDuration}</strong></div>";

@@ -70,8 +70,7 @@ class EquidmentResource extends Resource
                             ])
                             ->required(),
                         Forms\Components\TextInput::make('serial')->label('Serial')
-                            ->required()->columnSpan(2)
-                            ->numeric(),
+                            ->required()->columnSpan(2),
                         Forms\Components\select::make('type')->label('Type')
                             ->options([
                                 'airframe' => 'Airframe',
