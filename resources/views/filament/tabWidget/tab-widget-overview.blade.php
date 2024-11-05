@@ -443,7 +443,7 @@
                             <div class="flex-1 min-w-[150px] mb-2 border-r border-gray-300 pr-2">
                                     <p class="text-sm text-gray-800 dark:text-gray-200 font-semibold">For Drone</p>
                                     <p class="text-sm text-gray-700 dark:text-gray-400">{{$item->drone->name??null}}</p>
-                                    <p class="text-sm text-gray-700 dark:text-gray-400">{{$item->drone->brand??null}} - {{$item->drone->model}}</p>
+                                    <p class="text-sm text-gray-700 dark:text-gray-400">{{$item->drone->brand??null}} - {{$item->drone->model??null}}</p>
                             </div>
                         </div>
                         @endforeach
