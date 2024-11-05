@@ -17,8 +17,8 @@ return new class extends Migration
             $table->string('name');
             $table->string('email')->unique();
             $table->string('phone')->unique();
-            $table->string('address');
-            $table->string('description');
+            $table->string('address')->nullable();
+            $table->string('description')->nullable();
             $table->foreignIdFor(Team::class,'teams_id')->index();
             $table->timestamps();
         });

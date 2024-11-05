@@ -36,30 +36,40 @@ class BatteryStatistik extends ChartWidget
     {
         $tenant_id = Auth()->user()->teams()->first()->id;
         $batteryID = session('battery_id');
-        $pivotBattrei = DB::table('fligh_battrei')->where('battrei_id',$batteryID)
-            ->select('battrei_id')
-            ->get();
-        $uniqu = $pivotBattrei->pluck('battrei_id')->unique();
-        // dd($uniqu);
-        $flights = fligh::where('teams_id', $tenant_id)->whereIn('id', $uniqu)
-            ->whereBetween('start_date_flight', [now()->startOfYear(), now()->endOfYear()])
-            ->get();
-        $data = $flights->groupBy(function ($item) {
-            return Carbon::parse($item->start_date_flight)->format('Y-m');
-        })->map(function ($group) {
-            $totalFlights = $group->count();
-            $totalDuration = $group->sum(function ($flight) {
-                list($hours, $minutes, $seconds) = explode(':', $flight->duration);
-                return ($hours * 3600) + ($minutes * 60) + $seconds;
-            });
-            $totalHours = $totalDuration / 3600;
-            $formatTotalHour = round($totalHours,1);
 
-            return [
-                'totalFlights' => $totalFlights,
-                'totalDuration' => $formatTotalHour,
-            ];
+        //ulang baru
+        //end
+        $pivotBattrei = DB::table('fligh_battrei')->where('battrei_id', $batteryID)
+        ->select('fligh_id') // Pastikan nama kolom id penerbangan benar
+        ->distinct() // Mengambil id unik dari penerbangan
+        ->pluck('fligh_id');
+    
+    // Step 2: Ambil data penerbangan dari tabel `fligh`
+    $flights = fligh::where('teams_id', $tenant_id)
+        ->whereIn('id', $pivotBattrei)
+        ->whereBetween('start_date_flight', [now()->startOfYear(), now()->endOfYear()])
+        ->get();
+    
+    // Step 3 & 4: Kelompokkan data berdasarkan tanggal dan hitung total penerbangan dan durasi
+    $data = $flights->groupBy(function ($item) {
+        return Carbon::parse($item->start_date_flight)->format('Y-m');
+    })->map(function ($group) {
+        // Hitung total penerbangan
+        $totalFlights = $group->count();
+    
+        // Hitung total durasi (dalam detik) dan konversi ke jam
+        $totalDuration = $group->sum(function ($flight) {
+            list($hours, $minutes, $seconds) = explode(':', $flight->duration);
+            return ($hours * 3600) + ($minutes * 60) + $seconds;
         });
+        $totalHours = $totalDuration / 3600;
+        $formatTotalHour = round($totalHours, 1);
+    
+        return [
+            'totalFlights' => $totalFlights,
+            'totalDuration' => $formatTotalHour,
+        ];
+    });
     
         return [
             'datasets' => [
@@ -81,11 +91,12 @@ class BatteryStatistik extends ChartWidget
     {
         $batteryID = session('battery_id');
         $tenant_id = Auth()->user()->teams()->first()->id;
-        $pivotBattrei = DB::table('fligh_battrei')->where('battrei_id',$batteryID)
-        ->select('battrei_id')
-        ->get();
-        $uniqu = $pivotBattrei->pluck('battrei_id')->unique();
-        $flights = fligh::where('teams_id', $tenant_id)->whereIn('id', $uniqu)
+        $pivotBattrei = DB::table('fligh_battrei')->where('battrei_id', $batteryID)
+        ->select('fligh_id')
+        ->distinct()
+        ->pluck('fligh_id');
+    $flights = fligh::where('teams_id', $tenant_id)
+        ->whereIn('id', $pivotBattrei)
         ->whereBetween('start_date_flight', [now()->startOfYear(), now()->endOfYear()])
         ->get();
             $data = $flights->groupBy(function ($item) {

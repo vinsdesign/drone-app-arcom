@@ -168,11 +168,9 @@ class DroneResource extends Resource
                     Forms\Components\Wizard\Step::make('connect')
                     ->schema([
                         Forms\Components\TextInput::make('serial_p')->label('Serial Printed')
-                            ->required()
-                            ->numeric(),
+                            ->required(),
                         Forms\Components\TextInput::make('serial_i')->label('Serial Internal')
-                            ->required()
-                            ->numeric(),
+                            ->required(),
                         Forms\Components\TextInput::make('flight_c')->label('Flight Controller')
                             ->required()
                             ->maxLength(255),

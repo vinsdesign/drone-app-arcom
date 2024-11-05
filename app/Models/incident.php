@@ -25,6 +25,7 @@ class incident extends Model
         'teams_id',
         'status',
         'Technician',
+        'status'
     ];
 
     protected static function booted()

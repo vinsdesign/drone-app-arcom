@@ -94,7 +94,7 @@ class team extends Model implements HasAvatar
         return $this->belongsTo(currencie::class);
     }
     public function getNameCustomer(){
-        return $this->belongsTo(customer::class, 'id_customers');
+        return $this->belongsTo(Customer::class, 'id_customers');
     }
     public function getNameProject(){
         return $this->belongsTo(Projects::class, 'id_projects');

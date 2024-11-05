@@ -322,14 +322,14 @@
             });
         });
         function showContent(index) {
-        const contents = document.querySelectorAll('.main-content');
-        contents.forEach((content, i) => {
-            content.classList.remove('active');
-            if (i === index) {
-                content.classList.add('active');
-            }
-        });
-    }
+            const contents = document.querySelectorAll('.main-content');
+            contents.forEach((content, i) => {
+                content.classList.remove('active');
+                if (i === index) {
+                    content.classList.add('active');
+                }
+            });
+        }
 
     //currency
     $(document).ready(function() {
