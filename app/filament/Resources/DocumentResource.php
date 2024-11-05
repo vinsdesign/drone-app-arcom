@@ -15,6 +15,9 @@ use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Filament\Infolists\Infolist;
+use Filament\Infolists\Components\Section;
+use Filament\Infolists\Components\TextEntry;
 use Carbon\Carbon;
 use Filament\Support\Colors\Color;
 
@@ -152,8 +155,8 @@ class DocumentResource extends Resource
                         }
                     })
                     ->html(),
-                Tables\Columns\TextColumn::make('scope')->label('Scope')
-                    ->searchable(),
+                // Tables\Columns\TextColumn::make('scope')->label('Scope')
+                //     ->searchable(),
                 Tables\Columns\TextColumn::make('external link')->label('External Link')
                     ->searchable()
                     ->formatStateUsing(function ($state) {
@@ -165,8 +168,8 @@ class DocumentResource extends Resource
 
                     })
                     ->html(),
-                Tables\Columns\TextColumn::make('description')->label('Description')
-                    ->searchable(),
+                // Tables\Columns\TextColumn::make('description')->label('Description')
+                //     ->searchable(),
                     //Belum bisa Link ke Document
                     Tables\Columns\TextColumn::make('doc')
                     ->label('Document')
@@ -174,13 +177,13 @@ class DocumentResource extends Resource
                     ->html()
                     ->searchable(),
                 
-                Tables\Columns\TextColumn::make('customers.name')->label('Customer')
-                    ->numeric()
-                    ->url(fn($record) => $record->customer_id ? route('filament.admin.resources.customers.index', [
-                        'tenant' => Auth()->user()->teams()->first()->id,
-                        'record' => $record->customer_id,
-                    ]): null)->color(Color::Blue)
-                    ->sortable(),
+                // Tables\Columns\TextColumn::make('customers.name')->label('Customer')
+                //     ->numeric()
+                //     ->url(fn($record) => $record->customer_id ? route('filament.admin.resources.customers.index', [
+                //         'tenant' => Auth()->user()->teams()->first()->id,
+                //         'record' => $record->customer_id,
+                //     ]): null)->color(Color::Blue)
+                //     ->sortable(),
                 Tables\Columns\TextColumn::make('project.case')->label('Project')
                     ->numeric()
                     ->url(fn($record) => $record->project_id ?  route('filament.admin.resources.projects.index', [
@@ -221,6 +224,57 @@ class DocumentResource extends Resource
             ]);
     }
 
+    public static function infolist(Infolist $infolist): Infolist
+    {
+        return $infolist
+        ->schema([
+            Section::make('Document Overview')
+            ->schema([
+                TextEntry::make('name')->label('Name'),
+                TextEntry::make('refnumber')->label('REG Number'),
+                TextEntry::make('users.name')->label('Owner'),
+                TextEntry::make('type')->label('Type'),
+                TextEntry::make('expired_date')->label('Expired Date')
+                    ->date('Y-m-d')
+                    ->formatStateUsing(function ($state) {
+                        $expiredDate = Carbon::parse($state);
+                        $now = Carbon::now();
+    
+                        if ($expiredDate->isPast()) {
+                            return "<span style='color: red; font-weight: bold;'>Expired: {$expiredDate->format('Y-m-d')}</span>";
+                        } else {
+                            return $expiredDate->format('Y-m-d');
+                        }
+                    })
+                    ->html(),
+                TextEntry::make('scope')->label('Scope'),
+                TextEntry::make('external link')->label('External Link')
+                    ->formatStateUsing(function ($state) {
+                        $url = preg_match('/^https?:\/\//', $state) ? $state : "https://{$state}";
+                        return "<a href='{$url}' target='_blank' style='padding:5px 10px; background-color:#ff8303; color:white; border-radius:5px;' rel='noopener noreferrer'>Click Here</a>";
+
+                    })
+                    ->html(),
+                TextEntry::make('doc')
+                    ->label('Document')
+                    ->formatStateUsing(fn ($state) => "<a href='/storage/{$state}' target='_blank' rel='noopener noreferrer' style='padding:5px 10px; background-color:#ff8303; color:white; border-radius:5px;'>Open Document</a>")
+                    ->html(),
+                TextEntry::make('description')->label('Description'),
+                TextEntry::make('customers.name')->label('Customer')
+                    ->url(fn($record) => $record->customer_id ? route('filament.admin.resources.customers.index', [
+                        'tenant' => Auth()->user()->teams()->first()->id,
+                        'record' => $record->customer_id,
+                    ]): null)->color(Color::Blue),
+                TextEntry::make('project.case')->label('Project')
+                    ->url(fn($record) => $record->project_id ?  route('filament.admin.resources.projects.index', [
+                        'tenant' => Auth()->user()->teams()->first()->id,
+                        'record' => $record->project_id,
+                    ]): null)->color(Color::Blue),
+            ])->columns(3)
+
+        ]);
+    }
+
     public static function getRelations(): array
     {
         return [
@@ -233,7 +287,7 @@ class DocumentResource extends Resource
         return [
             'index' => Pages\ListDocuments::route('/'),
             'create' => Pages\CreateDocument::route('/create'),
-            'view' => Pages\ViewDocument::route('/{record}'),
+            // 'view' => Pages\ViewDocument::route('/{record}'),
             'edit' => Pages\EditDocument::route('/{record}/edit'),
         ];
     }

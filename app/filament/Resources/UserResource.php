@@ -20,6 +20,7 @@ use Filament\Infolists\Components\TextEntry;
 use Illuminate\Support\Facades\DB;
 use Filament\Infolists\Components\Section;
 use Illuminate\Validation\Rule;
+use Carbon\Carbon;
 class UserResource extends Resource
 {
     protected static ?string $model = User::class;
@@ -120,26 +121,50 @@ class UserResource extends Resource
                     ->searchable(),
                 Tables\Columns\TextColumn::make('phone')->label('Phone number')
                     ->searchable(),
-                Tables\Columns\TextColumn::make('countries.name')->label('Country')
-                    ->searchable(),
-                Tables\Columns\TextColumn::make('cities.name')->label('City')
-                    ->label('City')
-                    ->searchable(),
-                Tables\Columns\TextColumn::make('sertif')
-                    ->label('Certificate')
-                    ->searchable(),
-                Tables\Columns\TextColumn::make('address')->label('Address')
-                    ->searchable(),
-                Tables\Columns\ImageColumn::make('image'),
+                // Tables\Columns\TextColumn::make('countries.name')->label('Country')
+                //     ->searchable(),
+                // Tables\Columns\TextColumn::make('cities.name')->label('City')
+                //     ->label('City')
+                //     ->searchable(),
+                // Tables\Columns\TextColumn::make('sertif')
+                //     ->label('Certificate')
+                //     ->searchable(),
+                // Tables\Columns\TextColumn::make('address')->label('Address')
+                //     ->searchable(),
+                // Tables\Columns\ImageColumn::make('image'),
                 Tables\Columns\TextColumn::make('roles.name')
                     ->searchable(),
-                Tables\Columns\TextColumn::make('flight_date')
-                    ->label('Total Flights')
+                Tables\Columns\TextColumn::make('last_flight')
+                    ->label('Last Flight')
                     ->getStateUsing(function ($record) {
                         $lastFlight = $record->fligh()->orderBy('start_date_flight', 'desc')->first();
-                        $totalFlights = $record->fligh()->count();
                         $lastFlightDate = optional($lastFlight)->start_date_flight ? $lastFlight->start_date_flight : '';
-                        return "{$totalFlights} Flight(s) <br> Last Flight: {$lastFlightDate}";
+                        return "<strong>{$lastFlightDate}</strong>";
+                    })
+                    ->sortable()
+                    ->html(),
+                Tables\Columns\TextColumn::make('flight_date')
+                    ->label('Total')
+                    ->getStateUsing(function ($record) {
+                        $flights = $record->fligh;
+                        $totalFlights = $record->fligh()->count();
+
+                        $totalSeconds = 0;
+                        foreach ($flights as $flight) {
+                            $start = $flight->start_date_flight;
+                            $end = $flight->end_date_flight;
+                    
+                            if ($start && $end) {
+                                $totalSeconds += Carbon::parse($start)->diffInSeconds(Carbon::parse($end));
+                            }
+                        }
+                    
+                        $hours = floor($totalSeconds / 3600);
+                        $minutes = floor(($totalSeconds % 3600) / 60);
+                        $seconds = $totalSeconds % 60;
+                        $totalDuration = sprintf('%02d:%02d:%02d', $hours, $minutes, $seconds);
+                        return "{$totalFlights} Flight(s) <br> <div style='border: 1px solid #ccc; padding: 3px; display: inline-block; border-radius: 5px; background-color: #D4D4D4; '>
+                            <strong>{$totalDuration}</strong> </div>";
                     })
                     ->sortable()
                     ->html(),
@@ -170,7 +195,7 @@ class UserResource extends Resource
                 TextEntry::make('email')->label('Email'),
                 TextEntry::make('phone')->label('Phone'),
                 TextEntry::make('countries.name')->label('Country'),
-                TextEntry::make('cities.name')->label('Language'),
+                TextEntry::make('cities.name')->label('City'),
                 TextEntry::make('sertif')->label('Certificate'),
                 TextEntry::make('roles.name')->label('Role Type'),
                 TextEntry::make('address')->label('Address'),

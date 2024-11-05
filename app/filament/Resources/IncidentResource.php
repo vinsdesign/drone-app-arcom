@@ -51,7 +51,7 @@ class IncidentResource extends Resource
                         ->label('Incident Cause')
                         ->required()
                         ->maxLength(255),
-                    Forms\Components\Select::make('review')
+                    Forms\Components\Select::make('status')
                         ->required()
                         ->options([
                             false => 'Closed',
@@ -191,30 +191,30 @@ class IncidentResource extends Resource
                 //
             ])
             ->actions([
-                Action::make('viewFlight')
-                ->label('View Flight')
-                ->url(function ($record) {
-                    $flight = fligh::where('projects_id', $record->project_id)
-                        ->where('location_id', $record->location_id)
-                        ->where('drones_id', $record->drone_id)
-                        ->orderBy('start_date_flight', 'desc')
-                        ->first();
+                // Action::make('viewFlight')
+                // ->label('View Flight')
+                // ->url(function ($record) {
+                //     $flight = fligh::where('projects_id', $record->project_id)
+                //         ->where('location_id', $record->location_id)
+                //         ->where('drones_id', $record->drone_id)
+                //         ->orderBy('start_date_flight', 'desc')
+                //         ->first();
 
-                    if (!$flight) {
-                            $flight = fligh::where('drones_id', $record->drone_id)
-                                ->orderBy('start_date_flight', 'desc')
-                                ->first();
-                        }
+                //     if (!$flight) {
+                //             $flight = fligh::where('drones_id', $record->drone_id)
+                //                 ->orderBy('start_date_flight', 'desc')
+                //                 ->first();
+                //         }
 
-                    return $flight
-                        ? route('filament.admin.resources.flighs.view', [
-                            'tenant' => auth()->user()->teams()->first()->id,
-                            'record' => $flight->id,
-                        ])
-                        : null; 
-                })
-                ->button()
-                ->requiresConfirmation(),
+                //     return $flight
+                //         ? route('filament.admin.resources.flighs.view', [
+                //             'tenant' => auth()->user()->teams()->first()->id,
+                //             'record' => $flight->id,
+                //         ])
+                //         : null; 
+                // })
+                // ->button()
+                // ->requiresConfirmation(),
                 Tables\Actions\ViewAction::make(),
                 Tables\Actions\EditAction::make(),
             ])
@@ -234,7 +234,7 @@ class IncidentResource extends Resource
                 ->schema([
                     TextEntry::make('incident_date'),
                     TextEntry::make('cause'),
-                    TextEntry::make('review'),
+                    TextEntry::make('status'),
                     TextEntry::make('location_id'),
                     TextEntry::make('drone.name')
                         ->url(fn($record) => $record->drone_id?route('filament.admin.resources.drones.view', [

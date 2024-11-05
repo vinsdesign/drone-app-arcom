@@ -23,6 +23,7 @@ class incident extends Model
         'rectification_note',
         'rectification_date',
         'teams_id',
+        'status',
         'Technician',
         'status'
     ];

@@ -183,6 +183,7 @@ class FlighResource extends Resource
                     //->relationship('customers', 'name')
                     ->required()
                     ->disabled()
+
                     ->default(function (){
                         $currentTeam = auth()->user()->teams()->first();
                         return $currentTeam ? $currentTeam->id_customers  : null;
