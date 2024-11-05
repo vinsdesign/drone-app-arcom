@@ -16,8 +16,6 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
 <x-filament-widgets::widget>
     <x-filament::section>
@@ -32,12 +30,12 @@
     
             <!-- Status indicators (Airworthy, Maintenance, Retired) -->
             <div class="flex space-x-12">
-                <div class="text-center">
+                <div class="text-center p-4">
                     <h2 class="text-sm font-semibold text-gray-500 dark:text-gray-400">Flying Time</h2>
                     <h1 class="text-3xl font-bold text-gray-600 dark:text-gray-300">{{ $formattedTotalDuration }}</h1>
                 </div>
                 <br>
-                <div class="text-center">
+                <div class="text-center p-4">
                     <h2 class="text-sm font-semibold text-gray-500 dark:text-gray-400">Flights</h2>
                     <h1 class="text-3xl font-bold text-gray-600 dark:text-gray-300">{{ $sumFlight }}</h1>
                 </div>

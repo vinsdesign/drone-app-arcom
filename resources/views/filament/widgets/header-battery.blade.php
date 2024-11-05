@@ -8,8 +8,6 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
 <x-filament-widgets::widget>
     <x-filament::section>
@@ -19,23 +17,23 @@
         <div class="flex flex-col space-y-6 sm:flex-row sm:space-y-0 justify-between items-center">
             <!-- Title Section -->
             <div class="flex items-center space-x-4">
-                <h1 class="text-2xl font-bold text-gray-800 dark:text-white">Batteries</h1><br>
+                <h1 class="text-2xl font-bold text-gray-800 dark:text-white p-4">Batteries</h1><br>
                 <span class="text-lg font-medium text-gray-500 dark:text-gray-400">{{ $sumbattery }} Total</span>
             </div>
     
             <!-- Status indicators (Airworthy, Maintenance, Retired) -->
             <div class="flex space-x-12">
-                <div class="text-center">
+                <div class="text-center p-3">
                     <h2 class="text-sm font-semibold text-gray-500 dark:text-gray-400">Airworthy</h2>
                     <h1 class="text-3xl font-bold text-green-600 dark:text-green-400">{{ $airworthy }}</h1>
                 </div>
                 <br>
-                <div class="text-center">
+                <div class="text-center p-3">
                     <h2 class="text-sm font-semibold text-gray-500 dark:text-gray-400">Maintenance</h2>
                     <h1 class="text-3xl font-bold text-red-600 dark:text-red-400">{{ $maintenance }}</h1>
                 </div>
                 <br>
-                <div class="text-center">
+                <div class="text-center p-3">
                     <h2 class="text-sm font-semibold text-gray-500 dark:text-gray-400">Retired</h2>
                     <h1 class="text-3xl font-bold text-gray-600 dark:text-gray-300">{{ $retired }}</h1>
                 </div>

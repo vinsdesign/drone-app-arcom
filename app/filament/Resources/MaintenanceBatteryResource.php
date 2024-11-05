@@ -201,6 +201,11 @@ class MaintenanceBatteryResource extends Resource
                     'tenant' => Auth()->user()->teams()->first()->id,
                     'record' => $record->equidment_id,
                 ]):null)->color(Color::Blue),
+            TextEntry::make('battrei.name')->label('Battery')
+                ->url(fn($record) => $record->battrei_id?route('filament.admin.resources.battreis.index', [
+                    'tenant' => Auth()->user()->teams()->first()->id,
+                    'record' => $record->battrei_id,
+                ]):null)->color(Color::Blue),
             TextEntry::make('date')->label('Date'),
             TextEntry::make('status')->label('Status'),
             TextEntry::make('cost')->label('Cost'),

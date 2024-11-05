@@ -10,8 +10,6 @@
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     </head>
     <div class="filament-stats-overview-widget p-6 border-b bg-white dark:bg-gray-800 rounded-lg shadow">
         <!-- Title and total drones -->
@@ -20,22 +18,22 @@
             <div class="flex items-center space-x-4">
                 <h1 class="text-2xl font-bold text-gray-800 dark:text-white">Maintenance <br>
                     Drones</h1><br>
-                <span class="text-lg font-medium text-gray-500 dark:text-gray-400">{{ $maintenance }} Total</span>
+                <span class="text-lg font-medium text-gray-500 dark:text-gray-400 p-2">{{ $maintenance }} Total</span>
             </div>
     
             <!-- Status indicators (Airworthy, Maintenance, Retired) -->
             <div class="flex space-x-12">
-                <div class="text-center">
-                    <h2 class="text-sm font-semibold text-gray-500 dark:text-gray-400">Complate</h2>
+                <div class="text-center p-3">
+                    <h2 class="text-sm font-semibold text-gray-500 dark:text-gray-400">Complete</h2>
                     <h1 class="text-3xl font-bold text-green-600 dark:text-green-400">{{ $complate }}</h1>
                 </div>
                 <br>
-                <div class="text-center">
+                <div class="text-center p-3">
                     <h2 class="text-sm font-semibold text-gray-500 dark:text-gray-400">In Progress</h2>
                     <h1 class="text-3xl font-bold text-blue-600 dark:text-blue-400">{{ $inProgres }}</h1>
                 </div>
                 <br>
-                <div class="text-center">
+                <div class="text-center p-3">
                     <h2 class="text-sm font-semibold text-gray-500 dark:text-gray-400">Schedule</h2>
                     <h1 class="text-3xl font-bold text-red-600 dark:text-red-300">{{ $schedule }}</h1>
                 </div>

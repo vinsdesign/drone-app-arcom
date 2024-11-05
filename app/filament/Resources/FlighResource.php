@@ -183,10 +183,10 @@ class FlighResource extends Resource
                     //->relationship('customers', 'name')
                     ->required()
                     ->disabled()
-                    ->default(function (){
-                        $currentTeam = auth()->user()->teams()->first();
-                        return $currentTeam ? $currentTeam->getNameCustomer->name : null;
-                    })
+                    // ->default(function (){
+                    //     $currentTeam = auth()->user()->teams()->first();
+                    //     return $currentTeam ? $currentTeam->getNameCustomer->name : null;
+                    // })
                     ->columnSpanFull(),
  
                 ])->columns(3),

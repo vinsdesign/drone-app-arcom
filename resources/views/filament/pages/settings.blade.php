@@ -290,12 +290,12 @@
                     </select>
                 </div>
     
-                <div class="mb-4">
+                {{-- <div class="mb-4">
                     <label class="inline-flex items-center text-gray-700 dark:text-gray-400">
                         <input type="checkbox" name="set_as_default" value="1" class="form-checkbox h-5 w-5 text-blue-600 dark:bg-gray-700 dark:border-gray-600 focus:ring-blue-500">
                         <span class="ml-2">Set as Default for Projects and Maintenance</span>
                     </label>
-                </div>
+                </div> --}}
     
                 <div class="flex justify-end">
                     <button type="submit" class="px-4 py-2 font-semibold bg-blue-600 text-white rounded-md hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600 transition duration-150 ease-in-out focus:outline-none focus:ring-2 focus:ring-blue-400 shadow">
