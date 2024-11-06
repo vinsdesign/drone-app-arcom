@@ -18,7 +18,7 @@ return new class extends Migration
             $table->date('date')->nullable();
             $table->string('status')->nullable();
             $table->integer('cost')->nullable();
-            $table->foreignId('currencies_id')->constrained('currencies')->cascadeDelete();
+            $table->foreignId('currencies_id')->nullable()->constrained('currencies')->cascadeDelete();
             $table->string('notes')->nullable();
             $table->foreignId('equidment_id')->nullable()->constrainedTo('equidment')->cascadeDelete();
             $table->foreignId('battrei_id')->nullable()->constrainedTo('battrei')->cascadeDelete();

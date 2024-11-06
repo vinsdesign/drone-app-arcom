@@ -14,13 +14,13 @@ return new class extends Migration
         Schema::create('maintence_drones', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->date('date');
-            $table->integer('status');
-            $table->integer('cost');
-            $table->foreignId('currencies_id')->constrained('currencies')->cascadeDelete();
-            $table->string('notes');
-            $table->foreignId('drone_id')->constrainedTo('drone')->cascadeDelete();
-            $table->foreignId('task_id')->constrainedTo('task')->cascadeDelete();
+            $table->date('date')->nullable();
+            $table->integer('status')->nullable();
+            $table->integer('cost')->nullable();
+            $table->foreignId('currencies_id')->nullable()->constrained('currencies')->cascadeDelete();
+            $table->string('notes')->nullable();
+            $table->foreignId('drone_id')->nullable()->constrainedTo('drone')->cascadeDelete();
+            $table->foreignId('task_id')->nullable()->constrainedTo('task')->cascadeDelete();
             $table->foreignIdFor(Team::class,'teams_id')->index()->cascadeOnDelete();
             $table->timestamps();
         });

@@ -27,3 +27,8 @@ Route::get('admin/{tenant}/settings/currency-settings', [CurrencySettingControll
 Route::post('/currency-settings/store', [CurrencySettingController::class, 'store'])->name('currency-store');
 Route::post('/default-value',[importDefaultValue::class,'store'])->name('default-value');
 
+//project
+Route::get('/flight-project/{project_id}', function(){
+    return view('component.flight-project');
+})->name('flight-peroject');
+

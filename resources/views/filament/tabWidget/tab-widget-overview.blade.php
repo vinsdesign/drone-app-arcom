@@ -143,42 +143,42 @@
     <!-- Tab content -->
         <div class="content">
 
-            <div id="content0" class="tab-content active">
-                <h2 class="text-2xl font-bold mb-4">Your Operations Overview</h2>
-            
-                {{-- untuk tampilan 2 atau lebih widgets --}}
-                <div class="space-y-4">
-                    <div class="flex flex-wrap justify-center gap-6">
-                        <div class="bg-white rounded-lg shadow-lg p-4 flex-1 max-w-xs sm:max-w-sm md:max-w-md lg:max-w-full">
-                            @livewire(App\Livewire\FlightDurationChart::class)
-                        </div>
-                        <div class="bg-white rounded-lg shadow-lg p-4 flex-1 max-w-xs sm:max-w-sm md:max-w-md lg:max-w-full">
-                            @livewire(App\Livewire\FlightChart::class)
-                        </div>
-                    </div>
-                    {{-- buttom --}}
-                    <div class=""></div>
-                    {{-- end buttom --}}
-                </div>
-                {{-- buttom Summary --}}
-                <div class="flex flex-wrap space-x-4 border border-gray-300 rounded-lg p-2 bg-yellow-200">
-                    <h1 class="text-2xl font-bold mb-4 w-full dark:text-gray-700">Quick Actions</h1>
-                    <a href="{{route('filament.admin.resources.flighs.create',['tenant' => auth()->user()->teams()->first()->id])}}" class="mb-2"><button id="" class="text-white bg-yellow-500 hover:bg-yellow-400 px-4 py-2 rounded text-sm sm:text-base">Add New <br>Flights</button></a>
-                    <a href="{{route('filament.admin.resources.users.index',['tenant' => auth()->user()->teams()->first()->id])}}" class="mb-2"><button id="" class="text-white bg-yellow-500 hover:bg-yellow-400 px-4 py-2 rounded text-sm sm:text-base">View My <br>Personnel Page</button></a>
-                    <a href="{{route('filament.admin.resources.incidents.index',['tenant' => auth()->user()->teams()->first()->id])}}" class="mb-2"><button id="" class="text-white bg-yellow-500 hover:bg-yellow-400 px-4 py-2 rounded text-sm sm:text-base">Log An <br>Incident</button></a>
-                    <a href="{{route('filament.admin.resources.maintences.index',['tenant' => auth()->user()->teams()->first()->id])}}" class="mb-2"><button id="" class="text-white bg-yellow-500 hover:bg-yellow-400 px-4 py-2 rounded text-sm sm:text-base">Check <br>Maintenance Drone</button></a>
-                    <a href="{{route('filament.admin.resources.maintenance-batteries.index',['tenant' => auth()->user()->teams()->first()->id])}}" class="mb-2"><button id="" class="text-white bg-yellow-500 hover:bg-yellow-400 px-4 py-2 rounded text-sm sm:text-base">Check <br>Maintenance Equipment</button></a>
-                </div>
+                <div id="content0" class="tab-content active">
+                    <h2 class="text-2xl font-bold mb-4">Your Operations Overview</h2>
                 
-                {{-- end buttom Summary --}}
-            </div>
+                    {{-- untuk tampilan 2 atau lebih widgets --}}
+                    <div class="space-y-4">
+                        <div class="flex flex-wrap justify-center gap-6">
+                            <div class="rounded-lg shadow-lg p-4 flex-1 max-w-xs sm:max-w-sm md:max-w-md lg:max-w-full">
+                                @livewire(App\Livewire\FlightDurationChart::class)
+                            </div>
+                            <div class="rounded-lg shadow-lg p-4 flex-1 max-w-xs sm:max-w-sm md:max-w-md lg:max-w-full">
+                                @livewire(App\Livewire\FlightChart::class)
+                            </div>
+                        </div>
+                        {{-- buttom --}}
+                        <div class=""></div>
+                        {{-- end buttom --}}
+                    </div>
+                    {{-- buttom Summary --}}
+                    <div class="flex flex-wrap space-x-4 border border-gray-300 rounded-lg p-2 bg-yellow-200">
+                        <h1 class="text-2xl font-bold mb-4 w-full dark:text-gray-700">Quick Actions</h1>
+                        <a href="{{route('filament.admin.resources.flighs.create',['tenant' => auth()->user()->teams()->first()->id])}}" class="mb-2"><button id="" class="text-white bg-yellow-500 hover:bg-yellow-400 px-4 py-2 rounded text-sm sm:text-base">Add New <br>Flights</button></a>
+                        <a href="{{route('filament.admin.resources.users.index',['tenant' => auth()->user()->teams()->first()->id])}}" class="mb-2"><button id="" class="text-white bg-yellow-500 hover:bg-yellow-400 px-4 py-2 rounded text-sm sm:text-base">View My <br>Personnel Page</button></a>
+                        <a href="{{route('filament.admin.resources.incidents.index',['tenant' => auth()->user()->teams()->first()->id])}}" class="mb-2"><button id="" class="text-white bg-yellow-500 hover:bg-yellow-400 px-4 py-2 rounded text-sm sm:text-base">Log An <br>Incident</button></a>
+                        <a href="{{route('filament.admin.resources.maintences.index',['tenant' => auth()->user()->teams()->first()->id])}}" class="mb-2"><button id="" class="text-white bg-yellow-500 hover:bg-yellow-400 px-4 py-2 rounded text-sm sm:text-base">Check <br>Maintenance Drone</button></a>
+                        <a href="{{route('filament.admin.resources.maintenance-batteries.index',['tenant' => auth()->user()->teams()->first()->id])}}" class="mb-2"><button id="" class="text-white bg-yellow-500 hover:bg-yellow-400 px-4 py-2 rounded text-sm sm:text-base">Check <br>Maintenance Equipment</button></a>
+                    </div>
+                    
+                    {{-- end buttom Summary --}}
+                </div>
 
                 <div id="content1" class="tab-content">
                     <h2 class="text-2xl font-bold mb-4">Flight Overview</h2>
                 
                     {{-- untuk tampilan 2 atau lebih widgets --}}
                     <div class="space-y-4">
-                        <div class="flex flex-nowrap justify-center gap-4 md:gap-6">
+                        <div class="flex flex-col md:flex-row md:flex-nowrap justify-center gap-4 md:gap-6">
                             <div class="rounded-lg shadow-lg p-2 sm:p-4 flex-1 max-w-xs sm:max-w-sm md:max-w-md lg:max-w-sm w-full">
                                 @livewire(App\Livewire\TabFlight::class)
                             </div>
@@ -189,6 +189,7 @@
                                 @livewire(App\Livewire\TabFlightChartBar::class)
                             </div>
                         </div>
+                        
                         
                                 {{-- tabel Flight --}}
                                 <div class="container mx-auto p-4">
@@ -236,7 +237,7 @@
                     <h1 class="text-2xl font-bold mb-4">Maintenance Overview</h1>
                     <div class="space-y-4">
                         <div class="flex flex-wrap justify-center gap-6">
-                            <div class="bg-white rounded-lg shadow-lg p-4 flex-1 max-w-xs sm:max-w-sm md:max-w-md lg:max-w-sm">
+                            <div class="rounded-lg shadow-lg p-4 flex-1 max-w-xs sm:max-w-sm md:max-w-md lg:max-w-sm">
                                 @livewire(App\Livewire\TabMaintenance::class)
                             </div>
                                {{-- tabel Maintenance --}}
@@ -368,16 +369,16 @@
                     <h1 class="text-2xl font-bold mb-4">Inventory Overview</h1>
                     <div class="space-y-4">
                         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 justify-center">
-                            <div class="bg-white rounded-lg shadow-lg p-4 max-w-full">
+                            <div class="rounded-lg shadow-lg p-4 max-w-full">
                                 @livewire(App\Livewire\TabInventoryDrone::class)
                             </div>
-                            <div class="bg-white rounded-lg shadow-lg p-4 max-w-full">
+                            <div class="rounded-lg shadow-lg p-4 max-w-full">
                                 @livewire(App\Livewire\TabInventoryBatteri::class)
                             </div>
-                            <div class="bg-white rounded-lg shadow-lg p-4 max-w-full">
+                            <div class="rounded-lg shadow-lg p-4 max-w-full">
                                 @livewire(App\Livewire\TabInventoryEquidment::class)
                             </div>
-                            <div class="bg-white rounded-lg shadow-lg p-4 max-w-full">
+                            <div class="rounded-lg shadow-lg p-4 max-w-full">
                                 @livewire(App\Livewire\TabInventoryLocation::class)
                             </div>
                         </div>
@@ -560,58 +561,57 @@
 
                 <div id="content5" class="tab-content">
                     {{-- tabel INcident --}}
-
                     <div class="container mx-auto p-4">
-                    <h2 class="text-2xl font-bold mb-4">Recent Incidents (Last 10)</h2>
-                    <div class="mt-4 flex justify-end mb-4">
-                        <a href="{{route('filament.admin.resources.incidents.index',['tenant' => auth()->user()->teams()->first()->id])}}" class="inline-block px-4 py-2 bg-gray-800 text-white rounded hover:bg-gray-700">View All</a>
-                    </div>
-                    @foreach($incident as $item)
-                    <div class="flex flex-wrap space-x-4 border border-gray-300 rounded-lg p-4 bg-gray-100 dark:bg-gray-800 max-w-[800px] mx-auto mb-4 shadow-lg">
-                        
-                        <!-- Kolom Cause dan Status -->
-                        <div class="flex-1 min-w-[150px] mb-2 border-r border-gray-300 pr-2">
-                            <p class="text-sm text-gray-800 dark:text-gray-200 font-semibold">Cause:</p>
-                            <div class="flex items-center justify-between">
-                                <div>
-                                    <p class="text-sm text-gray-700 dark:text-gray-400">{{ $item->cause }}</p>
-                                    <p class="text-xs text-gray-500 dark:text-gray-300">Date: {{ $item->incident_date }}</p>
+                        <h2 class="text-2xl font-bold mb-4">Recent Incidents (Last 10)</h2>
+                        <div class="mt-4 flex justify-end mb-4">
+                            <a href="{{route('filament.admin.resources.incidents.index',['tenant' => auth()->user()->teams()->first()->id])}}" class="inline-block px-4 py-2 bg-gray-800 text-white rounded hover:bg-gray-700">View All</a>
+                        </div>
+                        @foreach($incident as $item)
+                        <div class="flex flex-wrap space-x-4 border border-gray-300 rounded-lg p-4 bg-gray-100 dark:bg-gray-800 max-w-[800px] mx-auto mb-4 shadow-lg">
+                            
+                            <!-- Kolom Cause dan Status -->
+                            <div class="flex-1 min-w-[150px] mb-2 border-r border-gray-300 pr-2">
+                                <p class="text-sm text-gray-800 dark:text-gray-200 font-semibold">Cause:</p>
+                                <div class="flex items-center justify-between">
+                                    <div>
+                                        <p class="text-sm text-gray-700 dark:text-gray-400">{{ $item->cause }}</p>
+                                        <p class="text-xs text-gray-500 dark:text-gray-300">Date: {{ $item->incident_date }}</p>
+                                    </div>
+                                    <span class="px-2 py-1 rounded text-white text-xs {{ $item->status == 'closed' ? 'bg-green-500' : 'bg-red-500' }}">
+                                        {{ ucfirst($item->status) }}
+                                    </span>
                                 </div>
-                                <span class="px-2 py-1 rounded text-white text-xs {{ $item->status == 'closed' ? 'bg-green-500' : 'bg-red-500' }}">
-                                    {{ ucfirst($item->status) }}
-                                </span>
                             </div>
+                    
+                            <!-- Kolom Drone Name -->
+                            <div class="flex-1 min-w-[150px] mb-2 border-r border-gray-300 pr-2">
+                                <p class="text-sm text-gray-800 dark:text-gray-200 font-semibold">Drone:</p>
+                                <p class="text-sm text-gray-700 dark:text-gray-400">{{ $item->drone->name ?? 'No Drone' }}</p>
+                                <p class="text-sm text-gray-700 dark:text-gray-400">{{ $item->drone->brand ?? 'No Drone' }} / {{$item->drone->model}}</p>
+                            </div>
+                    
+                            <!-- Kolom Personnel Involved -->
+                            <div class="flex-1 min-w-[150px] mb-2 border-r border-gray-300 pr-2">
+                                <p class="text-sm text-gray-800 dark:text-gray-200 font-semibold">Personnel Involved:</p>
+                                <p class="text-sm text-gray-700 dark:text-gray-400">{{ $item->users->name ?? 'No Personnel' }}</p>
+                            </div>
+                    
+                            <!-- Kolom Location -->
+                            <div class="flex-1 min-w-[150px] mb-2 border-r border-gray-300 pr-2">
+                                <p class="text-sm text-gray-800 dark:text-gray-200 font-semibold">Location:</p>
+                                <p class="text-sm text-gray-700 dark:text-gray-400">{{ $item->fligh_locations->name ?? 'No Location' }}</p>
+                            </div>
+                    
+                            <!-- Kolom Project -->
+                            <div class="flex-1 min-w-[150px] mb-2">
+                                <p class="text-sm text-gray-800 dark:text-gray-200 font-semibold">Project:</p>
+                                <p class="text-sm text-gray-700 dark:text-gray-400">{{ $item->project->case ?? 'No Project' }}</p>
+                            </div>
+                    
                         </div>
-                
-                        <!-- Kolom Drone Name -->
-                        <div class="flex-1 min-w-[150px] mb-2 border-r border-gray-300 pr-2">
-                            <p class="text-sm text-gray-800 dark:text-gray-200 font-semibold">Drone:</p>
-                            <p class="text-sm text-gray-700 dark:text-gray-400">{{ $item->drone->name ?? 'No Drone' }}</p>
-                            <p class="text-sm text-gray-700 dark:text-gray-400">{{ $item->drone->brand ?? 'No Drone' }} / {{$item->drone->model}}</p>
-                        </div>
-                
-                        <!-- Kolom Personnel Involved -->
-                        <div class="flex-1 min-w-[150px] mb-2 border-r border-gray-300 pr-2">
-                            <p class="text-sm text-gray-800 dark:text-gray-200 font-semibold">Personnel Involved:</p>
-                            <p class="text-sm text-gray-700 dark:text-gray-400">{{ $item->users->name ?? 'No Personnel' }}</p>
-                        </div>
-                
-                        <!-- Kolom Location -->
-                        <div class="flex-1 min-w-[150px] mb-2 border-r border-gray-300 pr-2">
-                            <p class="text-sm text-gray-800 dark:text-gray-200 font-semibold">Location:</p>
-                            <p class="text-sm text-gray-700 dark:text-gray-400">{{ $item->fligh_locations->name ?? 'No Location' }}</p>
-                        </div>
-                
-                        <!-- Kolom Project -->
-                        <div class="flex-1 min-w-[150px] mb-2">
-                            <p class="text-sm text-gray-800 dark:text-gray-200 font-semibold">Project:</p>
-                            <p class="text-sm text-gray-700 dark:text-gray-400">{{ $item->project->case ?? 'No Project' }}</p>
-                        </div>
-                
+                        @endforeach
                     </div>
-                @endforeach
-                    </div>
-                {{-- end tabel --}}  
+                    {{-- end tabel --}}  
                 </div>
         </div>
     </div>

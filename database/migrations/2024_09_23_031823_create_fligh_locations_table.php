@@ -14,19 +14,19 @@ return new class extends Migration
         Schema::create('fligh_locations', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->string('description');
-            $table->boolean('draw')->default(false);
-            $table->string('address');
-            $table->string('city');
-            $table->string('state');
-            $table->string('country');
-            $table->integer('pos_code');
-            $table->decimal('latitude', 10, 7);
-            $table->decimal('longitude', 10, 7);
-            $table->integer('altitude');
+            $table->string('description')->nullable();
+            $table->boolean('draw')->nullable()->default(false);
+            $table->string('address')->nullable();
+            $table->string('city')->nullable();
+            $table->string('state')->nullable();
+            $table->string('country')->nullable();
+            $table->integer('pos_code')->nullable();
+            $table->decimal('latitude', 10, 7)->nullable();
+            $table->decimal('longitude', 10, 7)->nullable();
+            $table->integer('altitude')->nullable();
             $table->foreignIdFor(Team::class,'teams_id')->index()->cascadeOnDelete();
-            $table->foreignId('projects_id')->constrainedTo('project')->cascadeOnDelete()->nullable();
-            $table->foreignId('customers_id')->constrainedTo('customer')->cascadeOnDelete()->nullable();
+            $table->foreignId('projects_id')->nullable()->constrainedTo('project')->cascadeOnDelete();
+            $table->foreignId('customers_id')->nullable()->constrainedTo('customer')->cascadeOnDelete();
             $table->timestamps();
         });
 
