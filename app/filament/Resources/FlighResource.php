@@ -223,11 +223,43 @@ class FlighResource extends Resource
                                         });
                                     });
                                 });
-                        })
+                        })->reactive()
+                        ->afterStateUpdated(fn (callable $set) => $set('instructor', null))
                     ->required(),
-                Forms\Components\TextInput::make('instructor')->label('Instructor')
-                    ->required()
-                    ->maxLength(255),
+                Forms\Components\Select::make('instructor')->label('Instructor (optional)')
+                ->relationship('instructors', 'name', function (Builder $query, callable $get) {
+                    $currentTeamId = auth()->user()->teams()->first()->id;
+                    $startDate = $get('start_date_flight');
+                    $endDate = $get('end_date_flight');
+                    $selectedUserId = $get('users_id');
+                    
+                    // Tambahkan pengecekan nilai untuk debugging
+                    dump($startDate, $endDate, $selectedUserId);
+                
+                    $query->whereHas('teams', function (Builder $query) use ($currentTeamId) {
+                        $query->where('team_id', $currentTeamId);
+                    })
+                    ->whereHas('roles', function (Builder $query) {
+                        $query->where('roles.name', 'Pilot');
+                    });
+                
+                    // Filter berdasarkan tanggal jika ada startDate dan endDate
+                    if ($startDate && $endDate) {
+                        $query->whereDoesntHave('fligh', function ($query) use ($startDate, $endDate) {
+                            $query->where(function ($query) use ($startDate, $endDate) {
+                                $query->where('start_date_flight', '<=', $endDate)
+                                      ->where('end_date_flight', '>=', $startDate);
+                            });
+                        });
+                    }
+                
+                    // Filter berdasarkan selectedUserId jika ada
+                    if ($selectedUserId) {
+                        $query->where('id', '!=', $selectedUserId);
+                    }
+                
+                    return $query;
+                })->reactive(),
                 Forms\Components\TextInput::make('vo')
                     ->required()
                     ->maxLength(255),
@@ -671,7 +703,7 @@ class FlighResource extends Resource
                         'tenant' => Auth()->user()->teams()->first()->id,
                         'record' => $record->users_id,
                     ]):null)->color(Color::Blue),
-                TextEntry::make('instructor')->label('Instructor'),
+                TextEntry::make('instructors.name')->label('Instructor'),
                 TextEntry::make('vo')->label('VO'),
                 TextEntry::make('po')->label('PO'),
                 ])->columns(4),

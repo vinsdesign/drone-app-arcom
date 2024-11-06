@@ -14,8 +14,8 @@ return new class extends Migration
         Schema::create('kits', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->string('type');
-            $table->boolean('enabled')->default(false);
+            $table->string('type')->nullable();
+            $table->boolean('enabled')->nullable()->default(false);
             $table->foreignId('blocked')->nullable()->constrained('drones')->default('null')->onDelete('set null');
             $table->foreignIdFor(Team::class,'teams_id')->index()->cascadeOnDelete();
             $table->timestamps();

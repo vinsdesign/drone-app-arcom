@@ -54,6 +54,10 @@ class fligh extends Model
     {
         return $this->belongsTo(User::class);
     }
+    public function instructors(): BelongsTo
+    {
+        return $this->belongsTo(User::class,'instructor', 'id');
+    }
 
     public function drones(): BelongsTo
     {

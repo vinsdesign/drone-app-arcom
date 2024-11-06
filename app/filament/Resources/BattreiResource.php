@@ -8,6 +8,7 @@ use App\Models\Battrei;
 use App\Models\drone;
 use App\Models\User;
 use Filament\Forms;
+use Filament\Forms\Components\Tabs;
 use Filament\Forms\Form;
 use Filament\Infolists\Components\IconEntry;
 use Filament\Resources\Resource;
@@ -38,9 +39,10 @@ class BattreiResource extends Resource
         $currentTeamId = auth()->user()->teams()->first()->id;
         return $form
             ->schema([
-                Forms\Components\Wizard::make([
-                    Forms\Components\Wizard\Step::make('Overview')
-                        ->schema([
+                Tabs::make('Tabs')
+                ->tabs([
+                    Tabs\Tab::make('Overview')
+                    ->schema([
                         Forms\Components\Hidden::make('teams_id')
                             ->default(auth()->user()->teams()->first()->id ?? null),
                         Forms\Components\TextInput::make('name')->label('Name')
@@ -99,8 +101,8 @@ class BattreiResource extends Resource
                             ->numeric()->columnSpan(1),
                         ])->columns(4),
                         //end wizard 1
-                    Forms\Components\Wizard\Step::make('Extra Information')
-                        ->schema([
+                    Tabs\Tab::make('Extra Information')
+                    ->schema([
                         Forms\Components\Select::make('users_id')->label('Owner')
                             //->relationship('users', 'name')
                             ->options(function () {
@@ -132,9 +134,7 @@ class BattreiResource extends Resource
                             ->maxLength(255)->columnSpanFull(),
 
                         ])->columns(3),
-                        //end wizard 2
-                ])->columnSpanFull(),
-                //end wizarad
+                    ])->columnSpanFull(),
             ]);
     }
 

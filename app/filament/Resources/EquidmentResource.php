@@ -8,6 +8,7 @@ use App\Models\drone;
 use App\Models\Equidment;
 use App\Models\User;
 use Filament\Forms;
+use Filament\Forms\Components\Tabs;
 use Filament\Forms\Components\Wizard;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -45,111 +46,110 @@ class EquidmentResource extends Resource
         $currentTeamId = auth()->user()->teams()->first()->id;
         return $form
             ->schema([
-                Forms\Components\Wizard::make([
-                    Forms\Components\Wizard\Step::make('Overview')
+
+                Tabs::make('Tabs')
+                    ->tabs([
+                        Tabs\Tab::make('Overview')
                         ->schema([
-                        Forms\Components\Hidden::make('teams_id')
-                            ->default(auth()->user()->teams()->first()->id ?? null),
-                        Forms\Components\TextInput::make('name')->label('Name')
-                            ->required()
-                            ->maxLength(255),
-                        Forms\Components\TextInput::make('model')->label('Model')
-                            ->required()
-                            ->maxLength(255),
-                        Forms\Components\select::make('status')->label('Status')
-                            ->options([
-                                'airworthy' => 'Airworthy',
-                                'maintenance' => 'Maintenance',
-                                'retired' => 'Retired',
-                            ])
-                            ->required(),
-                        Forms\Components\Select::make('inventory_asset')->label('Inventory / Asset')
-                            ->options([
-                                'asset'=> 'Assets',
-                                'inventory'=> 'Inventory',
-                            ])
-                            ->required(),
-                        Forms\Components\TextInput::make('serial')->label('Serial')
-                            ->required()->columnSpan(2),
-                        Forms\Components\select::make('type')->label('Type')
-                            ->options([
-                                'airframe' => 'Airframe',
-                                'anenometer' => 'Anenometer',
-                                'battery' => 'Battery',
-                                'battery_charger' => 'Battery Charger',
-                                'camera' => 'Camera',
-                                'charger' => 'Charger',
-                                'cradle' => 'Cradle',
-                                'drives(disc, flash)' => 'Drives(disc, flash)',
-                                'flight_controller' => 'Flight controller',
-                                'fvp_glasses' => 'FVP Glasses',
-                                'gimbal' => 'Gimbal',
-                                'gps' => 'GPS',
-                                'lens' => 'Lens',
-                                'lights' => 'Lights',
-                                'monitor' => 'Monitor',
-                                'motor' => 'Motor',
-                                'parachute' => 'Parachute',
-                                'phone/tablet' => 'Phone/Tablet',
-                                'power_supply' => 'Power Supply',
-                                'prop_guards' => 'Prop Guards',
-                                'propeller' => 'Propeller',
-                                'radio_receiver' => 'Radio Receiver',
-                                'radio_transmitter' => 'Radio Transmitter',
-                                'radio_extender' => 'Radio Extender',
-                                'radio_finder(laser)' => 'Radio Finder(laser)',
-                                'remote_controller' => 'Remote Controller',
-                                'sensors' => 'Sensors',
-                                'spreader' => 'Spreader',
-                                'telementry_radio' => 'Telementry Radio',
-                                'tripod' => 'Tripod',
-                                'video_transmitter' => 'Video Transmitter'
-                            ])->searchable()
-                            ->required()->columnSpan(2),
-                        Forms\Components\Select::make('drones_id')->label('For Drone (Optional)')
-                            // ->relationship('drones', 'name', function (Builder $query){
-                            //     $currentTeamId = auth()->user()->teams()->first()->id;
-                            //     $query->where('teams_id', $currentTeamId);
-                            // }),
-                            ->searchable()
-                            ->options(function (callable $get) use ($currentTeamId) {
-                                return drone::where('teams_id', $currentTeamId)->pluck('name', 'id');
-                            })
-                    ])->columns(4),
-                    //form ke dua
-                    Forms\Components\Wizard\Step::make('Extra Information')
+                            Forms\Components\Hidden::make('teams_id')
+                                ->default(auth()->user()->teams()->first()->id ?? null),
+                            Forms\Components\TextInput::make('name')->label('Name')
+                                ->required()
+                                ->maxLength(255),
+                            Forms\Components\TextInput::make('model')->label('Model')
+                                ->required()
+                                ->maxLength(255),
+                            Forms\Components\select::make('status')->label('Status')
+                                ->options([
+                                    'airworthy' => 'Airworthy',
+                                    'maintenance' => 'Maintenance',
+                                    'retired' => 'Retired',
+                                ])
+                                ->required(),
+                            Forms\Components\Select::make('inventory_asset')->label('Inventory / Asset')
+                                ->options([
+                                    'asset'=> 'Assets',
+                                    'inventory'=> 'Inventory',
+                                ])
+                                ->required(),
+                            Forms\Components\TextInput::make('serial')->label('Serial')
+                                ->required()->columnSpan(2),
+                            Forms\Components\select::make('type')->label('Type')
+                                ->options([
+                                    'airframe' => 'Airframe',
+                                    'anenometer' => 'Anenometer',
+                                    'battery' => 'Battery',
+                                    'battery_charger' => 'Battery Charger',
+                                    'camera' => 'Camera',
+                                    'charger' => 'Charger',
+                                    'cradle' => 'Cradle',
+                                    'drives(disc, flash)' => 'Drives(disc, flash)',
+                                    'flight_controller' => 'Flight controller',
+                                    'fvp_glasses' => 'FVP Glasses',
+                                    'gimbal' => 'Gimbal',
+                                    'gps' => 'GPS',
+                                    'lens' => 'Lens',
+                                    'lights' => 'Lights',
+                                    'monitor' => 'Monitor',
+                                    'motor' => 'Motor',
+                                    'parachute' => 'Parachute',
+                                    'phone/tablet' => 'Phone/Tablet',
+                                    'power_supply' => 'Power Supply',
+                                    'prop_guards' => 'Prop Guards',
+                                    'propeller' => 'Propeller',
+                                    'radio_receiver' => 'Radio Receiver',
+                                    'radio_transmitter' => 'Radio Transmitter',
+                                    'radio_extender' => 'Radio Extender',
+                                    'radio_finder(laser)' => 'Radio Finder(laser)',
+                                    'remote_controller' => 'Remote Controller',
+                                    'sensors' => 'Sensors',
+                                    'spreader' => 'Spreader',
+                                    'telementry_radio' => 'Telementry Radio',
+                                    'tripod' => 'Tripod',
+                                    'video_transmitter' => 'Video Transmitter'
+                                ])->searchable()
+                                ->required()->columnSpan(2),
+                            Forms\Components\Select::make('drones_id')->label('For Drone (Optional)')
+                                // ->relationship('drones', 'name', function (Builder $query){
+                                //     $currentTeamId = auth()->user()->teams()->first()->id;
+                                //     $query->where('teams_id', $currentTeamId);
+                                // }),
+                                ->searchable()
+                                ->options(function (callable $get) use ($currentTeamId) {
+                                    return drone::where('teams_id', $currentTeamId)->pluck('name', 'id');
+                                })
+                        ])->columns(4),
+                        Tabs\Tab::make('Extra Information')
                         ->schema([
-                        Forms\Components\Select::make('users_id')->label('Owner')
-                            //->relationship('users', 'name')
-                            ->searchable()
-                            ->options(function () {
-                                $currentTeamId = auth()->user()->teams()->first()->id; 
-                        
-                                return User::whereHas('teams', function (Builder $query) use ($currentTeamId) {
-                                    $query->where('team_user.team_id', $currentTeamId); 
-                                })->pluck('name', 'id'); 
-                            }),
-                        Forms\Components\DatePicker::make('purchase_date')->label('Purchase Date')
-                            ->required(),
-                        Forms\Components\TextInput::make('insurable_value')->label('Insurable Value')
-                            ->required()
-                            ->numeric(),
-                        Forms\Components\TextInput::make('weight')->label('Weight')
-                            ->required()
-                            ->numeric(),
-                        Forms\Components\TextInput::make('firmware_v')->label('Firmware Version ')
-                            ->required()
-                            ->maxLength(255),
-                        Forms\Components\TextInput::make('hardware_v')->label('Hardware Version')
-                            ->required()
-                            ->maxLength(255),
-                        Forms\Components\Checkbox::make('is_loaner')->label('Loaner Equipment'),
-                        Forms\Components\TextArea::make('description')->label('Description')
-                            ->maxLength(255),
-                        ])->columns(3),
-                        //end wizard2
-                ])->columnSpanFull(),
-                //end wizard
+                            Forms\Components\Select::make('users_id')->label('Owner')
+                                //->relationship('users', 'name')
+                                ->searchable()
+                                ->options(function () {
+                                    $currentTeamId = auth()->user()->teams()->first()->id; 
+                            
+                                    return User::whereHas('teams', function (Builder $query) use ($currentTeamId) {
+                                        $query->where('team_user.team_id', $currentTeamId); 
+                                    })->pluck('name', 'id'); 
+                                }),
+                            Forms\Components\DatePicker::make('purchase_date')->label('Purchase Date')
+                                ->required(),
+                            Forms\Components\TextInput::make('insurable_value')->label('Insurable Value')
+                                ->required()
+                                ->numeric(),
+                            Forms\Components\TextInput::make('weight')->label('Weight')
+                                ->required()
+                                ->numeric(),
+                            Forms\Components\TextInput::make('firmware_v')->label('Firmware Version ')
+                                ->required()
+                                ->maxLength(255),
+                            Forms\Components\TextInput::make('hardware_v')->label('Hardware Version')
+                                ->required()
+                                ->maxLength(255),
+                            Forms\Components\Checkbox::make('is_loaner')->label('Loaner Equipment'),
+                            Forms\Components\TextArea::make('description')->label('Description')
+                                ->maxLength(255),
+                            ])->columns(3),
+                    ])->columnSpanFull(),
 
             ]);
     }

@@ -15,10 +15,10 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->string('type');
-            $table->string('refnumber');
+            $table->string('refnumber')->nullable();
             $table->date('expired_date');
             $table->string('scope');
-            $table->string('external link');
+            $table->string('external link')->nullable();
             $table->string('description')->nullable();
             $table->string('doc')->nullable();
             $table->foreignIdFor(Team::class,'teams_id')->index();

@@ -9,6 +9,8 @@ use App\Models\customer;
 use App\Models\Projects;
 use Filament\Forms;
 use Filament\Forms\Form;
+use Filament\Infolists\Components\Section;
+use Filament\Infolists\Components\View as InfolistView;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
@@ -17,6 +19,7 @@ use Filament\Infolists\Components\TextEntry;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Filament\Support\Colors\Color;
+use View;
 
 class ProjectsResource extends Resource
 {
@@ -66,7 +69,6 @@ class ProjectsResource extends Resource
                
             ]);
     }
-
     public static function table(Table $table): Table
     {
         return $table
@@ -108,7 +110,10 @@ class ProjectsResource extends Resource
                 //
             ])
             ->actions([
-                Tables\Actions\ViewAction::make(),
+                Tables\Actions\Action::make('views')  ->action(function ($record) {
+                    session(['project_id' => $record->id]);
+                    return redirect()->route('flight-peroject', ['project_id' => $record->id]);
+                })->label('View'),
                 Tables\Actions\EditAction::make(),
             ])
             ->bulkActions([
@@ -122,22 +127,29 @@ class ProjectsResource extends Resource
     {
         return $infolist
         ->schema([
-            TextEntry::make('case')->label('Case'),
-            TextEntry::make('flight_date')->label('Last Flight Date')
-            ->getStateUsing(function ($record) {
-                $lastFlight = $record->flighs()->orderBy('start_date_flight', 'desc')->first();
-                $totalFlights = $record->flighs()->count();
-                $lastFlightDate = optional($lastFlight)->start_date_flight ? $lastFlight->start_date_flight : '';
-                return "({$totalFlights}) Flights {$lastFlightDate}";
-            }),
-            TextEntry::make('revenue')->label('Revenue'),
-            TextEntry::make('currencies.iso')->label('Currency'),
-            TextEntry::make('customers.name')->label('Customers')
-            ->url(fn($record) => $record->customers_id ? route('filament.admin.resources.customers.index', [
-                'tenant' => Auth()->user()->teams()->first()->id,
-                'record' => $record->customers_id,
-            ]):null)->color(Color::Blue),
-            TextEntry::make('description')->label('Description'),
+            Section::make('')
+                ->schema([
+                    TextEntry::make('case')->label('Case'),
+                    TextEntry::make('flight_date')->label('Last Flight Date')
+                    ->getStateUsing(function ($record) {
+                        $lastFlight = $record->flighs()->orderBy('start_date_flight', 'desc')->first();
+                        $totalFlights = $record->flighs()->count();
+                        $lastFlightDate = optional($lastFlight)->start_date_flight ? $lastFlight->start_date_flight : '';
+                        return "({$totalFlights}) Flights {$lastFlightDate}";
+                    }),
+                    TextEntry::make('revenue')->label('Revenue'),
+                    TextEntry::make('currencies.iso')->label('Currency'),
+                    TextEntry::make('customers.name')->label('Customers')
+                    ->url(fn($record) => $record->customers_id ? route('filament.admin.resources.customers.index', [
+                        'tenant' => Auth()->user()->teams()->first()->id,
+                        'record' => $record->customers_id,
+                    ]):null)->color(Color::Blue),
+                    TextEntry::make('description')->label('Description'),
+                ])->columns(2),
+            Section::make('')
+            ->schema([
+                InfolistView::make('component.flight-project'),
+        ])
         ]);
     }
 
@@ -154,6 +166,7 @@ class ProjectsResource extends Resource
             'index' => Pages\ListProjects::route('/'),
             'create' => Pages\CreateProjects::route('/create'),
             'edit' => Pages\EditProjects::route('/{record}/edit'),
+            'view' => Pages\ViewProjects::route('/{record}'),
         ];
     }
 }
