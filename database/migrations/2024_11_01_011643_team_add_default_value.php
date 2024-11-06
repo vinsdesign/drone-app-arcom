@@ -15,7 +15,7 @@ return new class extends Migration
             $table->unsignedBigInteger('id_customers')->nullable()->after('id');
             $table->foreign('id_customers')
                   ->references('id')
-                  ->on('customer')
+                  ->on('customers')
                   ->onDelete('set null');
         });
         Schema::table('teams', function (Blueprint $table) {

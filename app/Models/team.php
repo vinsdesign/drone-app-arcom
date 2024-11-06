@@ -93,6 +93,9 @@ class team extends Model implements HasAvatar
     public function currencie(){
         return $this->belongsTo(currencie::class);
     }
+    public function PlannedMission(){
+        return $this->belongsToMany(PlannedMission::class);
+    }
     public function getNameCustomer(){
         return $this->belongsTo(Customer::class, 'id_customers');
     }
