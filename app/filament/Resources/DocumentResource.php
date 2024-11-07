@@ -10,6 +10,7 @@ use App\Models\Projects;
 use App\Models\User;
 use Filament\Forms;
 use Filament\Forms\Form;
+use Filament\Notifications\Notification;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
@@ -201,6 +202,7 @@ class DocumentResource extends Resource
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
+                
                 Tables\Filters\SelectFilter::make('scope')
                 ->options([
                     'Flight' => 'Flight',
@@ -212,10 +214,41 @@ class DocumentResource extends Resource
                     'Incident' => 'Incident',
                 ])
                 ->label('Filter by Scope'),
+                Tables\Filters\SelectFilter::make('status_visible')
+                ->label('')
+                ->options([
+                    'current' => 'Current',
+                    'archived' => 'Archived',
+                ])
+                ->default('current'),
             ])
             ->actions([
-                Tables\Actions\ViewAction::make(),
-                Tables\Actions\EditAction::make(),
+                Tables\Actions\ActionGroup::make([
+                    Tables\Actions\ViewAction::make(),
+                    Tables\Actions\EditAction::make(),
+                    Tables\Actions\DeleteAction::make(),
+                    Tables\Actions\Action::make('Archive')->label('Archive')
+                    ->hidden(fn ($record) => $record->status_visible == 'archived')
+                            ->action(function ($record) {
+                             $record->update(['status_visible' => 'archived']);
+                             Notification::make()
+                             ->title('Status Updated')
+                             ->body("Status successfully changed.")
+                             ->success()
+                             ->send();
+                        })->icon('heroicon-s-archive-box-arrow-down'),
+                    Tables\Actions\Action::make('Un-Archive')->label(' Un-Archive')
+                    ->hidden(fn ($record) => $record->status_visible == 'current')
+                            ->action(function ($record) {
+                             $record->update(['status_visible' => 'current']);
+                             Notification::make()
+                             ->title('Status Updated')
+                             ->body("Status successfully changed.")
+                             ->success()
+                             ->send();
+                        })->icon('heroicon-s-archive-box'),
+                ])
+                
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
@@ -281,6 +314,12 @@ class DocumentResource extends Resource
             //
         ];
     }
+    // untuk mengubah query bawaan filament
+    // protected function getTableQuery(): Builder
+    // {
+    //     return parent::getTableQuery()
+    //         ->where('status_visible', '!=','archived');
+    // }
 
     public static function getPages(): array
     {
