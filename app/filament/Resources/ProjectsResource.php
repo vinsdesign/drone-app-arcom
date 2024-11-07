@@ -11,6 +11,7 @@ use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Infolists\Components\Section;
 use Filament\Infolists\Components\View as InfolistView;
+use Filament\Notifications\Notification;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
@@ -107,14 +108,43 @@ class ProjectsResource extends Resource
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
-                //
+                Tables\Filters\SelectFilter::make('status_visible')
+                ->label('')
+                ->options([
+                    'current' => 'Current',
+                    'archived' => 'Archived',
+                ])
+                ->default('current'),
             ])
             ->actions([
-                Tables\Actions\Action::make('views')  ->action(function ($record) {
-                    session(['project_id' => $record->id]);
-                    return redirect()->route('flight-peroject', ['project_id' => $record->id]);
-                })->label('View'),
-                Tables\Actions\EditAction::make(),
+                Tables\Actions\ActionGroup::make([
+                    Tables\Actions\Action::make('views')  ->action(function ($record) {
+                        session(['project_id' => $record->id]);
+                        return redirect()->route('flight-peroject', ['project_id' => $record->id]);
+                    })->label('View')->icon('heroicon-s-eye'),
+                    Tables\Actions\EditAction::make(),
+                    Tables\Actions\Action::make('Archive')->label('Archive')
+                    ->hidden(fn ($record) => $record->status_visible == 'archived')
+                            ->action(function ($record) {
+                             $record->update(['status_visible' => 'archived']);
+                             Notification::make()
+                             ->title('Status Updated')
+                             ->body("Status successfully changed.")
+                             ->success()
+                             ->send();
+                        })->icon('heroicon-s-archive-box-arrow-down'),
+                    Tables\Actions\Action::make('Un-Archive')->label(' Un-Archive')
+                    ->hidden(fn ($record) => $record->status_visible == 'current')
+                            ->action(function ($record) {
+                             $record->update(['status_visible' => 'current']);
+                                Notification::make()
+                                ->title('Status Updated')
+                                ->body("Status successfully changed.")
+                                ->success()
+                                ->send();
+                        })->icon('heroicon-s-archive-box'),
+                ])
+                
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
