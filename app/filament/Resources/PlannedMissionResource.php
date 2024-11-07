@@ -524,6 +524,7 @@ class PlannedMissionResource extends Resource
             ->filters([
                 Tables\Filters\SelectFilter::make('status')
                     ->options([
+                        'append' => 'Append',
                         'planned' => 'Planned',
                         'completed' => 'Completed',
                         'cancel' => 'Cancel',
@@ -533,7 +534,7 @@ class PlannedMissionResource extends Resource
             ->actions([
                 //append flight
                 Action::make('append_flight')
-                ->label('Append Flight')
+                ->label(fn ($record) => $record->status === 'append' ? 'Already Append' : 'Append Flight')
                 ->modalHeading('Append this Planned Mission to Flight')
                 ->modalSubmitActionLabel('Append')
                 ->action(function ($record) {
@@ -558,13 +559,15 @@ class PlannedMissionResource extends Resource
                         'fuel_used' => $record->fuel_used,
                         'teams_id' => $record->teams_id,
                     ]);
-                    $record->update(['status' => 'completed']);
+                    $record->update(['status' => 'append']);
                     Notification::make()
                         ->title('Flight Added')
                         ->body("Planned mission successfully added to Flight.")
                         ->success()
                         ->send();
                 })
+                ->disabled(fn ($record) => $record->status === 'append')
+                ->visible(fn ($record) => $record->status !== 'cancel')
                 ->button()
                 ->requiresConfirmation(),
                 //end append flight 
@@ -592,6 +595,7 @@ class PlannedMissionResource extends Resource
                         
                         ->required(),
                 ])
+                ->visible(fn ($record) => !in_array($record->status, ['completed', 'cancel', 'append']))
                 ->button(),
                 Tables\Actions\ViewAction::make(),
                 Tables\Actions\EditAction::make(),
@@ -659,7 +663,8 @@ class PlannedMissionResource extends Resource
                     ->color(fn ($record) => match ($record->status){
                         'completed' => Color::Green,
                         'cancel' =>Color::Red,
-                        'planned' => Color::Zinc
+                        'planned' => Color::Zinc,
+                        'append' => Color::Green,
                     }),
                 ])->columns(4)
         ]);

@@ -210,6 +210,7 @@ class MaintenceResource extends Resource
                             ->body('The task has been successfully resolved.')
                             ->send();
                     })
+                    ->button()
                     ->requiresConfirmation()
                     ->visible(function ($record) {
                         return $record->status !== 'completed' && auth()->user()->hasRole(['maintenance', 'panel_user']);

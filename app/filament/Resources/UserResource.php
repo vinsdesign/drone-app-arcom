@@ -74,7 +74,7 @@ class UserResource extends Resource
                         ->afterStateUpdated(fn(callable $set)=>$set('cities_id',null))
                         ->placeholder('Select a Country')
                         ->searchable(),
-                    Forms\Components\Select::make('Cities_id')->label('City')
+                    Forms\Components\Select::make('cities_id')->label('City')
                         ->options(function ($get) {
                         $countryId = $get('countries_id');
                         if ($countryId) {
