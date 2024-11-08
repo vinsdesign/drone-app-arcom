@@ -9,6 +9,7 @@ use App\Http\Controllers\ContactController;
 use App\Http\Controllers\CurrencySettingController;
 use App\Livewire\DroneStatistik;
 use App\Livewire\BatteryStatistik;
+use App\Http\Controllers\LanguageController;
 
 Route::get('/', function () {
     return redirect('/admin');
@@ -31,4 +32,7 @@ Route::post('/default-value',[importDefaultValue::class,'store'])->name('default
 Route::get('/flight-project/{project_id}', function(){
     return view('component.flight-project');
 })->name('flight-peroject');
+
+//language change
+Route::post('/change-language', [LanguageController::class, 'changeLanguage'])->name('change.language');
 

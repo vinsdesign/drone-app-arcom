@@ -18,11 +18,12 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Illuminate\Validation\Rule;
 use Illuminate\Support\HtmlString;
+use Stichoza\GoogleTranslate\GoogleTranslate;
 
 class CustomerResource extends Resource
 {
     protected static ?string $model = Customer::class;
-    protected static ?string $navigationLabel = 'Customers';
+    // protected static ?string $navigationLabel = 'Customers';
     // protected static ?string $navigationGroup = 'Masters';
     protected static ?string $navigationIcon = 'heroicon-s-user';
     public static ?string $tenantOwnershipRelationshipName = 'teams';
@@ -30,17 +31,30 @@ class CustomerResource extends Resource
     public static ?string $navigationGroup = ' ';
     protected static bool $isLazy = false;
 
+    public static function getNavigationLabel(): string
+    {
+        return GoogleTranslate::trans('Customers', session('locale') ?? 'en');
+    }
+    public static function getModelLabel(): string
+    {
+        return GoogleTranslate::trans('Customers', session('locale') ?? 'en');
+    }
+
     public static function form(Form $form): Form
 
     {
+        $locale = session('locale') ?? 'en'; 
         return $form
         ->schema([
             Forms\Components\Section::make('Customer')
+                ->label((new GoogleTranslate($locale))->translate('Customer'))
                 ->schema([
                     Forms\Components\TextInput::make('name')
+                    ->label(GoogleTranslate::trans('name', session('locale') ?? 'en'))
                     ->required()
                     ->maxLength(255),
                 Forms\Components\TextInput::make('phone')
+                    ->label(GoogleTranslate::trans('phone', session('locale') ?? 'en'))
                     ->tel()
                     ->required()
                     ->rules(function ($get) {
@@ -52,6 +66,7 @@ class CustomerResource extends Resource
                         ];
                     }),
                 Forms\Components\TextInput::make('email')
+                    ->label(GoogleTranslate::trans('email', session('locale') ?? 'en'))
                     ->email()
                     ->required()
                     ->rules(function ($get) {
@@ -64,10 +79,12 @@ class CustomerResource extends Resource
                     })
                     ->maxLength(255),
                 Forms\Components\TextInput::make('address')
+                    ->label(GoogleTranslate::trans('address', session('locale') ?? 'en'))
                     ->required()
                     ->maxLength(255),
     
                 Forms\Components\Textarea::make('description')
+                    ->label(GoogleTranslate::trans('description', session('locale') ?? 'en'))
                     ->maxLength(255)->columnSpanFull(),
                 Forms\Components\Hidden::make('teams_id')
                 ->default(auth()->user()->teams()->first()->id ?? null),
@@ -86,40 +103,47 @@ class CustomerResource extends Resource
             // ->view('component.table.table-customer')
             // ->extraAttributes(['record' => fn ($record) => $record]),
 
-        Tables\Columns\TextColumn::make('name')
-        ->searchable()
-        ->sortable()
-        ->toggleable(isToggledHiddenByDefault: true),
+        // Tables\Columns\TextColumn::make('name')
+        // ->searchable()
+        // ->sortable()
+        // // ->toggleable(isToggledHiddenByDefault: true),
 
-        Tables\Columns\TextColumn::make('phone')
-            ->searchable()
-            ->sortable()
-            ->toggleable(isToggledHiddenByDefault: true),
+        // Tables\Columns\TextColumn::make('phone')
+        //     ->searchable()
+        //     ->sortable()
+        //     // ->toggleable(isToggledHiddenByDefault: true),
 
-        Tables\Columns\TextColumn::make('email')
-            ->searchable()
-            ->sortable()
-            ->toggleable(isToggledHiddenByDefault: true),
+        // Tables\Columns\TextColumn::make('email')
+        //     ->searchable()
+        //     ->sortable()
+        //     ->toggleable(isToggledHiddenByDefault: true),
 
 
-            //     Tables\Columns\TextColumn::make('name')
-            //     ->searchable(),
-            // Tables\Columns\TextColumn::make('phone')
-            //     ->searchable(),
-            // Tables\Columns\TextColumn::make('email')
-            //     ->searchable(),
-            // Tables\Columns\TextColumn::make('address')
-            //     ->searchable(),
-            // Tables\Columns\TextColumn::make('description')
-            //     ->searchable(),
-            // Tables\Columns\TextColumn::make('created_at')
-            //     ->dateTime()
-            //     ->sortable()
-            //     ->toggleable(isToggledHiddenByDefault: true),
-            // Tables\Columns\TextColumn::make('updated_at')
-            //     ->dateTime()
-            //     ->sortable()
-            //     ->toggleable(isToggledHiddenByDefault: true),
+                Tables\Columns\TextColumn::make('name')
+                ->label(GoogleTranslate::trans('name', session('locale') ?? 'en'))
+                ->searchable(),
+            Tables\Columns\TextColumn::make('phone')
+                ->label(GoogleTranslate::trans('phone', session('locale') ?? 'en'))
+                ->searchable(),
+            Tables\Columns\TextColumn::make('email')
+                ->label(GoogleTranslate::trans('email', session('locale') ?? 'en'))
+                ->searchable(),
+            Tables\Columns\TextColumn::make('address')
+                ->label(GoogleTranslate::trans('address', session('locale') ?? 'en'))
+                ->searchable(),
+            Tables\Columns\TextColumn::make('description')
+                ->label(GoogleTranslate::trans('description', session('locale') ?? 'en'))
+                ->searchable(),
+            Tables\Columns\TextColumn::make('created_at')
+                ->label(GoogleTranslate::trans('created_at', session('locale') ?? 'en'))
+                ->dateTime()
+                ->sortable()
+                ->toggleable(isToggledHiddenByDefault: true),
+            Tables\Columns\TextColumn::make('updated_at')
+                ->label(GoogleTranslate::trans('updated_at', session('locale') ?? 'en'))
+                ->dateTime()
+                ->sortable()
+                ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
                 //
@@ -143,12 +167,13 @@ class CustomerResource extends Resource
         return $infolist
         ->schema([
             Section::make('Customer Overview')
+            ->label(GoogleTranslate::trans('Customer Overview', session('locale') ?? 'en'))
             ->schema([
-                TextEntry::make('name')->label('Name'),
-                TextEntry::make('phone')->label('Phone'),
-                TextEntry::make('email')->label('Email'),
-                TextEntry::make('address')->label('Address'),
-                TextEntry::make('description')->label('Description')
+                TextEntry::make('name')->label(GoogleTranslate::trans('name', session('locale') ?? 'en')),
+                TextEntry::make('phone')->label(GoogleTranslate::trans('phone', session('locale') ?? 'en')),
+                TextEntry::make('email')->label(GoogleTranslate::trans('email', session('locale') ?? 'en')),
+                TextEntry::make('address')->label(GoogleTranslate::trans('address', session('locale') ?? 'en')),
+                TextEntry::make('description')->label(GoogleTranslate::trans('description', session('locale') ?? 'en')),
             ])
 
         ]);

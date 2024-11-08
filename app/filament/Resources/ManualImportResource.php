@@ -5,15 +5,25 @@ use App\Filament\Pages\ManualImport;
 use Filament\Navigation\MenuItem;
 use Filament\Resources\Resource;
 use Filament\Tables\Table;
+use Stichoza\GoogleTranslate\GoogleTranslate;
 
 class ManualImportResource extends Resource
 
 {
     protected static bool $shouldRegisterNavigation = false;
-    protected static ?string $navigationLabel = 'ManualImport';
-    protected static ?string $modelLabel = 'ManualImport';
+    // protected static ?string $navigationLabel = 'ManualImport';
+    // protected static ?string $modelLabel = 'ManualImport';
     protected static ?string $navigationIcon = 'heroicon-o-cog';
     protected static bool $isLazy = false;
+
+    public static function getNavigationLabel(): string
+    {
+        return GoogleTranslate::trans('ManualImport', session('locale') ?? 'en');
+    }
+    public static function getModelLabel(): string
+    {
+        return GoogleTranslate::trans('ManualImport', session('locale') ?? 'en');
+    }
 
     public static function getPages(): array
     {

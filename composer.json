@@ -7,6 +7,7 @@
     "require": {
         "php": "^8.2",
         "barryvdh/laravel-dompdf": "^3.0",
+        "bezhansalleh/filament-language-switch": "^3.1",
         "bezhansalleh/filament-shield": "*",
         "dotswan/filament-map-picker": "^1.4",
         "filament/filament": "^3.2",
@@ -17,6 +18,7 @@
         "laravel/framework": "^11.9",
         "laravel/tinker": "^2.9",
         "novadaemon/filament-combobox": "^1.1",
+        "stichoza/google-translate-php": "^5.2",
         "tomatophp/filament-settings-hub": "^1.0",
         "tomatophp/filament-subscriptions": "^1.0"
     },

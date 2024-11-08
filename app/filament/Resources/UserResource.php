@@ -21,27 +21,39 @@ use Illuminate\Support\Facades\DB;
 use Filament\Infolists\Components\Section;
 use Illuminate\Validation\Rule;
 use Carbon\Carbon;
+use Stichoza\GoogleTranslate\GoogleTranslate;
 class UserResource extends Resource
 {
     protected static ?string $model = User::class;
-    protected static ?string $navigationLabel = 'Personnel';
+    // protected static ?string $navigationLabel = 'Personnel';
     protected static ?string $navigationIcon = 'heroicon-s-user-group';
-    protected static ?string $modelLabel = 'Personnel';
+    // protected static ?string $modelLabel = 'Personnel';
     public static ?int $navigationSort = 2;
     public static ?string $navigationGroup = ' ';
     public static ?string $tenantOwnershipRelationshipName = 'teams';
     protected static bool $isLazy = false;
 
+    public static function getNavigationLabel(): string
+    {
+        return GoogleTranslate::trans('Personnel', session('locale') ?? 'en');
+    }
+    public static function getModelLabel(): string
+    {
+        return GoogleTranslate::trans('Personnel', session('locale') ?? 'en');
+    }
+
     public static function form(Form $form): Form
     {
         return $form
             ->schema([
-                Forms\Components\Section::make('Personnel')
+                Forms\Components\Section::make('Personnel')->label((new GoogleTranslate(session('locale') ?? 'en'))->translate('Personnel'))
                 ->schema([
                     Forms\Components\TextInput::make('name')
+                        ->label(GoogleTranslate::trans('name', session('locale') ?? 'en'))
                         ->required()
                         ->maxLength(255),
                     Forms\Components\TextInput::make('email')
+                        ->label(GoogleTranslate::trans('email', session('locale') ?? 'en'))
                         ->email()
                         ->required()
                         ->rules(function ($get) {
@@ -54,10 +66,12 @@ class UserResource extends Resource
                         })
                         ->maxLength(255)->columnSpan(2),
                     Forms\Components\TextInput::make('password')
+                        ->label(GoogleTranslate::trans('password', session('locale') ?? 'en'))
                         ->password()
                         ->required()
                         ->maxLength(255),
                     Forms\Components\TextInput::make('phone')
+                        ->label(GoogleTranslate::trans('phone', session('locale') ?? 'en'))
                         ->tel()
                         ->rules(function ($get) {
                             return [
@@ -68,13 +82,16 @@ class UserResource extends Resource
                             ];
                         })
                         ->numeric(),
-                    Forms\Components\Select::make('countries_id')->label('Country')
+                    Forms\Components\Select::make('countries_id')
+                        // ->label('Country')
+                        ->label(GoogleTranslate::trans('Country', session('locale') ?? 'en'))
                         ->options(countrie::all()->pluck('name','id'))
                         ->reactive()
                         ->afterStateUpdated(fn(callable $set)=>$set('cities_id',null))
-                        ->placeholder('Select a Country')
+                        ->placeholder((new GoogleTranslate(session('locale') ?? 'en'))->translate('Select a Country'))
                         ->searchable(),
                     Forms\Components\Select::make('cities_id')->label('City')
+                        ->label(GoogleTranslate::trans('City', session('locale') ?? 'en'))
                         ->options(function ($get) {
                         $countryId = $get('countries_id');
                         if ($countryId) {
@@ -84,15 +101,17 @@ class UserResource extends Resource
                     })
                         ->searchable()
                         ->reactive()
-                        ->placeholder('Select a City')
+                        ->placeholder((new GoogleTranslate(session('locale') ?? 'en'))->translate('Select a City'))
                         ->disabled(fn ($get) => !$get('countries_id')),
                     Forms\Components\TextInput::make('sertif')
-                        ->label('Certificate')
+                        // ->label('Certificate')
+                        ->label(GoogleTranslate::trans('Certificate', session('locale') ?? 'en'))
                         ->maxLength(255),
                     Forms\Components\Hidden::make('teams_id')
                         ->default(auth()->user()->teams()->first()->id ?? null),
                     //role
                     Forms\Components\Select::make('roles')
+                        ->label(GoogleTranslate::trans('roles', session('locale') ?? 'en'))
                         ->relationship('roles', 'name')
                         ->multiple()
                         ->preload()
@@ -102,7 +121,8 @@ class UserResource extends Resource
                             : DB::table('roles')->pluck('name', 'id'))
                         ->searchable(),
                         Forms\Components\TextArea::make('address')
-                        ->helperText('Your Specific Address')
+                        ->label(GoogleTranslate::trans('address', session('locale') ?? 'en'))
+                        ->helperText((new GoogleTranslate(session('locale') ?? 'en'))->translate('Your Specific Address'))
                         ->columnSpanFull()
                         
                     
@@ -115,11 +135,17 @@ class UserResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('name')->label('Name')
+                Tables\Columns\TextColumn::make('name')
+                // ->label('Name')
+                    ->label(GoogleTranslate::trans('name', session('locale') ?? 'en'))
                     ->searchable(),
-                Tables\Columns\TextColumn::make('email')->label('Email')
+                Tables\Columns\TextColumn::make('email')
+                // ->label('Email')
+                    ->label(GoogleTranslate::trans('email', session('locale') ?? 'en'))
                     ->searchable(),
-                Tables\Columns\TextColumn::make('phone')->label('Phone number')
+                Tables\Columns\TextColumn::make('phone')
+                // ->label('Phone number')
+                    ->label(GoogleTranslate::trans('Phone Number', session('locale') ?? 'en'))
                     ->searchable(),
                 // Tables\Columns\TextColumn::make('countries.name')->label('Country')
                 //     ->searchable(),
@@ -133,9 +159,11 @@ class UserResource extends Resource
                 //     ->searchable(),
                 // Tables\Columns\ImageColumn::make('image'),
                 Tables\Columns\TextColumn::make('roles.name')
+                    ->label(GoogleTranslate::trans('roles', session('locale') ?? 'en'))
                     ->searchable(),
                 Tables\Columns\TextColumn::make('last_flight')
-                    ->label('Last Flight')
+                    // ->label('Last Flight')
+                    ->label(GoogleTranslate::trans('Last Flight', session('locale') ?? 'en'))
                     ->getStateUsing(function ($record) {
                         $lastFlight = $record->fligh()->orderBy('start_date_flight', 'desc')->first();
                         $lastFlightDate = optional($lastFlight)->start_date_flight ? $lastFlight->start_date_flight : '';
@@ -144,6 +172,7 @@ class UserResource extends Resource
                     ->sortable()
                     ->html(),
                 Tables\Columns\TextColumn::make('flight_date')
+                    ->label(GoogleTranslate::trans('Total', session('locale') ?? 'en'))
                     ->label('Total')
                     ->getStateUsing(function ($record) {
                         $flights = $record->fligh;
@@ -191,14 +220,14 @@ class UserResource extends Resource
         ->schema([
             Section::make('Personel Overview')
             ->schema([
-                TextEntry::make('name')->label('Name'),
-                TextEntry::make('email')->label('Email'),
-                TextEntry::make('phone')->label('Phone'),
-                TextEntry::make('countries.name')->label('Country'),
-                TextEntry::make('cities.name')->label('City'),
-                TextEntry::make('sertif')->label('Certificate'),
-                TextEntry::make('roles.name')->label('Role Type'),
-                TextEntry::make('address')->label('Address'),
+                TextEntry::make('name')->label(GoogleTranslate::trans('name', session('locale') ?? 'en')),
+                TextEntry::make('email')->label(GoogleTranslate::trans('email', session('locale') ?? 'en')),
+                TextEntry::make('phone')->label(GoogleTranslate::trans('phone', session('locale') ?? 'en')),
+                TextEntry::make('countries.name')->label(GoogleTranslate::trans('countries', session('locale') ?? 'en')),
+                TextEntry::make('cities.name')->label(GoogleTranslate::trans('cities', session('locale') ?? 'en')),
+                TextEntry::make('sertif')->label(GoogleTranslate::trans('certificate', session('locale') ?? 'en')),
+                TextEntry::make('roles.name')->label(GoogleTranslate::trans('roles', session('locale') ?? 'en')),
+                TextEntry::make('address')->label(GoogleTranslate::trans('address', session('locale') ?? 'en')),
             ])->columns(2)
         ]);
     }

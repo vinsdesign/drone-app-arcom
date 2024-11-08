@@ -1,4 +1,5 @@
 @php
+use Stichoza\GoogleTranslate\GoogleTranslate;
     $user = Auth()->user()->Teams()->first()->id;
     $sumMission = App\Models\PlannedMission::Where('teams_id',$user)->count('name');
     $planned = App\Models\PlannedMission::Where('teams_id',$user)->where('status','planned')->count('name');
@@ -16,8 +17,8 @@
         <div class="filament-stats-overview-widget p-6 border-b bg-white dark:bg-gray-800 rounded-lg shadow">
             <div class="flex flex-col space-y-6 sm:flex-row sm:space-y-0 justify-between items-center">
                 <div class="flex items-center space-x-4">
-                    <h1 class="text-2xl font-bold text-gray-800 dark:text-white">Open Missions</h1><br>
-                    <span class="text-lg font-medium text-gray-500 dark:text-gray-400 p-2">{{ $sumMission }} Total</span>
+                    <h1 class="text-2xl font-bold text-gray-800 dark:text-white">{!! GoogleTranslate::trans('Open Missions', session('locale') ?? 'en') !!}</h1><br>
+                    <span class="text-lg font-medium text-gray-500 dark:text-gray-400 p-2">{{ $sumMission }} {!! GoogleTranslate::trans('Total', session('locale') ?? 'en') !!}</span>
                 </div>
         
                 <div class="flex space-x-12">
@@ -27,7 +28,7 @@
                 <div class="flex space-x-4">
                     <a href="{{ route('filament.admin.resources.planned-missions.create', ['tenant' => auth()->user()->teams()->first()->id]) }}">
                         <button class="filament-button px-6 py-2 text-sm font-semibold text-white bg-primary-600 dark:bg-primary-500 border border-transparent rounded-md hover:bg-primary-700 dark:hover:bg-primary-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-600 dark:focus:ring-offset-gray-800">
-                        Add Missions
+                            {!! GoogleTranslate::trans('Add Missions', session('locale') ?? 'en') !!}
                         </button>
                     </a> 
                 </div>
