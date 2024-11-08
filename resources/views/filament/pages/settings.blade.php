@@ -106,6 +106,7 @@
         </div>
     
         <!-- Menu 2 -->
+        @if (Auth::user()->roles()->pluck('name')->contains('super_admin') || (Auth::user()->roles()->pluck('name')->contains('panel_user')))
         <div class="main-button bg-white dark:bg-gray-800 shadow dark:shadow-lg rounded-lg p-4 text-center hover:shadow-lg dark:hover:shadow-xl transition-shadow cursor-pointer" onclick="showContent(1)">
             <div class="mb-2 text-gray-800 dark:text-gray-200">
                 <x-heroicon-s-currency-dollar class="w-8 h-8 mx-auto" />
@@ -113,7 +114,7 @@
             <h2 class="text-lg font-semibold text-gray-800 dark:text-gray-200">Currency</h2>
             <p class="text-gray-600 dark:text-gray-400 mt-1">Manage your currency here</p>
         </div>
-    
+        @endif
         <!-- Menu 3 -->
         <div class="main-button bg-white dark:bg-gray-800 shadow dark:shadow-lg rounded-lg p-4 text-center hover:shadow-lg dark:hover:shadow-xl transition-shadow" onclick="showContent(2)">
             <div class="text-yellow-500 dark:text-yellow-400 mb-2">
@@ -133,11 +134,13 @@
             <!-- Tab buttons on the left -->
             <div class="tab-buttons flex flex-col border-r border-gray-300 dark:border-gray-700 p-4 space-y-2">
                 <h1 class="text-lg font-bold border-b border-gray-500 pb-2">Setting</h1>
-                <button id="tab0" class="tab-button active border border-gray-300 dark:border-gray-700 rounded-lg py-2 px-4 text-gray-800 dark:text-gray-200">Profile</button>
-                <button id="tab1" class="tab-button border border-gray-300 dark:border-gray-700 rounded-lg py-2 px-4 text-gray-800 dark:text-gray-200">Organization</button>
-                <button id="tab2" class="tab-button border border-gray-300 dark:border-gray-700 rounded-lg py-2 px-4 text-gray-800 dark:text-gray-200">Import Rules</button>
-                <button id="tab3" class="tab-button border border-gray-300 dark:border-gray-700 rounded-lg py-2 px-4 text-gray-800 dark:text-gray-200">API</button>
-                <button id="tab4" class="tab-button border border-gray-300 dark:border-gray-700 rounded-lg py-2 px-4 text-gray-800 dark:text-gray-200">Billing</button>
+                <button id="tab0" class="tab-button active border border-gray-300 dark:border-gray-700 rounded-lg py-2 px-4 text-gray-800 dark:text-gray-200" onclick="showContentTab(0)">Profile</button>
+                @if (Auth::user()->roles()->pluck('name')->contains('super_admin') || (Auth::user()->roles()->pluck('name')->contains('panel_user')))
+                    <button id="tab1" class="tab-button border border-gray-300 dark:border-gray-700 rounded-lg py-2 px-4 text-gray-800 dark:text-gray-200" onclick="showContentTab(1)">Organization</button>
+                @endif
+                <button id="tab2" class="tab-button border border-gray-300 dark:border-gray-700 rounded-lg py-2 px-4 text-gray-800 dark:text-gray-200" onclick="showContentTab(2)">Import Rules</button>
+                <button id="tab3" class="tab-button border border-gray-300 dark:border-gray-700 rounded-lg py-2 px-4 text-gray-800 dark:text-gray-200" onclick="showContentTab(3)">API</button>
+                <button id="tab4" class="tab-button border border-gray-300 dark:border-gray-700 rounded-lg py-2 px-4 text-gray-800 dark:text-gray-200" onclick="showContentTab(4)">Billing</button>
             </div>
     
             <!-- Tab content on the right -->
@@ -159,7 +162,7 @@
                     
                     <ul class="list-disc pl-5 mb-6">
                         <li><a href="{{route('filament.admin.resources.manual-imports.index',[Auth()->user()->teams()->first()->id])}}" class="text-blue-600 dark:text-blue-400 hover:underline">Manual Multiple Importer</a></li>
-                        <li><a href="#" class="text-blue-600 dark:text-blue-400 hover:underline">Dji Cloud Importer</a></li>
+                        <li ><a href="#" class="text-blue-600 dark:text-blue-400 hover:underline" onclick="showContentTab(3)">Dji Cloud Importer</a></li>
                     </ul>
                     <h1 class="text-2xl font-semibold mb-4 text-gray-800 dark:text-gray-200">Default Value</h1>
                     <form class="space-y-4" action="{{route('default-value')}}" method="POST">
@@ -311,16 +314,33 @@
     
     <script>
         // JavaScript to handle active tab button and content display
-        document.querySelectorAll('.tab-button').forEach(button => {
-            button.addEventListener('click', () => {
-                document.querySelectorAll('.tab-button').forEach(btn => btn.classList.remove('active'));
-                document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+        // document.querySelectorAll('.tab-button').forEach(button => {
+        //     button.addEventListener('click', () => {
+        //         document.querySelectorAll('.tab-button').forEach(btn => btn.classList.remove('active'));
+        //         document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
                 
-                button.classList.add('active');
-                const contentId = `content${button.id.charAt(button.id.length - 1)}`;
-                document.getElementById(contentId).classList.add('active');
+        //         button.classList.add('active');
+        //         const contentId = `content${button.id.charAt(button.id.length - 1)}`;
+        //         document.getElementById(contentId).classList.add('active');
+        //     });
+        // });
+
+        function showContentTab(index) {
+            const contents = document.querySelectorAll('.tab-content');
+            contents.forEach((content, i) => {
+                content.classList.remove('active');
+                if (i === index) {
+                    content.classList.add('active');
+                }
             });
-        });
+            const contentss = document.querySelectorAll('.tab-button');
+            contentss.forEach((contentsss, i) => {
+                contentsss.classList.remove('active');
+                if (i === index) {
+                    contentsss.classList.add('active');
+                }
+            });
+        }
         function showContent(index) {
             const contents = document.querySelectorAll('.main-content');
             contents.forEach((content, i) => {

@@ -538,7 +538,7 @@ class PlannedMissionResource extends Resource
                 ->modalHeading('Append this Planned Mission to Flight')
                 ->modalSubmitActionLabel('Append')
                 ->action(function ($record) {
-                    fligh::create([ 
+                    $flights = fligh::create([ 
                         'name' => $record->name, 
                         'start_date_flight' => $record->start_date_flight,
                         'end_date_flight' => $record->end_date_flight,
@@ -559,6 +559,13 @@ class PlannedMissionResource extends Resource
                         'fuel_used' => $record->fuel_used,
                         'teams_id' => $record->teams_id,
                     ]);
+                    if($flights){
+                        $flights->teams()->attach($record->teams_id);
+                        $flights->battreis()->attach($record->battreis);
+                        $flights->equidments()->attach($record->equidments);
+                        
+                    }
+                    
                     $record->update(['status' => 'append']);
                     Notification::make()
                         ->title('Flight Added')

@@ -4,6 +4,7 @@ namespace App\Filament\Pages\Tenancy;
 use App\Models\citie;
 use App\Models\countrie;
 use App\Models\team;
+use Auth;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Select;
@@ -11,6 +12,7 @@ use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Checkbox;
 use Filament\Forms\Components\TextArea;
 use Filament\Forms\Form;
+use Filament\Notifications\Notification;
 use Filament\Pages\Tenancy\EditTenantProfile;
 use Illuminate\Validation\Rule;
  
@@ -94,6 +96,21 @@ class EditTeamProfil extends EditTenantProfile
                 // ...
         
             ]);
+    }
+        public function mount():void
+        {
+            parent::mount();
+        $allowedRoles = ['super_admin', 'panel_user'];
+        $userRoles = Auth::user()->roles()->pluck('name')->toArray();
+
+        if (!array_intersect($allowedRoles, $userRoles)) {
+            Notification::make()
+                ->title('Access Denied')
+                ->danger()
+                ->body('You do not have permission to access this page.')
+                ->send();
+            abort(403, 'Unauthorized');
+        }
     }
     
 }
