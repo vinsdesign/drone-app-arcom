@@ -9,6 +9,7 @@ use Filament\Tables;
 use Filament\Resources\Pages\Page;
 use Filament\Tables\Actions\Action;
 use Filament\Tables\Columns\IconColumn;
+use Stichoza\GoogleTranslate\GoogleTranslate;
 
 class TeamsList extends Page implements Tables\Contracts\HasTable
 {
@@ -31,19 +32,19 @@ class TeamsList extends Page implements Tables\Contracts\HasTable
     {
         return [
             TextColumn::make('name')
-            ->label('PT Name')
+            ->label((new GoogleTranslate(session('locale') ?? 'en'))->translate('PT Name'))
             ->searchable(),
             TextColumn::make('owner')
-            ->label('Owner')
+            ->label((new GoogleTranslate(session('locale') ?? 'en'))->translate('Owner'))
             ->searchable(),
             TextColumn::make('customers_count')
-            ->label('Total Customers')
+            ->label((new GoogleTranslate(session('locale') ?? 'en'))->translate('Total Customers'))
             ->counts('customers'),
             TextColumn::make('flighs_count')
-            ->label('Total Flight')
+            ->label((new GoogleTranslate(session('locale') ?? 'en'))->translate('Total Flight'))
             ->counts('flighs'),
             TextColumn::make('total_flight_duration')
-            ->label('Total Flying Time')
+            ->label((new GoogleTranslate(session('locale') ?? 'en'))->translate('Total Flying Time'))
             ->getStateUsing(fn($record) => $record->total_flight_duration)
             ->sortable(),
             IconColumn::make('details')
@@ -57,8 +58,8 @@ class TeamsList extends Page implements Tables\Contracts\HasTable
     {
         return [
             Action::make('showDetails')
-                ->label('Show Details')
-                ->modalHeading('Details Data')
+                ->label((new GoogleTranslate(session('locale') ?? 'en'))->translate('Show Details'))
+                ->modalHeading((new GoogleTranslate(session('locale') ?? 'en'))->translate('Details Data'))
                 ->modalSubheading(fn ($record) => "{$record->name}")
                 ->modalContent(function ($record) {
                     return view('filament.modals.team-details', [

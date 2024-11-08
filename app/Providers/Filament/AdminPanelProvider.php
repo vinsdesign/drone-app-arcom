@@ -48,7 +48,7 @@ class AdminPanelProvider extends PanelProvider
             ->path('admin')
             ->login()
             ->registration()
-            ->spa()
+            // ->spa()
             //subscribe
             ->plugin(\TomatoPHP\FilamentSubscriptions\FilamentSubscriptionsPlugin::make())
             ->pages([

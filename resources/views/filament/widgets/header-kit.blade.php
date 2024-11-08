@@ -1,4 +1,5 @@
 @php
+use Stichoza\GoogleTranslate\GoogleTranslate;
     $user = Auth()->user()->Teams()->first()->id;
     $sumKits = App\Models\Kits::Where('teams_id',$user)->count('name');
 @endphp
@@ -14,8 +15,8 @@
             <div class="flex flex-col space-y-6 sm:flex-row sm:space-y-0 justify-between items-center">
                 <!-- Title Section -->
                 <div class="flex items-center space-x-4">
-                    <h1 class="text-2xl font-bold text-gray-800 dark:text-white">Kits</h1><br>
-                    <span class="text-lg font-medium text-gray-500 dark:text-gray-400 p-3">{{ $sumKits }} Total</span>
+                    <h1 class="text-2xl font-bold text-gray-800 dark:text-white">{!! GoogleTranslate::trans('Kits', session('locale') ?? 'en') !!}</h1><br>
+                    <span class="text-lg font-medium text-gray-500 dark:text-gray-400 p-3">{{ $sumKits }} {!! GoogleTranslate::trans('Total', session('locale') ?? 'en') !!}</span>
                 </div>
         
                 <!-- Status indicators (Airworthy, Maintenance, Retired) -->
@@ -26,11 +27,11 @@
                 @if (Auth::user()->can('create', App\Models\Kits::class)) 
                 <div class="flex space-x-4">
                     <a href="{{ route('filament.admin.resources.kits.create', ['tenant' => auth()->user()->teams()->first()->id]) }}"><button class="filament-button px-6 py-2 text-sm font-semibold text-white bg-primary-600 dark:bg-primary-500 border border-transparent rounded-md hover:bg-primary-700 dark:hover:bg-primary-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-600 dark:focus:ring-offset-gray-800">
-                        Add Kits</button></a> 
+                        {!! GoogleTranslate::trans('Add Kits', session('locale') ?? 'en') !!}</button></a> 
                 </div>
             @endif
             </div>
-            <h3 class="text-base font-medium text-gray-500 dark:text-gray-400">This section allows you to create and maintain your kit list. A kit is a pack of battery, equipment and drones.</h3>
+            <h3 class="text-base font-medium text-gray-500 dark:text-gray-400">{!! GoogleTranslate::trans('This section allows you to create and maintain your kit list. A kit is a pack of battery, equipment and drones.', session('locale') ?? 'en') !!}</h3>
         </div>
         
         

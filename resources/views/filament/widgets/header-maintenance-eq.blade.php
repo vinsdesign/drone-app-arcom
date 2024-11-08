@@ -1,4 +1,5 @@
 @php
+use Stichoza\GoogleTranslate\GoogleTranslate;
     $user = Auth()->user()->Teams()->first()->id;
     $maintenance = App\Models\maintence_eq::Where('teams_id',$user)->count('name');
     $inProgres = App\Models\maintence_eq::Where('teams_id',$user)->where('status','in_progress')->count('name');
@@ -16,24 +17,24 @@
         <div class="flex flex-col space-y-6 sm:flex-row sm:space-y-0 justify-between items-center">
             <!-- Title Section -->
             <div class="flex items-center space-x-4">
-                <h1 class="text-2xl font-bold text-gray-800 dark:text-white">Maintenance <br> Equipment & Batteries</h1><br>
-                <span class="text-lg font-medium text-gray-500 dark:text-gray-400 p-3">{{ $maintenance }} Total</span>
+                <h1 class="text-2xl font-bold text-gray-800 dark:text-white">{!! GoogleTranslate::trans('Maintenance', session('locale') ?? 'en') !!} <br> {!! GoogleTranslate::trans('Equipments & Batteries', session('locale') ?? 'en') !!}</h1><br>
+                <span class="text-lg font-medium text-gray-500 dark:text-gray-400 p-3">{{ $maintenance }} {!! GoogleTranslate::trans('Total', session('locale') ?? 'en') !!}</span>
             </div>
     
             <!-- Status indicators (Airworthy, Maintenance, Retired) -->
             <div class="flex space-x-12">
                 <div class="text-center p-3">
-                    <h2 class="text-sm font-semibold text-gray-500 dark:text-gray-400">Complete</h2>
+                    <h2 class="text-sm font-semibold text-gray-500 dark:text-gray-400">{!! GoogleTranslate::trans('Complete', session('locale') ?? 'en') !!}</h2>
                     <h1 class="text-3xl font-bold text-green-600 dark:text-green-400">{{ $complate }}</h1>
                 </div>
                 <br>
                 <div class="text-center p-3">
-                    <h2 class="text-sm font-semibold text-gray-500 dark:text-gray-400">In Progress</h2>
+                    <h2 class="text-sm font-semibold text-gray-500 dark:text-gray-400">{!! GoogleTranslate::trans('In Progress', session('locale') ?? 'en') !!}</h2>
                     <h1 class="text-3xl font-bold text-blue-600 dark:text-blue-400">{{ $inProgres }}</h1>
                 </div>
                 <br>
                 <div class="text-center p-3">
-                    <h2 class="text-sm font-semibold text-gray-500 dark:text-gray-400">Schedule</h2>
+                    <h2 class="text-sm font-semibold text-gray-500 dark:text-gray-400">{!! GoogleTranslate::trans('Schedule', session('locale') ?? 'en') !!}</h2>
                     <h1 class="text-3xl font-bold text-red-600 dark:text-red-300">{{ $schedule }}</h1>
                 </div>
             </div>
@@ -42,7 +43,7 @@
             @if (Auth::user()->can('create', App\Models\maintence_eq::class)) 
                 <div class="flex space-x-4">
                     <a href="{{ route('filament.admin.resources.maintenance-batteries.create', ['tenant' => auth()->user()->teams()->first()->id]) }}"><button class="filament-button px-6 py-2 text-sm font-semibold text-white bg-primary-600 dark:bg-primary-500 border border-transparent rounded-md hover:bg-primary-700 dark:hover:bg-primary-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-600 dark:focus:ring-offset-gray-800">
-                        Add Maintenance</button></a> 
+                        {!! GoogleTranslate::trans('Add Maintenance', session('locale') ?? 'en') !!}</button></a> 
                 </div>
             @endif
         </div>

@@ -20,6 +20,7 @@ use Filament\Infolists\Components\TextEntry;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Filament\Support\Colors\Color;
+use Stichoza\GoogleTranslate\GoogleTranslate;
 use View;
 
 class ProjectsResource extends Resource
@@ -32,6 +33,15 @@ class ProjectsResource extends Resource
     public static ?string $navigationGroup = ' ';
     protected static bool $isLazy = false;
 
+    public static function getNavigationLabel(): string
+    {
+        return GoogleTranslate::trans('Projects', session('locale') ?? 'en');
+    }
+    public static function getModelLabel(): string
+    {
+        return GoogleTranslate::trans('Projects', session('locale') ?? 'en');
+    }
+
     public static function form(Form $form): Form
     {
         $currentTeamId = auth()->user()->current_teams_id;
@@ -41,13 +51,13 @@ class ProjectsResource extends Resource
                     ->schema([
                         Forms\Components\Hidden::make('teams_id')
                         ->default(auth()->user()->teams()->first()->id ?? null),
-                        Forms\Components\TextInput::make('case')->label('Case')
+                        Forms\Components\TextInput::make('case')->label(GoogleTranslate::trans('Case', session('locale') ?? 'en'))
                             ->required()
                             ->maxLength(255),
-                        Forms\Components\TextInput::make('revenue')->label('Revenue')
+                        Forms\Components\TextInput::make('revenue')->label(GoogleTranslate::trans('Revenue', session('locale') ?? 'en'))
                             ->required()
                             ->numeric(),
-                        Forms\Components\Select::make('currencies_id')->label('Currency')
+                        Forms\Components\Select::make('currencies_id')->label(GoogleTranslate::trans('Currency', session('locale') ?? 'en'))
                         ->options(currencie::all()->mapWithKeys(function ($currency) {
                             return [$currency->id => "{$currency->name} - {$currency->iso}"];}))
                             ->searchable()
@@ -56,13 +66,13 @@ class ProjectsResource extends Resource
                                 $currentTeam = auth()->user()->teams()->first();
                                 return $currentTeam ? $currentTeam->currencies_id : null;
                             }),
-                        Forms\Components\Select::make('customers_id')->label('Customer Name') 
+                        Forms\Components\Select::make('customers_id')->label(GoogleTranslate::trans('Customer', session('locale') ?? 'en')) 
                             ->options(customer::where('teams_id', auth()->user()->teams()->first()->id)
                             ->pluck('name', 'id')
                             )->searchable()
-                            ->placeholder('Select an Customer')
+                            ->placeholder((new GoogleTranslate(session('locale') ?? 'en'))->translate('Select an Customer'))
                             ->required(),
-                        Forms\Components\TextArea::make('description')->label('Description')
+                        Forms\Components\TextArea::make('description')->label(GoogleTranslate::trans('Description', session('locale') ?? 'en'))
                             ->required()
                             ->maxLength(255)->columnSpanFull(),
 
@@ -75,9 +85,10 @@ class ProjectsResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('case')
+                    ->label(GoogleTranslate::trans('Case', session('locale') ?? 'en'))
                     ->searchable(),
                 Tables\Columns\TextColumn::make('flight_date')
-                    ->label('Last Flight Date')
+                    ->label(GoogleTranslate::trans('Last Flight Date', session('locale') ?? 'en'))
                     ->getStateUsing(function ($record) {
                         $lastFlight = $record->flighs()->orderBy('start_date_flight', 'desc')->first();
                         $totalFlights = $record->flighs()->count();
@@ -87,11 +98,14 @@ class ProjectsResource extends Resource
                     ->sortable()
                     ->html(),
                 Tables\Columns\TextColumn::make('revenue')
+                    ->label(GoogleTranslate::trans('Revenue', session('locale') ?? 'en'))
                     ->numeric()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('currencies.iso')
+                    ->label(GoogleTranslate::trans('Currencies', session('locale') ?? 'en'))
                     ->searchable(),
                 Tables\Columns\TextColumn::make('customers.name')
+                    ->label(GoogleTranslate::trans('Customers', session('locale') ?? 'en'))
                     ->numeric()
                     ->url(fn($record) => $record->customers_id ? route('filament.admin.resources.customers.index', [
                         'tenant' => Auth()->user()->teams()->first()->id,
@@ -99,10 +113,12 @@ class ProjectsResource extends Resource
                     ]):null)->color(Color::Blue)
                     ->sortable(),
                 Tables\Columns\TextColumn::make('created_at')
+                    ->label(GoogleTranslate::trans('Created at', session('locale') ?? 'en'))
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('updated_at')
+                    ->label(GoogleTranslate::trans('Updated at', session('locale') ?? 'en'))
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
@@ -159,22 +175,22 @@ class ProjectsResource extends Resource
         ->schema([
             Section::make('')
                 ->schema([
-                    TextEntry::make('case')->label('Case'),
-                    TextEntry::make('flight_date')->label('Last Flight Date')
+                    TextEntry::make('case')->label(GoogleTranslate::trans('Case', session('locale') ?? 'en')),
+                    TextEntry::make('flight_date')->label(GoogleTranslate::trans('Last Flight Date', session('locale') ?? 'en'))
                     ->getStateUsing(function ($record) {
                         $lastFlight = $record->flighs()->orderBy('start_date_flight', 'desc')->first();
                         $totalFlights = $record->flighs()->count();
                         $lastFlightDate = optional($lastFlight)->start_date_flight ? $lastFlight->start_date_flight : '';
                         return "({$totalFlights}) Flights {$lastFlightDate}";
                     }),
-                    TextEntry::make('revenue')->label('Revenue'),
-                    TextEntry::make('currencies.iso')->label('Currency'),
-                    TextEntry::make('customers.name')->label('Customers')
+                    TextEntry::make('revenue')->label(GoogleTranslate::trans('Revenue', session('locale') ?? 'en')),
+                    TextEntry::make('currencies.iso')->label(GoogleTranslate::trans('Currency', session('locale') ?? 'en')),
+                    TextEntry::make('customers.name')->label(GoogleTranslate::trans('Customers', session('locale') ?? 'en'))
                     ->url(fn($record) => $record->customers_id ? route('filament.admin.resources.customers.index', [
                         'tenant' => Auth()->user()->teams()->first()->id,
                         'record' => $record->customers_id,
                     ]):null)->color(Color::Blue),
-                    TextEntry::make('description')->label('Description'),
+                    TextEntry::make('description')->label(GoogleTranslate::trans('Description', session('locale') ?? 'en')),
                 ])->columns(2),
             Section::make('')
             ->schema([

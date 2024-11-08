@@ -20,14 +20,15 @@ use Filament\Notifications\Notification;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Filament\Support\Colors\Color;
+use Stichoza\GoogleTranslate\GoogleTranslate;
 
 class MaintenanceBatteryResource extends Resource
 {
     protected static ?string $model = maintence_eq::class;
 
-    protected static ?string $navigationLabel = 'Maintenance Equipment/Battery';
+    // protected static ?string $navigationLabel = 'Maintenance Equipment/Battery';
     protected static ?string $tenantRelationshipName = 'maintence_eqs';
-    protected static ?string $modelLabel = 'Maintenance Equipment/Battery';
+    // protected static ?string $modelLabel = 'Maintenance Equipment/Battery';
 
     protected static ?string $navigationIcon = 'heroicon-o-cog';
     public static ?string $tenantOwnershipRelationshipName = 'teams';
@@ -35,7 +36,14 @@ class MaintenanceBatteryResource extends Resource
     public static ?string $navigationGroup = 'Maintenance';
     protected static bool $isLazy = false;
 
-    
+    public static function getNavigationLabel(): string
+    {
+        return GoogleTranslate::trans('Maintenance Equipment/Battery', session('locale') ?? 'en');
+    }
+    public static function getModelLabel(): string
+    {
+        return GoogleTranslate::trans('Maintenance Equipment/Battery', session('locale') ?? 'en');
+    }
 
     public static function form(Form $form): Form
     {
@@ -47,45 +55,45 @@ class MaintenanceBatteryResource extends Resource
                         Forms\Components\Hidden::make('teams_id')
                         ->default(auth()->user()->teams()->first()->id ?? null),
                         Forms\Components\TextInput::make('name')
-                            ->label('Maintenance Description')
+                            ->label(GoogleTranslate::trans('Maintenance Description', session('locale') ?? 'en'))
                             ->maxLength(255),
                         Forms\Components\Select::make('equidment_id')
-                            ->label('Equipment')
+                            ->label(GoogleTranslate::trans('Equipment', session('locale') ?? 'en'))
                             ->options(function (callable $get) use ($currentTeamId) {
                                 return equidment::where('teams_id', $currentTeamId)->pluck('name', 'id');
                             })
                             ->searchable()
                             ->columnSpan(1),
                             Forms\Components\Select::make('battrei_id')
-                            ->label('Battery')
+                            ->label(GoogleTranslate::trans('Battery', session('locale') ?? 'en'))
                             ->options(function (callable $get) use ($currentTeamId) {
                                 return battrei::where('teams_id', $currentTeamId)->pluck('name', 'id');
                             })
                             ->searchable()
                             ->columnSpan(1),
                         Forms\Components\DatePicker::make('date')
-                            ->label('Maintenance Date')   
+                            ->label(GoogleTranslate::trans('Maintenance Date', session('locale') ?? 'en'))   
                             ->columnSpan(1),
                         Forms\Components\Select::make('status')
-                            ->label('Status')
+                            ->label(GoogleTranslate::trans('Status', session('locale') ?? 'en'))
                             ->options([
                                 'schedule'=> 'Schedule',
                                 'in_progress'=> 'In Progress',
                                 'completed'=> 'Completed',
                             ]),
                         Forms\Components\TextInput::make('cost')
-                            ->label('Expense Cost'),
+                            ->label(GoogleTranslate::trans('Expense Cost', session('locale') ?? 'en')),
                         Forms\Components\Select::make('currencies_id')
                         ->options(currencie::all()->mapWithKeys(function ($currency) {
                             return [$currency->id => "{$currency->name} - {$currency->iso}"];}))
                             ->searchable()
-                            ->label('Currency')
+                            ->label(GoogleTranslate::trans('Currency', session('locale') ?? 'en'))
                             ->default(function (){
                                 $currentTeam = auth()->user()->teams()->first();
                                 return $currentTeam ? $currentTeam->currencies_id : null;
                             }),
                         Forms\Components\TextArea::make('notes')
-                            ->label('Notes')
+                            ->label(GoogleTranslate::trans('Notes', session('locale') ?? 'en'))
                             ->columnSpanFull(),
                 ])->columns(3),
             ]);
@@ -96,22 +104,24 @@ class MaintenanceBatteryResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('name')
+                ->label(GoogleTranslate::trans('Name', session('locale') ?? 'en'))
                 ->searchable(),
                 Tables\Columns\TextColumn::make('equidment.name')
-                ->label('Equipment')
+                ->label(GoogleTranslate::trans('Equipment', session('locale') ?? 'en'))
                 ->url(fn($record) => $record->equidment_id?route('filament.admin.resources.equidments.index', [
                     'tenant' => Auth()->user()->teams()->first()->id,
                     'record' => $record->equidment_id,
                 ]):null)->color(Color::Blue)
                 ->searchable(),
                 Tables\Columns\TextColumn::make('battrei.name')
-                ->label('Battery')
+                ->label(GoogleTranslate::trans('Battery', session('locale') ?? 'en'))
                 ->url(fn($record) => $record->battrei_id?route('filament.admin.resources.battreis.index', [
                     'tenant' => Auth()->user()->teams()->first()->id,
                     'record' => $record->battrei_id,
                 ]):null)->color(Color::Blue)
                 ->searchable(),
                 Tables\Columns\TextColumn::make('date')
+                ->label(GoogleTranslate::trans('Date', session('locale') ?? 'en'))
                 ->date()
                 ->searchable()
                 ->formatStateUsing(function ($state, $record) {
@@ -142,6 +152,7 @@ class MaintenanceBatteryResource extends Resource
                 })
                 ->html(),
                 Tables\Columns\TextColumn::make('status')
+                ->label(GoogleTranslate::trans('Status', session('locale') ?? 'en'))
                 ->color(fn ($record) => match ($record->status){
                     'completed' => Color::Green,
                    'schedule' =>Color::Red,
@@ -149,8 +160,10 @@ class MaintenanceBatteryResource extends Resource
                  })
                 ->searchable(),
                 Tables\Columns\TextColumn::make('cost')
+                ->label(GoogleTranslate::trans('Cost', session('locale') ?? 'en'))
                 ->searchable(),
                 Tables\Columns\TextColumn::make('currencies.iso')
+                ->label(GoogleTranslate::trans('Currencies', session('locale') ?? 'en'))
                 ->searchable(),
                 // Tables\Columns\TextColumn::make('notes')
                 // ->searchable(), 
@@ -196,22 +209,22 @@ class MaintenanceBatteryResource extends Resource
     {
         return $infolist
         ->schema([
-            TextEntry::make('name')->label('Name'),
-            TextEntry::make('equidment.name')->label('Equipment')
+            TextEntry::make('name')->label(GoogleTranslate::trans('Name', session('locale') ?? 'en')),
+            TextEntry::make('equidment.name')->label(GoogleTranslate::trans('Equipment', session('locale') ?? 'en'))
                 ->url(fn($record) => $record->equidment_id?route('filament.admin.resources.equidments.index', [
                     'tenant' => Auth()->user()->teams()->first()->id,
                     'record' => $record->equidment_id,
                 ]):null)->color(Color::Blue),
-            TextEntry::make('battrei.name')->label('Battery')
+            TextEntry::make('battrei.name')->label(GoogleTranslate::trans('Battery', session('locale') ?? 'en'))
                 ->url(fn($record) => $record->battrei_id?route('filament.admin.resources.battreis.index', [
                     'tenant' => Auth()->user()->teams()->first()->id,
                     'record' => $record->battrei_id,
                 ]):null)->color(Color::Blue),
-            TextEntry::make('date')->label('Date'),
-            TextEntry::make('status')->label('Status'),
-            TextEntry::make('cost')->label('Cost'),
-            TextEntry::make('currencies.iso')->label('Currency'),
-            TextEntry::make('notes')->label('Notes'), 
+            TextEntry::make('date')->label(GoogleTranslate::trans('Date', session('locale') ?? 'en')),
+            TextEntry::make('status')->label(GoogleTranslate::trans('Status', session('locale') ?? 'en')),
+            TextEntry::make('cost')->label(GoogleTranslate::trans('Cost', session('locale') ?? 'en')),
+            TextEntry::make('currencies.iso')->label(GoogleTranslate::trans('Currency', session('locale') ?? 'en')),
+            TextEntry::make('notes')->label(GoogleTranslate::trans('Notes', session('locale') ?? 'en')), 
         ])->columns(3);
     }
 

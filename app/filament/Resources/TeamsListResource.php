@@ -7,15 +7,30 @@ use Filament\Tables;
 use Filament\Tables\Table;
 use App\Filament\Pages\CustomPage;
 use App\Filament\Pages\TeamsList;
+use Stichoza\GoogleTranslate\GoogleTranslate;
 
 class TeamsListResource extends Resource
 
 {
-    protected static ?string $navigationLabel = 'Teams List';
-    protected static ?string $navigationGroup = 'Teams List';
-    protected static ?string $modelLabel = 'Teams List';
+    // protected static ?string $navigationLabel = 'Teams List';
+    // protected static ?string $navigationGroup = 'Teams List';
+    // protected static ?string $modelLabel = 'Teams List';
     protected static ?string $navigationIcon = 'heroicon-c-list-bullet';
     protected static bool $isLazy = false;
+
+    public static function getNavigationLabel(): string
+    {
+        return GoogleTranslate::trans('Teams List', session('locale') ?? 'en');
+    }
+    public static function getModelLabel(): string
+    {
+        return GoogleTranslate::trans('Teams List', session('locale') ?? 'en');
+    }
+    public static function getNavigationGroup(): string
+    {
+        return GoogleTranslate::trans('Teams List', session('locale') ?? 'en');
+    }
+
     public static function getPages(): array
     {
         return [

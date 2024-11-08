@@ -32,23 +32,30 @@ use Carbon\Carbon;
 use Filament\Facades\Filament;
 use Filament\Forms\Components\Button;
 use Filament\Forms\Components\View;
+use Stichoza\GoogleTranslate\GoogleTranslate;
 
 
 class FlighResource extends Resource
 {
     protected static ?string $model = Fligh::class;
 
-
-
     public static ?string $tenantOwnershipRelationshipName = 'teams';
 
-    protected static ?string $navigationLabel = 'Flights' ;
-
-    Protected static ?string $modelLabel = 'Flights';
+    // protected static ?string $navigationLabel = 'Flights' ;
+    // protected static ?string $modelLabel = 'Flights';
     public static ?int $navigationSort = 4;
     protected static ?string $navigationIcon = 'heroicon-s-clipboard-document-list';
     public static ?string $navigationGroup = 'flight';
     protected static bool $isLazy = false;
+
+    public static function getNavigationLabel(): string
+    {
+        return GoogleTranslate::trans('Flights', session('locale') ?? 'en');
+    }
+    public static function getModelLabel(): string
+    {
+        return GoogleTranslate::trans('Flights', session('locale') ?? 'en');
+    }
 
 
     public static function form(Form $form): Form
@@ -60,9 +67,11 @@ class FlighResource extends Resource
                     ->description('')
                     ->schema([
                 Forms\Components\TextInput::make('name')
+                    ->label(GoogleTranslate::trans('Name', session('locale') ?? 'en'))
                     ->required()
                     ->maxLength(255),
-                Forms\Components\DateTimePicker::make('start_date_flight')->label('Start Date Flight')
+                Forms\Components\DateTimePicker::make('start_date_flight')
+                ->label(GoogleTranslate::trans('Start Date Flight', session('locale') ?? 'en'))
                 ->afterStateUpdated(function (callable $get, callable $set) {
                     $start = $get('start_date_flight');
                     $end = $get('end_date_flight');
@@ -73,7 +82,8 @@ class FlighResource extends Resource
                     }
                 })->reactive()
                     ->required(),
-                Forms\Components\DateTimePicker::make('end_date_flight')->label('End Date Flight')
+                Forms\Components\DateTimePicker::make('end_date_flight')
+                ->label(GoogleTranslate::trans('End Date Flight', session('locale') ?? 'en'))
                 ->afterStateUpdated(function (callable $get, callable $set) {
                     $start = $get('start_date_flight');
                     $end = $get('end_date_flight');
@@ -89,7 +99,8 @@ class FlighResource extends Resource
                     ->required(),
                 Forms\Components\Hidden::make('duration')
                     ->reactive(),
-                Forms\Components\Select::make('type')->label('Flight Type')
+                Forms\Components\Select::make('type')
+                    ->label(GoogleTranslate::trans('Flight Type', session('locale') ?? 'en'))
                     ->options([
                         'commercial-agriculture' => 'Commercial-Agriculture',
                         'commercial-inspection' => 'Commercial-Inspection',
@@ -117,7 +128,8 @@ class FlighResource extends Resource
                         return $currentTeam ? $currentTeam->flight_type : null;
                     })
                     ->required(),
-                Forms\Components\Select::make('ops')->label('Ops')
+                Forms\Components\Select::make('ops')
+                    ->label(GoogleTranslate::trans('Ops', session('locale') ?? 'en'))
                     ->options([
                         'vlos(manual)' => 'VLOS(Manual)',
                         'vlos_autonomous' => 'VLOS Autonomous',
@@ -131,11 +143,13 @@ class FlighResource extends Resource
                     ])
                     ->required(),
                 Forms\Components\TextInput::make('landings')
+                    ->label(GoogleTranslate::trans('Landings', session('locale') ?? 'en'))
                     ->required()
                     ->numeric(),
                 Forms\Components\Grid::make(1)->schema([
                     view::make('component.button-project')->extraAttributes(['class' => 'mr-6 custom-spacing']),
                     Forms\Components\Select::make('projects_id')
+                    ->label(GoogleTranslate::trans('Projects', session('locale') ?? 'en'))
                     ->relationship('projects', 'case')
                     ->required()
                     ->reactive()
@@ -171,7 +185,7 @@ class FlighResource extends Resource
                     ->options(function (callable $get) use ($currentTeamId) {
                         return fligh_location::where('teams_id', $currentTeamId)->pluck('name', 'id');
                     })
-                    ->label('Location')
+                    ->label(GoogleTranslate::trans('Location', session('locale') ?? 'en'))
                     ->searchable()
                     ->required(),
                 ])->columnSpan(2),
@@ -179,7 +193,7 @@ class FlighResource extends Resource
                 Forms\Components\Hidden::make('customers_id') 
                     ->required(),
                 Forms\Components\TextInput::make('customers_name')
-                    ->label('Customer Name')
+                    ->label(GoogleTranslate::trans('Customers Name', session('locale') ?? 'en'))
                     //->relationship('customers', 'name')
                     ->required()
                     ->disabled()
@@ -195,7 +209,7 @@ class FlighResource extends Resource
                     ->description('')
                     ->schema([
                         Forms\Components\Select::make('users_id')
-                        ->label('Pilot')
+                        ->label(GoogleTranslate::trans('Pilot', session('locale') ?? 'en'))
                         ->relationship('users', 'name', function (Builder $query, callable $get) {
                             $currentTeamId = auth()->user()->teams()->first()->id;
                             $startDate = $get('start_date_flight');
@@ -226,7 +240,8 @@ class FlighResource extends Resource
                         })->reactive()
                         ->afterStateUpdated(fn (callable $set) => $set('instructor', null))
                     ->required(),
-                Forms\Components\Select::make('instructor')->label('Instructor (optional)')
+                Forms\Components\Select::make('instructor')
+                ->label(GoogleTranslate::trans('Instructor (optional)', session('locale') ?? 'en'))
                 ->relationship('instructors', 'name', function (Builder $query, callable $get) {
                     $currentTeamId = auth()->user()->teams()->first()->id;
                     $startDate = $get('start_date_flight');
@@ -261,9 +276,11 @@ class FlighResource extends Resource
                     return $query;
                 })->reactive(),
                 Forms\Components\TextInput::make('vo')
+                    ->label(GoogleTranslate::trans('VO', session('locale') ?? 'en'))
                     ->required()
                     ->maxLength(255),
                 Forms\Components\TextInput::make('po')
+                    ->label(GoogleTranslate::trans('PO', session('locale') ?? 'en'))
                     ->required()
                     ->maxLength(255),
                 ])->columns(2),
@@ -278,7 +295,7 @@ class FlighResource extends Resource
                     //     $query->where('teams_id', $currentTeamId);
                     // })    
                     ->required()
-                    ->label('Drones')
+                    ->label(GoogleTranslate::trans('Drones', session('locale') ?? 'en'))
                     ->options(function (callable $get) use ($currentTeamId) { 
                         $startDate = $get('start_date_flight');
                         $endDate = $get('end_date_flight');
@@ -370,7 +387,7 @@ class FlighResource extends Resource
                 Forms\Components\Grid::make(1)->schema([
 
                 Forms\Components\Checkbox::make('show_all_kits') 
-                ->label('Show All Kits')
+                ->label(GoogleTranslate::trans('Show All Kits', session('locale') ?? 'en'))
                 ->reactive() 
                 ->afterStateUpdated(function ($state, callable $set) {
                     if ($state){
@@ -379,7 +396,7 @@ class FlighResource extends Resource
                 }),
                     //kits
                 Forms\Components\Select::make('kits_id')
-                ->label('Kits')
+                ->label(GoogleTranslate::trans('Kits', session('locale') ?? 'en'))
                 // ->relationship('kits', 'name', function (Builder $query) {
                 //     $currentTeamId = auth()->user()->teams()->first()->id;
                 //     $query->whereHas('teams', function (Builder $query) use ($currentTeamId){
@@ -445,16 +462,16 @@ class FlighResource extends Resource
                 
                 //end grid Kits
                 Forms\Components\TextInput::make('battery_name')
-                        ->label('Battery')
-                        ->helperText('Automatically filled when selecting kits')
+                        ->label(GoogleTranslate::trans('Battery', session('locale') ?? 'en'))
+                        ->helperText((new GoogleTranslate(session('locale') ?? 'en'))->translate('Automatically filled when selecting kits'))
                         ->disabled(), 
                 Forms\Components\TextInput::make('camera_gimbal')
-                        ->label('Camera/Gimbal')
-                        ->helperText('Automatically filled when selecting kits')
+                        ->label(GoogleTranslate::trans('Camera/Gimbal', session('locale') ?? 'en'))
+                        ->helperText((new GoogleTranslate(session('locale') ?? 'en'))->translate('Automatically filled when selecting kits'))
                         ->disabled(), 
                 Forms\Components\TextInput::make('others')
-                        ->helperText('Automatically filled when selecting kits')
-                        ->label('Others')
+                        ->helperText((new GoogleTranslate(session('locale') ?? 'en'))->translate('Automatically filled when selecting kits'))
+                        ->label(GoogleTranslate::trans('Others', session('locale') ?? 'en'))
                         ->disabled(),
                 
                 //grid battery
@@ -462,8 +479,8 @@ class FlighResource extends Resource
                     View::make('component.button-battery'),
 
 
-                Forms\Components\Select::make('battreis')->label('Battery')
-
+                Forms\Components\Select::make('battreis')
+                    ->label(GoogleTranslate::trans('Battery', session('locale') ?? 'en'))
                     // ->relationship('battreis', 'name', function (Builder $query){
                     //     $currentTeamId = auth()->user()->teams()->first()->id;;
                     //     $query->where('teams_id', $currentTeamId);
@@ -511,8 +528,8 @@ class FlighResource extends Resource
                 //grid equdiment
                 Forms\Components\Grid::make(1)->schema([
                     View::make('component.button-equidment'),
-                Forms\Components\Select::make('equidments')->label('Equipment')
-
+                Forms\Components\Select::make('equidments')
+                    ->label(GoogleTranslate::trans('Equipment', session('locale') ?? 'en'))
                     // ->relationship('equidments', 'name', function (Builder $query){
                     //     $currentTeamId = auth()->user()->teams()->first()->id;;
                     //     $query->where('teams_id', $currentTeamId);
@@ -553,10 +570,12 @@ class FlighResource extends Resource
 
                 
                 
-                Forms\Components\TextInput::make('pre_volt')->label('Pre Voltage')
+                Forms\Components\TextInput::make('pre_volt')
+                    ->label(GoogleTranslate::trans('Pre Voltage', session('locale') ?? 'en'))
                     ->numeric()    
                     ->required(),
                 Forms\Components\TextInput::make('fuel_used')
+                    ->label(GoogleTranslate::trans('Fuel Used', session('locale') ?? 'en'))
                     ->numeric()    
                     ->required()
                     ->placeholder('0')
@@ -575,24 +594,23 @@ class FlighResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('name')
+                    ->label(GoogleTranslate::trans('Name', session('locale') ?? 'en'))
                     ->searchable(),
-
-
                 Tables\Columns\TextColumn::make('start_date_flight')
-                    ->label('Start Flight')
+                    ->label(GoogleTranslate::trans('Start Flight', session('locale') ?? 'en'))
                     ->dateTime()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('end_date_flight')
-                    ->label('End Flight')
+                    ->label(GoogleTranslate::trans('End Flight', session('locale') ?? 'en'))
                     ->dateTime()
-
                     ->sortable(),
                 Tables\Columns\TextColumn::make('duration'),
                 Tables\Columns\TextColumn::make('fligh_location.name')
-                    ->label('Flight Location')
+                    ->label(GoogleTranslate::trans('Flight Location', session('locale') ?? 'en'))
                     ->numeric()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('projects.case')
+                    ->label(GoogleTranslate::trans('Projects Case', session('locale') ?? 'en'))
                     ->numeric()
                     ->url(fn($record) => $record->projects_id?route('filament.admin.resources.projects.index', [
                         'tenant' => Auth()->user()->teams()->first()->id,
@@ -600,6 +618,7 @@ class FlighResource extends Resource
                     ]):null)->color(Color::Blue)
                     ->sortable(),
                 Tables\Columns\TextColumn::make('projects.customers.name')
+                    ->label(GoogleTranslate::trans('Customers Name', session('locale') ?? 'en'))
                     ->numeric()
                     ->url(fn($record) => $record->customers_id?route('filament.admin.resources.customers.index', [
                         'tenant' => Auth()->user()->teams()->first()->id,
@@ -607,7 +626,7 @@ class FlighResource extends Resource
                     ]):null)->color(Color::Blue)
                     ->sortable(),
                 Tables\Columns\TextColumn::make('users.name')
-                    ->label('Pilot')
+                    ->label(GoogleTranslate::trans('Pilot', session('locale') ?? 'en'))
                     ->numeric()
                     ->url(fn($record) => $record->users_id?route('filament.admin.resources.users.view', [
                         'tenant' => Auth()->user()->teams()->first()->id,
@@ -615,10 +634,12 @@ class FlighResource extends Resource
                     ]):null)->color(Color::Blue)
                     ->sortable(),
                 Tables\Columns\TextColumn::make('created_at')
+                    ->label(GoogleTranslate::trans('Created at', session('locale') ?? 'en'))
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('updated_at')
+                    ->label(GoogleTranslate::trans('Updated at', session('locale') ?? 'en'))
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
@@ -678,19 +699,19 @@ class FlighResource extends Resource
         ->schema([
             Section::make('Flight Detail')
                 ->schema([
-                TextEntry::make('name')->label('Name'),
-                TextEntry::make('start_date_flight')->label('Date Flight'),
-                TextEntry::make('duration')->label('Duration'),
-                TextEntry::make('type')->label('Type'),
-                TextEntry::make('ops')->label('Ops'),
-                TextEntry::make('landings')->label('Landings'),
-                TextEntry::make('fligh_location.name')->label('Location'),
-                TextEntry::make('customers.name')->label('Customer')
+                TextEntry::make('name')->label(GoogleTranslate::trans('Name', session('locale') ?? 'en')),
+                TextEntry::make('start_date_flight')->label(GoogleTranslate::trans('Date Flight', session('locale') ?? 'en')),
+                TextEntry::make('duration')->label(GoogleTranslate::trans('Duration', session('locale') ?? 'en')),
+                TextEntry::make('type')->label(GoogleTranslate::trans('Type', session('locale') ?? 'en')),
+                TextEntry::make('ops')->label(GoogleTranslate::trans('Ops', session('locale') ?? 'en')),
+                TextEntry::make('landings')->label(GoogleTranslate::trans('Landings', session('locale') ?? 'en')),
+                TextEntry::make('fligh_location.name')->label(GoogleTranslate::trans('Location', session('locale') ?? 'en')),
+                TextEntry::make('customers.name')->label(GoogleTranslate::trans('Customer', session('locale') ?? 'en'))
                     ->url(fn($record) => $record->customers_id?route('filament.admin.resources.customers.index', [
                         'tenant' => Auth()->user()->teams()->first()->id,
                         'record' => $record->customers_id,
                     ]):null)->color(Color::Blue),
-                TextEntry::make('projects.case')->label('Project')
+                TextEntry::make('projects.case')->label(GoogleTranslate::trans('Project', session('locale') ?? 'en'))
                     ->url(fn($record) => $record->projects_id?route('filament.admin.resources.projects.index', [
                         'tenant' => Auth()->user()->teams()->first()->id,
                         'record' => $record->projects_id,
@@ -698,36 +719,34 @@ class FlighResource extends Resource
                 ])->columns(5),
             Section::make('Personnel')
                 ->schema([
-                TextEntry::make('users.name')->label('Pilot')
+                TextEntry::make('users.name')->label(GoogleTranslate::trans('Pilot', session('locale') ?? 'en'))
                     ->url(fn($record) => $record->users_id?route('filament.admin.resources.users.view', [
                         'tenant' => Auth()->user()->teams()->first()->id,
                         'record' => $record->users_id,
                     ]):null)->color(Color::Blue),
-                TextEntry::make('instructors.name')->label('Instructor'),
-                TextEntry::make('vo')->label('VO'),
-                TextEntry::make('po')->label('PO'),
+                TextEntry::make('instructors.name')->label(GoogleTranslate::trans('Instructor', session('locale') ?? 'en')),
+                TextEntry::make('vo')->label(GoogleTranslate::trans('VO', session('locale') ?? 'en')),
+                TextEntry::make('po')->label(GoogleTranslate::trans('PO', session('locale') ?? 'en')),
                 ])->columns(4),
             Section::make('Drone & Equipments')
                 ->schema([
-                TextEntry::make('kits.name')->label('Kits'),
-                //TextEntry::make('battery_name')->label('Kits Battery'),
-                // TextEntry::make('kits.equidment.type')->label('Kits Equipments (Camera) '),
-                TextEntry::make('drones.name')->label('Drone')
+                TextEntry::make('kits.name')->label(GoogleTranslate::trans('Kits', session('locale') ?? 'en')),
+                TextEntry::make('drones.name')->label(GoogleTranslate::trans('Drone', session('locale') ?? 'en'))
                 ->url(fn($record) => $record->users_id?route('filament.admin.resources.drones.view', [
                     'tenant' => Auth()->user()->teams()->first()->id,
                     'record' => $record->users_id,
                 ]):null)->color(Color::Blue),
-                TextEntry::make('battreis.name')->label('Battery')
+                TextEntry::make('battreis.name')->label(GoogleTranslate::trans('Battery', session('locale') ?? 'en'))
                 ->url(fn($record) => $record->users_id?route('filament.admin.resources.battreis.view', [
                     'tenant' => Auth()->user()->teams()->first()->id,
                     'record' => $record->users_id,
                 ]):null)->color(Color::Blue),
-                TextEntry::make('equidments.name')->label('Equipment')->url(fn($record) => $record->users_id?route('filament.admin.resources.equidments.view', [
+                TextEntry::make('equidments.name')->label(GoogleTranslate::trans('Equipment', session('locale') ?? 'en'))->url(fn($record) => $record->users_id?route('filament.admin.resources.equidments.view', [
                     'tenant' => Auth()->user()->teams()->first()->id,
                     'record' => $record->users_id,
                 ]):null)->color(Color::Blue),
-                TextEntry::make('pre_volt')->label('Pre-Voltage'),
-                TextEntry::make('fuel_used')->label('Fuel Used'),
+                TextEntry::make('pre_volt')->label(GoogleTranslate::trans('Pre-Voltage', session('locale') ?? 'en')),
+                TextEntry::make('fuel_used')->label(GoogleTranslate::trans('Fuel Used', session('locale') ?? 'en')),
                 ])->columns(4)
         ]);
     }
