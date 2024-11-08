@@ -6,14 +6,29 @@ use Filament\Pages\Page;
 use Filament\Tables;
 use Filament\Tables\Table;
 use App\Filament\Pages\CustomPage;
+use Stichoza\GoogleTranslate\GoogleTranslate;
 
 
 class ContactResource extends Resource
 
 {
-    protected static ?string $navigationLabel = 'Contact Us';
-    protected static ?string $navigationGroup = 'Contact';
-    protected static ?string $modelLabel = 'Contact';
+    // protected static ?string $navigationLabel = 'Contact Us';
+    // protected static ?string $navigationGroup = 'Contact';
+    // protected static ?string $modelLabel = 'Contact';
+
+    public static function getNavigationLabel(): string
+    {
+        return GoogleTranslate::trans('Contact Us', session('locale') ?? 'en');
+    }
+    public static function getModelLabel(): string
+    {
+        return GoogleTranslate::trans('Contact', session('locale') ?? 'en');
+    }
+    public static function getNavigationGroup(): string
+    {
+        return GoogleTranslate::trans('Contact', session('locale') ?? 'en');
+    }
+
     protected static ?string $navigationIcon = 'heroicon-m-chat-bubble-left-right';
     protected static bool $isLazy = false;
     public static function getPages(): array

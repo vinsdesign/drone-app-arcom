@@ -1,4 +1,5 @@
 @php
+    use Stichoza\GoogleTranslate\GoogleTranslate;
     $user = Auth()->user()->Teams()->first()->id;
     $sumPerson = DB::table('team_user')->where('team_id', $user)->count('user_id');
 @endphp
@@ -14,8 +15,8 @@
             <div class="flex flex-col space-y-6 sm:flex-row sm:space-y-0 justify-between items-center">
                 <!-- Title Section -->
                 <div class="flex items-center space-x-4">
-                    <h1 class="text-2xl font-bold text-gray-800 dark:text-white">Personels</h1><br>
-                    <span class="text-lg font-medium text-gray-500 dark:text-gray-400 p-3">{{ $sumPerson}} Total</span>
+                    <h1 class="text-2xl font-bold text-gray-800 dark:text-white">{!! GoogleTranslate::trans('Personnels', session('locale') ?? 'en') !!}</h1><br>
+                    <span class="text-lg font-medium text-gray-500 dark:text-gray-400 p-3">{{ $sumPerson}} {!! GoogleTranslate::trans('Total', session('locale') ?? 'en') !!}</span>
                 </div>
         
                 <!-- Status indicators (Airworthy, Maintenance, Retired) -->
@@ -26,7 +27,7 @@
                 @if (Auth::user()->can('create', App\Models\user::class)) 
                 <div class="flex space-x-4">
                     <a href="{{ route('filament.admin.resources.users.create', ['tenant' => auth()->user()->teams()->first()->id]) }}"><button class="filament-button px-6 py-2 text-sm font-semibold text-white bg-primary-600 dark:bg-primary-500 border border-transparent rounded-md hover:bg-primary-700 dark:hover:bg-primary-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-600 dark:focus:ring-offset-gray-800">
-                        Add Person</button></a> 
+                        {!! GoogleTranslate::trans('Add Person', session('locale') ?? 'en') !!}</button></a> 
                 </div>
             @endif
             </div>
