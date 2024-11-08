@@ -2,6 +2,7 @@
 
 use App\Filament\Pages\Report;
 use App\Filament\Pages\Settings;
+use App\Http\Controllers\createProject;
 use App\Http\Controllers\importDefaultValue;
 use Illuminate\Support\Facades\Route;
 use Filament\Http\Livewire\Auth\Login;
@@ -32,6 +33,7 @@ Route::post('/default-value',[importDefaultValue::class,'store'])->name('default
 Route::get('/flight-project/{project_id}', function(){
     return view('component.flight-project');
 })->name('flight-peroject');
+Route::post('/create-project',[createProject::class,'store'])->name('create-project');
 
 //language change
 Route::post('/change-language', [LanguageController::class, 'changeLanguage'])->name('change.language');

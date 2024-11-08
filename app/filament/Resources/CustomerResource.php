@@ -9,6 +9,7 @@ use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
+use Filament\Tables\Columns\Layout\View;
 use Filament\Tables\Columns\ViewColumn;
 use Filament\Tables\Table;
 use Filament\Infolists\Infolist;
@@ -98,52 +99,45 @@ class CustomerResource extends Resource
         return $table
             
             ->columns([
-            //     Tables\Columns\TextColumn::make('id')
-            // // Tables\columns\Layout\View::make('component.table.table-customer')
-            // ->view('component.table.table-customer')
-            // ->extraAttributes(['record' => fn ($record) => $record]),
+                Tables\Columns\TextColumn::make('id')
+                ->formatStateUsing(fn ($record) => view('component.table.table-customer', ['record' => $record]))
+                ->extraAttributes(['class' => 'w-full'])
+                ->disableClick(),
+    
+                    Tables\Columns\TextColumn::make('name')
+                    ->searchable()
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
 
-        // Tables\Columns\TextColumn::make('name')
-        // ->searchable()
-        // ->sortable()
-        // // ->toggleable(isToggledHiddenByDefault: true),
+                    Tables\Columns\TextColumn::make('phone')
+                        ->searchable()
+                        ->sortable()
+                        ->toggleable(isToggledHiddenByDefault: true),
 
-        // Tables\Columns\TextColumn::make('phone')
-        //     ->searchable()
-        //     ->sortable()
-        //     // ->toggleable(isToggledHiddenByDefault: true),
-
-        // Tables\Columns\TextColumn::make('email')
-        //     ->searchable()
-        //     ->sortable()
-        //     ->toggleable(isToggledHiddenByDefault: true),
+                    Tables\Columns\TextColumn::make('email')
+                        ->searchable()
+                        ->sortable()
+                        ->toggleable(isToggledHiddenByDefault: true),
 
 
-                Tables\Columns\TextColumn::make('name')
-                ->label(GoogleTranslate::trans('name', session('locale') ?? 'en'))
-                ->searchable(),
-            Tables\Columns\TextColumn::make('phone')
-                ->label(GoogleTranslate::trans('phone', session('locale') ?? 'en'))
-                ->searchable(),
-            Tables\Columns\TextColumn::make('email')
-                ->label(GoogleTranslate::trans('email', session('locale') ?? 'en'))
-                ->searchable(),
-            Tables\Columns\TextColumn::make('address')
-                ->label(GoogleTranslate::trans('address', session('locale') ?? 'en'))
-                ->searchable(),
-            Tables\Columns\TextColumn::make('description')
-                ->label(GoogleTranslate::trans('description', session('locale') ?? 'en'))
-                ->searchable(),
-            Tables\Columns\TextColumn::make('created_at')
-                ->label(GoogleTranslate::trans('created_at', session('locale') ?? 'en'))
-                ->dateTime()
-                ->sortable()
-                ->toggleable(isToggledHiddenByDefault: true),
-            Tables\Columns\TextColumn::make('updated_at')
-                ->label(GoogleTranslate::trans('updated_at', session('locale') ?? 'en'))
-                ->dateTime()
-                ->sortable()
-                ->toggleable(isToggledHiddenByDefault: true),
+                        //     Tables\Columns\TextColumn::make('name')
+                        //     ->searchable(),
+                        // Tables\Columns\TextColumn::make('phone')
+                        //     ->searchable(),
+                        // Tables\Columns\TextColumn::make('email')
+                        //     ->searchable(),
+                        // Tables\Columns\TextColumn::make('address')
+                        //     ->searchable(),
+                        // Tables\Columns\TextColumn::make('description')
+                        //     ->searchable(),
+                        // Tables\Columns\TextColumn::make('created_at')
+                        //     ->dateTime()
+                        //     ->sortable()
+                        //     ->toggleable(isToggledHiddenByDefault: true),
+                        // Tables\Columns\TextColumn::make('updated_at')
+                        //     ->dateTime()
+                        //     ->sortable()
+                        //     ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
                 //

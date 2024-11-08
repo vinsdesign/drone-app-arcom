@@ -18,16 +18,12 @@
             //end maintenance
 
             //flight
-            $flight = App\Models\fligh::whereHas('teams', function ($query) use ($currentTeamId){
-            $query->where('id', $currentTeamId);
-            })->orderBy('created_at', 'desc')
+            $flight = App\Models\fligh::Where('teams_id',$currentTeamId)->orderBy('created_at', 'desc')
             ->limit(20)
             ->get();
             //end flight
             //inventory
-            $inventory = App\Models\fligh::whereHas('teams', function ($query) use ($currentTeamId){
-            $query->where('id', $currentTeamId);
-            })->orderBy('created_at', 'desc')->where('kits_id',null)
+            $inventory = App\Models\fligh::Where('teams_id',$currentTeamId)
             ->with(['battreis','equidments'])
             ->limit(20)
             ->get();

@@ -11,6 +11,7 @@ use App\Filament\Widgets\HeaderDasboard;
 use App\Filament\Widgets\InventoryOverview;
 use App\Filament\Widgets\InventoryStats;
 use App\Models\Team;
+use Auth;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\DisableBladeIconComponents;
 use Filament\Http\Middleware\DispatchServingFilamentEvent;
@@ -93,6 +94,10 @@ class AdminPanelProvider extends PanelProvider
             ->tenantProfile(EditTeamProfil::class)
             ->tenantMenuItems([
                 'register' => MenuItem::make()->label('Register new team')->hidden(),
+                'profile' => MenuItem::make()->label('Edit Team Profile')->visible(function () {
+                    $roles = Auth::user()->roles()->pluck('name');
+                    return $roles->contains('super_admin') || $roles->contains('panel_user');
+                }),
                 // ...
             ])
             ->colors([

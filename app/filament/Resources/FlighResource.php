@@ -147,7 +147,8 @@ class FlighResource extends Resource
                     ->required()
                     ->numeric(),
                 Forms\Components\Grid::make(1)->schema([
-                    view::make('component.button-project')->extraAttributes(['class' => 'mr-6 custom-spacing']),
+                    view::make('component.button-project')
+                    ->extraAttributes(['class' => 'mr-6 custom-spacing']),
                     Forms\Components\Select::make('projects_id')
                     ->label(GoogleTranslate::trans('Projects', session('locale') ?? 'en'))
                     ->relationship('projects', 'case')

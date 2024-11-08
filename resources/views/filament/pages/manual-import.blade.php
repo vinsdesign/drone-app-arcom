@@ -47,6 +47,10 @@ $currentTeamId = auth()->user()->teams()->first()->id;
     }
 </style>
 </head>
+{{-- @php 
+$test =Auth()->user()->roles()->pluck('name');    
+dd($test)
+@endphp --}}
 <div class="block min-h-screen w-full">
     <div class="w-full p-4 bg-white dark:bg-gray-800 shadow-lg rounded-lg">
         <!-- Top Bar -->

@@ -74,7 +74,7 @@ class fligh extends Model
         return $this->belongsToMany(Equidment::class, 'fligh_equidment', 'fligh_id', 'equidment_id');
     }
     public function teams(){
-        return $this->belongsTo(Team::class);
+        return $this->belongsToMany(Team::class, 'fligh_team',  'fligh_id','team_id');
     }
     public function kits()
     {

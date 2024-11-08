@@ -107,6 +107,7 @@
         </div>
     
         <!-- Menu 2 -->
+        @if (Auth::user()->roles()->pluck('name')->contains('super_admin') || (Auth::user()->roles()->pluck('name')->contains('panel_user')))
         <div class="main-button bg-white dark:bg-gray-800 shadow dark:shadow-lg rounded-lg p-4 text-center hover:shadow-lg dark:hover:shadow-xl transition-shadow cursor-pointer" onclick="showContent(1)">
             <div class="mb-2 text-gray-800 dark:text-gray-200">
                 <x-heroicon-s-currency-dollar class="w-8 h-8 mx-auto" />
@@ -114,7 +115,7 @@
             <h2 class="text-lg font-semibold text-gray-800 dark:text-gray-200">{!! GoogleTranslate::trans('Currency', session('locale') ?? 'en') !!}</h2>
             <p class="text-gray-600 dark:text-gray-400 mt-1">{!! GoogleTranslate::trans('Manage your currency here', session('locale') ?? 'en') !!}</p>
         </div>
-    
+        @endif
         <!-- Menu 3 -->
         <div class="main-button bg-white dark:bg-gray-800 shadow dark:shadow-lg rounded-lg p-4 text-center hover:shadow-lg dark:hover:shadow-xl transition-shadow" onclick="showContent(2)">
             <div class="text-yellow-500 dark:text-yellow-400 mb-2">
@@ -133,12 +134,15 @@
         <div class="tab-container grid grid-cols-1 md:grid-cols-4 gap-5 p-5 rounded-lg bg-white dark:bg-gray-900 border border-gray-300 dark:border-gray-700">
             <!-- Tab buttons on the left -->
             <div class="tab-buttons flex flex-col border-r border-gray-300 dark:border-gray-700 p-4 space-y-2">
+
                 <h1 class="text-lg font-bold border-b border-gray-500 pb-2">{!! GoogleTranslate::trans('Setting', session('locale') ?? 'en') !!}</h1>
-                <button id="tab0" class="tab-button active border border-gray-300 dark:border-gray-700 rounded-lg py-2 px-4 text-gray-800 dark:text-gray-200">{!! GoogleTranslate::trans('Profile', session('locale') ?? 'en') !!}</button>
-                <button id="tab1" class="tab-button border border-gray-300 dark:border-gray-700 rounded-lg py-2 px-4 text-gray-800 dark:text-gray-200">{!! GoogleTranslate::trans('Organization', session('locale') ?? 'en') !!}</button>
-                <button id="tab2" class="tab-button border border-gray-300 dark:border-gray-700 rounded-lg py-2 px-4 text-gray-800 dark:text-gray-200">{!! GoogleTranslate::trans('Import Rules', session('locale') ?? 'en') !!}</button>
-                <button id="tab3" class="tab-button border border-gray-300 dark:border-gray-700 rounded-lg py-2 px-4 text-gray-800 dark:text-gray-200">{!! GoogleTranslate::trans('API', session('locale') ?? 'en') !!}</button>
-                <button id="tab4" class="tab-button border border-gray-300 dark:border-gray-700 rounded-lg py-2 px-4 text-gray-800 dark:text-gray-200">{!! GoogleTranslate::trans('Billing', session('locale') ?? 'en') !!}</button>
+                <button id="tab0" class="tab-button active border border-gray-300 dark:border-gray-700 rounded-lg py-2 px-4 text-gray-800 dark:text-gray-200" onclick="showContentTab(0)">{!! GoogleTranslate::trans('Profile', session('locale') ?? 'en') !!}</button>
+                @if (Auth::user()->roles()->pluck('name')->contains('super_admin') || (Auth::user()->roles()->pluck('name')->contains('panel_user')))
+                    <button id="tab1" class="tab-button border border-gray-300 dark:border-gray-700 rounded-lg py-2 px-4 text-gray-800 dark:text-gray-200" onclick="showContentTab(1)">{!! GoogleTranslate::trans('Organization', session('locale') ?? 'en') !!</button>
+                @endif
+                <button id="tab2" class="tab-button border border-gray-300 dark:border-gray-700 rounded-lg py-2 px-4 text-gray-800 dark:text-gray-200" onclick="showContentTab(2)">{!! GoogleTranslate::trans('Import Rules', session('locale') ?? 'en') !!}</button>
+                <button id="tab3" class="tab-button border border-gray-300 dark:border-gray-700 rounded-lg py-2 px-4 text-gray-800 dark:text-gray-200" onclick="showContentTab(3)">{!! GoogleTranslate::trans('API', session('locale') ?? 'en') !!}</button>
+                <button id="tab4" class="tab-button border border-gray-300 dark:border-gray-700 rounded-lg py-2 px-4 text-gray-800 dark:text-gray-200" onclick="showContentTab(4)">{!! GoogleTranslate::trans('Billing', session('locale') ?? 'en') !!}</button>
             </div>
     
             <!-- Tab content on the right -->
@@ -160,7 +164,7 @@
                     
                     <ul class="list-disc pl-5 mb-6">
                         <li><a href="{{route('filament.admin.resources.manual-imports.index',[Auth()->user()->teams()->first()->id])}}" class="text-blue-600 dark:text-blue-400 hover:underline">{!! GoogleTranslate::trans('Manual Multiple Importer', session('locale') ?? 'en') !!}</a></li>
-                        <li><a href="#" class="text-blue-600 dark:text-blue-400 hover:underline">{!! GoogleTranslate::trans('Dji Cloud Importer', session('locale') ?? 'en') !!}</a></li>
+                        <li ><a href="#" class="text-blue-600 dark:text-blue-400 hover:underline" onclick="showContentTab(3)">{!! GoogleTranslate::trans('Dji Cloud Importer', session('locale') ?? 'en') !!}</a></li>
                     </ul>
                     <h1 class="text-2xl font-semibold mb-4 text-gray-800 dark:text-gray-200">{!! GoogleTranslate::trans('Default Value', session('locale') ?? 'en') !!}</h1>
                     <form class="space-y-4" action="{{route('default-value')}}" method="POST">
@@ -341,16 +345,33 @@
     
     <script>
         // JavaScript to handle active tab button and content display
-        document.querySelectorAll('.tab-button').forEach(button => {
-            button.addEventListener('click', () => {
-                document.querySelectorAll('.tab-button').forEach(btn => btn.classList.remove('active'));
-                document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+        // document.querySelectorAll('.tab-button').forEach(button => {
+        //     button.addEventListener('click', () => {
+        //         document.querySelectorAll('.tab-button').forEach(btn => btn.classList.remove('active'));
+        //         document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
                 
-                button.classList.add('active');
-                const contentId = `content${button.id.charAt(button.id.length - 1)}`;
-                document.getElementById(contentId).classList.add('active');
+        //         button.classList.add('active');
+        //         const contentId = `content${button.id.charAt(button.id.length - 1)}`;
+        //         document.getElementById(contentId).classList.add('active');
+        //     });
+        // });
+
+        function showContentTab(index) {
+            const contents = document.querySelectorAll('.tab-content');
+            contents.forEach((content, i) => {
+                content.classList.remove('active');
+                if (i === index) {
+                    content.classList.add('active');
+                }
             });
-        });
+            const contentss = document.querySelectorAll('.tab-button');
+            contentss.forEach((contentsss, i) => {
+                contentsss.classList.remove('active');
+                if (i === index) {
+                    contentsss.classList.add('active');
+                }
+            });
+        }
         function showContent(index) {
             const contents = document.querySelectorAll('.main-content');
             contents.forEach((content, i) => {
