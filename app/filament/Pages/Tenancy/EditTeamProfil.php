@@ -33,8 +33,8 @@ class EditTeamProfil extends EditTenantProfile
                 ->schema([
                     FileUpload::make('avatar_url')->label(GoogleTranslate::trans('Your Avatar', session('locale')?? 'en'))
                     ->acceptedFileTypes(['image/jpeg', 'image/png', 'image/gif'])
-                    ->helperText((new GoogleTranslate(session('locale') ?? 'en'))->translate('Please choose image type jpg/jpeg/png')),
-                    TextInput::make('name')->label(GoogleTranslate::trans('Organization Name', session('locale') ?? 'en'))->columnSpan(2),
+                    ->helperText((new GoogleTranslate(session('locale')?? 'en' ))->translate('Please choose image type jpg/jpeg/png')),
+                    TextInput::make('name')->label(GoogleTranslate::trans('Organization Name', session('locale')?? 'en'))->columnSpan(2),
                     TextInput::make('email')->email()->label(GoogleTranslate::trans('Email Address', session('locale')?? 'en'))
                     ->rules(function ($get) {
                         return [
@@ -69,7 +69,7 @@ class EditTeamProfil extends EditTenantProfile
                         ->options(countrie::all()->pluck('name','id'))
                         ->reactive()
                         ->afterStateUpdated(fn(callable $set)=>$set('cities_id',null))
-                        ->placeholder((new GoogleTranslate(session('locale') ?? 'en'))->translate('Select a Country'))
+                        ->placeholder((new GoogleTranslate(session('locale')?? 'en' ))->translate('Select a Country'))
                         ->searchable()->columnSpan(2),
                     //end
                     //city
@@ -83,7 +83,7 @@ class EditTeamProfil extends EditTenantProfile
                         })
                     ->searchable()
                     ->reactive()
-                    ->placeholder((new GoogleTranslate(session('locale') ?? 'en'))->translate('Select a City'))
+                    ->placeholder((new GoogleTranslate(session('locale')?? 'en'))->translate('Select a City'))
                     ->disabled(fn ($get) => !$get('countries_id')),
                     //end
                     TextInput::make('postal_code')->label(GoogleTranslate::trans('Postal Code', session('locale')?? 'en')),

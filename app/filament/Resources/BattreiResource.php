@@ -172,13 +172,13 @@ class BattreiResource extends Resource
                     ->getStateUsing(function ($record) {
                        $flights = $record->fligh()
                            ->whereHas('teams', function ($query) {
-                               $query->where('id', auth()->user()->teams()->first()->id);
+                               $query->where('teams.id', auth()->user()->teams()->first()->id);
                            })
                            ->get()
                            ->merge(
                                $record->kits()->with(['fligh' => function ($query) {
                                    $query->whereHas('teams', function ($query) {
-                                       $query->where('id', auth()->user()->teams()->first()->id);
+                                       $query->where('teams.id', auth()->user()->teams()->first()->id);
                                    });
                                }])->get()->pluck('fligh')->flatten()
                            );

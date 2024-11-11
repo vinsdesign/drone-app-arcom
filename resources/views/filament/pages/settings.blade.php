@@ -339,6 +339,10 @@
         </form>
     </div>
 </div>
+<script>
+    document.getElementById('maincontent2').style.display = 'none';
+</script>
+
 
 
 </div>
