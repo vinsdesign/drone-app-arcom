@@ -28,7 +28,7 @@ class Projects extends Model
         return $this->hasMany(Incident::class);
     }
     public function teams(){
-        return $this->belongsTo(Team::class);
+        return $this->belongsToMany(Team::class,'projects_team',  'projects_id','team_id');
     }
     public function flight_locations()
     {

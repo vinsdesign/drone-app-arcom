@@ -138,7 +138,7 @@
                 <h1 class="text-lg font-bold border-b border-gray-500 pb-2">{!! GoogleTranslate::trans('Setting', session('locale') ?? 'en') !!}</h1>
                 <button id="tab0" class="tab-button active border border-gray-300 dark:border-gray-700 rounded-lg py-2 px-4 text-gray-800 dark:text-gray-200" onclick="showContentTab(0)">{!! GoogleTranslate::trans('Profile', session('locale') ?? 'en') !!}</button>
                 @if (Auth::user()->roles()->pluck('name')->contains('super_admin') || (Auth::user()->roles()->pluck('name')->contains('panel_user')))
-                    <button id="tab1" class="tab-button border border-gray-300 dark:border-gray-700 rounded-lg py-2 px-4 text-gray-800 dark:text-gray-200" onclick="showContentTab(1)">{!! GoogleTranslate::trans('Organization', session('locale') ?? 'en') !!</button>
+                    <button id="tab1" class="tab-button border border-gray-300 dark:border-gray-700 rounded-lg py-2 px-4 text-gray-800 dark:text-gray-200" onclick="showContentTab(1)">{!! GoogleTranslate::trans('Organization', session('locale') ?? 'en') !!}</button>
                 @endif
                 <button id="tab2" class="tab-button border border-gray-300 dark:border-gray-700 rounded-lg py-2 px-4 text-gray-800 dark:text-gray-200" onclick="showContentTab(2)">{!! GoogleTranslate::trans('Import Rules', session('locale') ?? 'en') !!}</button>
                 <button id="tab3" class="tab-button border border-gray-300 dark:border-gray-700 rounded-lg py-2 px-4 text-gray-800 dark:text-gray-200" onclick="showContentTab(3)">{!! GoogleTranslate::trans('API', session('locale') ?? 'en') !!}</button>

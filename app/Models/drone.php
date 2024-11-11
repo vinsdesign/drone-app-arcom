@@ -58,7 +58,7 @@ class drone extends Model
     }
 
     public function teams(){
-        return $this->belongsTo(Team::class);
+        return $this->belongsToMany(Team::class,'drone_team','drone_id','team_id');
     }
     public function kits()
     {

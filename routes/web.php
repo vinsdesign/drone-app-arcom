@@ -2,6 +2,7 @@
 
 use App\Filament\Pages\Report;
 use App\Filament\Pages\Settings;
+use App\Http\Controllers\buttonPopUpCreate;
 use App\Http\Controllers\createProject;
 use App\Http\Controllers\importDefaultValue;
 use Illuminate\Support\Facades\Route;
@@ -33,7 +34,11 @@ Route::post('/default-value',[importDefaultValue::class,'store'])->name('default
 Route::get('/flight-project/{project_id}', function(){
     return view('component.flight-project');
 })->name('flight-peroject');
-Route::post('/create-project',[createProject::class,'store'])->name('create-project');
+Route::post('/create-project',[buttonPopUpCreate::class,'buttonProject'])->name('create-project');
+Route::post('/create-customer',[buttonPopUpCreate::class,'buttonDrone'])->name('create-drone');
+Route::post('/create-battrei',[buttonPopUpCreate::class,'buttonBattrei'])->name('create-battrei');
+Route::post('/create-equipment',[buttonPopUpCreate::class,'buttonEquipment'])->name('create-equipment');
+Route::post('/create-location',[buttonPopUpCreate::class,'buttonLocation'])->name('create-Location');
 
 //language change
 Route::post('/change-language', [LanguageController::class, 'changeLanguage'])->name('change.language');
