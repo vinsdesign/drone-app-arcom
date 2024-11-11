@@ -44,7 +44,7 @@ class equidment extends Model
         return $this->hasMany(maintence_eq::class);
     }
     public function teams(){
-        return $this->belongsTo(Team::class);
+        return $this->belongsToMany(Team::class,'equidment_team','equidment_id','team_id');
     }
     public function kits(){
         return $this->belongsToMany(kits::class, 'equidment_kits');

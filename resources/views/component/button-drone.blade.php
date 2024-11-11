@@ -1,13 +1,388 @@
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Form Example</title>
-    {{-- <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"> --}}
-</head>
-<button style="font-size: 12px; background-color: #4A5568; color: white; font-weight: bold; padding: 4px 8px; border-radius: 4px; border: none; cursor: pointer;">
-    <a href="{{ route('filament.admin.resources.drones.create', ['tenant' => auth()->user()->teams()->first()->id]) }}" style="color: inherit; text-decoration: none;">
-        Add New Drone
-    </a>
-</button>
+{{-- <head>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head> --}}
+<style>
+    .active{
+        display: none;
+    }
+    .notification {
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                z-index: 50;
+            }
+    .hidden-notif
+    {
+        display: none;
+    }
+</style>
+<div>
+    {{-- @php
+    dd(session()->all());
+    @endphp --}}
+<!--alret massage   -->
+{{-- <div id="success-notification" class="hidden-notif bg-green-500 text-white p-4 rounded-lg shadow-lg flex items-center justify-between">
+    <span>test notification</span>
+    <button id="close-notification" class="ml-4 text-white hover:text-gray-200 focus:outline-none">
+        <i class="fas fa-times"></i>
+    </button>
+</div> --}}
+  <!-- Tombol untuk Membuka Modal -->
+    <button style="font-size: 12px; background-color: #4A5568; color: white; font-weight: bold; padding: 4px 8px; border-radius: 4px; border: none; cursor: pointer;" onclick="openModalDrone()" type="button">
+        <span style="color: inherit; text-decoration: none;">
+            Add New Drone
+        </span>
+    </button>
 
+    <!-- Modal -->
+    <div class="fixed drone active inset-0 flex justify-center z-50" style="max-height: 80%">
+        <div class="relative space-y-6 bg-white dark:bg-gray-800 p-6 rounded-lg shadow-lg max-w-4xl w-full max-h-[80%] overflow-y-auto mx-4 md:mx-auto">
+            <!-- Tombol Close -->
+            <button type="button"
+                class="absolute top-4 right-4 text-gray-500 hover:text-gray-700 dark:text-gray-300 dark:hover:text-gray-500 text-2xl font-bold p-2"
+                onclick="closeModalDrone()">
+                 &times;
+            </button>
+
+            <!-- Judul Modal -->
+            <h2 class="text-center text-lg font-semibold text-gray-900 dark:text-white">
+                Create Drone
+            </h2>
+            <hr class="border-t border-gray-300 dark:border-gray-600 w-24 mx-auto">
+
+            <!-- Form -->
+            <form id="customForm" method="POST">
+                @csrf
+                {{-- <input type="hidden" name="teams_id" value="{{ auth()->user()->teams()->first()->id ?? null }}"> --}}
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <!-- Name Input -->
+                    <div>
+                        <label class="block text-gray-700 dark:text-gray-300">Name</label>
+                        <input id="namedrone" type="text" name="name" required maxlength="255" class="w-full mt-1 p-2 border dark:bg-gray-900 dark:border-gray-700 dark:text-gray-300 rounded-md focus:ring focus:ring-blue-500">
+                    </div>
+            
+                    <!-- Model Input -->
+                    <div>
+                        <label class="block text-gray-700 dark:text-gray-300">Model</label>
+                        <input id="modeldrone" type="text" name="model" required maxlength="255" class="w-full mt-1 p-2 border dark:bg-gray-900 dark:border-gray-700 dark:text-gray-300 rounded-md focus:ring focus:ring-blue-500">
+                    </div>
+            
+                    <!-- Brand Input -->
+                    <div>
+                        <label class="block text-gray-700 dark:text-gray-300">Brand</label>
+                        <input id="branddrone" type="text" name="brand" required maxlength="255" class="w-full mt-1 p-2 border dark:bg-gray-900 dark:border-gray-700 dark:text-gray-300 rounded-md focus:ring focus:ring-blue-500">
+                    </div>
+            
+                    <!-- Type Input -->
+                    <div>
+                        <label for="type" class="block text-gray-700 dark:text-gray-300">Type</label>
+                        <select id="typedrone" name="type" required class="w-full mt-1 p-2 border dark:bg-gray-900 dark:border-gray-700 dark:text-gray-300 rounded-md focus:ring focus:ring-blue-500">
+                            <option value="" disabled selected>Select Type</option>
+                            <option value="aircraft">Aircraft</option>
+                            <option value="autoPilot">AutoPilot</option>
+                            <option value="boat">Boat</option>
+                            <option value="fixed_wing">Fixed-Wing</option>
+                            <option value="flight controller">Flight Controller</option>
+                            <option value="flying-wings">Flying-Wings</option>
+                            <option value="fpv">FPV</option>
+                            <option value="hexsacopter">Hexsacopter</option>
+                            <option value="home-made">Home-Made</option>
+                            <option value="multi-rotors">Multi-Rotors</option>
+                            <option value="quadcopter">Quadcopter</option>
+                            <option value="rover">Rover</option>
+                            <option value="rpa">RPA</option>
+                            <option value="submersible">Submersible</option>
+                        </select>
+                    </div>
+                    
+            
+                    <!-- Serial P Input -->
+                    <div>
+                        <label class="block text-gray-700 dark:text-gray-300">Serial P</label>
+                        <input id="serial_pdrone" type="text" name="serial_p" required maxlength="255" class="w-full mt-1 p-2 border dark:bg-gray-900 dark:border-gray-700 dark:text-gray-300 rounded-md focus:ring focus:ring-blue-500">
+                    </div>
+            
+                    <!-- Serial I Input -->
+                    <div>
+                        <label class="block text-gray-700 dark:text-gray-300">Serial I</label>
+                        <input id="serial_idrone" type="text" name="serial_i" required maxlength="255" class="w-full mt-1 p-2 border dark:bg-gray-900 dark:border-gray-700 dark:text-gray-300 rounded-md focus:ring focus:ring-blue-500">
+                    </div>
+            
+                    <!-- Flight Count Input -->
+                    <div>
+                        <label class="block text-gray-700 dark:text-gray-300">Flight Count</label>
+                        <input id="flight_cdrone" type="number" name="flight_c" required class="w-full mt-1 p-2 border dark:bg-gray-900 dark:border-gray-700 dark:text-gray-300 rounded-md focus:ring focus:ring-blue-500">
+                    </div>
+            
+                    <!-- Remote C Input -->
+                    <div>
+                        <label class="block text-gray-700 dark:text-gray-300">Remote Controller</label>
+                        <input id="remote_cdrone" type="text" name="remote_c" required maxlength="255" class="w-full mt-1 p-2 border dark:bg-gray-900 dark:border-gray-700 dark:text-gray-300 rounded-md focus:ring focus:ring-blue-500">
+                    </div>
+                    <div>
+                        <label class="block text-gray-700 dark:text-gray-300">Remote Controller2</label>
+                        <input id="remote_ccdrone" type="text" name="remote_c" required maxlength="255" class="w-full mt-1 p-2 border dark:bg-gray-900 dark:border-gray-700 dark:text-gray-300 rounded-md focus:ring focus:ring-blue-500">
+                    </div>
+                    <div>
+                        <label class="block text-gray-700 dark:text-gray-300">Status</label>
+                        <select id="statusdrone" name="inventory_asset" required class="w-full mt-1 p-2 border dark:bg-gray-900 dark:border-gray-700 dark:text-gray-300 rounded-md focus:ring focus:ring-blue-500">
+                            <option value="airworthy">airworthy</option>
+                            <option value="maintenance">Maintenance</option>
+                            <option value="retired">Retired</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-gray-700 dark:text-gray-300">Legal ID</label>
+                        <input id="idlegaldrone" type="text" name="remote_c" required maxlength="255" class="w-full mt-1 p-2 border dark:bg-gray-900 dark:border-gray-700 dark:text-gray-300 rounded-md focus:ring focus:ring-blue-500">
+                    </div>
+     
+                </div>
+            
+                <!-- Drone Details Section -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <!-- Inventory Asset Input -->
+                    <div>
+                        <label class="block text-gray-700 dark:text-gray-300">Inventory Asset</label>
+                        <select id="inventory_assetdrone" name="inventory_asset" required class="w-full mt-1 p-2 border dark:bg-gray-900 dark:border-gray-700 dark:text-gray-300 rounded-md focus:ring focus:ring-blue-500">
+                            <option value="inventory">Inventory</option>
+                            <option value="asset">Asset</option>
+                        </select>
+                    </div>
+
+                    <!-- drone Geometry -->
+                    <div>
+                        <label for="geometry" class="block text-gray-700 dark:text-gray-300">Drone Geomerey</label>
+                        <select id="geometrydrone" name="geometry" required class="w-full mt-1 p-2 border dark:bg-gray-900 dark:border-gray-700 dark:text-gray-300 rounded-md focus:ring focus:ring-blue-500">
+                            <option value="" disabled selected>Select Geometry</option>
+                            <option value="dual_rotor_coaxial">Dual Rotor Coaxial</option>
+                            <option value="fixed_wing_1">Fixed Wing 1</option>
+                            <option value="fixed_wing_2">Fixed Wing 2</option>
+                            <option value="fixed_wing_3">Fixed Wing 3</option>
+                            <option value="hexa_plus">Hexa +</option>
+                            <option value="hexa_x">Hexa X</option>
+                            <option value="octa_plus">Octa +</option>
+                            <option value="octa_v">Octa V</option>
+                            <option value="octa_x">Octa X</option>
+                            <option value="quad_plus">Quad +</option>
+                            <option value="quad_x">Quad X</option>
+                            <option value="quad_x_dji">Quad X DJI</option>
+                            <option value="single_rotor">Single Rotor</option>
+                            <option value="tri">Tri</option>
+                            <option value="vtol_1">VTOL 1</option>
+                            <option value="vtol_2">VTOL 2</option>
+                            <option value="vtol_3">VTOL 3</option>
+                            <option value="vtol_4">VTOL 4</option>
+                            <option value="x8_coaxial">X8 Coaxial</option>
+                            <option value="x6_coaxial">X6 Coaxial</option>
+                        </select>
+                    </div>
+                    
+
+                    <!-- Users Select -->
+                    <div>
+                        <label class="block text-gray-700 dark:text-gray-300">Owner</label>
+                        <select id="users_iddrone" name="users_id" required class="w-full mt-1 p-2 border dark:bg-gray-900 dark:border-gray-700 dark:text-gray-300 rounded-md focus:ring focus:ring-blue-500">
+                            @foreach (App\Models\User::whereHas('teams', function ($query) {
+                                    $query->where('teams.id', auth()->user()->teams()->first()->id);
+                                })->pluck('name', 'id') as $id => $name)
+                                <option value="{{ $id }}">{{ $name }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+            
+                    <!-- Firmware Version Input -->
+                    <div>
+                        <label class="block text-gray-700 dark:text-gray-300">Firmware Version</label>
+                        <input id="firmware_vdrone" type="text" name="firmware_v" required maxlength="255" class="w-full mt-1 p-2 border dark:bg-gray-900 dark:border-gray-700 dark:text-gray-300 rounded-md focus:ring focus:ring-blue-500">
+                    </div>
+            
+                    <!-- Hardware Version Input -->
+                    <div>
+                        <label class="block text-gray-700 dark:text-gray-300">Hardware Version</label>
+                        <input id="hardware_vdrone" type="text" name="hardware_v" required maxlength="255" class="w-full mt-1 p-2 border dark:bg-gray-900 dark:border-gray-700 dark:text-gray-300 rounded-md focus:ring focus:ring-blue-500">
+                    </div>
+            
+                    <!-- Propulsion Version Input -->
+                    <div>
+                        <label class="block text-gray-700 dark:text-gray-300">Propulsion Version</label>
+                        <input id="propulsion_vdrone" type="text" name="propulsion_v" required maxlength="255" class="w-full mt-1 p-2 border dark:bg-gray-900 dark:border-gray-700 dark:text-gray-300 rounded-md focus:ring focus:ring-blue-500">
+                    </div>
+            
+                    <!-- Color Input -->
+                    <div>
+                        <label class="block text-gray-700 dark:text-gray-300">Color</label>
+                        <input id="colordrone" type="text" name="color" required maxlength="255" class="w-full mt-1 p-2 border dark:bg-gray-900 dark:border-gray-700 dark:text-gray-300 rounded-md focus:ring focus:ring-blue-500">
+                    </div>
+            
+                    <!-- Remote Input -->
+                    <div>
+                        <label class="block text-gray-700 dark:text-gray-300">Remote ID</label>
+                        <input id="remotedrone" type="text" name="remote" required maxlength="255" class="w-full mt-1 p-2 border dark:bg-gray-900 dark:border-gray-700 dark:text-gray-300 rounded-md focus:ring focus:ring-blue-500">
+                    </div>
+                </div>
+            
+                <!-- Flight Information Section -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <!-- Conn Card Input -->
+                    <div>
+                        <label class="block text-gray-700 dark:text-gray-300">Conn Card</label>
+                        <input id="conn_carddrone" type="text" name="conn_card" required maxlength="255" class="w-full mt-1 p-2 border dark:bg-gray-900 dark:border-gray-700 dark:text-gray-300 rounded-md focus:ring focus:ring-blue-500">
+                    </div>
+                    <!-- Initial Flight Input -->
+                    <div>
+                        <label class="block text-gray-700 dark:text-gray-300">Initial Flight</label>
+                        <input id="initial_flightdrone" type="text" name="initial_flight" required maxlength="255" class="w-full mt-1 p-2 border dark:bg-gray-900 dark:border-gray-700 dark:text-gray-300 rounded-md focus:ring focus:ring-blue-500">
+                    </div>
+            
+                    <!-- Initial Flight Time Input -->
+                    <div>
+                        <label class="block text-gray-700 dark:text-gray-300">Initial Flight Time</label>
+                        <input id="initial_flight_timedrone" type="number" name="initial_flight_time" required class="w-full mt-1 p-2 border dark:bg-gray-900 dark:border-gray-700 dark:text-gray-300 rounded-md focus:ring focus:ring-blue-500">
+                    </div>
+            
+                    <!-- Max Flight Time Input -->
+                    <div>
+                        <label class="block text-gray-700 dark:text-gray-300">Max Flight Time</label>
+                        <input id="max_flight_timedrone" type="number" name="max_flight_time" required class="w-full mt-1 p-2 border dark:bg-gray-900 dark:border-gray-700 dark:text-gray-300 rounded-md focus:ring focus:ring-blue-500">
+                    </div>
+                </div>
+                    <!-- Description Input -->
+                    <div>
+                        <label class="block text-gray-700 dark:text-gray-300">Description</label>
+                        <textarea id="descriptiondrone" name="description" required maxlength="255" class="w-full mt-1 p-2 border dark:bg-gray-900 dark:border-gray-700 dark:text-gray-300 rounded-md focus:ring focus:ring-blue-500"></textarea>
+                    </div>
+
+                <!-- Submit Button -->
+                <div class="flex justify-end mt-4">
+                    <button id="triggerButton" type="button" 
+                        style="font-size: 16px; background-color: #4A5568; color: white; font-weight: bold; padding: 8px 16px; border-radius: 4px; border: none; cursor: pointer;"
+                        class="px-6 py-3 bg-blue-600 text-white rounded-md hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600" onclick="createDrone()">
+                        Submit
+                    </button>
+                </div>
+                
+            </form>
+        </div>
+    </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+{{-- close and open pop-up --}}
+<script>
+    function closeModalDrone() {
+        const contents = document.querySelector('.drone');
+        contents.classList.add('active');
+    }
+    function openModalDrone() {
+        const contents = document.querySelector('.drone');
+        contents.classList.remove('active');     
+    }
+</script>
+{{-- test ajax ke controller action --}}
+<script>
+    function createDrone() {
+        const nameValue = $('#namedrone').val();
+        const statusValue = $('#statusdrone').val();
+        const idLegalValue = $('#idlegaldrone').val();
+        const brandValue = $('#branddrone').val();
+        const modelValue = $('#modeldrone').val();
+        const typeValue = $('#typedrone').val();
+        const serialPValue = $('#serial_pdrone').val();
+        const serialIValue = $('#serial_idrone').val();
+        const flightCValue = $('#flight_cdrone').val();
+        const remoteCValue = $('#remote_cdrone').val();
+        const remoteCCValue = $('#remote_ccdrone').val();
+        const geometryValue = $('#geometrydrone').val();
+        const inventoryAssetValue = $('#inventory_assetdrone').val();
+        const descriptionValue = $('#descriptiondrone').val();
+        const usersIdValue = $('#users_iddrone').val();
+        const firmwareVValue = $('#firmware_vdrone').val();
+        const hardwareVValue = $('#hardware_vdrone').val();
+        const propulsionVValue = $('#propulsion_vdrone').val();
+        const colorValue = $('#colordrone').val();
+        const remoteValue = $('#remotedrone').val();
+        const connCardValue = $('#conn_carddrone').val();
+        const initialFlightValue = $('#initial_flightdrone').val();
+        const initialFlightTimeValue = $('#initial_flight_timedrone').val();
+        const maxFlightTimeValue = $('#max_flight_timedrone').val();
+
+        // Log for debugging
+        console.log({
+            name: nameValue,
+            status: statusValue,
+            idlegal: idLegalValue,
+            brand: brandValue,
+            model: modelValue,
+            type: typeValue,
+            serial_p: serialPValue,
+            serial_i: serialIValue,
+            flight_c: flightCValue,
+            remote_c: remoteCValue,
+            remote_cc: remoteCCValue,
+            geometry: geometryValue,
+            inventory_asset: inventoryAssetValue,
+            description: descriptionValue,
+            users_id: usersIdValue,
+            firmware_v: firmwareVValue,
+            hardware_v: hardwareVValue,
+            propulsion_v: propulsionVValue,
+            color: colorValue,
+            remote: remoteValue,
+            conn_card: connCardValue,
+            initial_flight: initialFlightValue,
+            initial_flight_time: initialFlightTimeValue,
+            max_flight_time: maxFlightTimeValue
+        });
+
+        // Validate empty fields
+        if (nameValue.trim() == '') {
+            alert('Name cannot be empty!');
+            return;
+        }
+
+        // Send data via AJAX
+        $.ajax({
+            url: '{{ route('create-drone') }}',
+            type: 'POST',
+            data: {
+                _token: '{{ csrf_token() }}', // Laravel CSRF token
+                name: nameValue,
+                status: statusValue,
+                idlegal: idLegalValue,
+                brand: brandValue,
+                model: modelValue,
+                type: typeValue,
+                serial_p: serialPValue,
+                serial_i: serialIValue,
+                flight_c: flightCValue,
+                remote_c: remoteCValue,
+                remote_cc: remoteCCValue,
+                geometry: geometryValue,
+                inventory_asset: inventoryAssetValue,
+                description: descriptionValue,
+                users_id: usersIdValue,
+                firmware_v: firmwareVValue,
+                hardware_v: hardwareVValue,
+                propulsion_v: propulsionVValue,
+                color: colorValue,
+                remote: remoteValue,
+                conn_card: connCardValue,
+                initial_flight: initialFlightValue,
+                initial_flight_time: initialFlightTimeValue,
+                max_flight_time: maxFlightTimeValue,
+            },
+            success: function(response) {
+                console.log(response);
+                $("#success-notification").removeClass("hidden-notif").addClass("notification");
+                setTimeout(() => {
+                    location.reload();
+                }, 3000);
+            },
+            error: function(xhr, status, error) {
+                console.error('error:', error);
+            }
+        });
+    }
+</script>

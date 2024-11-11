@@ -43,7 +43,7 @@ class battrei extends Model
         return $this->belongsTo(User::class);
     }
     public function teams(){
-        return $this->belongsTo(Team::class);
+        return $this->belongsToMany(Team::class,'battrei_team','battrei_id','team_id');
     }
     public function kits(){
         return $this->belongsToMany(kits::class, 'battrei_kits');
