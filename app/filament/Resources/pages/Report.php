@@ -16,6 +16,7 @@ use Filament\Resources\Pages\Page;
 use Illuminate\Http\Request;
 use Illuminate\Database\Eloquent\Builder;
 use PDF;
+use Stichoza\GoogleTranslate\GoogleTranslate;
 
 class Report extends Page
 {
@@ -25,6 +26,15 @@ class Report extends Page
     public static ?int $navigationSort = 9;
     // public static ?string $navigationGroup = 'report';
     protected static string $view = 'filament.pages.report';
+
+    public function getHeading(): string
+    {
+        return GoogleTranslate::trans('Report', session('locale') ?? 'en');
+    }
+    public function getTitle(): string
+    {
+        return GoogleTranslate::trans('Report', session('locale') ?? 'en');
+    }
 
     public function downloadReport(Request $request)
     {

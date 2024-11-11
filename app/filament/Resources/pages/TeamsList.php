@@ -18,6 +18,15 @@ class TeamsList extends Page implements Tables\Contracts\HasTable
     protected static string $resource = TeamsListResource::class;
     protected static string $view = 'filament.pages.teams-list';
 
+    public function getHeading(): string
+    {
+        return GoogleTranslate::trans('Teams List', session('locale') ?? 'en');
+    }
+    public function getTitle(): string
+    {
+        return GoogleTranslate::trans('Teams List', session('locale') ?? 'en');
+    }
+
     public function getTotalTeams(): int
     {
         return team::count();
