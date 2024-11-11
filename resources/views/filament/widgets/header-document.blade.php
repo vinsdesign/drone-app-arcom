@@ -31,19 +31,19 @@
                 <div class="flex space-x-12">
                     <div class="text-center p-3">
                         <h2 class="text-sm font-semibold text-gray-500 dark:text-gray-400">{!! GoogleTranslate::trans('Flights', session('locale') ?? 'en') !!} </h2>
-                        <h2 class="text-sm font-semibold text-gray-500 dark:text-gray-400">{!! GoogleTranslate::trans('Doc.', session('locale') ?? 'en') !!} </h2>
+                        <h2 class="text-sm font-semibold text-gray-500 dark:text-gray-400">Doc. </h2>
                         <h1 class="text-3xl font-bold text-gray-600 dark:text-gray-400">{{ $flight }}</h1>
                     </div>
                     <br>
                     <div class="text-center p-3">
                         <h2 class="text-sm font-semibold text-gray-500 dark:text-gray-400">{!! GoogleTranslate::trans('Organization', session('locale') ?? 'en') !!} </h2>
-                        <h2 class="text-sm font-semibold text-gray-500 dark:text-gray-400">{!! GoogleTranslate::trans('Doc.', session('locale') ?? 'en') !!} </h2>
+                        <h2 class="text-sm font-semibold text-gray-500 dark:text-gray-400">Doc. </h2>
                         <h1 class="text-3xl font-bold text-gray-600 dark:text-gray-400">{{ $organization }}</h1>
                     </div>
                     <br>
                     <div class="text-center p-3">
                         <h2 class="text-sm font-semibold text-gray-500 dark:text-gray-400">{!! GoogleTranslate::trans('Pilot', session('locale') ?? 'en') !!} </h2>
-                        <h2 class="text-sm font-semibold text-gray-500 dark:text-gray-400">{!! GoogleTranslate::trans('Doc.', session('locale') ?? 'en') !!} </h2>
+                        <h2 class="text-sm font-semibold text-gray-500 dark:text-gray-400">Doc. </h2>
                         <h1 class="text-3xl font-bold text-gray-600 dark:text-gray-400">{{ $pilot }}</h1>
                     </div>
                 </div>

@@ -50,7 +50,7 @@ class IncidentResource extends Resource
         $currentTeamId = auth()->user()->teams()->first()->id;
         return $form
             ->schema([
-                Forms\Components\Section::make('Incident Overview')
+                Forms\Components\Section::make(GoogleTranslate::trans('Incident Overview', session('locale') ?? 'en'))
                     ->description('')
                     ->schema([
                     Forms\Components\Hidden::make('teams_id')
@@ -107,7 +107,7 @@ class IncidentResource extends Resource
                         ->columnSpanFull(),
                     ])->columns(2),
                     //section 2
-                Forms\Components\Section::make('Insiden Description')
+                Forms\Components\Section::make(GoogleTranslate::trans('Insiden Description', session('locale') ?? 'en'))
                     ->description('')
                     ->schema([
                         Forms\Components\TextArea::make('aircraft_damage')->label(GoogleTranslate::trans('Aircraft Damage', session('locale') ?? 'en'))
@@ -124,7 +124,7 @@ class IncidentResource extends Resource
                         ->maxLength(255)->columnSpanFull(),
                     ])->columns(2),
                     //section 3
-                Forms\Components\Section::make('Incident Rectification')
+                Forms\Components\Section::make(GoogleTranslate::trans('Incident Rectification', session('locale') ?? 'en'))
                 ->description('')
                 ->schema([
                     Forms\Components\TextInput::make('rectification_note')->label(GoogleTranslate::trans('Rectification Notes', session('locale') ?? 'en'))

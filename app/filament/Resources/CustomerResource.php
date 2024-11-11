@@ -47,7 +47,7 @@ class CustomerResource extends Resource
         $locale = session('locale') ?? 'en'; 
         return $form
         ->schema([
-            Forms\Components\Section::make('Customer')
+            Forms\Components\Section::make(GoogleTranslate::trans('Customer', session('locale') ?? 'en'))
                 ->label((new GoogleTranslate($locale))->translate('Customer'))
                 ->schema([
                     Forms\Components\TextInput::make('name')

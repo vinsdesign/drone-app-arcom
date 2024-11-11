@@ -40,11 +40,11 @@ class PlannedMissionResource extends Resource
 
     public static function getNavigationLabel(): string
     {
-        return GoogleTranslate::trans('PlannedMission', session('locale') ?? 'en');
+        return GoogleTranslate::trans('Planned Mission', session('locale') ?? 'en');
     }
     public static function getModelLabel(): string
     {
-        return GoogleTranslate::trans('PlannedMission', session('locale') ?? 'en');
+        return GoogleTranslate::trans('Planned Mission', session('locale') ?? 'en');
     }
 
     public static function form(Form $form): Form
@@ -527,7 +527,7 @@ class PlannedMissionResource extends Resource
                     ]):null)->color(Color::Blue)
                     ->sortable(),
                 Tables\Columns\TextColumn::make('users.name')
-                    ->label(GoogleTranslate::trans('Others', session('locale') ?? 'en'))('Pilot')
+                    ->label(GoogleTranslate::trans('Pilot', session('locale') ?? 'en'))
                     ->numeric()
                     ->url(fn($record) => $record->users_id?route('filament.admin.resources.users.view', [
                         'tenant' => Auth()->user()->teams()->first()->id,
@@ -556,6 +556,7 @@ class PlannedMissionResource extends Resource
                     ->default('planned')
             ])
             ->actions([
+                Tables\Actions\ActionGroup::make([
                 //append flight
                 Action::make('append_flight')
                 ->label(fn ($record) => $record->status === 'append' ? 'Already Append' : 'Append Flight')
@@ -597,9 +598,10 @@ class PlannedMissionResource extends Resource
                         ->success()
                         ->send();
                 })
+                ->icon('heroicon-s-document-plus')
                 ->disabled(fn ($record) => $record->status === 'append')
                 ->visible(fn ($record) => $record->status !== 'cancel')
-                ->button()
+                // ->button()
                 ->requiresConfirmation(),
                 //end append flight 
 
@@ -627,9 +629,12 @@ class PlannedMissionResource extends Resource
                         ->required(),
                 ])
                 ->visible(fn ($record) => !in_array($record->status, ['completed', 'cancel', 'append']))
-                ->button(),
+                // ->button(),
+                ->icon('heroicon-s-document-check'),
                 Tables\Actions\ViewAction::make(),
                 Tables\Actions\EditAction::make(),
+
+                ])
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
