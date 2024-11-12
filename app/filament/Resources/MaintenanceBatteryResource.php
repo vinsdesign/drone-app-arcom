@@ -50,7 +50,7 @@ class MaintenanceBatteryResource extends Resource
         $currentTeamId = auth()->user()->teams()->first()->id;
         return $form
             ->schema([
-                Forms\Components\Section::make('Maintenance Equipment/Battery Overview')
+                Forms\Components\Section::make(GoogleTranslate::trans('Maintenance Equipment/Battery Overview', session('locale') ?? 'en'))
                     ->schema([
                         Forms\Components\Hidden::make('teams_id')
                         ->default(auth()->user()->teams()->first()->id ?? null),

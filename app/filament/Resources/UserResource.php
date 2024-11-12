@@ -46,7 +46,7 @@ class UserResource extends Resource
     {
         return $form
             ->schema([
-                Forms\Components\Section::make('Personnel')->label((new GoogleTranslate(session('locale') ?? 'en'))->translate('Personnel'))
+                Forms\Components\Section::make(GoogleTranslate::trans('Personnel', session('locale') ?? 'en'))
                 ->schema([
                     Forms\Components\TextInput::make('name')
                         ->label(GoogleTranslate::trans('name', session('locale') ?? 'en'))

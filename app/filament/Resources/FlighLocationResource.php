@@ -54,7 +54,7 @@ class FlighLocationResource extends Resource
                 ->default(auth()->user()->teams()->first()->id ?? null),
                 //end untuk tenancy
                 Forms\Components\Wizard::make([
-                    Forms\Components\Wizard\Step::make('Location Overview')
+                    Forms\Components\Wizard\Step::make(GoogleTranslate::trans('Location Overview', session('locale') ?? 'en'))
                     ->Schema([
                         Forms\Components\TextInput::make('name')->label(GoogleTranslate::trans('Name', session('locale') ?? 'en')),
                         Forms\Components\Select::make('projects_id')
@@ -83,7 +83,7 @@ class FlighLocationResource extends Resource
                         ->label(GoogleTranslate::trans('Description', session('locale') ?? 'en'))
                         ->columnSpanFull(),
                     ])->columns(2),
-                    Forms\Components\Wizard\Step::make('Location Address')
+                    Forms\Components\Wizard\Step::make(GoogleTranslate::trans('Location Address', session('locale') ?? 'en'))
                     ->Schema([
                         Forms\Components\TextInput::make('address')
                         ->label(GoogleTranslate::trans('Address', session('locale') ?? 'en'))    

@@ -58,10 +58,21 @@ class IncidentResource extends Resource
                     Forms\Components\DatePicker::make('incident_date')
                     ->label(GoogleTranslate::trans('Incident Date', session('locale') ?? 'en'))
                     ->required(),
-                    Forms\Components\TextInput::make('cause')
+                    Forms\Components\Select::make('cause')
                         ->label(GoogleTranslate::trans('Incident Cause', session('locale') ?? 'en'))
                         ->required()
-                        ->maxLength(255),
+                        ->options([
+                            'weather' => 'Weather',
+                            'mechanic' => 'Mechanic',
+                            'electronic' => 'Electronic',
+                            'battery' => 'Battery',
+                            'radio' => 'Radio',
+                            'pilot' => 'Pilot',
+                            'wildlife' => 'Wildlife',
+                            'nefarious/criminal' => 'Nefarious/Criminal',
+                            'human_error' => 'Human Error',
+                            'others' => 'Others'
+                        ]),
                     Forms\Components\Select::make('status')
                         ->label(GoogleTranslate::trans('Status', session('locale') ?? 'en'))
                         ->required()

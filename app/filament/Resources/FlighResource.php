@@ -63,7 +63,7 @@ class FlighResource extends Resource
         $currentTeamId = auth()->user()->teams()->first()->id;;
         return $form
             ->schema([
-                Forms\Components\Section::make('Flight Detail')
+                Forms\Components\Section::make(GoogleTranslate::trans('Flight Detail', session('locale') ?? 'en'))
                     ->description('')
                     ->schema([
                 Forms\Components\TextInput::make('name')
@@ -206,7 +206,7 @@ class FlighResource extends Resource
                     ->columnSpanFull(),
  
                 ])->columns(3),
-                Forms\Components\Section::make('Personnel')
+                Forms\Components\Section::make(GoogleTranslate::trans('Personnel', session('locale') ?? 'en'))
                     ->description('')
                     ->schema([
                         Forms\Components\Select::make('users_id')
@@ -285,7 +285,7 @@ class FlighResource extends Resource
                     ->required()
                     ->maxLength(255),
                 ])->columns(2),
-                Forms\Components\Section::make('Drone & Equipments')
+                Forms\Components\Section::make(GoogleTranslate::trans('Drone & Equipment', session('locale') ?? 'en'))
                     ->description('')
                     ->schema([   
                 Forms\Components\Grid::make(1)->schema([

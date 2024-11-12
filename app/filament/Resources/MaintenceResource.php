@@ -52,7 +52,7 @@ class MaintenceResource extends Resource
         return $form
             ->schema([
                 Forms\Components\Wizard::make([
-                    Forms\Components\Wizard\Step::make('Overview')
+                    Forms\Components\Wizard\Step::make(GoogleTranslate::trans('Overview', session('locale') ?? 'en'))
                     ->schema([
                         Forms\Components\Hidden::make('teams_id')
                         ->default(auth()->user()->teams()->first()->id ?? null),
@@ -105,7 +105,7 @@ class MaintenceResource extends Resource
                             ->columnSpanFull(),
                     ])->columns(3),
                     //and wizard 1
-                    Forms\Components\Wizard\Step::make('Add Tasks (Optional)')
+                    Forms\Components\Wizard\Step::make(GoogleTranslate::trans('Add Tasks (Optional)', session('locale') ?? 'en'))
                     ->schema([
                         Forms\Components\Select::make('part')
                             ->label(GoogleTranslate::trans('Part #', session('locale') ?? 'en'))

@@ -52,7 +52,7 @@ class PlannedMissionResource extends Resource
         $currentTeamId = auth()->user()->teams()->first()->id;;
         return $form
             ->schema([
-                Forms\Components\Section::make('Mission Details')
+                Forms\Components\Section::make(GoogleTranslate::trans('Mission Details', session('locale') ?? 'en'))
                     ->description('')
                     ->schema([
                 Forms\Components\TextInput::make('name')
@@ -189,7 +189,7 @@ class PlannedMissionResource extends Resource
                     })
                     ->columnSpanFull(),
                 ])->columns(3),
-                Forms\Components\Section::make('Personnel')
+                Forms\Components\Section::make(GoogleTranslate::trans('Personnel', session('locale') ?? 'en'))
                     ->description('')
                     ->schema([
                         Forms\Components\Select::make('users_id')
@@ -224,7 +224,7 @@ class PlannedMissionResource extends Resource
                         })
                     ->required(),
                 ])->columns(2),
-                Forms\Components\Section::make('Drone & Equipments')
+                Forms\Components\Section::make(GoogleTranslate::trans('Drone & Equipment', session('locale') ?? 'en'))
                     ->description('')
                     ->schema([   
                 Forms\Components\Grid::make(1)->schema([
