@@ -38,6 +38,10 @@ class PlannedMissionResource extends Resource
     public static ?string $navigationGroup = 'flight';
     public static ?int $navigationSort = 5;
 
+    public static function getNavigationBadge(): ?string{
+        return static::getModel()::where('status','!=','append')->count();
+    }
+
     public static function getNavigationLabel(): string
     {
         return GoogleTranslate::trans('Planned Mission', session('locale') ?? 'en');

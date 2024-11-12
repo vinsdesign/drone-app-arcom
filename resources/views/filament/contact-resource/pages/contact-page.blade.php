@@ -6,7 +6,6 @@ use Stichoza\GoogleTranslate\GoogleTranslate;
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Form Example</title>
-        <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
         <style>
             .notification {
@@ -17,6 +16,7 @@ use Stichoza\GoogleTranslate\GoogleTranslate;
                 display: none;
             }
         </style>
+        <script src="https://cdn.tailwindcss.com"></script>
     </head>
     <body class="bg-gray-100 dark:bg-gray-900 flex items-center justify-center h-screen">
         <div class="container mx-auto p-4">

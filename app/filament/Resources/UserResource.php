@@ -33,6 +33,10 @@ class UserResource extends Resource
     public static ?string $tenantOwnershipRelationshipName = 'teams';
     protected static bool $isLazy = false;
 
+    public static function getNavigationBadge(): ?string{
+        return static::getModel()::count();
+    }
+
     public static function getNavigationLabel(): string
     {
         return GoogleTranslate::trans('Personnel', session('locale') ?? 'en');

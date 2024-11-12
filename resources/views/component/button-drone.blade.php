@@ -1,33 +1,15 @@
-{{-- <head>
-    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+<head>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-</head> --}}
-<style>
-    .active{
-        display: none;
-    }
-    .notification {
-                position: fixed;
-                top: 20px;
-                right: 20px;
-                z-index: 50;
-            }
-    .hidden-notif
-    {
-        display: none;
-    }
-</style>
+</head>
 <div>
-    {{-- @php
-    dd(session()->all());
-    @endphp --}}
+<script src="https://cdn.tailwindcss.com"></script>
 <!--alret massage   -->
-{{-- <div id="success-notification" class="hidden-notif bg-green-500 text-white p-4 rounded-lg shadow-lg flex items-center justify-between">
-    <span>test notification</span>
-    <button id="close-notification" class="ml-4 text-white hover:text-gray-200 focus:outline-none">
+<div id="success-notification-drone" class="hidden-notif bg-green-500 text-white p-4 rounded-lg shadow-lg flex items-center justify-between">
+    <span>Successfully</span>
+    <button id="close-notification-drone" class="ml-4 text-white hover:text-gray-200 focus:outline-none">
         <i class="fas fa-times"></i>
     </button>
-</div> --}}
+</div>
   <!-- Tombol untuk Membuka Modal -->
     <button style="font-size: 12px; background-color: #4A5568; color: white; font-weight: bold; padding: 4px 8px; border-radius: 4px; border: none; cursor: pointer;" onclick="openModalDrone()" type="button">
         <span style="color: inherit; text-decoration: none;">
@@ -52,7 +34,7 @@
             <hr class="border-t border-gray-300 dark:border-gray-600 w-24 mx-auto">
 
             <!-- Form -->
-            <form id="customForm" method="POST">
+            <div>
                 @csrf
                 {{-- <input type="hidden" name="teams_id" value="{{ auth()->user()->teams()->first()->id ?? null }}"> --}}
 
@@ -60,25 +42,25 @@
                     <!-- Name Input -->
                     <div>
                         <label class="block text-gray-700 dark:text-gray-300">Name</label>
-                        <input id="namedrone" type="text" name="name" required maxlength="255" class="w-full mt-1 p-2 border dark:bg-gray-900 dark:border-gray-700 dark:text-gray-300 rounded-md focus:ring focus:ring-blue-500">
+                        <input id="namedrone" type="text" name="name" maxlength="255" class="w-full mt-1 p-2 border dark:bg-gray-900 dark:border-gray-700 dark:text-gray-300 rounded-md focus:ring focus:ring-blue-500">
                     </div>
             
                     <!-- Model Input -->
                     <div>
                         <label class="block text-gray-700 dark:text-gray-300">Model</label>
-                        <input id="modeldrone" type="text" name="model" required maxlength="255" class="w-full mt-1 p-2 border dark:bg-gray-900 dark:border-gray-700 dark:text-gray-300 rounded-md focus:ring focus:ring-blue-500">
+                        <input id="modeldrone" type="text" name="model" maxlength="255" class="w-full mt-1 p-2 border dark:bg-gray-900 dark:border-gray-700 dark:text-gray-300 rounded-md focus:ring focus:ring-blue-500">
                     </div>
             
                     <!-- Brand Input -->
                     <div>
                         <label class="block text-gray-700 dark:text-gray-300">Brand</label>
-                        <input id="branddrone" type="text" name="brand" required maxlength="255" class="w-full mt-1 p-2 border dark:bg-gray-900 dark:border-gray-700 dark:text-gray-300 rounded-md focus:ring focus:ring-blue-500">
+                        <input id="branddrone" type="text" name="brand" maxlength="255" class="w-full mt-1 p-2 border dark:bg-gray-900 dark:border-gray-700 dark:text-gray-300 rounded-md focus:ring focus:ring-blue-500">
                     </div>
             
                     <!-- Type Input -->
                     <div>
                         <label for="type" class="block text-gray-700 dark:text-gray-300">Type</label>
-                        <select id="typedrone" name="type" required class="w-full mt-1 p-2 border dark:bg-gray-900 dark:border-gray-700 dark:text-gray-300 rounded-md focus:ring focus:ring-blue-500">
+                        <select id="typedrone" name="type" class="w-full mt-1 p-2 border dark:bg-gray-900 dark:border-gray-700 dark:text-gray-300 rounded-md focus:ring focus:ring-blue-500">
                             <option value="" disabled selected>Select Type</option>
                             <option value="aircraft">Aircraft</option>
                             <option value="autoPilot">AutoPilot</option>
@@ -100,34 +82,34 @@
             
                     <!-- Serial P Input -->
                     <div>
-                        <label class="block text-gray-700 dark:text-gray-300">Serial P</label>
-                        <input id="serial_pdrone" type="text" name="serial_p" required maxlength="255" class="w-full mt-1 p-2 border dark:bg-gray-900 dark:border-gray-700 dark:text-gray-300 rounded-md focus:ring focus:ring-blue-500">
+                        <label class="block text-gray-700 dark:text-gray-300">Serial Printed</label>
+                        <input id="serial_pdrone" type="text" name="serial_p" maxlength="255" class="w-full mt-1 p-2 border dark:bg-gray-900 dark:border-gray-700 dark:text-gray-300 rounded-md focus:ring focus:ring-blue-500">
                     </div>
             
                     <!-- Serial I Input -->
                     <div>
-                        <label class="block text-gray-700 dark:text-gray-300">Serial I</label>
-                        <input id="serial_idrone" type="text" name="serial_i" required maxlength="255" class="w-full mt-1 p-2 border dark:bg-gray-900 dark:border-gray-700 dark:text-gray-300 rounded-md focus:ring focus:ring-blue-500">
+                        <label class="block text-gray-700 dark:text-gray-300">Serial Internal</label>
+                        <input id="serial_idrone" type="text" name="serial_i" maxlength="255" class="w-full mt-1 p-2 border dark:bg-gray-900 dark:border-gray-700 dark:text-gray-300 rounded-md focus:ring focus:ring-blue-500">
                     </div>
             
                     <!-- Flight Count Input -->
                     <div>
                         <label class="block text-gray-700 dark:text-gray-300">Flight Count</label>
-                        <input id="flight_cdrone" type="number" name="flight_c" required class="w-full mt-1 p-2 border dark:bg-gray-900 dark:border-gray-700 dark:text-gray-300 rounded-md focus:ring focus:ring-blue-500">
+                        <input id="flight_cdrone" type="number" name="flight_c" class="w-full mt-1 p-2 border dark:bg-gray-900 dark:border-gray-700 dark:text-gray-300 rounded-md focus:ring focus:ring-blue-500">
                     </div>
             
                     <!-- Remote C Input -->
                     <div>
                         <label class="block text-gray-700 dark:text-gray-300">Remote Controller</label>
-                        <input id="remote_cdrone" type="text" name="remote_c" required maxlength="255" class="w-full mt-1 p-2 border dark:bg-gray-900 dark:border-gray-700 dark:text-gray-300 rounded-md focus:ring focus:ring-blue-500">
+                        <input id="remote_cdrone" type="text" name="remote_c" maxlength="255" class="w-full mt-1 p-2 border dark:bg-gray-900 dark:border-gray-700 dark:text-gray-300 rounded-md focus:ring focus:ring-blue-500">
                     </div>
                     <div>
                         <label class="block text-gray-700 dark:text-gray-300">Remote Controller2</label>
-                        <input id="remote_ccdrone" type="text" name="remote_c" required maxlength="255" class="w-full mt-1 p-2 border dark:bg-gray-900 dark:border-gray-700 dark:text-gray-300 rounded-md focus:ring focus:ring-blue-500">
+                        <input id="remote_ccdrone" type="text" name="remote_c" maxlength="255" class="w-full mt-1 p-2 border dark:bg-gray-900 dark:border-gray-700 dark:text-gray-300 rounded-md focus:ring focus:ring-blue-500">
                     </div>
                     <div>
                         <label class="block text-gray-700 dark:text-gray-300">Status</label>
-                        <select id="statusdrone" name="inventory_asset" required class="w-full mt-1 p-2 border dark:bg-gray-900 dark:border-gray-700 dark:text-gray-300 rounded-md focus:ring focus:ring-blue-500">
+                        <select id="statusdrone" name="inventory_asset" class="w-full mt-1 p-2 border dark:bg-gray-900 dark:border-gray-700 dark:text-gray-300 rounded-md focus:ring focus:ring-blue-500">
                             <option value="airworthy">airworthy</option>
                             <option value="maintenance">Maintenance</option>
                             <option value="retired">Retired</option>
@@ -135,7 +117,7 @@
                     </div>
                     <div>
                         <label class="block text-gray-700 dark:text-gray-300">Legal ID</label>
-                        <input id="idlegaldrone" type="text" name="remote_c" required maxlength="255" class="w-full mt-1 p-2 border dark:bg-gray-900 dark:border-gray-700 dark:text-gray-300 rounded-md focus:ring focus:ring-blue-500">
+                        <input id="idlegaldrone" type="text" name="remote_c" maxlength="255" class="w-full mt-1 p-2 border dark:bg-gray-900 dark:border-gray-700 dark:text-gray-300 rounded-md focus:ring focus:ring-blue-500">
                     </div>
      
                 </div>
@@ -145,7 +127,7 @@
                     <!-- Inventory Asset Input -->
                     <div>
                         <label class="block text-gray-700 dark:text-gray-300">Inventory Asset</label>
-                        <select id="inventory_assetdrone" name="inventory_asset" required class="w-full mt-1 p-2 border dark:bg-gray-900 dark:border-gray-700 dark:text-gray-300 rounded-md focus:ring focus:ring-blue-500">
+                        <select id="inventory_assetdrone" name="inventory_asset" class="w-full mt-1 p-2 border dark:bg-gray-900 dark:border-gray-700 dark:text-gray-300 rounded-md focus:ring focus:ring-blue-500">
                             <option value="inventory">Inventory</option>
                             <option value="asset">Asset</option>
                         </select>
@@ -154,7 +136,7 @@
                     <!-- drone Geometry -->
                     <div>
                         <label for="geometry" class="block text-gray-700 dark:text-gray-300">Drone Geomerey</label>
-                        <select id="geometrydrone" name="geometry" required class="w-full mt-1 p-2 border dark:bg-gray-900 dark:border-gray-700 dark:text-gray-300 rounded-md focus:ring focus:ring-blue-500">
+                        <select id="geometrydrone" name="geometry" class="w-full mt-1 p-2 border dark:bg-gray-900 dark:border-gray-700 dark:text-gray-300 rounded-md focus:ring focus:ring-blue-500">
                             <option value="" disabled selected>Select Geometry</option>
                             <option value="dual_rotor_coaxial">Dual Rotor Coaxial</option>
                             <option value="fixed_wing_1">Fixed Wing 1</option>
@@ -183,7 +165,7 @@
                     <!-- Users Select -->
                     <div>
                         <label class="block text-gray-700 dark:text-gray-300">Owner</label>
-                        <select id="users_iddrone" name="users_id" required class="w-full mt-1 p-2 border dark:bg-gray-900 dark:border-gray-700 dark:text-gray-300 rounded-md focus:ring focus:ring-blue-500">
+                        <select id="users_iddrone" name="users_id" class="w-full mt-1 p-2 border dark:bg-gray-900 dark:border-gray-700 dark:text-gray-300 rounded-md focus:ring focus:ring-blue-500">
                             @foreach (App\Models\User::whereHas('teams', function ($query) {
                                     $query->where('teams.id', auth()->user()->teams()->first()->id);
                                 })->pluck('name', 'id') as $id => $name)
@@ -195,31 +177,38 @@
                     <!-- Firmware Version Input -->
                     <div>
                         <label class="block text-gray-700 dark:text-gray-300">Firmware Version</label>
-                        <input id="firmware_vdrone" type="text" name="firmware_v" required maxlength="255" class="w-full mt-1 p-2 border dark:bg-gray-900 dark:border-gray-700 dark:text-gray-300 rounded-md focus:ring focus:ring-blue-500">
+                        <input id="firmware_vdrone" type="text" name="firmware_v" maxlength="255" class="w-full mt-1 p-2 border dark:bg-gray-900 dark:border-gray-700 dark:text-gray-300 rounded-md focus:ring focus:ring-blue-500">
                     </div>
             
                     <!-- Hardware Version Input -->
                     <div>
                         <label class="block text-gray-700 dark:text-gray-300">Hardware Version</label>
-                        <input id="hardware_vdrone" type="text" name="hardware_v" required maxlength="255" class="w-full mt-1 p-2 border dark:bg-gray-900 dark:border-gray-700 dark:text-gray-300 rounded-md focus:ring focus:ring-blue-500">
+                        <input id="hardware_vdrone" type="text" name="hardware_v" maxlength="255" class="w-full mt-1 p-2 border dark:bg-gray-900 dark:border-gray-700 dark:text-gray-300 rounded-md focus:ring focus:ring-blue-500">
                     </div>
             
                     <!-- Propulsion Version Input -->
                     <div>
                         <label class="block text-gray-700 dark:text-gray-300">Propulsion Version</label>
-                        <input id="propulsion_vdrone" type="text" name="propulsion_v" required maxlength="255" class="w-full mt-1 p-2 border dark:bg-gray-900 dark:border-gray-700 dark:text-gray-300 rounded-md focus:ring focus:ring-blue-500">
+                        <select id="propulsion_vdrone" name="propulsion_vdrone" class="w-full mt-1 p-2 border dark:bg-gray-900 dark:border-gray-700 dark:text-gray-300 rounded-md focus:ring focus:ring-blue-500">
+                            <option value="electric">Electric</option>
+                            <option value="fuel">Fuel</option>
+                            <option value="hydrogen">Hydrogen</option>
+                            <option value="hybrid">Hybrid</option>
+                            <option value="turbine">Turbine</option>
+                        </select>
+                        
                     </div>
             
                     <!-- Color Input -->
                     <div>
                         <label class="block text-gray-700 dark:text-gray-300">Color</label>
-                        <input id="colordrone" type="text" name="color" required maxlength="255" class="w-full mt-1 p-2 border dark:bg-gray-900 dark:border-gray-700 dark:text-gray-300 rounded-md focus:ring focus:ring-blue-500">
+                        <input id="colordrone" type="text" name="color" maxlength="255" class="w-full mt-1 p-2 border dark:bg-gray-900 dark:border-gray-700 dark:text-gray-300 rounded-md focus:ring focus:ring-blue-500">
                     </div>
             
                     <!-- Remote Input -->
                     <div>
                         <label class="block text-gray-700 dark:text-gray-300">Remote ID</label>
-                        <input id="remotedrone" type="text" name="remote" required maxlength="255" class="w-full mt-1 p-2 border dark:bg-gray-900 dark:border-gray-700 dark:text-gray-300 rounded-md focus:ring focus:ring-blue-500">
+                        <input id="remotedrone" type="text" name="remote" maxlength="255" class="w-full mt-1 p-2 border dark:bg-gray-900 dark:border-gray-700 dark:text-gray-300 rounded-md focus:ring focus:ring-blue-500">
                     </div>
                 </div>
             
@@ -227,31 +216,41 @@
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <!-- Conn Card Input -->
                     <div>
-                        <label class="block text-gray-700 dark:text-gray-300">Conn Card</label>
-                        <input id="conn_carddrone" type="text" name="conn_card" required maxlength="255" class="w-full mt-1 p-2 border dark:bg-gray-900 dark:border-gray-700 dark:text-gray-300 rounded-md focus:ring focus:ring-blue-500">
+                        <label class="block text-gray-700 dark:text-gray-300">Connection Card</label>
+                        <input id="conn_carddrone" type="text" name="conn_card" maxlength="255" class="w-full mt-1 p-2 border dark:bg-gray-900 dark:border-gray-700 dark:text-gray-300 rounded-md focus:ring focus:ring-blue-500">
                     </div>
                     <!-- Initial Flight Input -->
                     <div>
                         <label class="block text-gray-700 dark:text-gray-300">Initial Flight</label>
-                        <input id="initial_flightdrone" type="text" name="initial_flight" required maxlength="255" class="w-full mt-1 p-2 border dark:bg-gray-900 dark:border-gray-700 dark:text-gray-300 rounded-md focus:ring focus:ring-blue-500">
+                        <input id="initial_flightdrone" type="number" name="initial_flight" maxlength="255" class="w-full mt-1 p-2 border dark:bg-gray-900 dark:border-gray-700 dark:text-gray-300 rounded-md focus:ring focus:ring-blue-500">
                     </div>
             
                     <!-- Initial Flight Time Input -->
                     <div>
                         <label class="block text-gray-700 dark:text-gray-300">Initial Flight Time</label>
-                        <input id="initial_flight_timedrone" type="number" name="initial_flight_time" required class="w-full mt-1 p-2 border dark:bg-gray-900 dark:border-gray-700 dark:text-gray-300 rounded-md focus:ring focus:ring-blue-500">
+                        <input 
+                            id="initial_flight_timedrone" 
+                            type="text" 
+                            name="initial_flight_time" 
+                         
+                            class="w-full mt-1 p-2 border dark:bg-gray-900 dark:border-gray-700 dark:text-gray-300 rounded-md focus:ring focus:ring-blue-500" 
+                            oninput="this.value = this.value.replace(/[^0-9:]/g, '').replace(/^([0-9]{2})([0-9]{2})/, '$1:$2:');" 
+                            placeholder="HH:mm:ss" 
+                            value="00:00:00"
+                        >
                     </div>
+                    
             
                     <!-- Max Flight Time Input -->
                     <div>
                         <label class="block text-gray-700 dark:text-gray-300">Max Flight Time</label>
-                        <input id="max_flight_timedrone" type="number" name="max_flight_time" required class="w-full mt-1 p-2 border dark:bg-gray-900 dark:border-gray-700 dark:text-gray-300 rounded-md focus:ring focus:ring-blue-500">
+                        <input id="max_flight_timedrone" type="number" name="max_flight_time" class="w-full mt-1 p-2 border dark:bg-gray-900 dark:border-gray-700 dark:text-gray-300 rounded-md focus:ring focus:ring-blue-500">
                     </div>
                 </div>
                     <!-- Description Input -->
                     <div>
                         <label class="block text-gray-700 dark:text-gray-300">Description</label>
-                        <textarea id="descriptiondrone" name="description" required maxlength="255" class="w-full mt-1 p-2 border dark:bg-gray-900 dark:border-gray-700 dark:text-gray-300 rounded-md focus:ring focus:ring-blue-500"></textarea>
+                        <textarea id="descriptiondrone" name="description" maxlength="255" class="w-full mt-1 p-2 border dark:bg-gray-900 dark:border-gray-700 dark:text-gray-300 rounded-md focus:ring focus:ring-blue-500"></textarea>
                     </div>
 
                 <!-- Submit Button -->
@@ -263,7 +262,7 @@
                     </button>
                 </div>
                 
-            </form>
+            </div>
         </div>
     </div>
 </div>
@@ -337,7 +336,30 @@
         });
 
         // Validate empty fields
-        if (nameValue.trim() == '') {
+        if (
+                nameValue.trim() === '' ||
+                statusValue.trim() === '' ||
+                idLegalValue.trim() === '' ||
+                brandValue.trim() === '' ||
+                modelValue.trim() === '' ||
+                typeValue.trim() === '' ||
+                serialPValue.trim() === '' ||
+                serialIValue.trim() === '' ||
+                flightCValue.trim() === '' ||
+                remoteCValue.trim() === '' ||
+                geometryValue.trim() === '' ||
+                inventoryAssetValue.trim() === '' ||
+                usersIdValue.trim() === '' ||
+                firmwareVValue.trim() === '' ||
+                hardwareVValue.trim() === '' ||
+                propulsionVValue.trim() === '' ||
+                colorValue.trim() === '' ||
+                remoteValue.trim() === '' ||
+                connCardValue.trim() === '' ||
+                initialFlightValue.trim() === '' ||
+                initialFlightTimeValue.trim() === '' ||
+                maxFlightTimeValue.trim() === ''
+            ) {
             alert('Name cannot be empty!');
             return;
         }
@@ -375,7 +397,8 @@
             },
             success: function(response) {
                 console.log(response);
-                $("#success-notification").removeClass("hidden-notif").addClass("notification");
+                $("#success-notification-drone").removeClass("hidden-notif")
+                $("#success-notification-drone").addClass("notification")
                 setTimeout(() => {
                     location.reload();
                 }, 3000);
@@ -385,4 +408,19 @@
             }
         });
     }
+</script>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const notification = document.getElementById('success-notification-drone');
+        const closeButton = document.getElementById('close-notification-drone');
+        if (notification) {
+            setTimeout(() => {
+                notification.style.display = 'none';
+            }, 8000); // Hide after 8 seconds
+
+            closeButton.addEventListener('click', () => {
+                notification.style.display = 'none';
+            });
+        }
+    });
 </script>

@@ -1,33 +1,15 @@
-{{-- <head>
-    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+<head>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-</head> --}}
-<style>
-    .active{
-        display: none;
-    }
-    .notification {
-                position: fixed;
-                top: 20px;
-                right: 20px;
-                z-index: 50;
-            }
-    .hidden-notif
-    {
-        display: none;
-    }
-</style>
+</head>
+<script src="https://cdn.tailwindcss.com"></script>
 <div>
-    {{-- @php
-    dd(session()->all());
-    @endphp --}}
 <!--alret massage   -->
-{{-- <div id="success-notification" class="hidden-notif bg-green-500 text-white p-4 rounded-lg shadow-lg flex items-center justify-between">
-    <span>test notification</span>
-    <button id="close-notification" class="ml-4 text-white hover:text-gray-200 focus:outline-none">
+<div id="success-notification-location" class="hidden-notif bg-green-500 text-white p-4 rounded-lg shadow-lg flex items-center justify-between">
+    <span>Successfully</span>
+    <button id="close-notification-location" class="ml-4 text-white hover:text-gray-200 focus:outline-none">
         <i class="fas fa-times"></i>
     </button>
-</div> --}}
+</div>
 
 
   <!-- Tombol untuk Membuka Modal -->
@@ -54,73 +36,26 @@
             <hr class="border-t border-gray-300 dark:border-gray-600 w-24 mx-auto">
 
             <!-- Form -->
-            <form id="customFormLocation" method="POST">
+            <div>
                 @csrf
             
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <!-- Name Input -->
                     <div>
                         <label class="block text-gray-700 dark:text-gray-300">Name</label>
-                        <input id="name" type="text" name="name" required maxlength="255" class="w-full mt-1 p-2 border dark:bg-gray-900 dark:border-gray-700 dark:text-gray-300 rounded-md focus:ring focus:ring-blue-500">
+                        <input id="name" type="text" name="name" maxlength="255" class="w-full mt-1 p-2 border dark:bg-gray-900 dark:border-gray-700 dark:text-gray-300 rounded-md focus:ring focus:ring-blue-500">
                     </div>
             
                     <!-- Description Input -->
                     <div>
                         <label class="block text-gray-700 dark:text-gray-300">Description</label>
-                        <textarea id="descriptionlocation" name="descriptionlocation" required maxlength="255" class="w-full mt-1 p-2 border dark:bg-gray-900 dark:border-gray-700 dark:text-gray-300 rounded-md focus:ring focus:ring-blue-500"></textarea>
+                        <textarea id="descriptionlocation" name="descriptionlocation" maxlength="255" class="w-full mt-1 p-2 border dark:bg-gray-900 dark:border-gray-700 dark:text-gray-300 rounded-md focus:ring focus:ring-blue-500"></textarea>
                     </div>
-            
-                    <!-- Address Input -->
-                    <div>
-                        <label class="block text-gray-700 dark:text-gray-300">Address</label>
-                        <input id="address" type="text" name="address" required maxlength="255" class="w-full mt-1 p-2 border dark:bg-gray-900 dark:border-gray-700 dark:text-gray-300 rounded-md focus:ring focus:ring-blue-500">
-                    </div>
-                    <!-- Country Input -->
-                    <div>
-                        <label class="block text-gray-700 dark:text-gray-300">Country</label>
-                        <input id="country" type="text" name="country" required maxlength="255" class="w-full mt-1 p-2 border dark:bg-gray-900 dark:border-gray-700 dark:text-gray-300 rounded-md focus:ring focus:ring-blue-500">
-                    </div>
-            
-                    <!-- City Input -->
-                    <div>
-                        <label class="block text-gray-700 dark:text-gray-300">City</label>
-                        <input id="city" type="text" name="city" required maxlength="255" class="w-full mt-1 p-2 border dark:bg-gray-900 dark:border-gray-700 dark:text-gray-300 rounded-md focus:ring focus:ring-blue-500">
-                    </div>
-            
-                    <!-- State Input -->
-                    <div>
-                        <label class="block text-gray-700 dark:text-gray-300">State</label>
-                        <input id="states" type="text" name="states" required maxlength="255" class="w-full mt-1 p-2 border dark:bg-gray-900 dark:border-gray-700 dark:text-gray-300 rounded-md focus:ring focus:ring-blue-500">
-                    </div>
-            
-                    <!-- Postal Code Input -->
-                    <div>
-                        <label class="block text-gray-700 dark:text-gray-300">Postal Code</label>
-                        <input id="pos_code" type="number" name="pos_code" required maxlength="255" class="w-full mt-1 p-2 border dark:bg-gray-900 dark:border-gray-700 dark:text-gray-300 rounded-md focus:ring focus:ring-blue-500">
-                    </div>
-            
-                    <!-- Latitude Input -->
-                    <div>
-                        <label class="block text-gray-700 dark:text-gray-300">Latitude</label>
-                        <input id="latitude" type="number" name="latitude" required maxlength="255" class="w-full mt-1 p-2 border dark:bg-gray-900 dark:border-gray-700 dark:text-gray-300 rounded-md focus:ring focus:ring-blue-500">
-                    </div>
-            
-                    <!-- Longitude Input -->
-                    <div>
-                        <label class="block text-gray-700 dark:text-gray-300">Longitude</label>
-                        <input id="longitude" type="number" name="longitude" required maxlength="255" class="w-full mt-1 p-2 border dark:bg-gray-900 dark:border-gray-700 dark:text-gray-300 rounded-md focus:ring focus:ring-blue-500">
-                    </div>
-            
-                    <!-- Altitude Input -->
-                    <div>
-                        <label class="block text-gray-700 dark:text-gray-300">Altitude</label>
-                        <input id="altitude" type="number" name="altitude" required maxlength="255" class="w-full mt-1 p-2 border dark:bg-gray-900 dark:border-gray-700 dark:text-gray-300 rounded-md focus:ring focus:ring-blue-500">
-                    </div>
-            
+
                     <!-- Customer Select -->
                     <div>
                         <label class="block text-gray-700 dark:text-gray-300">Customer</label>
-                        <select id="customers_id" name="customers_id" required class="w-full mt-1 p-2 border dark:bg-gray-900 dark:border-gray-700 dark:text-gray-300 rounded-md focus:ring focus:ring-blue-500">
+                        <select id="customers_id" name="customers_id" class="w-full mt-1 p-2 border dark:bg-gray-900 dark:border-gray-700 dark:text-gray-300 rounded-md focus:ring focus:ring-blue-500">
                             @foreach (App\Models\customer::where('teams_id', auth()->user()->teams()->first()->id)->pluck('name', 'id') as $id => $name)
                                 <option value="{{ $id }}">{{ $name }}</option>
                             @endforeach
@@ -130,11 +65,58 @@
                     <!-- Project Select -->
                     <div>
                         <label class="block text-gray-700 dark:text-gray-300">Project</label>
-                        <select id="projects_id" name="projects_id" required class="w-full mt-1 p-2 border dark:bg-gray-900 dark:border-gray-700 dark:text-gray-300 rounded-md focus:ring focus:ring-blue-500">
+                        <select id="projects_id" name="projects_id" class="w-full mt-1 p-2 border dark:bg-gray-900 dark:border-gray-700 dark:text-gray-300 rounded-md focus:ring focus:ring-blue-500">
                             @foreach (App\Models\project::where('teams_id', auth()->user()->teams()->first()->id)->pluck('case', 'id') as $id => $name)
                                 <option value="{{ $id }}">{{ $name }}</option>
                             @endforeach
                         </select>
+                    </div>
+            
+                    <!-- Address Input -->
+                    <div>
+                        <label class="block text-gray-700 dark:text-gray-300">Address</label>
+                        <input id="address" type="text" name="address" maxlength="255" class="w-full mt-1 p-2 border dark:bg-gray-900 dark:border-gray-700 dark:text-gray-300 rounded-md focus:ring focus:ring-blue-500">
+                    </div>
+                    <!-- Country Input -->
+                    <div>
+                        <label class="block text-gray-700 dark:text-gray-300">Country</label>
+                        <input id="country" type="text" name="country" maxlength="255" class="w-full mt-1 p-2 border dark:bg-gray-900 dark:border-gray-700 dark:text-gray-300 rounded-md focus:ring focus:ring-blue-500">
+                    </div>
+            
+                    <!-- City Input -->
+                    <div>
+                        <label class="block text-gray-700 dark:text-gray-300">City</label>
+                        <input id="city" type="text" name="city" maxlength="255" class="w-full mt-1 p-2 border dark:bg-gray-900 dark:border-gray-700 dark:text-gray-300 rounded-md focus:ring focus:ring-blue-500">
+                    </div>
+            
+                    <!-- State Input -->
+                    <div>
+                        <label class="block text-gray-700 dark:text-gray-300">State</label>
+                        <input id="states" type="text" name="states" maxlength="255" class="w-full mt-1 p-2 border dark:bg-gray-900 dark:border-gray-700 dark:text-gray-300 rounded-md focus:ring focus:ring-blue-500">
+                    </div>
+            
+                    <!-- Postal Code Input -->
+                    <div>
+                        <label class="block text-gray-700 dark:text-gray-300">Postal Code</label>
+                        <input id="pos_code" type="number" name="pos_code" maxlength="255" class="w-full mt-1 p-2 border dark:bg-gray-900 dark:border-gray-700 dark:text-gray-300 rounded-md focus:ring focus:ring-blue-500">
+                    </div>
+            
+                    <!-- Latitude Input -->
+                    <div>
+                        <label class="block text-gray-700 dark:text-gray-300">Latitude</label>
+                        <input id="latitude" type="number" name="latitude" maxlength="255" class="w-full mt-1 p-2 border dark:bg-gray-900 dark:border-gray-700 dark:text-gray-300 rounded-md focus:ring focus:ring-blue-500">
+                    </div>
+            
+                    <!-- Longitude Input -->
+                    <div>
+                        <label class="block text-gray-700 dark:text-gray-300">Longitude</label>
+                        <input id="longitude" type="number" name="longitude" maxlength="255" class="w-full mt-1 p-2 border dark:bg-gray-900 dark:border-gray-700 dark:text-gray-300 rounded-md focus:ring focus:ring-blue-500">
+                    </div>
+            
+                    <!-- Altitude Input -->
+                    <div>
+                        <label class="block text-gray-700 dark:text-gray-300">Altitude</label>
+                        <input id="altitude" type="number" name="altitude" maxlength="255" class="w-full mt-1 p-2 border dark:bg-gray-900 dark:border-gray-700 dark:text-gray-300 rounded-md focus:ring focus:ring-blue-500">
                     </div>
                 </div>
             
@@ -146,7 +128,7 @@
                         Submit
                     </button>
                 </div>
-            </form>
+            </div>
             
         </div>
     </div>
@@ -183,7 +165,18 @@
     console.log(stateValue, customerValue, projectValue);
     console.log(descriptionValue, projectValue);
     // Validasi input kosong
-    if (stateValue.trim() === '') {
+    if (
+            nameValue.trim() === '' ||
+            addressValue.trim() === '' ||
+            cityValue.trim() === '' ||
+            stateValue.trim() === '' ||
+            countryValue.trim() === '' ||
+            poscodeValue.trim() === '' ||
+            latitudeValue.trim() === '' ||
+            longitudeValue.trim() === '' ||
+            altitudeValue.trim() === '' ||
+            descriptionValue.trim() === ''
+        ) {
         alert('State cannot be empty!');
     } else {
         $.ajax({
@@ -206,8 +199,8 @@
             },
             success: function(response) {
                 console.log(response);
-                $("#success-notification").removeClass("hidden-notif");
-                $("#success-notification").addClass("notification");
+                $("#success-notification-location").removeClass("hidden-notif");
+                $("#success-notification-location").addClass("notification");
                 setTimeout(() => {
                     location.reload();
                 }, 3000);
@@ -221,12 +214,11 @@
 
 </script>
 {{-- notification --}}
-{{-- <script>
+<script>
     document.addEventListener('DOMContentLoaded', function () {
-        const notification = document.getElementById('success-notification');
-        const closeButton = document.getElementById('close-notification');
+        const notification = document.getElementById('success-notification-location');
+        const closeButton = document.getElementById('close-notification-location');
         if (notification) {
-            notification.style.display = 'block';
             setTimeout(() => {
                 notification.style.display = 'none';
             }, 8000); // Hide after 8 seconds
@@ -236,4 +228,4 @@
             });
         }
     });
-</script> --}}
+</script>

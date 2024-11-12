@@ -1,33 +1,33 @@
-{{-- <head>
-    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+<head>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-</head> --}}
+</head>
 <style>
     .active{
         display: none;
     }
-    .notification {
-                position: fixed;
-                top: 20px;
-                right: 20px;
-                z-index: 50;
-            }
     .hidden-notif
     {
         display: none;
     }
+    .notification {
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        z-index: 50;
+        display: block;
+    }
+
 </style>
+<script src="https://cdn.tailwindcss.com"></script>
+
 <div>
-    {{-- @php
-    dd(session()->all());
-    @endphp --}}
 <!--alret massage   -->
-{{-- <div id="success-notification" class="hidden-notif bg-green-500 text-white p-4 rounded-lg shadow-lg flex items-center justify-between">
-    <span>test notification</span>
-    <button id="close-notification" class="ml-4 text-white hover:text-gray-200 focus:outline-none">
-        <i class="fas fa-times"></i>
-    </button>
-</div> --}}
+    <div id="success-notification" class="hidden-notif bg-green-500 text-white p-4 rounded-lg shadow-lg flex items-center justify-between">
+        <span>Successfully</span>
+        <button id="close-notification" class="ml-4 text-white hover:text-gray-200 focus:outline-none">
+            <i class="fas fa-times"></i>
+        </button>
+    </div>
   <!-- Tombol untuk Membuka Modal -->
     <button style="font-size: 12px; background-color: #4A5568; color: white; font-weight: bold; padding: 4px 8px; border-radius: 4px; border: none; cursor: pointer;" onclick="openModal()" type="button">
         <span style="color: inherit; text-decoration: none;">
@@ -52,7 +52,7 @@
             <hr class="border-t border-gray-300 dark:border-gray-600 w-24 mx-auto">
 
             <!-- Form -->
-            <form id="customForm" method="POST">
+            <div>
                 @csrf
                 {{-- <input type="hidden" name="teams_id" value="{{ auth()->user()->teams()->first()->id ?? null }}"> --}}
 
@@ -60,21 +60,26 @@
                     <!-- Case Input -->
                     <div>
                         <label class="block text-gray-700 dark:text-gray-300">Case</label>
-                        <input id="case" type="text" name="case" required maxlength="255" class="w-full mt-1 p-2 border dark:bg-gray-900 dark:border-gray-700 dark:text-gray-300 rounded-md focus:ring focus:ring-blue-500">
+                        <input id="case" type="text" name="case" maxlength="255" class="w-full mt-1 p-2 border dark:bg-gray-900 dark:border-gray-700 dark:text-gray-300 rounded-md focus:ring focus:ring-blue-500">
                     </div>
 
                     <!-- Revenue Input -->
                     <div>
                         <label class="block text-gray-700 dark:text-gray-300">Revenue</label>
-                        <input id="revenue" type="number" name="revenue" required class="w-full mt-1 p-2 border dark:bg-gray-900 dark:border-gray-700 dark:text-gray-300 rounded-md focus:ring focus:ring-blue-500">
+                        <input id="revenue" type="number" name="revenue" class="w-full mt-1 p-2 border dark:bg-gray-900 dark:border-gray-700 dark:text-gray-300 rounded-md focus:ring focus:ring-blue-500">
                     </div>
 
                     <!-- Currency Select -->
                     <div>
                         <label class="block text-gray-700 dark:text-gray-300">Currency</label>
-                        <select id="currencies_id" name="currencies_id" required class="w-full mt-1 p-2 border dark:bg-gray-900 dark:border-gray-700 dark:text-gray-300 rounded-md focus:ring focus:ring-blue-500">
+                        <select id="currencies_id" name="currencies_id" class="w-full mt-1 p-2 border dark:bg-gray-900 dark:border-gray-700 dark:text-gray-300 rounded-md focus:ring focus:ring-blue-500">
+                            @php
+                                $defaultCurrencyId = auth()->user()->teams()->first()?->currencies_id;
+                            @endphp
                             @foreach (App\Models\currencie::all() as $currency)
-                                <option value="{{ $currency->id }}">{{ $currency->name }} - {{ $currency->iso }}</option>
+                            <option value="{{ $currency->id }}" {{ $currency->id == $defaultCurrencyId ? 'selected' : '' }}>
+                                {{ $currency->name }} - {{ $currency->iso }}
+                            </option>
                             @endforeach
                         </select>
                     </div>
@@ -82,7 +87,7 @@
                     <!-- Customer Select -->
                     <div>
                         <label class="block text-gray-700 dark:text-gray-300">Customer Name</label>
-                        <select id="customers_id" name="customers_id" required class="w-full mt-1 p-2 border dark:bg-gray-900 dark:border-gray-700 dark:text-gray-300 rounded-md focus:ring focus:ring-blue-500">
+                        <select id="customers_id" name="customers_id" class="w-full mt-1 p-2 border dark:bg-gray-900 dark:border-gray-700 dark:text-gray-300 rounded-md focus:ring focus:ring-blue-500">
                             @foreach (App\Models\customer::where('teams_id', auth()->user()->teams()->first()->id)->pluck('name', 'id') as $id => $name)
                                 <option value="{{ $id }}">{{ $name }}</option>
                             @endforeach
@@ -93,7 +98,7 @@
                 <!-- Description Text Area -->
                 <div>
                     <label class="block text-gray-700 dark:text-gray-300">Description</label>
-                    <textarea id="description" name="description" required maxlength="255" class="w-full mt-1 p-2 border dark:bg-gray-900 dark:border-gray-700 dark:text-gray-300 rounded-md focus:ring focus:ring-blue-500"></textarea>
+                    <textarea id="description" name="description" maxlength="255" class="w-full mt-1 p-2 border dark:bg-gray-900 dark:border-gray-700 dark:text-gray-300 rounded-md focus:ring focus:ring-blue-500"></textarea>
                 </div>
 
                 <!-- Submit Button -->
@@ -105,7 +110,7 @@
                     </button>
                 </div>
                 
-            </form>
+            </div>
         </div>
     </div>
 </div>
@@ -166,12 +171,11 @@
     });
 </script>
 {{-- notification --}}
-{{-- <script>
+<script>
     document.addEventListener('DOMContentLoaded', function () {
         const notification = document.getElementById('success-notification');
         const closeButton = document.getElementById('close-notification');
         if (notification) {
-            notification.style.display = 'block';
             setTimeout(() => {
                 notification.style.display = 'none';
             }, 8000); // Hide after 8 seconds
@@ -181,4 +185,4 @@
             });
         }
     });
-</script> --}}
+</script>

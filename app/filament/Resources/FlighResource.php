@@ -47,6 +47,9 @@ class FlighResource extends Resource
     protected static ?string $navigationIcon = 'heroicon-s-clipboard-document-list';
     public static ?string $navigationGroup = 'flight';
     protected static bool $isLazy = false;
+    public static function getNavigationBadge(): ?string{
+        return static::getModel()::count();
+    }
 
     public static function getNavigationLabel(): string
     {

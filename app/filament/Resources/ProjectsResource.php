@@ -33,6 +33,10 @@ class ProjectsResource extends Resource
     public static ?string $navigationGroup = ' ';
     protected static bool $isLazy = false;
 
+    public static function getNavigationBadge(): ?string{
+        return static::getModel()::count();
+    }
+
     public static function getNavigationLabel(): string
     {
         return GoogleTranslate::trans('Projects', session('locale') ?? 'en');
