@@ -23,6 +23,7 @@ class fligh_location extends Model
         'teams_id',
         'customers_id',
         'projects_id',
+        'status_visible',
     ];
     public function teams(){
         return $this->belongsToMany(Team::class,'fligh_location_team','fligh_location_id','team_id');

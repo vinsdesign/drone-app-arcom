@@ -16,7 +16,8 @@ class Projects extends Model
         'currencies_id',
         'customers_id',
         'description',
-        'teams_id'
+        'teams_id',
+        'status_visible'
     ];
 
     public function customers(): BelongsTo

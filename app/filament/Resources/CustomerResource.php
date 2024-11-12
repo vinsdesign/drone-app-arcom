@@ -32,6 +32,10 @@ class CustomerResource extends Resource
     public static ?string $navigationGroup = ' ';
     protected static bool $isLazy = false;
 
+    public static function getNavigationBadge(): ?string{
+        return static::getModel()::count();
+    }
+
     public static function getNavigationLabel(): string
     {
         return GoogleTranslate::trans('Customers', session('locale') ?? 'en');

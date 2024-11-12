@@ -31,6 +31,10 @@ class FlighLocationResource extends Resource
     protected static ?string $tenantRelationshipName = 'fligh_location';
     protected static bool $isLazy = false;
 
+    public static function getNavigationBadge(): ?string{
+        return static::getModel()::count();
+    }
+
     public static function getNavigationLabel(): string
     {
         return GoogleTranslate::trans('Locations', session('locale') ?? 'en');

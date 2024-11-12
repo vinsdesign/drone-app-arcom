@@ -34,6 +34,10 @@ class IncidentResource extends Resource
     public static ?int $navigationSort = 7;
     public static ?string $navigationGroup = 'flight';
     protected static bool $isLazy = false;
+    
+    public static function getNavigationBadge(): ?string{
+        return static::getModel()::count();
+    }
 
     public static function getNavigationLabel(): string
     {

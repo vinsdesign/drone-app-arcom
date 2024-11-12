@@ -27,6 +27,9 @@ class DroneResource extends Resource
     protected static ?string $navigationIcon = 'heroicon-m-rocket-launch';
     public static ?string $tenantOwnershipRelationshipName = 'teams';
     protected static bool $isLazy = false;
+    public static function getNavigationBadge(): ?string{
+        return static::getModel()::count();
+    }
 
     public static function getNavigationLabel(): string
     {

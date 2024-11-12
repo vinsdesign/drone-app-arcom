@@ -36,6 +36,10 @@ class MaintenceResource extends Resource
     public static ?string $tenantOwnershipRelationshipName = 'teams';
     public static ?int $navigationSort = 5;
     protected static bool $isLazy = false;
+    
+    public static function getNavigationBadge(): ?string{
+        return static::getModel()::where('status','!=','completed')->count();
+    }
 
     public static function getNavigationLabel(): string
     {

@@ -36,6 +36,10 @@ class MaintenanceBatteryResource extends Resource
     public static ?string $navigationGroup = 'Maintenance';
     protected static bool $isLazy = false;
 
+    public static function getNavigationBadge(): ?string{
+        return static::getModel()::where('status','!=','completed')->count();
+    }
+
     public static function getNavigationLabel(): string
     {
         return GoogleTranslate::trans('Maintenance Equipment/Battery', session('locale') ?? 'en');
