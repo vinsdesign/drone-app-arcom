@@ -55,7 +55,7 @@ class BattreiResource extends Resource
             ->schema([
                 Tabs::make('Tabs')
                 ->tabs([
-                    Tabs\Tab::make('Overview')
+                    Tabs\Tab::make(GoogleTranslate::trans('Overview', session('locale') ?? 'en'))
                     ->schema([
                         Forms\Components\Hidden::make('teams_id')
                             ->default(auth()->user()->teams()->first()->id ?? null),
@@ -115,7 +115,7 @@ class BattreiResource extends Resource
                             ->numeric()->columnSpan(1),
                         ])->columns(4),
                         //end wizard 1
-                    Tabs\Tab::make('Extra Information')
+                    Tabs\Tab::make(GoogleTranslate::trans('Extra Information', session('locale') ?? 'en'))
                     ->schema([
                         Forms\Components\Select::make('users_id')->label(GoogleTranslate::trans('Owner', session('locale') ?? 'en'))
                             //->relationship('users', 'name')

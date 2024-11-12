@@ -51,7 +51,7 @@ class Report extends Page
                 $query->where('team_user.team_id', $currentTeamId); // Pastikan nama tabel pivot benar
             })->get();
         $drone = drone::whereHas('teams', function ($query) use ($currentTeamId) {
-                $query->where('id', $currentTeamId);
+                $query->where('teams.id', $currentTeamId);
             })->get();
         $team = team::where('id', $currentTeamId)->get();
         $reportDate = now()->format('F j, Y');
@@ -66,13 +66,13 @@ class Report extends Page
         $query->where('team_user.team_id', $currentTeamId); 
     })->get();
     $drone = drone::whereHas('teams', function ($query) use ($currentTeamId) {
-        $query->where('id', $currentTeamId);
+        $query->where('teams.id', $currentTeamId);
     })->get();
     $battery = battrei::whereHas('teams', function ($query) use ($currentTeamId) {
-        $query->where('id', $currentTeamId);
+        $query->where('teams.id', $currentTeamId);
     })->get();
     $equipment = equidment::whereHas('teams', function ($query) use ($currentTeamId) {
-        $query->where('id', $currentTeamId);
+        $query->where('teams.id', $currentTeamId);
     })->get();
     $team = team::where('id', $currentTeamId)->get();
     $reportDate = now()->format('F j, Y');
@@ -87,13 +87,13 @@ class Report extends Page
         $endDate = $request->input('end_date');
 
         $project = Projects::whereHas('teams', function ($query) use ($currentTeamId) {
-            $query->where('id', $currentTeamId);
+            $query->where('teams.id', $currentTeamId);
         })->get();
         $maintenance_drone = maintence_drone::whereHas('teams', function ($query) use ($currentTeamId){
-            $query->where('id', $currentTeamId);
+            $query->where('teams.id', $currentTeamId);
         })->get();
         $maintenance_eq = maintence_eq::whereHas('teams', function ($query) use ($currentTeamId){
-            $query->where('id', $currentTeamId);
+            $query->where('teams.id', $currentTeamId);
         })->get();
         $team = team::where('id', $currentTeamId)->get();
         $reportDate = now()->format('F j, Y');

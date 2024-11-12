@@ -46,7 +46,7 @@ class DroneResource extends Resource
         return $form
             ->schema([
                 Forms\Components\Wizard::make([
-                    Forms\Components\Wizard\Step::make('Overview')
+                    Forms\Components\Wizard\Step::make(GoogleTranslate::trans('Overview', session('locale') ?? 'en'))
                     ->schema([
                         Forms\Components\Hidden::make('teams_id')
                         ->default(auth()->user()->teams()->first()->id ?? null),
@@ -89,7 +89,7 @@ class DroneResource extends Resource
                         ])->searchable()->required(),
                     ])->columns(3),
                     //and wizard 1
-                    Forms\Components\Wizard\Step::make('Drone Details')
+                    Forms\Components\Wizard\Step::make(GoogleTranslate::trans('Drone Details', session('locale') ?? 'en'))
                     ->schema([
                         Forms\Components\Select::make('geometry')->label(GoogleTranslate::trans('Drone Geometry', session('locale') ?? 'en'))
                         ->options([
@@ -180,7 +180,7 @@ class DroneResource extends Resource
 
                     ])->columns(3),
                     //and wizard 2
-                    Forms\Components\Wizard\Step::make('connect')
+                    Forms\Components\Wizard\Step::make(GoogleTranslate::trans('Connect', session('locale') ?? 'en'))
                     ->schema([
                         Forms\Components\TextInput::make('serial_p')->label(GoogleTranslate::trans('Serial Printed', session('locale') ?? 'en'))
                             ->required(),

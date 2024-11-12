@@ -63,7 +63,7 @@ class EquidmentResource extends Resource
 
                 Tabs::make('Tabs')
                     ->tabs([
-                        Tabs\Tab::make('Overview')
+                        Tabs\Tab::make(GoogleTranslate::trans('Overview', session('locale') ?? 'en'))
                         ->schema([
                             Forms\Components\Hidden::make('teams_id')
                                 ->default(auth()->user()->teams()->first()->id ?? null),
@@ -133,7 +133,7 @@ class EquidmentResource extends Resource
                                     return drone::where('teams_id', $currentTeamId)->pluck('name', 'id');
                                 })
                         ])->columns(4),
-                        Tabs\Tab::make('Extra Information')
+                        Tabs\Tab::make(GoogleTranslate::trans('Extra Information', session('locale') ?? 'en'))
                         ->schema([
                             Forms\Components\Select::make('users_id')->label(GoogleTranslate::trans('Owner', session('locale') ?? 'en'))
                                 //->relationship('users', 'name')

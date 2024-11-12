@@ -21,14 +21,14 @@ class EditTeamProfil extends EditTenantProfile
 {
     public static function getLabel(): string
     {
-        return 'Team profile';
+        return GoogleTranslate::trans('Team profile', session('locale') ?? 'en');
     }
  
     public function form(Form $form): Form
     {
         return $form
             ->schema([
-                Section::make('Organization Information')
+                Section::make(GoogleTranslate::trans('Organization Information', session('locale') ?? 'en'))
                 ->description('')
                 ->schema([
                     FileUpload::make('avatar_url')->label(GoogleTranslate::trans('Your Avatar', session('locale')?? 'en'))

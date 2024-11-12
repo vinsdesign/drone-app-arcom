@@ -47,7 +47,7 @@ class ProjectsResource extends Resource
         $currentTeamId = auth()->user()->current_teams_id;
         return $form
             ->schema([
-                Forms\Components\Section::make('Projects')
+                Forms\Components\Section::make(GoogleTranslate::trans('Projects', session('locale') ?? 'en'))
                     ->schema([
                         Forms\Components\Hidden::make('teams_id')
                         ->default(auth()->user()->teams()->first()->id ?? null),
