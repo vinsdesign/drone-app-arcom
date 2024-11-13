@@ -26,7 +26,9 @@ class equidment extends Model
         'firmware_v',
         'hardware_v',
         'description',
-        'teams_id'
+        'teams_id',
+        'users_id',
+        'shared'
 
     ];
 

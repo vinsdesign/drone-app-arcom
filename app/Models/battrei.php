@@ -30,7 +30,9 @@ class battrei extends Model
         'is_loaner',
         'description',
         'users_id',
-        'teams_id'
+        'teams_id',
+        'users_id',
+        'shared'
     ];
 
     public function drone()

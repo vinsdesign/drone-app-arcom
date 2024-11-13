@@ -22,6 +22,8 @@ class document extends Model
         'projects_id',
         'teams_id',
         'status_visible',
+
+        'shared'
         'locked'
     ];
 
@@ -40,5 +42,8 @@ class document extends Model
     public function teams(){
         return $this->belongsTo(Team::class);
     }
+    // public function scopeShared($query){
+    //     return $query->where('shared',1);
+    // }
 
 }

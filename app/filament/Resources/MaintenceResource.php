@@ -14,6 +14,7 @@ use Filament\Forms\Form;
 use Filament\Infolists\Components\IconEntry;
 use Filament\Resources\Resource;
 use Filament\Tables;
+use Filament\Tables\Filters\Filter;
 use Filament\Tables\Table;
 use Filament\Infolists\Infolist;
 use Filament\Infolists\Components\Section;
@@ -212,6 +213,11 @@ class MaintenceResource extends Resource
                     'completed' => 'Completed'
                 ])
                 ->label('Filter by Status'),
+                Filter::make('Overdue')
+                ->query(function ($query) {
+                    $query->where('status', '!=', 'completed')
+                          ->whereDate('date', '<', Carbon::now());
+                }),
             ])
             ->actions([
                 Tables\Actions\ViewAction::make(),

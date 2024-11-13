@@ -33,6 +33,7 @@ class fligh extends Model
         'pre_volt',
         'fuel_used',
         'teams_id',
+        'shared'
         'locked_flight'
     ];
 

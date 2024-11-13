@@ -35,7 +35,8 @@ class drone extends Model
         'initial_flight',
         'initial_flight_time',
         'max_flight_time',
-        'teams_id'
+        'teams_id',
+        'shared'
     ];
 
     public function batteries()

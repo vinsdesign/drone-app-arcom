@@ -11,6 +11,7 @@ use Filament\Forms;
 use Filament\Forms\Components\Tabs;
 use Filament\Forms\Components\Wizard;
 use Filament\Forms\Form;
+use Filament\Notifications\Notification;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Columns\IconColumn;
@@ -172,6 +173,27 @@ class EquidmentResource extends Resource
             ]);
     }
 
+
+//edit query untuk action shared un-shared
+    public static function getEloquentQuery(): Builder
+    {
+        $userId = auth()->user()->id;
+        $query = parent::getEloquentQuery();
+
+        if (Auth()->user()->roles()->pluck('name')->contains('super_admin') || (Auth()->user()->roles()->pluck('name')->contains('panel_user'))) {
+            return $query;
+        }else{
+            $query->where(function ($query) use ($userId) {
+                $query->where('users_id', $userId);
+            })
+            ->orWhere(function ($query) use ($userId) {
+                $query->where('users_id', '!=', $userId)->where('shared', 1);
+            });
+            return $query;
+        }
+
+    }
+
     public static function table(Table $table): Table
     {
         return $table
@@ -257,8 +279,40 @@ class EquidmentResource extends Resource
                 ->label('Filter by Status'),
             ])
             ->actions([
-                Tables\Actions\ViewAction::make(),
-                Tables\Actions\EditAction::make(),
+                Tables\Actions\ActionGroup::make([
+                    Tables\Actions\ViewAction::make(),
+                    Tables\Actions\EditAction::make(),
+                    //Shared action
+                    Tables\Actions\Action::make('Shared')->label('Shared')
+                    ->hidden(fn ($record) => 
+                    ($record->shared == 1) ||
+                    !(Auth()->user()->roles()->pluck('name')->contains('super_admin') || (Auth()->user()->roles()->pluck('name')->contains('panel_user'))) && 
+                    ($record->users_id != Auth()->user()->id))
+    
+                    ->action(function ($record) {
+                        $record->update(['shared' => 1]);
+                        Notification::make()
+                        ->title('Shared Updated')
+                        ->body("Shared successfully changed.")
+                        ->success()
+                        ->send();
+                    })->icon('heroicon-m-share'),
+                //Un-Shared action
+                Tables\Actions\Action::make('Un-Shared')->label('Un-Shared')
+                    ->hidden(fn ($record) => 
+                    ($record->shared == 0) ||
+                    !(Auth()->user()->roles()->pluck('name')->contains('super_admin') || (Auth()->user()->roles()->pluck('name')->contains('panel_user')))&&
+                    ($record->users_id != Auth()->user()->id))
+                    ->action(function ($record) {
+                        $record->update(['shared' => 0]);
+                        Notification::make()
+                        ->title('Un-Shared Updated ')
+                        ->body("Un-Shared successfully changed.")
+                        ->success()
+                        ->send();
+                    })->icon('heroicon-m-share'),
+                ])
+                
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
