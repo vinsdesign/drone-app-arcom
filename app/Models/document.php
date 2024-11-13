@@ -21,7 +21,8 @@ class document extends Model
         'customers_id',
         'projects_id',
         'teams_id',
-        'status_visible'
+        'status_visible',
+        'locked'
     ];
 
     public function users()
