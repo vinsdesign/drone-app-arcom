@@ -21,7 +21,8 @@ class document extends Model
         'customers_id',
         'projects_id',
         'teams_id',
-        'status_visible'
+        'status_visible',
+        'shared'
     ];
 
     public function users()
@@ -39,5 +40,8 @@ class document extends Model
     public function teams(){
         return $this->belongsTo(Team::class);
     }
+    // public function scopeShared($query){
+    //     return $query->where('shared',1);
+    // }
 
 }

@@ -24,6 +24,8 @@ class fligh_location extends Model
         'customers_id',
         'projects_id',
         'status_visible',
+        'users_id',
+        'shared'
     ];
     public function teams(){
         return $this->belongsToMany(Team::class,'fligh_location_team','fligh_location_id','team_id');
@@ -32,7 +34,7 @@ class fligh_location extends Model
         return $this->belongsTo(Customer::class);
     }
     public function Projects(){
-        return $this->belongsTo(project::class);
+        return $this->belongsTo(projects::class);
     }
 
     public function fligh()

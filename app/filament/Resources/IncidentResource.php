@@ -222,7 +222,12 @@ class IncidentResource extends Resource
 
 
             ->filters([
-                //
+                Tables\Filters\SelectFilter::make('status')
+                ->options([
+                    false => 'Closed',
+                    true => 'Under Review',
+                ]),
+                Tables\Filters\SelectFilter::make('create_at') 
             ])
             ->actions([
                 // Action::make('viewFlight')

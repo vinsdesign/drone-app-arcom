@@ -17,7 +17,9 @@ class Projects extends Model
         'customers_id',
         'description',
         'teams_id',
-        'status_visible'
+        'status_visible',
+        'users_id',
+        'shared'
     ];
 
     public function customers(): BelongsTo

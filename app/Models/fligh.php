@@ -32,7 +32,8 @@ class fligh extends Model
         'equidments_id',
         'pre_volt',
         'fuel_used',
-        'teams_id'
+        'teams_id',
+        'shared'
     ];
 
     public function customers(): BelongsTo
