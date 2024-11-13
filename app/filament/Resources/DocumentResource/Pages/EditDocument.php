@@ -10,6 +10,14 @@ class EditDocument extends EditRecord
 {
     protected static string $resource = DocumentResource::class;
 
+    public function mount($record): void
+    {
+        parent::mount($record);
+        if ($this->record->locked) {
+            $this->redirect(DocumentResource::getUrl('index'));
+        }
+    }
+
     protected function getHeaderActions(): array
     {
         return [

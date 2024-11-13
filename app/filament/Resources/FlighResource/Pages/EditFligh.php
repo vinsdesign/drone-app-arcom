@@ -10,6 +10,13 @@ class EditFligh extends EditRecord
 {
     protected static string $resource = FlighResource::class;
 
+    public function mount($record): void
+    {
+        parent::mount($record);
+        if ($this->record->locked_flight) {
+            $this->redirect(FlighResource::getUrl('index'));
+        }
+    }
     protected function getHeaderActions(): array
     {
         return [
