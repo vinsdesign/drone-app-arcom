@@ -22,7 +22,9 @@ class document extends Model
         'projects_id',
         'teams_id',
         'status_visible',
+
         'shared'
+        'locked'
     ];
 
     public function users()

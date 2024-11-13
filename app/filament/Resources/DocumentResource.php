@@ -267,7 +267,9 @@ class DocumentResource extends Resource
             ->actions([
                 Tables\Actions\ActionGroup::make([
                     Tables\Actions\ViewAction::make(),
-                    Tables\Actions\EditAction::make(),
+                    Tables\Actions\EditAction::make()
+                    ->hidden(fn ($record) => $record->locked)
+                    ->url(fn ($record) => $record->locked ? '#' : route('filament.admin.resources.documents.edit', ['tenant' => Auth()->user()->teams()->first()->id, $record->id])),
                     Tables\Actions\DeleteAction::make(),
                     Tables\Actions\Action::make('Archive')->label('Archive')
                     ->hidden(fn ($record) => $record->status_visible == 'archived')
@@ -289,6 +291,7 @@ class DocumentResource extends Resource
                              ->success()
                              ->send();
                         })->icon('heroicon-s-archive-box'),
+
                     //Shared action
                     Tables\Actions\Action::make('Shared')->label('Shared')
                         ->hidden(fn ($record) => 
@@ -318,6 +321,31 @@ class DocumentResource extends Resource
                             ->success()
                             ->send();
                         })->icon('heroicon-m-share'),
+                    Tables\Actions\Action::make('Lock')->label('Lock')
+                        ->action(function ($record) {
+                            $record->update(['locked' => 'locked']);
+                            Notification::make()
+                                ->title('Data Locked')
+                                ->body('This record is now locked and cannot be edited.')
+                                ->success()
+                                ->send();
+                        })
+                        ->icon('heroicon-s-lock-closed')
+                        ->hidden(fn ($record) => $record->locked), 
+                    Tables\Actions\Action::make('Un-Lock')->label('Unlock')
+                        ->action(function ($record) {
+                            $record->update(['locked' => 'unlocked']);
+                            Notification::make()
+                                ->title('Data Un-Locked')
+                                ->body('This record is now unlocked and can be edited.')
+                                ->success()
+                                ->send();
+                        })
+                        ->icon('heroicon-s-lock-open')
+                        ->hidden(fn ($record) => !$record->locked)
+                        ->visible(function ($record) {
+                            return $record->locked !== false && auth()->user()->hasRole(['panel_user']);
+                        }), 
                 ])
                 
             ])

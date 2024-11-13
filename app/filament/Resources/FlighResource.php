@@ -737,6 +737,36 @@ class FlighResource extends Resource
                             ->success()
                             ->send();
                         })->icon('heroicon-m-share'),
+                    Tables\Actions\EditAction::make()
+                    ->hidden(fn ($record) => $record->locked_flight)
+                    ->url(fn ($record) => $record->locked_flight ? '#' : route('filament.admin.resources.flighs.edit', ['tenant' => Auth()->user()->teams()->first()->id, $record->id])),
+                    Tables\Actions\DeleteAction::make(),
+                    Tables\Actions\Action::make('test')->label('Lock')
+                        ->action(function ($record) {
+                            $record->update(['locked_flight' => 'locked']);
+                            Notification::make()
+                                ->title('Data Locked')
+                                ->body('This record is now locked and cannot be edited.')
+                                ->success()
+                                ->send();
+                        })
+                        ->icon('heroicon-s-lock-closed')
+                        ->hidden(fn ($record) => $record->locked_flight), 
+                    Tables\Actions\Action::make('test1')->label('Unlock')
+                        ->action(function ($record) {
+                            $record->update(['locked_flight' => 'unlocked']);
+                            Notification::make()
+                                ->title('Data Un-Locked')
+                                ->body('This record is now unlocked and can be edited.')
+                                ->success()
+                                ->send();
+                        })
+                        ->icon('heroicon-s-lock-open')
+                        ->hidden(fn ($record) => !$record->locked_flight)
+                        ->visible(function ($record) {
+                            return $record->locked_flight !== false && auth()->user()->hasRole(['panel_user']);
+                        }),  
+
                 ])
             ])
             ->bulkActions([

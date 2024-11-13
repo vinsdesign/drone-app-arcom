@@ -34,6 +34,7 @@ class fligh extends Model
         'fuel_used',
         'teams_id',
         'shared'
+        'locked_flight'
     ];
 
     public function customers(): BelongsTo
