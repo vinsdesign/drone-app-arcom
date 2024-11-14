@@ -22,8 +22,7 @@ class document extends Model
         'projects_id',
         'teams_id',
         'status_visible',
-
-        'shared'
+        'shared',
         'locked'
     ];
 
@@ -37,7 +36,7 @@ class document extends Model
     }
     public function projects()
     {
-        return $this->belongsTo(Project::class);
+        return $this->belongsTo(Projects::class);
     }
     public function teams(){
         return $this->belongsTo(Team::class);

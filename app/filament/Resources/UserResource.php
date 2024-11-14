@@ -22,6 +22,7 @@ use Filament\Infolists\Components\Section;
 use Illuminate\Validation\Rule;
 use Carbon\Carbon;
 use Stichoza\GoogleTranslate\GoogleTranslate;
+use Filament\Infolists\Components\View as InfolistView;
 class UserResource extends Resource
 {
     protected static ?string $model = User::class;
@@ -206,7 +207,10 @@ class UserResource extends Resource
                 //
             ])
             ->actions([
-                Tables\Actions\ViewAction::make(),
+                Tables\Actions\Action::make('views')  ->action(function ($record) {
+                    session(['personnel_id' => $record->id]);
+                    return redirect()->route('flight-personnel', ['personnel_id' => $record->id]);
+                })->label('View')->icon('heroicon-s-eye'),
                 Tables\Actions\EditAction::make(),
             ])
             ->bulkActions([
@@ -232,7 +236,11 @@ class UserResource extends Resource
                 TextEntry::make('sertif')->label(GoogleTranslate::trans('certificate', session('locale') ?? 'en')),
                 TextEntry::make('roles.name')->label(GoogleTranslate::trans('roles', session('locale') ?? 'en')),
                 TextEntry::make('address')->label(GoogleTranslate::trans('address', session('locale') ?? 'en')),
-            ])->columns(2)
+            ])->columns(2),
+            Section::make('')
+            ->schema([
+                InfolistView::make('component.flight-personnel')
+            ])
         ]);
     }
     public static function getRelations(): array

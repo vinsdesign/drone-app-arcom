@@ -165,8 +165,12 @@
                         <a href="{{route('filament.admin.resources.maintences.index',['tenant' => auth()->user()->teams()->first()->id])}}" class="mb-2"><button id="" class="text-white bg-yellow-500 hover:bg-yellow-400 px-4 py-2 rounded text-sm sm:text-base">Check <br>Maintenance Drone</button></a>
                         <a href="{{route('filament.admin.resources.maintenance-batteries.index',['tenant' => auth()->user()->teams()->first()->id])}}" class="mb-2"><button id="" class="text-white bg-yellow-500 hover:bg-yellow-400 px-4 py-2 rounded text-sm sm:text-base">Check <br>Maintenance Equipment</button></a>
                     </div>
-                    
                     {{-- end buttom Summary --}}
+                    {{--Summary content--}}
+
+                        @livewire(App\Livewire\Summary::class)
+
+                    {{--End summary content--}}
                 </div>
 
                 <div id="content1" class="tab-content">
