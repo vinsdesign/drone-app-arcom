@@ -1,5 +1,5 @@
 <?php
-use Stichoza\GoogleTranslate\GoogleTranslate;
+use App\Helpers\TranslationHelper;
 
 $currentTeamId = auth()->user()->teams()->first()->id;
     
@@ -57,7 +57,7 @@ dd($test)
         <!-- Top Bar -->
         <div class="flex justify-between items-center bg-gray-700 dark:bg-gray-900 text-white p-4 rounded-t-lg">
             <div class="flex items-center space-x-2">
-                <label for="log-type" class="font-semibold">{!! GoogleTranslate::trans('Log Type:', session('locale') ?? 'en') !!}</label>
+                <label for="log-type" class="font-semibold">{!! TranslationHelper::translateIfNeeded('Log Type: ') !!}</label>
                 <select id="log-type" class="bg-gray-200 text-black dark:bg-gray-700 dark:text-gray-100 border-none rounded p-2">
                     <option value="airdata">AirData CSV</option>
                     <option value="aeromapper">Aeromapper.DAT</option>
@@ -67,30 +67,30 @@ dd($test)
                 </select>
             </div>
             <div class="flex space-x-2">
-                <button class=" tab-buttom active px-4 py-2 bg-gray-500 text-gray-900 dark:text-gray-100 font-semibold rounded-lg hover:bg-gray-400 dark:hover:bg-gray-700" onclick="showContent(0)">{!! GoogleTranslate::trans('Single Log', session('locale') ?? 'en') !!}</button>
-                <button class="tab-buttom px-4 py-2 bg-gray-500 text-gray-900 font-semibold rounded-lg hover:bg-gray-600 dark:hover:bg-gray-800"onclick="showContent(1)">{!! GoogleTranslate::trans('Multiple Logs', session('locale') ?? 'en') !!}</button>
+                <button class=" tab-buttom active px-4 py-2 bg-gray-500 text-gray-900 dark:text-gray-100 font-semibold rounded-lg hover:bg-gray-400 dark:hover:bg-gray-700" onclick="showContent(0)">{!! TranslationHelper::translateIfNeeded('Single Log') !!}</button>
+                <button class="tab-buttom px-4 py-2 bg-gray-500 text-gray-900 font-semibold rounded-lg hover:bg-gray-600 dark:hover:bg-gray-800"onclick="showContent(1)">{!! TranslationHelper::translateIfNeeded('Multiple Log') !!}</button>
             </div>
         </div>
 
         <!-- Content Area -->
         <div class="p-6 text-left main-content active">
-            <label for="log-file" class="block text-lg font-semibold mb-2">{!! GoogleTranslate::trans('Select your log file:', session('locale') ?? 'en') !!}</label>
+            <label for="log-file" class="block text-lg font-semibold mb-2">{!! TranslationHelper::translateIfNeeded('Select your log file:') !!}</label>
             <div class="flex items-center space-x-4">
                 <input type="file" id="log-file" class="bg-gray-200 dark:bg-gray-700 dark:text-gray-100 border rounded p-2 w-2/3">
                 <button class="px-6 py-2 bg-gray-200 dark:bg-gray-700 text-gray-900 dark:text-gray-100 font-semibold rounded-lg border hover:bg-gray-300 dark:hover:bg-gray-800">
-                    {!! GoogleTranslate::trans('Analyze Flight Log', session('locale') ?? 'en') !!}
+                    {!! TranslationHelper::translateIfNeeded('Analyze Flight Log') !!}
                 </button>
             </div>
         </div>
         {{-- Multiple importer --}}
         <div class="p-6 text-left main-content bg-white dark:bg-gray-800">
-            <h1 class="block text-lg font-semibold mb-2 drak::text-gray-100" >{!! GoogleTranslate::trans('Set Data To Imports', session('locale') ?? 'en') !!}</h1>
+            <h1 class="block text-lg font-semibold mb-2 drak::text-gray-100" >{!! TranslationHelper::translateIfNeeded('Set data to imports') !!}</h1>
             <div class="container mx-auto p-4">
                 <form action="" method="POST" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                     @csrf
                     <!-- Drones Select -->
                     <div class="col-span-1 lg:col-span-1">
-                        <label for="drones_id" class="block text-sm font-medium text-gray-700 dark:text-gray-300">{!! GoogleTranslate::trans('Drones', session('locale') ?? 'en') !!}</label>
+                        <label for="drones_id" class="block text-sm font-medium text-gray-700 dark:text-gray-300">{!! TranslationHelper::translateIfNeeded('Drones') !!}</label>
                         <select name="drones_id" id="drones_id" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-300">
                             @foreach($drones as $id => $name)
                                 <option value="{{ $id }}">{{ $name }}</option>
@@ -100,7 +100,7 @@ dd($test)
         
                     <!-- Flight Type Select -->
                     <div class="col-span-1 lg:col-span-1">
-                        <label for="type" class="block text-sm font-medium text-gray-700 dark:text-gray-300">{!! GoogleTranslate::trans('Flight Type', session('locale') ?? 'en') !!}</label>
+                        <label for="type" class="block text-sm font-medium text-gray-700 dark:text-gray-300">{!! TranslationHelper::translateIfNeeded('Flight Type') !!}</label>
                         <select name="type" id="type" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-300">
                             <option value="">-- None --</option>
                             <option value="commercial-agriculture">Commercial-Agriculture</option>
@@ -128,7 +128,7 @@ dd($test)
         
                     <!-- Project Select -->
                     <div class="col-span-1 lg:col-span-1">
-                        <label for="projects_id" class="block text-sm font-medium text-gray-700 dark:text-gray-300">{!! GoogleTranslate::trans('Project', session('locale') ?? 'en') !!}</label>
+                        <label for="projects_id" class="block text-sm font-medium text-gray-700 dark:text-gray-300">{!! TranslationHelper::translateIfNeeded('Project') !!}</label>
                         <select name="projects_id" id="projects_id" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-300">
                             @foreach($projects as $id => $case)
                                 <option value="{{ $id }}">{{ $case }}</option>
@@ -138,13 +138,13 @@ dd($test)
         
                     <!-- Customer Name -->
                     <div class="col-span-1 lg:col-span-1">
-                        <label for="customers_name" class="block text-sm font-medium text-gray-700 dark:text-gray-300">{!! GoogleTranslate::trans('Customer Name', session('locale') ?? 'en') !!}</label>
+                        <label for="customers_name" class="block text-sm font-medium text-gray-700 dark:text-gray-300">{!! TranslationHelper::translateIfNeeded('Customer Name') !!}</label>
                         <input type="text" name="customers_name" id="customers_name" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-300" value="{{ old('customers_name', $currentTeam->getNameCustomer->name ?? '') }}" disabled>
                     </div>
         
                     <!-- Location Select -->
                     <div class="col-span-1 lg:col-span-1">
-                        <label for="location_id" class="block text-sm font-medium text-gray-700 dark:text-gray-300">{!! GoogleTranslate::trans('Location', session('locale') ?? 'en') !!}</label>
+                        <label for="location_id" class="block text-sm font-medium text-gray-700 dark:text-gray-300">{!! TranslationHelper::translateIfNeeded('Location') !!}</label>
                         <select name="location_id" id="location_id" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-300">
                             @foreach($locations as $id => $name)
                                 <option value="{{ $id }}">{{ $name }}</option>
@@ -154,7 +154,7 @@ dd($test)
         
                     <!-- Battery Select -->
                     <div class="col-span-1 lg:col-span-1">
-                        <label for="battreis" class="block text-sm font-medium text-gray-700 dark:text-gray-300">{!! GoogleTranslate::trans('Battery', session('locale') ?? 'en') !!}</label>
+                        <label for="battreis" class="block text-sm font-medium text-gray-700 dark:text-gray-300">{!! TranslationHelper::translateIfNeeded('Battery') !!}</label>
                         <select name="battreis[]" id="battreis" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-300">
                             @foreach($batteries as $id => $name)
                                 <option value="{{ $id }}">{{ $name }}</option>
@@ -164,7 +164,7 @@ dd($test)
         
                     <!-- Equipment Select -->
                     <div class="col-span-1 lg:col-span-1">
-                        <label for="equidments" class="block text-sm font-medium text-gray-700 dark:text-gray-300">{!! GoogleTranslate::trans('Equipment', session('locale') ?? 'en') !!}</label>
+                        <label for="equidments" class="block text-sm font-medium text-gray-700 dark:text-gray-300">{!! TranslationHelper::translateIfNeeded('Equipment') !!}</label>
                         <select name="equidments[]" id="equidments" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-300">
                             @foreach($equipments as $id => $name)
                                 <option value="{{ $id }}">{{ $name }}</option>
@@ -174,7 +174,7 @@ dd($test)
         
                     <!-- Pilot Select -->
                     <div class="col-span-1 lg:col-span-1">
-                        <label for="users_id" class="block text-sm font-medium text-gray-700 dark:text-gray-300">{!! GoogleTranslate::trans('Pilot', session('locale') ?? 'en') !!}</label>
+                        <label for="users_id" class="block text-sm font-medium text-gray-700 dark:text-gray-300">{!! TranslationHelper::translateIfNeeded('Pilot') !!}</label>
                         <select name="users_id" id="users_id" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-300">
                             @foreach($pilots as $id => $name)
                                 <option value="{{ $id }}">{{ $name }}</option>
@@ -184,14 +184,14 @@ dd($test)
         
                     <!-- Image Upload -->
                     <div class="col-span-1 lg:col-span-1">
-                        <label for="image" class="block text-sm font-medium text-gray-700 dark:text-gray-300">{!! GoogleTranslate::trans('Image', session('locale') ?? 'en') !!}</label>
+                        <label for="image" class="block text-sm font-medium text-gray-700 dark:text-gray-300">{!! TranslationHelper::translateIfNeeded('Image') !!}</label>
                         <input type="file" id="image" name="file" required class="mt-1 block w-full border-gray-300 rounded-md shadow-sm bg-white focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-300">
                     </div>
         
                     <!-- Submit Button -->
                     <div class="col-span-1 lg:col-span-1 flex justify-end mt-4">
                         <button class="px-6 py-2 bg-gray-200 dark:bg-gray-700 text-gray-900 dark:text-gray-100 font-semibold rounded-lg border hover:bg-gray-300 dark:hover:bg-gray-800">
-                            {!! GoogleTranslate::trans('Analyze Flight Log', session('locale') ?? 'en') !!}
+                            {!! TranslationHelper::translateIfNeeded('Analyze Flight Log') !!}
                         </button>
                     </div>
                 </form>

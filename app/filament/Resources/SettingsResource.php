@@ -4,7 +4,7 @@ namespace App\Filament\Resources;
 use App\Filament\Pages\Settings as PagesSettings;
 use Filament\Resources\Resource;
 use Filament\Tables\Table;
-use Stichoza\GoogleTranslate\GoogleTranslate;
+use App\Helpers\TranslationHelper;
 
 class SettingsResource extends Resource
 
@@ -17,15 +17,15 @@ class SettingsResource extends Resource
 
     public static function getNavigationLabel(): string
     {
-        return GoogleTranslate::trans('Settings', session('locale') ?? 'en');
+        return TranslationHelper::translateIfNeeded('Settings');
     }
     public static function getModelLabel(): string
     {
-        return GoogleTranslate::trans('Settings', session('locale') ?? 'en');
+        return TranslationHelper::translateIfNeeded('Settings');
     }
     public static function getNavigationGroup(): string
     {
-        return GoogleTranslate::trans('Settings', session('locale') ?? 'en');
+        return TranslationHelper::translateIfNeeded('Settings');
     }
     public static function getPages(): array
     {

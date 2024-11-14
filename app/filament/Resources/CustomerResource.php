@@ -19,7 +19,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Illuminate\Validation\Rule;
 use Illuminate\Support\HtmlString;
-use Stichoza\GoogleTranslate\GoogleTranslate;
+use App\Helpers\TranslationHelper;
 
 class CustomerResource extends Resource
 {
@@ -38,11 +38,11 @@ class CustomerResource extends Resource
 
     public static function getNavigationLabel(): string
     {
-        return GoogleTranslate::trans('Customers', session('locale') ?? 'en');
+        return TranslationHelper::translateIfNeeded('Customers');
     }
     public static function getModelLabel(): string
     {
-        return GoogleTranslate::trans('Customers', session('locale') ?? 'en');
+        return TranslationHelper::translateIfNeeded('Customers');
     }
 
     public static function form(Form $form): Form
@@ -51,15 +51,14 @@ class CustomerResource extends Resource
         $locale = session('locale') ?? 'en'; 
         return $form
         ->schema([
-            Forms\Components\Section::make(GoogleTranslate::trans('Customer', session('locale') ?? 'en'))
-                ->label((new GoogleTranslate($locale))->translate('Customer'))
+            Forms\Components\Section::make(TranslationHelper::translateIfNeeded('Customers'))
                 ->schema([
                     Forms\Components\TextInput::make('name')
-                    ->label(GoogleTranslate::trans('name', session('locale') ?? 'en'))
+                    ->label(TranslationHelper::translateIfNeeded('name'))
                     ->required()
                     ->maxLength(255),
                 Forms\Components\TextInput::make('phone')
-                    ->label(GoogleTranslate::trans('phone', session('locale') ?? 'en'))
+                ->label(TranslationHelper::translateIfNeeded('phone'))
                     ->tel()
                     ->required()
                     ->rules(function ($get) {
@@ -71,7 +70,7 @@ class CustomerResource extends Resource
                         ];
                     }),
                 Forms\Components\TextInput::make('email')
-                    ->label(GoogleTranslate::trans('email', session('locale') ?? 'en'))
+                ->label(TranslationHelper::translateIfNeeded('email'))
                     ->email()
                     ->required()
                     ->rules(function ($get) {
@@ -84,12 +83,12 @@ class CustomerResource extends Resource
                     })
                     ->maxLength(255),
                 Forms\Components\TextInput::make('address')
-                    ->label(GoogleTranslate::trans('address', session('locale') ?? 'en'))
+                ->label(TranslationHelper::translateIfNeeded('address'))
                     ->required()
                     ->maxLength(255),
     
                 Forms\Components\Textarea::make('description')
-                    ->label(GoogleTranslate::trans('description', session('locale') ?? 'en'))
+                ->label(TranslationHelper::translateIfNeeded('description'))
                     ->maxLength(255)->columnSpanFull(),
                 Forms\Components\Hidden::make('teams_id')
                 ->default(auth()->user()->teams()->first()->id ?? null),
@@ -165,13 +164,18 @@ class CustomerResource extends Resource
         return $infolist
         ->schema([
             Section::make('Customer Overview')
-            ->label(GoogleTranslate::trans('Customer Overview', session('locale') ?? 'en'))
+            ->label(TranslationHelper::translateIfNeeded('Customer Overview'))
             ->schema([
-                TextEntry::make('name')->label(GoogleTranslate::trans('name', session('locale') ?? 'en')),
-                TextEntry::make('phone')->label(GoogleTranslate::trans('phone', session('locale') ?? 'en')),
-                TextEntry::make('email')->label(GoogleTranslate::trans('email', session('locale') ?? 'en')),
-                TextEntry::make('address')->label(GoogleTranslate::trans('address', session('locale') ?? 'en')),
-                TextEntry::make('description')->label(GoogleTranslate::trans('description', session('locale') ?? 'en')),
+                TextEntry::make('name')
+                ->label(TranslationHelper::translateIfNeeded('name')),
+                TextEntry::make('phone')
+                ->label(TranslationHelper::translateIfNeeded('phone')),
+                TextEntry::make('email')
+                ->label(TranslationHelper::translateIfNeeded('email')),
+                TextEntry::make('address')
+                ->label(TranslationHelper::translateIfNeeded('address')),
+                TextEntry::make('description')
+                ->label(TranslationHelper::translateIfNeeded('description')),
             ])
 
         ]);

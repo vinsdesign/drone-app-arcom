@@ -19,7 +19,8 @@ use Filament\Infolists\Infolist;
 use Filament\Infolists\Components\TextEntry;
 use Filament\Infolists\Components\Section;
 use Carbon\Carbon;
-use Stichoza\GoogleTranslate\GoogleTranslate;
+use App\Helpers\TranslationHelper;
+
 class DroneResource extends Resource
 {
     protected static ?string $model = Drone::class;
@@ -34,11 +35,11 @@ class DroneResource extends Resource
 
     public static function getNavigationLabel(): string
     {
-        return GoogleTranslate::trans('Drone', session('locale') ?? 'en');
+        return TranslationHelper::translateIfNeeded('Drone');
     }
     public static function getModelLabel(): string
     {
-        return GoogleTranslate::trans('Drone', session('locale') ?? 'en');
+        return TranslationHelper::translateIfNeeded('Drone');
     }
     // public static function getNavigationGroup(): string
     // {
@@ -50,17 +51,20 @@ class DroneResource extends Resource
         return $form
             ->schema([
                 Forms\Components\Wizard::make([
-                    Forms\Components\Wizard\Step::make(GoogleTranslate::trans('Overview', session('locale') ?? 'en'))
+                    Forms\Components\Wizard\Step::make(TranslationHelper::translateIfNeeded('Overview'))
                     ->schema([
                         Forms\Components\Hidden::make('teams_id')
                         ->default(auth()->user()->teams()->first()->id ?? null),
-                        Forms\Components\TextInput::make('name')->label(GoogleTranslate::trans('Name', session('locale') ?? 'en'))
+                        Forms\Components\TextInput::make('name')
+                        ->label(TranslationHelper::translateIfNeeded('Name'))
                             ->required()
                             ->maxLength(255)->columnSpan(1),
-                        Forms\Components\TextInput::make('idlegal')->label(GoogleTranslate::trans('Legal ID', session('locale') ?? 'en'))
+                        Forms\Components\TextInput::make('idlegal')
+                        ->label(TranslationHelper::translateIfNeeded('Legal ID'))
                             ->required()
                             ->maxLength(255)->columnSpan(2),
-                        Forms\Components\select::make('status')->label(GoogleTranslate::trans('Status', session('locale') ?? 'en'))   
+                        Forms\Components\select::make('status')
+                        ->label(TranslationHelper::translateIfNeeded('Status'))  
                             ->options([
                                 'airworthy' => 'Airworthy',
                                'maintenance' => 'Maintenance',
@@ -68,13 +72,16 @@ class DroneResource extends Resource
                             ])
                             ->required()
                             ->columnSpanFull(),
-                        Forms\Components\TextInput::make('brand')->label(GoogleTranslate::trans('Brand', session('locale') ?? 'en'))  
+                        Forms\Components\TextInput::make('brand')
+                        ->label(TranslationHelper::translateIfNeeded('Brand'))
                             ->required()
                             ->maxLength(255),
-                        Forms\Components\TextInput::make('model')->label(GoogleTranslate::trans('Model', session('locale') ?? 'en'))  
+                        Forms\Components\TextInput::make('model')
+                        ->label(TranslationHelper::translateIfNeeded('Model'))
                             ->required()
                             ->maxLength(255),
-                        Forms\Components\Select::make('type')->label(GoogleTranslate::trans('Type', session('locale') ?? 'en')) 
+                        Forms\Components\Select::make('type')
+                        ->label(TranslationHelper::translateIfNeeded('Type')) 
                         ->options([
                             'aircraft' => 'Aircraft',
                             'autoPilot' => 'AutoPilot',
@@ -93,9 +100,10 @@ class DroneResource extends Resource
                         ])->searchable()->required(),
                     ])->columns(3),
                     //and wizard 1
-                    Forms\Components\Wizard\Step::make(GoogleTranslate::trans('Drone Details', session('locale') ?? 'en'))
+                    Forms\Components\Wizard\Step::make(TranslationHelper::translateIfNeeded('Drone Details'))
                     ->schema([
-                        Forms\Components\Select::make('geometry')->label(GoogleTranslate::trans('Drone Geometry', session('locale') ?? 'en'))
+                        Forms\Components\Select::make('geometry')
+                        ->label(TranslationHelper::translateIfNeeded('Drone Geometry'))
                         ->options([
                             'dual_rotor_coaxial' => 'Dual Rotor Coaxial',
                             'fixed_wing_1' => 'Fixed Wing 1',
@@ -119,16 +127,19 @@ class DroneResource extends Resource
                             'x6_coaxial' => 'X6 Coaxial',
                         ])
                         ->required()->searchable(),
-                        Forms\Components\TextInput::make('color')->label(GoogleTranslate::trans('Color', session('locale') ?? 'en'))
+                        Forms\Components\TextInput::make('color')
+                        ->label(TranslationHelper::translateIfNeeded('Color'))
                             ->required()
                             ->maxLength(255),
-                        Forms\Components\Select::make('inventory_asset')->label(GoogleTranslate::trans('Inventory/Asset', session('locale') ?? 'en'))
+                        Forms\Components\Select::make('inventory_asset')
+                        ->label(TranslationHelper::translateIfNeeded('Inventory/Asset'))
                             ->options([
                                 'asset'=> 'Assets',
                                 'inventory'=> 'Inventory',
                             ])
                             ->required(),
-                        Forms\Components\Select::make('users_id')->label(GoogleTranslate::trans('Owner', session('locale') ?? 'en'))
+                        Forms\Components\Select::make('users_id')
+                        ->label(TranslationHelper::translateIfNeeded('Owner'))
                             // ->relationship('users','name', function (Builder $query){
                             //     $currentTeamId = auth()->user()->teams()->first()->id;
                             //     $query->where('team_user.teams_id', $currentTeamId);
@@ -143,13 +154,16 @@ class DroneResource extends Resource
                             ->searchable()
                             ->required()
                             ->columnSpanFull(),
-                        Forms\Components\TextInput::make('firmware_v')->label(GoogleTranslate::trans('Firmware Version', session('locale') ?? 'en'))
+                        Forms\Components\TextInput::make('firmware_v')
+                        ->label(TranslationHelper::translateIfNeeded('Firmware Version'))
                             ->required()
                             ->maxLength(255),
-                        Forms\Components\TextInput::make('hardware_v')->label(GoogleTranslate::trans('Hardware Version', session('locale') ?? 'en'))
+                        Forms\Components\TextInput::make('hardware_v')
+                        ->label(TranslationHelper::translateIfNeeded('Hardware Version'))
                             ->required()
                             ->maxLength(255),
-                        Forms\Components\Select::make('propulsion_v')->label(GoogleTranslate::trans('Propulsion Version', session('locale') ?? 'en'))
+                        Forms\Components\Select::make('propulsion_v')
+                        ->label(TranslationHelper::translateIfNeeded('Propulsion Version'))
                             ->options([
                                 'electric' => 'Electric',
                                 'fuel'=> 'Fuel',
@@ -160,49 +174,58 @@ class DroneResource extends Resource
                             ->required(),
                         //max_Flight_Distance
                         Forms\Components\TextInput::make('max_flight_time')
-                        // ->label('Max Flight Time')
-                        ->label(GoogleTranslate::trans('Max Flight Time', session('locale') ?? 'en'))
+                        ->label(TranslationHelper::translateIfNeeded('Max Flight Time'))
                         ->placeholder('hh:mm:ss')
                         ->extraAttributes([
                             'oninput' => "this.value = this.value.replace(/[^0-9:]/g, '').replace(/^([0-9]{2})([0-9]{2})/, '$1:$2:');", 
                             'placeholder' => 'HH:mm:ss'
                         ])->default('00:00:00'),
                         //initial_Flight
-                        Forms\Components\TextInput::make('initial_flight')->label(GoogleTranslate::trans('Initial Flight', session('locale') ?? 'en'))
+                        Forms\Components\TextInput::make('initial_flight')
+                        ->label(TranslationHelper::translateIfNeeded('Initial Flight'))
                         ->numeric(),
                         //initial FLight Time
-                        Forms\Components\TextInput::make('initial_flight_time')->label(GoogleTranslate::trans('Initial Flight Time', session('locale') ?? 'en'))
+                        Forms\Components\TextInput::make('initial_flight_time')
+                        ->label(TranslationHelper::translateIfNeeded('Initial Flight Time'))
                         ->placeholder('hh:mm:ss')
                         ->extraAttributes([
                             'oninput' => "this.value = this.value.replace(/[^0-9:]/g, '').replace(/^([0-9]{2})([0-9]{2})/, '$1:$2:');", 
                             'placeholder' => 'HH:mm:ss'
                             
                         ])->default('00:00:00'),
-                        Forms\Components\Textarea::make('description')->label(GoogleTranslate::trans('Description', session('locale') ?? 'en'))
+                        Forms\Components\Textarea::make('description')
+                        ->label(TranslationHelper::translateIfNeeded('Description'))
                             ->required()
                             ->maxLength(255)->columnSpanFull(),
 
                     ])->columns(3),
                     //and wizard 2
-                    Forms\Components\Wizard\Step::make(GoogleTranslate::trans('Connect', session('locale') ?? 'en'))
+                    Forms\Components\Wizard\Step::make(TranslationHelper::translateIfNeeded('Connect'))
                     ->schema([
-                        Forms\Components\TextInput::make('serial_p')->label(GoogleTranslate::trans('Serial Printed', session('locale') ?? 'en'))
+                        Forms\Components\TextInput::make('serial_p')
+                        ->label(TranslationHelper::translateIfNeeded('Serial Printed'))
                             ->required(),
-                        Forms\Components\TextInput::make('serial_i')->label(GoogleTranslate::trans('Serial Internal', session('locale') ?? 'en'))
+                        Forms\Components\TextInput::make('serial_i')
+                        ->label(TranslationHelper::translateIfNeeded('Serial Internal'))
                             ->required(),
-                        Forms\Components\TextInput::make('flight_c')->label(GoogleTranslate::trans('Flight Controller', session('locale') ?? 'en'))
+                        Forms\Components\TextInput::make('flight_c')
+                        ->label(TranslationHelper::translateIfNeeded('Flight Controller'))
                             ->required()
                             ->maxLength(255),
-                        Forms\Components\TextInput::make('remote_c')->label(GoogleTranslate::trans('Remote Controller', session('locale') ?? 'en'))
+                        Forms\Components\TextInput::make('remote_c')
+                        ->label(TranslationHelper::translateIfNeeded('Remote Controller'))
                             ->required()
                             ->maxLength(255),
-                            Forms\Components\TextInput::make('remote_cc')->label(GoogleTranslate::trans('Remote Controller2', session('locale') ?? 'en'))
+                            Forms\Components\TextInput::make('remote_cc')
+                            ->label(TranslationHelper::translateIfNeeded('Remote Controller2'))
                             ->required()
                             ->maxLength(255)->columnSpan(2),
-                        Forms\Components\TextInput::make('remote')->label(GoogleTranslate::trans('Remote ID', session('locale') ?? 'en'))
+                        Forms\Components\TextInput::make('remote')
+                        ->label(TranslationHelper::translateIfNeeded('Remote ID'))
                             ->required()
                             ->maxLength(255),
-                        Forms\Components\TextInput::make('conn_card')->label(GoogleTranslate::trans('Connection Card', session('locale') ?? 'en'))
+                        Forms\Components\TextInput::make('conn_card')
+                        ->label(TranslationHelper::translateIfNeeded('Connection Card'))
                             ->required()
                             ->maxLength(255)->columnSpan(2),
                     ])->columns(3),
@@ -237,9 +260,11 @@ class DroneResource extends Resource
         $currentTeamId = auth()->user()->teams()->first()->id;
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('name')->label(GoogleTranslate::trans('Drone Name', session('locale') ?? 'en'))
+                Tables\Columns\TextColumn::make('name')
+                ->label(TranslationHelper::translateIfNeeded('Drone Name'))
                     ->searchable(),
-                Tables\Columns\TextColumn::make('status')->label(GoogleTranslate::trans('Status', session('locale') ?? 'en'))
+                Tables\Columns\TextColumn::make('status')
+                ->label(TranslationHelper::translateIfNeeded('Status'))
                 ->color(fn ($record) => match ($record->status){
                     'airworthy' => Color::Green,
                    'maintenance' =>Color::Red,
@@ -247,7 +272,8 @@ class DroneResource extends Resource
                  })
                     ->searchable(),
                 Tables\Columns\TextColumn::make('flight_date')
-                    ->label(GoogleTranslate::trans('Last Flight Date', session('locale') ?? 'en'))
+                    
+                ->label(TranslationHelper::translateIfNeeded('Last Flight Date'))
                     ->getStateUsing(function ($record) {
                         $flights = $record->fligh;
                         $totalFlights = $flights->count();
@@ -275,9 +301,11 @@ class DroneResource extends Resource
                     })
                     ->sortable()
                     ->html(),
-                Tables\Columns\TextColumn::make('idlegal')->label(GoogleTranslate::trans('Legal ID', session('locale') ?? 'en'))
+                Tables\Columns\TextColumn::make('idlegal')
+                ->label(TranslationHelper::translateIfNeeded('Legal ID'))
                     ->searchable(),
-                Tables\Columns\TextColumn::make('users.name')->label(GoogleTranslate::trans('Owners', session('locale') ?? 'en'))
+                Tables\Columns\TextColumn::make('users.name')
+                ->label(TranslationHelper::translateIfNeeded('Owners'))
                 ->url(fn($record) => $record->users_id ? route('filament.admin.resources.users.view', [
                     'tenant' => Auth()->user()->teams()->first()->id,
                     'record' => $record->users_id,
@@ -342,7 +370,7 @@ class DroneResource extends Resource
             ->actions([
                 Tables\Actions\ActionGroup::make([
                     Tables\Actions\Action::make('showDrone')
-                    ->url(fn ($record) => route('drone.statistik', ['drone_id' => $record->id]))->label(GoogleTranslate::trans('View', session('locale') ?? 'en'))
+                    ->url(fn ($record) => route('drone.statistik', ['drone_id' => $record->id]))->label(TranslationHelper::translateIfNeeded('View'))
                     ->icon('heroicon-s-eye'),
                     Tables\Actions\EditAction::make(),
                     //Shared action
@@ -392,44 +420,44 @@ class DroneResource extends Resource
         ->schema([
             Section::make('Overview')
                 ->schema([
-            TextEntry::make('name')->label(GoogleTranslate::trans('Name', session('locale') ?? 'en')),
-            TextEntry::make('idlegal')->label(GoogleTranslate::trans('Legal ID', session('locale') ?? 'en')),
-            TextEntry::make('status')->label(GoogleTranslate::trans('Status', session('locale') ?? 'en'))
-            ->color(fn ($record) => match ($record->status){
-                'airworthy' => Color::Green,
-               'maintenance' =>Color::Red,
-               'retired' => Color::Zinc
-             }),
-            TextEntry::make('brand')->label(GoogleTranslate::trans('Brand', session('locale') ?? 'en')),
-            TextEntry::make('model')->label(GoogleTranslate::trans('Model', session('locale') ?? 'en')),
-            TextEntry::make('type')->label(GoogleTranslate::trans('Type', session('locale') ?? 'en')),
+                    TextEntry::make('name')->label(TranslationHelper::translateIfNeeded('Name')),
+                    TextEntry::make('idlegal')->label(TranslationHelper::translateIfNeeded('Legal ID')),
+                    TextEntry::make('status')->label(TranslationHelper::translateIfNeeded('Status'))
+                        ->color(fn ($record) => match ($record->status) {
+                            'airworthy' => Color::Green,
+                            'maintenance' => Color::Red,
+                            'retired' => Color::Zinc
+                        }),
+                    TextEntry::make('brand')->label(TranslationHelper::translateIfNeeded('Brand')),
+                    TextEntry::make('model')->label(TranslationHelper::translateIfNeeded('Model')),
+                    TextEntry::make('type')->label(TranslationHelper::translateIfNeeded('Type')),
                 ])->columns(3),
-                Section::make('Drone Details')
+            Section::make('Drone Details')
                 ->schema([
-            TextEntry::make('geometry')->label(GoogleTranslate::trans('Drone Geometry', session('locale') ?? 'en')),
-            TextEntry::make('color')->label(GoogleTranslate::trans('Color', session('locale') ?? 'en')),
-            TextEntry::make('inventory_asset')->label(GoogleTranslate::trans('Inventory/Asset', session('locale') ?? 'en')),
-            TextEntry::make('users.name')->label(GoogleTranslate::trans('Owner', session('locale') ?? 'en'))
-            ->url(fn($record) => $record->users_id ? route('filament.admin.resources.users.view', [
-                'tenant' => Auth()->user()->teams()->first()->id,
-                'record' => $record->users_id,
-            ]) : null)->color(Color::Blue),
-            TextEntry::make('firmware_v')->label(GoogleTranslate::trans('Firmware Version', session('locale') ?? 'en')),
-            TextEntry::make('hardware_v')->label(GoogleTranslate::trans('Hardware Version', session('locale') ?? 'en')),
-            TextEntry::make('propulsion_v')->label(GoogleTranslate::trans('Propulsion Version', session('locale') ?? 'en')),
-            TextEntry::make('description')->label(GoogleTranslate::trans('Description', session('locale') ?? 'en')),
+                    TextEntry::make('geometry')->label(TranslationHelper::translateIfNeeded('Drone Geometry')),
+                    TextEntry::make('color')->label(TranslationHelper::translateIfNeeded('Color')),
+                    TextEntry::make('inventory_asset')->label(TranslationHelper::translateIfNeeded('Inventory/Asset')),
+                    TextEntry::make('users.name')->label(TranslationHelper::translateIfNeeded('Owner'))
+                        ->url(fn($record) => $record->users_id ? route('filament.admin.resources.users.view', [
+                            'tenant' => Auth()->user()->teams()->first()->id,
+                            'record' => $record->users_id,
+                        ]) : null)->color(Color::Blue),
+                    TextEntry::make('firmware_v')->label(TranslationHelper::translateIfNeeded('Firmware Version')),
+                    TextEntry::make('hardware_v')->label(TranslationHelper::translateIfNeeded('Hardware Version')),
+                    TextEntry::make('propulsion_v')->label(TranslationHelper::translateIfNeeded('Propulsion Version')),
+                    TextEntry::make('description')->label(TranslationHelper::translateIfNeeded('Description')),
                 ])->columns(5),
-                Section::make('Connect')
+            Section::make('Connect')
                 ->schema([
-                    TextEntry::make('serial_p')->label(GoogleTranslate::trans('Serial Printed', session('locale') ?? 'en')),
-                    TextEntry::make('serial_i')->label(GoogleTranslate::trans('Serial Internal', session('locale') ?? 'en')),
-                    TextEntry::make('flight_c')->label(GoogleTranslate::trans('Flight controller', session('locale') ?? 'en')),
-                    TextEntry::make('remote_c')->label(GoogleTranslate::trans('Remote Controller', session('locale') ?? 'en')),
-                    TextEntry::make('remote_cc')->label(GoogleTranslate::trans('Remote Controller2', session('locale') ?? 'en')),
-                    TextEntry::make('remote')->label(GoogleTranslate::trans('Remote ID', session('locale') ?? 'en')),
-                    TextEntry::make('conn_card')->label(GoogleTranslate::trans('Connection Card', session('locale') ?? 'en')),
+                    TextEntry::make('serial_p')->label(TranslationHelper::translateIfNeeded('Serial Printed')),
+                    TextEntry::make('serial_i')->label(TranslationHelper::translateIfNeeded('Serial Internal')),
+                    TextEntry::make('flight_c')->label(TranslationHelper::translateIfNeeded('Flight controller')),
+                    TextEntry::make('remote_c')->label(TranslationHelper::translateIfNeeded('Remote Controller')),
+                    TextEntry::make('remote_cc')->label(TranslationHelper::translateIfNeeded('Remote Controller2')),
+                    TextEntry::make('remote')->label(TranslationHelper::translateIfNeeded('Remote ID')),
+                    TextEntry::make('conn_card')->label(TranslationHelper::translateIfNeeded('Connection Card')),
                 ])->columns(4),
-        ]);
+        ]);        
     }
 
 

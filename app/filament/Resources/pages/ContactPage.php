@@ -4,7 +4,7 @@ namespace App\Filament\Pages;
 
 use App\Filament\Resources\ContactResource;
 use Filament\Resources\Pages\Page;
-use Stichoza\GoogleTranslate\GoogleTranslate;
+use App\Helpers\TranslationHelper;
 
 class ContactPage extends Page
 {
@@ -15,10 +15,12 @@ class ContactPage extends Page
 
     public function getHeading(): string
     {
-        return GoogleTranslate::trans('Contact', session('locale') ?? 'en');
+        return TranslationHelper::translateIfNeeded('Contact');
+        // return GoogleTranslate::trans('Contact', session('locale') ?? 'en');
     }
     public function getTitle(): string
     {
-        return GoogleTranslate::trans('Contact', session('locale') ?? 'en');
+        return TranslationHelper::translateIfNeeded('Contact');
+        // return GoogleTranslate::trans('Contact', session('locale') ?? 'en');
     }
 }

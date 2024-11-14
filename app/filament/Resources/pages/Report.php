@@ -16,7 +16,7 @@ use Filament\Resources\Pages\Page;
 use Illuminate\Http\Request;
 use Illuminate\Database\Eloquent\Builder;
 use PDF;
-use Stichoza\GoogleTranslate\GoogleTranslate;
+use App\Helpers\TranslationHelper;
 
 class Report extends Page
 {
@@ -29,11 +29,13 @@ class Report extends Page
 
     public function getHeading(): string
     {
-        return GoogleTranslate::trans('Report', session('locale') ?? 'en');
+        return TranslationHelper::translateIfNeeded('Report');
+        // return GoogleTranslate::trans('Report', session('locale') ?? 'en');
     }
     public function getTitle(): string
     {
-        return GoogleTranslate::trans('Report', session('locale') ?? 'en');
+        return TranslationHelper::translateIfNeeded('Report');
+        // return GoogleTranslate::trans('Report', session('locale') ?? 'en');
     }
 
     public function downloadReport(Request $request)

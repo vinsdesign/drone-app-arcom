@@ -15,27 +15,28 @@ use Filament\Forms\Form;
 use Filament\Notifications\Notification;
 use Filament\Pages\Tenancy\EditTenantProfile;
 use Illuminate\Validation\Rule;
-use Stichoza\GoogleTranslate\GoogleTranslate;
+use App\Helpers\TranslationHelper;
  
 class EditTeamProfil extends EditTenantProfile
 {
     public static function getLabel(): string
     {
-        return GoogleTranslate::trans('Team profile', session('locale') ?? 'en');
+        return TranslationHelper::translateIfNeeded('Team Profile');
+        // return GoogleTranslate::trans('Team profile', session('locale') ?? 'en');
     }
  
     public function form(Form $form): Form
     {
         return $form
             ->schema([
-                Section::make(GoogleTranslate::trans('Organization Information', session('locale') ?? 'en'))
+                Section::make(TranslationHelper::translateIfNeeded('Organization Information'))
                 ->description('')
                 ->schema([
-                    FileUpload::make('avatar_url')->label(GoogleTranslate::trans('Your Avatar', session('locale')?? 'en'))
+                    FileUpload::make('avatar_url')->label(TranslationHelper::translateIfNeeded('Your Avatar'))
                     ->acceptedFileTypes(['image/jpeg', 'image/png', 'image/gif'])
-                    ->helperText((new GoogleTranslate(session('locale')?? 'en' ))->translate('Please choose image type jpg/jpeg/png')),
-                    TextInput::make('name')->label(GoogleTranslate::trans('Organization Name', session('locale')?? 'en'))->columnSpan(2),
-                    TextInput::make('email')->email()->label(GoogleTranslate::trans('Email Address', session('locale')?? 'en'))
+                    ->helperText(TranslationHelper::translateIfNeeded('Please choose image type jpg/jpeg/png')),
+                    TextInput::make('name')->label(TranslationHelper::translateIfNeeded('Organization Name'))->columnSpan(2),
+                    TextInput::make('email')->email()->label(TranslationHelper::translateIfNeeded('Email Address'))
                     ->rules(function ($get) {
                         return [
                             'email',
@@ -43,7 +44,7 @@ class EditTeamProfil extends EditTenantProfile
                                 ->ignore($get('id')),
                         ];
                     }),
-                    TextInput::make('phone')->label(GoogleTranslate::trans('Phone Number', session('locale')?? 'en'))
+                    TextInput::make('phone')->label(TranslationHelper::translateIfNeeded('Phone Number'))
                     ->rules(function ($get) {
                         return [
                             'numeric',
@@ -51,29 +52,29 @@ class EditTeamProfil extends EditTenantProfile
                                 ->ignore($get('id')),
                         ];
                     }),
-                    TextInput::make('owner')->label(GoogleTranslate::trans('Incorporation Name', session('locale')?? 'en'))->columnSpan(2),
-                    TextInput::make('website')->label(GoogleTranslate::trans('Website', session('locale')?? 'en')),
-                    TextInput::make('company_size')->label(GoogleTranslate::trans('Company Size', session('locale')?? 'en'))->numeric(),
-                    TextInput::make('gov_registration')->label(GoogleTranslate::trans('Gov. Registration', session('locale')?? 'en')),
-                    TextInput::make('legal_id')->label(GoogleTranslate::trans('Legal / Tax ID', session('locale')?? 'en')),
-                    TextInput::make('exemption_number')->label(GoogleTranslate::trans('Exemption Number', session('locale')?? 'en')),
+                    TextInput::make('owner')->label(TranslationHelper::translateIfNeeded('Incorporation Name'))->columnSpan(2),
+                    TextInput::make('website')->label(TranslationHelper::translateIfNeeded('Website')),
+                    TextInput::make('company_size')->label(TranslationHelper::translateIfNeeded('Company Size'))->numeric(),
+                    TextInput::make('gov_registration')->label(TranslationHelper::translateIfNeeded('Gov. Registration')),
+                    TextInput::make('legal_id')->label(TranslationHelper::translateIfNeeded('Legal / Tax ID')),
+                    TextInput::make('exemption_number')->label(TranslationHelper::translateIfNeeded('Exemption Number')),
                     Select::make('category')
                     ->options([
                         '-' => '-',
                         'easa opens' => 'EASA OPEN',
                         'easa specific' => 'EASA SPECIFIC',
                         'easa certified' => 'EASA CERTIFIED',
-                    ])->label(GoogleTranslate::trans('Category', session('locale')?? 'en')),
+                    ])->label(TranslationHelper::translateIfNeeded('Category')),
                     //country
-                    Select::make('countries_id')->label(GoogleTranslate::trans('Country', session('locale')?? 'en'))
+                    Select::make('countries_id')->label(TranslationHelper::translateIfNeeded('Country'))
                         ->options(countrie::all()->pluck('name','id'))
                         ->reactive()
                         ->afterStateUpdated(fn(callable $set)=>$set('cities_id',null))
-                        ->placeholder((new GoogleTranslate(session('locale')?? 'en' ))->translate('Select a Country'))
+                        ->placeholder(TranslationHelper::translateIfNeeded('Select a Country'))
                         ->searchable()->columnSpan(2),
                     //end
                     //city
-                    Select::make('cities_id')->label(GoogleTranslate::trans('City', session('locale')?? 'en'))
+                    Select::make('cities_id')->label(TranslationHelper::translateIfNeeded('City'))
                     ->options(function ($get) {
                             $countryId = $get('countries_id');
                             if ($countryId) {
@@ -83,16 +84,16 @@ class EditTeamProfil extends EditTenantProfile
                         })
                     ->searchable()
                     ->reactive()
-                    ->placeholder((new GoogleTranslate(session('locale')?? 'en'))->translate('Select a City'))
+                    ->placeholder(TranslationHelper::translateIfNeeded('Select a City'))
                     ->disabled(fn ($get) => !$get('countries_id')),
                     //end
-                    TextInput::make('postal_code')->label(GoogleTranslate::trans('Postal Code', session('locale')?? 'en')),
-                    TextInput::make('state')->label(GoogleTranslate::trans('State', session('locale')?? 'en'))->columnSpan(2),
-                    TextInput::make('address')->label(GoogleTranslate::trans('Address', session('locale')?? 'en'))->columnSpan(2),
-                    CheckBox::make('insurance')->default(1)->label(GoogleTranslate::trans('Insurance', session('locale')?? 'en'))->columnSpan(2),
-                    TextInput::make('insurance_amount')->label(GoogleTranslate::trans('Insurance Amount', session('locale')?? 'en')),
-                    TextInput::make('activity')->label(GoogleTranslate::trans('Activity', session('locale')?? 'en')),
-                    TextArea::make('note')->label(GoogleTranslate::trans('Note', session('locale')?? 'en'))->columnSpanFull(),
+                    TextInput::make('postal_code')->label(TranslationHelper::translateIfNeeded('Postal Code')),
+                    TextInput::make('state')->label(TranslationHelper::translateIfNeeded('State'))->columnSpan(2),
+                    TextInput::make('address')->label(TranslationHelper::translateIfNeeded('Address'))->columnSpan(2),
+                    CheckBox::make('insurance')->default(1)->label(TranslationHelper::translateIfNeeded('Insurance'))->columnSpan(2),
+                    TextInput::make('insurance_amount')->label(TranslationHelper::translateIfNeeded('Insurance Amount')),
+                    TextInput::make('activity')->label(TranslationHelper::translateIfNeeded('Activity')),
+                    TextArea::make('note')->label(TranslationHelper::translateIfNeeded('Note'))->columnSpanFull(),
                 ])->columns(4),
                 // ...
         
