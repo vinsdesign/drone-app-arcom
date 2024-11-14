@@ -23,7 +23,7 @@ use Filament\Notifications\Notification;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Filament\Support\Colors\Color;
-use Stichoza\GoogleTranslate\GoogleTranslate;
+use App\Helpers\TranslationHelper;
 
 class MaintenceResource extends Resource
 {
@@ -44,11 +44,11 @@ class MaintenceResource extends Resource
 
     public static function getNavigationLabel(): string
     {
-        return GoogleTranslate::trans('Maintenance Drone', session('locale') ?? 'en');
+        return TranslationHelper::translateIfNeeded('Maintenance Drone');
     }
     public static function getModelLabel(): string
     {
-        return GoogleTranslate::trans('Maintenance Drone', session('locale') ?? 'en');
+        return TranslationHelper::translateIfNeeded('Maintenance Drone');
     }
 
     public static function form(Form $form): Form
@@ -57,12 +57,12 @@ class MaintenceResource extends Resource
         return $form
             ->schema([
                 Forms\Components\Wizard::make([
-                    Forms\Components\Wizard\Step::make(GoogleTranslate::trans('Overview', session('locale') ?? 'en'))
+                    Forms\Components\Wizard\Step::make(TranslationHelper::translateIfNeeded('Overview'))
                     ->schema([
                         Forms\Components\Hidden::make('teams_id')
                         ->default(auth()->user()->teams()->first()->id ?? null),
                         Forms\Components\TextInput::make('name')
-                            ->label(GoogleTranslate::trans('Maintenance Description', session('locale') ?? 'en'))
+                        ->label(TranslationHelper::translateIfNeeded('Maintenance Description'))    
                             ->maxLength(255),
                         Forms\Components\Select::make('drone_id')
                             // ->relationship('drone','name', function (Builder $query){
@@ -72,14 +72,14 @@ class MaintenceResource extends Resource
                             ->options(function (callable $get) use ($currentTeamId) {
                                 return drone::where('teams_id', $currentTeamId)->pluck('name', 'id');
                             })
-                            ->label(GoogleTranslate::trans('Drone', session('locale') ?? 'en'))
+                            ->label(TranslationHelper::translateIfNeeded('Drone'))
                             ->searchable()
                             ->columnSpan(1),
                         Forms\Components\DatePicker::make('date')
-                            ->label(GoogleTranslate::trans('Maintenance Date', session('locale') ?? 'en'))   
+                        ->label(TranslationHelper::translateIfNeeded('Maintenance Date'))      
                             ->columnSpan(1),
                         Forms\Components\Select::make('status')
-                            ->label(GoogleTranslate::trans('Status', session('locale') ?? 'en'))
+                        ->label(TranslationHelper::translateIfNeeded('Status'))    
                             ->options([
                                 'schedule'=> 'Schedule',
                                 'in_progress'=> 'In Progress',
@@ -95,49 +95,50 @@ class MaintenceResource extends Resource
                             //     }
                             // }),
                         Forms\Components\TextInput::make('cost')
-                            ->label(GoogleTranslate::trans('Expense Cost', session('locale') ?? 'en')),
+                        ->label(TranslationHelper::translateIfNeeded('Expense Cost')),   
                         Forms\Components\Select::make('currencies_id')
                         ->options(currencie::all()->mapWithKeys(function ($currency) {
                             return [$currency->id => "{$currency->name} - {$currency->iso}"];}))
                             ->searchable()
-                            ->label(GoogleTranslate::trans('Currency', session('locale') ?? 'en'))
+                            ->label(TranslationHelper::translateIfNeeded('Currency'))
                             ->default(function (){
                                 $currentTeam = auth()->user()->teams()->first();
                                 return $currentTeam ? $currentTeam->currencies_id : null;
                             }),
                         Forms\Components\TextArea::make('notes')
-                            ->label(GoogleTranslate::trans('Notes', session('locale') ?? 'en'))
+                        ->label(TranslationHelper::translateIfNeeded('Notes'))    
                             ->columnSpanFull(),
                     ])->columns(3),
                     //and wizard 1
-                    Forms\Components\Wizard\Step::make(GoogleTranslate::trans('Add Tasks (Optional)', session('locale') ?? 'en'))
+                    Forms\Components\Wizard\Step::make(TranslationHelper::translateIfNeeded('Add Task (Optional)'))
                     ->schema([
                         Forms\Components\Select::make('part')
-                            ->label(GoogleTranslate::trans('Part #', session('locale') ?? 'en'))
+                        ->label(TranslationHelper::translateIfNeeded('Part #'))    
                             ->options([
                                 'part 1'=> 'Part 1',
                                 'part 2'=> 'Part 2',
                                 'part 3'=> 'Part 3',
                             ]),
                         Forms\Components\TextInput::make('part_name')
-                            ->label(GoogleTranslate::trans('Part Name', session('locale') ?? 'en'))
+                        ->label(TranslationHelper::translateIfNeeded('Part Name'))    
                             ->maxLength(255),
                         Forms\Components\Select::make('status_part')
-                            ->label(GoogleTranslate::trans('Status Part', session('locale') ?? 'en'))
+                        ->label(TranslationHelper::translateIfNeeded('Status Part'))    
                             ->options([
                                 'partial'=> 'Partial',
                                 'open'=> 'Open',
                                 'done'=> 'Done',
                             ]),
                         Forms\Components\TextInput::make('technician')
-                            ->label(GoogleTranslate::trans('Technician', session('locale') ?? 'en'))
+                        ->label(TranslationHelper::translateIfNeeded('Technician'))    
                             ->maxLength(255),
                         Forms\Components\TextInput::make('new_part_serial')
-                            ->label(GoogleTranslate::trans('New Part Serial #', session('locale') ?? 'en'))
+                        ->label(TranslationHelper::translateIfNeeded('New Part Serial #'))    
                             ->maxLength(255),
-                        Forms\Components\Checkbox::make('replaced')->label(GoogleTranslate::trans('Replaced', session('locale') ?? 'en')),
+                        Forms\Components\Checkbox::make('replaced')
+                        ->label(TranslationHelper::translateIfNeeded('Replaced')),
                         Forms\Components\Textarea::make('description_part')
-                            ->label(GoogleTranslate::trans('Description', session('locale') ?? 'en'))
+                        ->label(TranslationHelper::translateIfNeeded('Description'))    
                             ->maxLength(255)->columnSpanFull(),
                     ])->columns(2),
                     //and wizard 2
@@ -150,17 +151,18 @@ class MaintenceResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('name')->label(GoogleTranslate::trans('Name', session('locale') ?? 'en'))
+                Tables\Columns\TextColumn::make('name')
+                ->label(TranslationHelper::translateIfNeeded('Name'))
                     ->searchable(),
                 Tables\Columns\TextColumn::make('drone.name')
-                ->label(GoogleTranslate::trans('Drone', session('locale') ?? 'en'))
+                ->label(TranslationHelper::translateIfNeeded('Drone'))
                 ->url(fn($record) =>$record->drone_id? route('filament.admin.resources.drones.index', [
                     'tenant' => Auth()->user()->teams()->first()->id,
                     'record' => $record->drone_id,
                 ]):null)->color(Color::Blue)
                     ->searchable(),
                 Tables\Columns\TextColumn::make('date')
-                    ->label(GoogleTranslate::trans('Date', session('locale') ?? 'en'))
+                ->label(TranslationHelper::translateIfNeeded('Date'))    
                     ->date()
                     ->searchable()
                     ->formatStateUsing(function ($state, $record) {
@@ -190,14 +192,17 @@ class MaintenceResource extends Resource
                         return $formatDate;
                     })
                     ->html(),
-                Tables\Columns\TextColumn::make('cost')->label(GoogleTranslate::trans('Cost', session('locale') ?? 'en'))
+                Tables\Columns\TextColumn::make('cost')
+                ->label(TranslationHelper::translateIfNeeded('Cost'))
                     ->searchable(),
-                Tables\Columns\TextColumn::make('currencies.iso')->label(GoogleTranslate::trans('Currencies', session('locale') ?? 'en'))
+                Tables\Columns\TextColumn::make('currencies.iso')
+                ->label(TranslationHelper::translateIfNeeded('Currencies'))
                     ->searchable(),
-                Tables\Columns\TextColumn::make('technician')->label(GoogleTranslate::trans('Technician', session('locale') ?? 'en'))
+                Tables\Columns\TextColumn::make('technician')
+                ->label(TranslationHelper::translateIfNeeded('Technician'))
                     ->sortable(),
                 Tables\Columns\TextColumn::make('status')
-                    ->label(GoogleTranslate::trans('Status', session('locale') ?? 'en'))
+                ->label(TranslationHelper::translateIfNeeded('Status'))
                     ->color(fn ($record) => match ($record->status){
                         'completed' => Color::Green,
                         'schedule' =>Color::Red,
@@ -252,31 +257,33 @@ class MaintenceResource extends Resource
         return $infolist
         
         ->schema([
-            Section::make('Overview')
+            Section::make(TranslationHelper::translateIfNeeded('Overview'))
                 ->schema([
-                    TextEntry::make('name')->label(GoogleTranslate::trans('Name', session('locale') ?? 'en')),
-                    TextEntry::make('drone.name')->label(GoogleTranslate::trans('Drone', session('locale') ?? 'en'))
-                    ->url(fn($record) =>$record->drone_id? route('filament.admin.resources.drones.view', [
-                        'tenant' => Auth()->user()->teams()->first()->id,
-                        'record' => $record->drone_id,
-                    ]):null)->color(Color::Blue),
-                    TextEntry::make('date')->label(GoogleTranslate::trans('Date', session('locale') ?? 'en')),
-                    TextEntry::make('status')->label(GoogleTranslate::trans('Status', session('locale') ?? 'en')),
-                    TextEntry::make('cost')->label(GoogleTranslate::trans('Cost', session('locale') ?? 'en')),
-                    TextEntry::make('currencies.iso')->label(GoogleTranslate::trans('Currency', session('locale') ?? 'en')),
-                    TextEntry::make('notes')->label(GoogleTranslate::trans('Notes', session('locale') ?? 'en'))
+                    TextEntry::make('name')->label(TranslationHelper::translateIfNeeded('Name')),
+                    TextEntry::make('drone.name')->label(TranslationHelper::translateIfNeeded('Drone'))
+                        ->url(fn($record) => $record->drone_id ? route('filament.admin.resources.drones.view', [
+                            'tenant' => Auth()->user()->teams()->first()->id,
+                            'record' => $record->drone_id,
+                        ]) : null)
+                        ->color(Color::Blue),
+                    TextEntry::make('date')->label(TranslationHelper::translateIfNeeded('Date')),
+                    TextEntry::make('status')->label(TranslationHelper::translateIfNeeded('Status')),
+                    TextEntry::make('cost')->label(TranslationHelper::translateIfNeeded('Cost')),
+                    TextEntry::make('currencies.iso')->label(TranslationHelper::translateIfNeeded('Currency')),
+                    TextEntry::make('notes')->label(TranslationHelper::translateIfNeeded('Notes')),
                 ])->columns(4),
-            Section::make('Add Tasks (Optional)')
+        
+            Section::make(TranslationHelper::translateIfNeeded('Add Tasks (Optional)'))
                 ->schema([
-                    TextEntry::make('part')->label(GoogleTranslate::trans('Part', session('locale') ?? 'en')),
-                    TextEntry::make('part_name')->label(GoogleTranslate::trans('Part Name', session('locale') ?? 'en')),
-                    TextEntry::make('status_part')->label(GoogleTranslate::trans('Status Part', session('locale') ?? 'en')),
-                    TextEntry::make('technician')->label(GoogleTranslate::trans('Technician', session('locale') ?? 'en')),
-                    IconEntry::make('replaced')->boolean()->label(GoogleTranslate::trans('Replaced', session('locale') ?? 'en')),
-                    TextEntry::make('new_part_serial')->label(GoogleTranslate::trans('New Part Serial', session('locale') ?? 'en')),
-                    TextEntry::make('description_part')->label(GoogleTranslate::trans('Description Part', session('locale') ?? 'en'))
-                ])->columns(4)
-        ]);
+                    TextEntry::make('part')->label(TranslationHelper::translateIfNeeded('Part')),
+                    TextEntry::make('part_name')->label(TranslationHelper::translateIfNeeded('Part Name')),
+                    TextEntry::make('status_part')->label(TranslationHelper::translateIfNeeded('Status Part')),
+                    TextEntry::make('technician')->label(TranslationHelper::translateIfNeeded('Technician')),
+                    IconEntry::make('replaced')->boolean()->label(TranslationHelper::translateIfNeeded('Replaced')),
+                    TextEntry::make('new_part_serial')->label(TranslationHelper::translateIfNeeded('New Part Serial')),
+                    TextEntry::make('description_part')->label(TranslationHelper::translateIfNeeded('Description Part')),
+                ])->columns(4),
+        ]);        
     }
 
     public static function getRelations(): array

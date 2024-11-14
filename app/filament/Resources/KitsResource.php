@@ -21,7 +21,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Novadaemon\FilamentCombobox\Combobox;
 use Filament\Support\Colors\Color;
-use Stichoza\GoogleTranslate\GoogleTranslate;
+use App\Helpers\TranslationHelper;
 
 class KitsResource extends Resource
 {
@@ -39,11 +39,11 @@ class KitsResource extends Resource
 
     public static function getNavigationLabel(): string
     {
-        return GoogleTranslate::trans('Kit', session('locale') ?? 'en');
+        return TranslationHelper::translateIfNeeded('Kit');
     }
     public static function getModelLabel(): string
     {
-        return GoogleTranslate::trans('Kit', session('locale') ?? 'en');
+        return TranslationHelper::translateIfNeeded('Kit');
     }
     // public static function getNavigationGroup(): string
     // {
@@ -57,20 +57,23 @@ class KitsResource extends Resource
             ->schema([
                 Forms\Components\Hidden::make('teams_id')
                     ->default(auth()->user()->teams()->first()->id ?? null),
-                Forms\Components\TextInput::make('name')->label(GoogleTranslate::trans('Kit Name', session('locale') ?? 'en'))
+                Forms\Components\TextInput::make('name')
+                ->label(TranslationHelper::translateIfNeeded('Kit Name'))
                     ->required()
                     ->maxLength(255),
-                Forms\Components\Select::make('type')->label(GoogleTranslate::trans('Type', session('locale') ?? 'en'))
+                Forms\Components\Select::make('type')
+                ->label(TranslationHelper::translateIfNeeded('Type'))
                     ->options([
                         'battery' => 'Battery',
                         'mix' => 'mix'
                     ])
                     ->required()
                     ->reactive(),
-                Forms\Components\Toggle::make('enabled')->label(GoogleTranslate::trans('Enabled', session('locale') ?? 'en'))
+                Forms\Components\Toggle::make('enabled')
+                ->label(TranslationHelper::translateIfNeeded('Enabled'))
                     ->required(),
                 Forms\Components\Select::make('drone_id')
-                    ->label(GoogleTranslate::trans('Blocked To Drone', session('locale') ?? 'en'))
+                ->label(TranslationHelper::translateIfNeeded('Blocked To Drone'))    
                     ->options(function (callable $get) use ($currentTeamId) {
                         return drone::where('teams_id', $currentTeamId)->pluck('name', 'id');
                     })
@@ -79,7 +82,7 @@ class KitsResource extends Resource
                     ->columnSpanFull(),
 
                 Forms\Components\Select::make('Batteries')
-                ->label(GoogleTranslate::trans('Batteries', session('locale') ?? 'en'))
+                ->label(TranslationHelper::translateIfNeeded('Batteries'))
                     ->multiple()
                     ->options(
                         battrei::where('teams_id', auth()->user()->teams()->first()->id)
@@ -96,7 +99,7 @@ class KitsResource extends Resource
                     }),
 
                 Forms\Components\Select::make('Equipments')
-                ->label(GoogleTranslate::trans('Equipments', session('locale') ?? 'en'))
+                ->label(TranslationHelper::translateIfNeeded('Equipments'))
                     ->multiple()
                     ->options(
                         equidment::where('teams_id', auth()->user()->teams()->first()->id)
@@ -121,51 +124,51 @@ class KitsResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
-            ->columns([
-                Tables\Columns\TextColumn::make('name')
-                ->label(GoogleTranslate::trans('Name', session('locale') ?? 'en'))
-                    ->searchable(),
-                Tables\Columns\TextColumn::make('type')
-                ->label(GoogleTranslate::trans('Type', session('locale') ?? 'en'))
-                    ->searchable(),
-                Tables\Columns\IconColumn::make('enabled')
-                ->label(GoogleTranslate::trans('Enabled', session('locale') ?? 'en'))
-                    ->boolean(),
-                Tables\Columns\TextColumn::make('drone.name')
-                    ->label(GoogleTranslate::trans('Blocked To Drone', session('locale') ?? 'en'))
-                    ->numeric()
-                    ->url(fn($record) => $record->users_id?route('filament.admin.resources.drones.view', [
-                        'tenant' => Auth()->user()->teams()->first()->id,
-                        'record' => $record->users_id,
-                    ]):null)->color(Color::Blue)
-                    ->sortable(),
-                Tables\Columns\TextColumn::make('battrei.name')
-                    ->label(GoogleTranslate::trans('Battery', session('locale') ?? 'en'))
-                    ->numeric()
-                    ->url(fn($record) => $record->users_id?route('filament.admin.resources.battreis.view', [
-                        'tenant' => Auth()->user()->teams()->first()->id,
-                        'record' => $record->users_id,
-                    ]):null)->color(Color::Blue)
-                    ->sortable(),
-                Tables\Columns\TextColumn::make('equidment.name')
-                    ->label(GoogleTranslate::trans('Equipment', session('locale') ?? 'en'))
-                    ->numeric()
-                    ->url(fn($record) => $record->users_id?route('filament.admin.resources.equidments.view', [
-                        'tenant' => Auth()->user()->teams()->first()->id,
-                        'record' => $record->users_id,
-                    ]):null)->color(Color::Blue)
-                    ->sortable(),
-                Tables\Columns\TextColumn::make('created_at')
-                ->label(GoogleTranslate::trans('Created at', session('locale') ?? 'en'))
-                    ->dateTime()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
-                Tables\Columns\TextColumn::make('updated_at')
-                ->label(GoogleTranslate::trans('Updated at', session('locale') ?? 'en'))
-                    ->dateTime()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
-            ])
+        ->columns([
+            Tables\Columns\TextColumn::make('name')
+                ->label(TranslationHelper::translateIfNeeded('Name'))
+                ->searchable(),
+            Tables\Columns\TextColumn::make('type')
+                ->label(TranslationHelper::translateIfNeeded('Type'))
+                ->searchable(),
+            Tables\Columns\IconColumn::make('enabled')
+                ->label(TranslationHelper::translateIfNeeded('Enabled'))
+                ->boolean(),
+            Tables\Columns\TextColumn::make('drone.name')
+                ->label(TranslationHelper::translateIfNeeded('Blocked To Drone'))
+                ->numeric()
+                ->url(fn($record) => $record->users_id ? route('filament.admin.resources.drones.view', [
+                    'tenant' => Auth()->user()->teams()->first()->id,
+                    'record' => $record->users_id,
+                ]) : null)->color(Color::Blue)
+                ->sortable(),
+            Tables\Columns\TextColumn::make('battrei.name')
+                ->label(TranslationHelper::translateIfNeeded('Battery'))
+                ->numeric()
+                ->url(fn($record) => $record->users_id ? route('filament.admin.resources.battreis.view', [
+                    'tenant' => Auth()->user()->teams()->first()->id,
+                    'record' => $record->users_id,
+                ]) : null)->color(Color::Blue)
+                ->sortable(),
+            Tables\Columns\TextColumn::make('equidment.name')
+                ->label(TranslationHelper::translateIfNeeded('Equipment'))
+                ->numeric()
+                ->url(fn($record) => $record->users_id ? route('filament.admin.resources.equidments.view', [
+                    'tenant' => Auth()->user()->teams()->first()->id,
+                    'record' => $record->users_id,
+                ]) : null)->color(Color::Blue)
+                ->sortable(),
+            Tables\Columns\TextColumn::make('created_at')
+                ->label(TranslationHelper::translateIfNeeded('Created at'))
+                ->dateTime()
+                ->sortable()
+                ->toggleable(isToggledHiddenByDefault: true),
+            Tables\Columns\TextColumn::make('updated_at')
+                ->label(TranslationHelper::translateIfNeeded('Updated at'))
+                ->dateTime()
+                ->sortable()
+                ->toggleable(isToggledHiddenByDefault: true),
+        ])        
             ->filters([
                 //
             ])
@@ -184,13 +187,20 @@ class KitsResource extends Resource
     {
         return $infolist
         ->schema([
-                TextEntry::make('name')->label(GoogleTranslate::trans('Name', session('locale') ?? 'en')),
-                TextEntry::make('type')->label(GoogleTranslate::trans('Type', session('locale') ?? 'en')),
-                IconEntry::make('enabled')->boolean()->label(GoogleTranslate::trans('Enabled', session('locale') ?? 'en')),
-                TextEntry::make('drone.name')->label(GoogleTranslate::trans('Blocked To Drone', session('locale') ?? 'en')),
-                TextEntry::make('battrei.name')->label(GoogleTranslate::trans('Battery', session('locale') ?? 'en')),
-                TextEntry::make('equidment.name')->label(GoogleTranslate::trans('Equipment', session('locale') ?? 'en')),
-        ]);
+            TextEntry::make('name')
+                ->label(TranslationHelper::translateIfNeeded('Name')),
+            TextEntry::make('type')
+                ->label(TranslationHelper::translateIfNeeded('Type')),
+            IconEntry::make('enabled')
+                ->boolean()
+                ->label(TranslationHelper::translateIfNeeded('Enabled')),
+            TextEntry::make('drone.name')
+                ->label(TranslationHelper::translateIfNeeded('Blocked To Drone')),
+            TextEntry::make('battrei.name')
+                ->label(TranslationHelper::translateIfNeeded('Battery')),
+            TextEntry::make('equidment.name')
+                ->label(TranslationHelper::translateIfNeeded('Equipment')),
+        ]);        
     }
 
     public static function getRelations(): array

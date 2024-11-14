@@ -5,7 +5,7 @@ namespace App\Filament\Pages;
 use App\Filament\Resources\SettingsResource;
 use Filament\Resources\Pages\Page;
 use Filament\Notifications\Notification;
-use Stichoza\GoogleTranslate\GoogleTranslate;
+use App\Helpers\TranslationHelper;
 
 
 class Settings extends Page 
@@ -16,11 +16,13 @@ class Settings extends Page
 
     public function getHeading(): string
     {
-        return GoogleTranslate::trans('Settings', session('locale') ?? 'en');
+        return TranslationHelper::translateIfNeeded('Settings');
+        // return GoogleTranslate::trans('Settings', session('locale') ?? 'en');
     }
     public function getTitle(): string
     {
-        return GoogleTranslate::trans('Settings', session('locale') ?? 'en');
+        return TranslationHelper::translateIfNeeded('Settings');
+        // return GoogleTranslate::trans('Settings', session('locale') ?? 'en');
     }
 
     public function mount()
