@@ -293,7 +293,10 @@ class EquidmentResource extends Resource
             ])
             ->actions([
                 Tables\Actions\ActionGroup::make([
-                    Tables\Actions\ViewAction::make(),
+                    Tables\Actions\Action::make('showEquipment')
+                    ->url(fn ($record) => route('equipment.statistik', ['equipment_id' => $record->id]))->label('View')
+                    ->icon('heroicon-s-eye'),
+
                     Tables\Actions\EditAction::make(),
                     //Shared action
                     Tables\Actions\Action::make('Shared')->label('Shared')

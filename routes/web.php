@@ -5,6 +5,7 @@ use App\Filament\Pages\Settings;
 use App\Http\Controllers\buttonPopUpCreate;
 use App\Http\Controllers\createProject;
 use App\Http\Controllers\importDefaultValue;
+use App\Livewire\EquipmentStatistik;
 use Illuminate\Support\Facades\Route;
 use Filament\Http\Livewire\Auth\Login;
 use App\Http\Controllers\ContactController;
@@ -22,18 +23,25 @@ Route::get('/report', Report::class)->name('filament.report');
 Route::post('/report/download', [Report::class, 'downloadReport'])->name('filament.report.download');
 Route::post('/filament/report/inventory/download', [Report::class, 'downloadInventoryReport'])->name('filament.report.inventory.download');
 Route::post('/filament/report/incomeExpense/download', [Report::class, 'downloadIncomeExpenseReport'])->name('filament.report.incomeExpense.download');
+//infolist statistik widget
 Route::get('/drone-statistik/{drone_id}', [DroneStatistik::class, 'showDroneStatistik'])->name('drone.statistik');
 Route::get('/battery-statistik/{battery_id}', [BatteryStatistik::class, 'showBatteryStatistik'])->name('battery.statistik');
+Route::get('/equipment-statistik/{equipment_id}', [EquipmentStatistik::class, 'showEquipmentStatistik'])->name('equipment.statistik');
 
 // Route::get('admin/{tenant}/settings', [CurrencySettingController::class, 'index'])->name('settings');
 Route::get('admin/{tenant}/settings/currency-settings', [CurrencySettingController::class, 'showCurrencyForm'])->name('currency-settings');
 Route::post('/currency-settings/store', [CurrencySettingController::class, 'store'])->name('currency-store');
 Route::post('/default-value',[importDefaultValue::class,'store'])->name('default-value');
 
-//project
+//project-flight
 Route::get('/flight-project/{project_id}', function(){
     return view('component.flight-project');
 })->name('flight-peroject');
+//personnel-flight
+Route::get('/flight-personnel/{personnel_id}', function(){
+    return view('component.flight-personnel');
+})->name('flight-personnel');
+//pop-up button flight create
 Route::post('/create-project',[buttonPopUpCreate::class,'buttonProject'])->name('create-project');
 Route::post('/create-customer',[buttonPopUpCreate::class,'buttonDrone'])->name('create-drone');
 Route::post('/create-battrei',[buttonPopUpCreate::class,'buttonBattrei'])->name('create-battrei');
