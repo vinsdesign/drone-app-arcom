@@ -22,7 +22,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Filament\Support\Colors\Color;
 use Filament\Tables\Actions\Action;
-use Stichoza\GoogleTranslate\GoogleTranslate;
+use App\Helpers\TranslationHelper;
 
 class IncidentResource extends Resource
 {
@@ -41,11 +41,11 @@ class IncidentResource extends Resource
 
     public static function getNavigationLabel(): string
     {
-        return GoogleTranslate::trans('Incident', session('locale') ?? 'en');
+        return TranslationHelper::translateIfNeeded('Incident');
     }
     public static function getModelLabel(): string
     {
-        return GoogleTranslate::trans('Incident', session('locale') ?? 'en');
+        return TranslationHelper::translateIfNeeded('Incident');
     }
 
 
@@ -54,16 +54,16 @@ class IncidentResource extends Resource
         $currentTeamId = auth()->user()->teams()->first()->id;
         return $form
             ->schema([
-                Forms\Components\Section::make(GoogleTranslate::trans('Incident Overview', session('locale') ?? 'en'))
+                Forms\Components\Section::make(TranslationHelper::translateIfNeeded('Incident Overview'))
                     ->description('')
                     ->schema([
                     Forms\Components\Hidden::make('teams_id')
                         ->default(auth()->user()->teams()->first()->id ?? null),
                     Forms\Components\DatePicker::make('incident_date')
-                    ->label(GoogleTranslate::trans('Incident Date', session('locale') ?? 'en'))
+                    ->label(TranslationHelper::translateIfNeeded('Incident Date'))
                     ->required(),
                     Forms\Components\Select::make('cause')
-                        ->label(GoogleTranslate::trans('Incident Cause', session('locale') ?? 'en'))
+                    ->label(TranslationHelper::translateIfNeeded('Incident Cause'))    
                         ->required()
                         ->options([
                             'weather' => 'Weather',
@@ -78,7 +78,7 @@ class IncidentResource extends Resource
                             'others' => 'Others'
                         ]),
                     Forms\Components\Select::make('status')
-                        ->label(GoogleTranslate::trans('Status', session('locale') ?? 'en'))
+                    ->label(TranslationHelper::translateIfNeeded('Status'))    
                         ->required()
                         ->options([
                             false => 'Closed',
@@ -91,12 +91,12 @@ class IncidentResource extends Resource
                             return fligh_location::where('teams_id', $currentTeamId)->pluck('name', 'id');
                         })
                         ->searchable()
-                        ->label(GoogleTranslate::trans('Flight Locations', session('locale') ?? 'en'))
+                        ->label(TranslationHelper::translateIfNeeded('Flight Locations'))
                         ->required(),
                         // ->searchable(),
                      Forms\Components\Select::make('drone_id')
                         // ->relationship('drone','name')
-                        ->label(GoogleTranslate::trans('Drone', session('locale') ?? 'en'))
+                        ->label(TranslationHelper::translateIfNeeded('Drone'))
                         ->options(function (callable $get) use ($currentTeamId) {
                             return drone::where('teams_id', $currentTeamId)->pluck('name', 'id');
                         })
@@ -104,14 +104,14 @@ class IncidentResource extends Resource
                         ->required(),
                     Forms\Components\Select::make('project_id')
                         // ->relationship('project','case')
-                        ->label(GoogleTranslate::trans('Projects', session('locale') ?? 'en'))
+                        ->label(TranslationHelper::translateIfNeeded('Projects'))
                         ->options(function (callable $get) use ($currentTeamId) {
                             return project::where('teams_id', $currentTeamId)->pluck('case', 'id');
                         })
                         ->searchable()
                         ->required(),
                     Forms\Components\Select::make('personel_involved_id')
-                    ->label(GoogleTranslate::trans('Organization Personnel Involved', session('locale') ?? 'en'))
+                    ->label(TranslationHelper::translateIfNeeded('Organization Personnel Involved'))
                         ->options(
                             function (Builder $query) use ($currentTeamId) {
                                 return User::whereHas('teams', function (Builder $query) use ($currentTeamId) {
@@ -122,32 +122,39 @@ class IncidentResource extends Resource
                         ->columnSpanFull(),
                     ])->columns(2),
                     //section 2
-                Forms\Components\Section::make(GoogleTranslate::trans('Insiden Description', session('locale') ?? 'en'))
+                Forms\Components\Section::make(TranslationHelper::translateIfNeeded('Incident Description'))
                     ->description('')
                     ->schema([
-                        Forms\Components\TextArea::make('aircraft_damage')->label(GoogleTranslate::trans('Aircraft Damage', session('locale') ?? 'en'))
+                        Forms\Components\TextArea::make('aircraft_damage')
+                        ->label(TranslationHelper::translateIfNeeded('Aircraft Damage'))
                         ->required()
                         ->maxLength(255),
-                    Forms\Components\TextArea::make('other_damage')->label(GoogleTranslate::trans('Other Damage', session('locale') ?? 'en'))
+                    Forms\Components\TextArea::make('other_damage')
+                    ->label(TranslationHelper::translateIfNeeded('Other Damage'))
                         ->required()
                         ->maxLength(255),
-                    Forms\Components\TextArea::make('description')->label(GoogleTranslate::trans('Description', session('locale') ?? 'en'))
+                    Forms\Components\TextArea::make('description')
+                    ->label(TranslationHelper::translateIfNeeded('Description'))
                         ->required()
                         ->maxLength(255)->columnSpanFull(),
-                    Forms\Components\TextInput::make('incuration_type')->label(GoogleTranslate::trans('Incursions (people, aircraft...)', session('locale') ?? 'en'))
+                    Forms\Components\TextInput::make('incuration_type')
+                    ->label(TranslationHelper::translateIfNeeded('Incursions (people, aircraft...)'))
                         ->required()
                         ->maxLength(255)->columnSpanFull(),
                     ])->columns(2),
                     //section 3
-                Forms\Components\Section::make(GoogleTranslate::trans('Incident Rectification', session('locale') ?? 'en'))
+                Forms\Components\Section::make(TranslationHelper::translateIfNeeded('Incident Rectification'))
                 ->description('')
                 ->schema([
-                    Forms\Components\TextInput::make('rectification_note')->label(GoogleTranslate::trans('Rectification Notes', session('locale') ?? 'en'))
+                    Forms\Components\TextInput::make('rectification_note')
+                    ->label(TranslationHelper::translateIfNeeded('Rectification Notes'))
                         ->required()
                         ->maxLength(255)->columnSpanFull(),
-                    Forms\Components\DatePicker::make('rectification_date')->label(GoogleTranslate::trans('Rectification Date', session('locale') ?? 'en'))
+                    Forms\Components\DatePicker::make('rectification_date')
+                    ->label(TranslationHelper::translateIfNeeded('Rectification Date'))
                         ->required(),
-                    Forms\Components\TextInput::make('Technician')->label(GoogleTranslate::trans('Technician', session('locale') ?? 'en'))
+                    Forms\Components\TextInput::make('Technician')
+                    ->label(TranslationHelper::translateIfNeeded('Technician'))
                         ->required()
                         ->maxLength(255),
                 ])->columns(2),
@@ -160,14 +167,14 @@ class IncidentResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('incident_date')
-                    ->label(GoogleTranslate::trans('Incident Date', session('locale') ?? 'en'))
+                ->label(TranslationHelper::translateIfNeeded('Incident Date'))    
                     ->date()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('cause')
-                    ->label(GoogleTranslate::trans('Cause', session('locale') ?? 'en'))
+                ->label(TranslationHelper::translateIfNeeded('Cause'))    
                     ->searchable(),
                 Tables\Columns\TextColumn::make('aircraft_damage')
-                    ->label(GoogleTranslate::trans('Aircraft Damage', session('locale') ?? 'en'))
+                ->label(TranslationHelper::translateIfNeeded('Aircraft Damage'))    
                     ->searchable(),
 
                 // Tables\Columns\TextColumn::make('other_damage')
@@ -182,7 +189,7 @@ class IncidentResource extends Resource
                 //     ->date()
                 //     ->sortable(),
                 Tables\Columns\TextColumn::make('Technician')
-                    ->label(GoogleTranslate::trans('Technician', session('locale') ?? 'en'))
+                    ->label(TranslationHelper::translateIfNeeded('Technician'))
                     ->searchable(),
 
                 // Tables\Columns\TextColumn::make('location_id')
@@ -190,7 +197,7 @@ class IncidentResource extends Resource
                 //     ->sortable(),
 
                 Tables\Columns\TextColumn::make('drone.name')
-                    ->label(GoogleTranslate::trans('Drones', session('locale') ?? 'en'))
+                ->label(TranslationHelper::translateIfNeeded('Drones'))    
                     ->numeric()
                     ->url(fn($record) => $record->drone_id?route('filament.admin.resources.drones.view', [
                         'tenant' => Auth()->user()->teams()->first()->id,
@@ -198,7 +205,7 @@ class IncidentResource extends Resource
                     ]):null)->color(Color::Blue)
                     ->sortable(),
                 Tables\Columns\TextColumn::make('project.case')
-                    ->label(GoogleTranslate::trans('Projects', session('locale') ?? 'en'))
+                ->label(TranslationHelper::translateIfNeeded('Projects'))    
                     ->numeric()
                     ->url(fn($record) => $record->project_id?route('filament.admin.resources.projects.index', [
                         'tenant' => Auth()->user()->teams()->first()->id,
@@ -209,11 +216,12 @@ class IncidentResource extends Resource
                 //     ->numeric()
                 //     ->sortable(),
                 Tables\Columns\TextColumn::make('created_at')
-                    ->label(GoogleTranslate::trans('Created at', session('locale') ?? 'en'))
+                    ->label(TranslationHelper::translateIfNeeded('Created at'))
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
-                Tables\Columns\TextColumn::make('Updated at')
+                Tables\Columns\TextColumn::make('updated_at')
+                ->label(TranslationHelper::translateIfNeeded('Updated at'))
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
@@ -269,40 +277,40 @@ class IncidentResource extends Resource
     {
         return $infolist
         ->schema([
-            Section::make('Incident Overview')
+            Section::make(TranslationHelper::translateIfNeeded('Incident Overview'))
                 ->schema([
-                    TextEntry::make('incident_date')->label(GoogleTranslate::trans('Incident Date', session('locale') ?? 'en')),
-                    TextEntry::make('cause')->label(GoogleTranslate::trans('Cause', session('locale') ?? 'en')),
-                    TextEntry::make('status')->label(GoogleTranslate::trans('Status', session('locale') ?? 'en')),
-                    TextEntry::make('location_id')->label(GoogleTranslate::trans('Locations', session('locale') ?? 'en')),
+                    TextEntry::make('incident_date')->label(TranslationHelper::translateIfNeeded('Incident Date')),
+                    TextEntry::make('cause')->label(TranslationHelper::translateIfNeeded('Cause')),
+                    TextEntry::make('status')->label(TranslationHelper::translateIfNeeded('Status')),
+                    TextEntry::make('location_id')->label(TranslationHelper::translateIfNeeded('Locations')),
                     TextEntry::make('drone.name')
-                        ->label(GoogleTranslate::trans('Drones', session('locale') ?? 'en'))
-                        ->url(fn($record) => $record->drone_id?route('filament.admin.resources.drones.view', [
+                        ->label(TranslationHelper::translateIfNeeded('Drones'))
+                        ->url(fn($record) => $record->drone_id ? route('filament.admin.resources.drones.view', [
                             'tenant' => Auth()->user()->teams()->first()->id,
                             'record' => $record->drone_id,
-                        ]):null)->color(Color::Blue),
+                        ]) : null)->color(Color::Blue),
                     TextEntry::make('project.case')
-                        ->label(GoogleTranslate::trans('Projects', session('locale') ?? 'en'))
-                        ->url(fn($record) => $record->project_id?route('filament.admin.resources.projects.index', [
+                        ->label(TranslationHelper::translateIfNeeded('Projects'))
+                        ->url(fn($record) => $record->project_id ? route('filament.admin.resources.projects.index', [
                             'tenant' => Auth()->user()->teams()->first()->id,
                             'record' => $record->project_id,
-                        ]):null)->color(Color::Blue),
-                    TextEntry::make('personel_involved_id')->label(GoogleTranslate::trans('Organization Personnel Involved', session('locale') ?? 'en')),
+                        ]) : null)->color(Color::Blue),
+                    TextEntry::make('personel_involved_id')->label(TranslationHelper::translateIfNeeded('Organization Personnel Involved')),
                 ])->columns(4),
-            Section::make('Insiden Description')
+            Section::make(TranslationHelper::translateIfNeeded('Incident Description'))
                 ->schema([
-                    TextEntry::make('aircraft_damage')->label(GoogleTranslate::trans('Aircraft Damage', session('locale') ?? 'en')),
-                    TextEntry::make('other_damage')->label(GoogleTranslate::trans('Other Damage', session('locale') ?? 'en')),
-                    TextEntry::make('description')->label(GoogleTranslate::trans('Description', session('locale') ?? 'en')),
-                    TextEntry::make('incuration_type')->label(GoogleTranslate::trans('Incuration Type', session('locale') ?? 'en')),
+                    TextEntry::make('aircraft_damage')->label(TranslationHelper::translateIfNeeded('Aircraft Damage')),
+                    TextEntry::make('other_damage')->label(TranslationHelper::translateIfNeeded('Other Damage')),
+                    TextEntry::make('description')->label(TranslationHelper::translateIfNeeded('Description')),
+                    TextEntry::make('incuration_type')->label(TranslationHelper::translateIfNeeded('Incuration Type')),
                 ])->columns(4),
-            Section::make('Incident Rectification')
+            Section::make(TranslationHelper::translateIfNeeded('Incident Rectification'))
                 ->schema([
-                    TextEntry::make('rectification_note')->label(GoogleTranslate::trans('Rectification Note', session('locale') ?? 'en')),
-                    TextEntry::make('rectification_date')->label(GoogleTranslate::trans('Rectification Date', session('locale') ?? 'en')),
-                    TextEntry::make('Technician')->label(GoogleTranslate::trans('Technician', session('locale') ?? 'en')),
+                    TextEntry::make('rectification_note')->label(TranslationHelper::translateIfNeeded('Rectification Note')),
+                    TextEntry::make('rectification_date')->label(TranslationHelper::translateIfNeeded('Rectification Date')),
+                    TextEntry::make('Technician')->label(TranslationHelper::translateIfNeeded('Technician')),
                 ])->columns(3)
-        ]);
+        ]);        
     }
 
             

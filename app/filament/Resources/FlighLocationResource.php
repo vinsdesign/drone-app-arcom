@@ -17,7 +17,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Dotswan\MapPicker\Fields\Map;
 use Filament\Support\Colors\Color;
-use Stichoza\GoogleTranslate\GoogleTranslate;
+use App\Helpers\TranslationHelper;
 
 class FlighLocationResource extends Resource
 {
@@ -37,11 +37,11 @@ class FlighLocationResource extends Resource
 
     public static function getNavigationLabel(): string
     {
-        return GoogleTranslate::trans('Locations', session('locale') ?? 'en');
+        return TranslationHelper::translateIfNeeded('Locations');
     }
     public static function getModelLabel(): string
     {
-        return GoogleTranslate::trans('Locations', session('locale') ?? 'en');
+        return TranslationHelper::translateIfNeeded('Locations');
     }
     // public static function getNavigationGroup(): string
     // {
@@ -58,11 +58,12 @@ class FlighLocationResource extends Resource
                 ->default(auth()->user()->teams()->first()->id ?? null),
                 //end untuk tenancy
                 Forms\Components\Wizard::make([
-                    Forms\Components\Wizard\Step::make(GoogleTranslate::trans('Location Overview', session('locale') ?? 'en'))
+                    Forms\Components\Wizard\Step::make(TranslationHelper::translateIfNeeded('Locations Overview'))
                     ->Schema([
-                        Forms\Components\TextInput::make('name')->label(GoogleTranslate::trans('Name', session('locale') ?? 'en')),
+                        Forms\Components\TextInput::make('name')
+                        ->label(TranslationHelper::translateIfNeeded('Name')),
                         Forms\Components\Select::make('projects_id')
-                        ->label(GoogleTranslate::trans('Projects', session('locale') ?? 'en'))
+                        ->label(TranslationHelper::translateIfNeeded('Projects'))
                         // ->relationship('projects','case', function (Builder $query){
                         //     $currentTeamId = auth()->user()->teams()->first()->id;
                         //     $query->where('teams_id', $currentTeamId);
@@ -70,7 +71,6 @@ class FlighLocationResource extends Resource
                         ->options(function (callable $get) use ($currentTeamId) {
                             return projects::where('teams_id', $currentTeamId)->pluck('case', 'id');
                         })
-                        ->label('Projects')
                         ->searchable(),  
                         Forms\Components\Select::make('customers_id')
                         // ->relationship('customers','name', function (Builder $query){
@@ -80,33 +80,33 @@ class FlighLocationResource extends Resource
                         ->options(function (callable $get) use ($currentTeamId) {
                             return customer::where('teams_id', $currentTeamId)->pluck('name', 'id');
                         })  
-                        ->label(GoogleTranslate::trans('Customers', session('locale') ?? 'en'))
+                        ->label(TranslationHelper::translateIfNeeded('Customers'))
                         ->searchable()
                         ->columnSpanFull(),
                         Forms\Components\TextArea::make('description')
-                        ->label(GoogleTranslate::trans('Description', session('locale') ?? 'en'))
+                        ->label(TranslationHelper::translateIfNeeded('Descriptions'))
                         ->columnSpanFull(),
                     ])->columns(2),
-                    Forms\Components\Wizard\Step::make(GoogleTranslate::trans('Location Address', session('locale') ?? 'en'))
+                    Forms\Components\Wizard\Step::make(TranslationHelper::translateIfNeeded('Locations Address'))
                     ->Schema([
                         Forms\Components\TextInput::make('address')
-                        ->label(GoogleTranslate::trans('Address', session('locale') ?? 'en'))    
+                        ->label(TranslationHelper::translateIfNeeded('Address'))    
                         ->columnSpanFull(),
                         Forms\Components\TextInput::make('city')
-                        ->label(GoogleTranslate::trans('City', session('locale') ?? 'en')),
+                        ->label(TranslationHelper::translateIfNeeded('City')),
                         Forms\Components\TextInput::make('pos_code')
-                        ->label(GoogleTranslate::trans('Postal Code', session('locale') ?? 'en'))
+                        ->label(TranslationHelper::translateIfNeeded('Postal Code'))
                         ->numeric(),
                         Forms\Components\TextInput::make('state')
-                        ->label(GoogleTranslate::trans('State', session('locale') ?? 'en')),
+                        ->label(TranslationHelper::translateIfNeeded('State')),
                         Forms\Components\TextInput::make('country')
-                        ->label(GoogleTranslate::trans('Country', session('locale') ?? 'en')),
+                        ->label(TranslationHelper::translateIfNeeded('Country')),
                         Forms\Components\TextInput::make('latitude')
-                        ->label(GoogleTranslate::trans('Latitude', session('locale') ?? 'en'))->numeric(),
+                        ->label(TranslationHelper::translateIfNeeded('Latitude'))->numeric(),
                         Forms\Components\TextInput::make('longitude')
-                        ->label(GoogleTranslate::trans('Longitude', session('locale') ?? 'en'))->numeric(),
+                        ->label(TranslationHelper::translateIfNeeded('Longitude'))->numeric(),
                         Forms\Components\TextInput::make('altitude')
-                        ->label(GoogleTranslate::trans('Altitude', session('locale') ?? 'en'))
+                        ->label(TranslationHelper::translateIfNeeded('Altitude'))
                         ->numeric()
                         ->columnSpan('1'),
                         // Map::make('location')
@@ -163,35 +163,46 @@ class FlighLocationResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('name')->label(GoogleTranslate::trans('Name', session('locale') ?? 'en'))
+                Tables\Columns\TextColumn::make('name')
+                ->label(TranslationHelper::translateIfNeeded('Name'))
                     ->searchable(),
-                Tables\Columns\TextColumn::make('projects.case')->label(GoogleTranslate::trans('Project Case', session('locale') ?? 'en'))
+                Tables\Columns\TextColumn::make('projects.case')
+                ->label(TranslationHelper::translateIfNeeded('Project Case'))
                 ->url(fn($record)  =>  $record->project_id ? route('filament.admin.resources.projects.index', [
                     'tenant' => Auth()->user()->teams()->first()->id,
                     'record' => $record->project_id,
                 ]) : null)->color(Color::Blue)
                     ->searchable(),
-                Tables\Columns\TextColumn::make('customers.name')->label(GoogleTranslate::trans('Customers Name', session('locale') ?? 'en'))
+                Tables\Columns\TextColumn::make('customers.name')
+                ->label(TranslationHelper::translateIfNeeded('Customers Name'))
                 ->url(fn($record) => $record->customer_id ? route('filament.admin.resources.customers.index', [
                     'tenant' => Auth()->user()->teams()->first()->id,
                     'record' => $record->customer_id,
                 ]) : null)->color(Color::Blue)
                     ->searchable(),
-                Tables\Columns\TextColumn::make('address')->label(GoogleTranslate::trans('Address', session('locale') ?? 'en'))
+                Tables\Columns\TextColumn::make('address')
+                ->label(TranslationHelper::translateIfNeeded('Address'))
                     ->searchable(),
-                Tables\Columns\TextColumn::make('city')->label(GoogleTranslate::trans('City', session('locale') ?? 'en'))
+                Tables\Columns\TextColumn::make('city')
+                ->label(TranslationHelper::translateIfNeeded('City'))
                     ->searchable(),
-                Tables\Columns\TextColumn::make('pos_code')->label(GoogleTranslate::trans('Postal Code', session('locale') ?? 'en'))
+                Tables\Columns\TextColumn::make('pos_code')
+                ->label(TranslationHelper::translateIfNeeded('Postal Code'))
                     ->searchable(),
-                Tables\Columns\TextColumn::make('state')->label(GoogleTranslate::trans('State', session('locale') ?? 'en'))
+                Tables\Columns\TextColumn::make('state')
+                ->label(TranslationHelper::translateIfNeeded('State'))
                     ->searchable(),
-                Tables\Columns\TextColumn::make('country')->label(GoogleTranslate::trans('Country', session('locale') ?? 'en'))
+                Tables\Columns\TextColumn::make('country')
+                ->label(TranslationHelper::translateIfNeeded('Country'))
                     ->searchable(),
-                Tables\Columns\TextColumn::make('latitude')->label(GoogleTranslate::trans('Latitude', session('locale') ?? 'en'))
+                Tables\Columns\TextColumn::make('latitude')
+                ->label(TranslationHelper::translateIfNeeded('Latitude'))
                     ->searchable(),
-                Tables\Columns\TextColumn::make('longitude')->label(GoogleTranslate::trans('Longitude', session('locale') ?? 'en'))
+                Tables\Columns\TextColumn::make('longitude')
+                ->label(TranslationHelper::translateIfNeeded('Longitude'))
                     ->searchable(),
-                Tables\Columns\TextColumn::make('altitude')->label(GoogleTranslate::trans('Altitude', session('locale') ?? 'en'))
+                Tables\Columns\TextColumn::make('altitude')
+                ->label(TranslationHelper::translateIfNeeded('Altitude'))
                     ->searchable(),
             ])
             ->filters([

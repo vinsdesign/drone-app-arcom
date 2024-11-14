@@ -5,7 +5,7 @@ use App\Filament\Pages\ManualImport;
 use Filament\Navigation\MenuItem;
 use Filament\Resources\Resource;
 use Filament\Tables\Table;
-use Stichoza\GoogleTranslate\GoogleTranslate;
+use App\Helpers\TranslationHelper;
 
 class ManualImportResource extends Resource
 
@@ -18,11 +18,11 @@ class ManualImportResource extends Resource
 
     public static function getNavigationLabel(): string
     {
-        return GoogleTranslate::trans('ManualImport', session('locale') ?? 'en');
+        return TranslationHelper::translateIfNeeded('ManualImport');
     }
     public static function getModelLabel(): string
     {
-        return GoogleTranslate::trans('ManualImport', session('locale') ?? 'en');
+        return TranslationHelper::translateIfNeeded('ManualImport');
     }
 
     public static function getPages(): array

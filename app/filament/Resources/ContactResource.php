@@ -6,7 +6,7 @@ use Filament\Pages\Page;
 use Filament\Tables;
 use Filament\Tables\Table;
 use App\Filament\Pages\CustomPage;
-use Stichoza\GoogleTranslate\GoogleTranslate;
+use App\Helpers\TranslationHelper;
 
 
 class ContactResource extends Resource
@@ -18,15 +18,15 @@ class ContactResource extends Resource
 
     public static function getNavigationLabel(): string
     {
-        return GoogleTranslate::trans('Contact Us', session('locale') ?? 'en');
+        return TranslationHelper::translateIfNeeded('Contact');
     }
     public static function getModelLabel(): string
     {
-        return GoogleTranslate::trans('Contact', session('locale') ?? 'en');
+        return TranslationHelper::translateIfNeeded('Contact');
     }
     public static function getNavigationGroup(): string
     {
-        return GoogleTranslate::trans('Contact', session('locale') ?? 'en');
+        return TranslationHelper::translateIfNeeded('Contact');
     }
 
     protected static ?string $navigationIcon = 'heroicon-m-chat-bubble-left-right';

@@ -12,7 +12,7 @@ use Filament\Forms\Components\TextArea;
 use Filament\Forms\Form;
 use Filament\Facades\Filament;
 use App\Models\User;
-use Stichoza\GoogleTranslate\GoogleTranslate;
+use App\Helpers\TranslationHelper;
 
 
 class MyCustomComponent extends MyProfileComponent
@@ -35,13 +35,13 @@ class MyCustomComponent extends MyProfileComponent
     {
         return $form
             ->schema([
-                Select::make('countries_id')->label(GoogleTranslate::trans('Country', session('locale') ?? 'en'))
+                Select::make('countries_id')->label(TranslationHelper::translateIfNeeded('Country'))
                         ->options(countrie::all()->pluck('name','id'))
                         ->reactive()
                         ->afterStateUpdated(fn(callable $set)=>$set('cities_id',null))
-                        ->placeholder((new GoogleTranslate(session('locale') ?? 'en'))->translate('Select a Country'))
+                        ->placeholder(TranslationHelper::translateIfNeeded('Select a Country'))
                         ->searchable(),
-                Select::make('cities_id')->label(GoogleTranslate::trans('City', session('locale') ?? 'en'))
+                Select::make('cities_id')->label(TranslationHelper::translateIfNeeded('City'))
                 ->options(function ($get) {
                         $countryId = $get('countries_id');
                         if ($countryId) {
@@ -51,20 +51,20 @@ class MyCustomComponent extends MyProfileComponent
                     })
                 ->searchable()
                 ->reactive()
-                ->placeholder((new GoogleTranslate(session('locale') ?? 'en'))->translate('Select a City'))
+                ->placeholder(TranslationHelper::translateIfNeeded('Select a City'))
                 ->disabled(fn ($get) => !$get('countries_id')),
                 //phone
-                TextInput::make('phone')->label(GoogleTranslate::trans('Phone', session('locale') ?? 'en'))
+                TextInput::make('phone')->label(TranslationHelper::translateIfNeeded('Phone'))
                 ->tel()
                 ->rules([
                     'unique:users,phone,' . ($this->record ? $this->record : 'NULL'),
                     'nullable',
                 ])
                 ->numeric(),
-                TextInput::make('sertif')->label(GoogleTranslate::trans('Sertification', session('locale') ?? 'en'))
+                TextInput::make('sertif')->label(TranslationHelper::translateIfNeeded('Sertification'))
                         ->maxLength(255),
-                TextArea::make('address')->label(GoogleTranslate::trans('Address', session('locale') ?? 'en'))
-                ->helperText((new GoogleTranslate(session('locale') ?? 'en'))->translate('Your Specific Address'))
+                TextArea::make('address')->label(TranslationHelper::translateIfNeeded('Address'))
+                ->helperText(TranslationHelper::translateIfNeeded('Your Specific Address'))
 
             ])
             ->statePath('data');

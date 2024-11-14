@@ -1,5 +1,5 @@
 <?php
-    use Stichoza\GoogleTranslate\GoogleTranslate;
+    use App\Helpers\TranslationHelper;
     $teams = Auth()->user()->teams()->first()->id;
     $customer = App\Models\customer::where('teams_id',$teams)->get();
     $project = App\Models\projects::where('teams_id',$teams)->get();
@@ -104,8 +104,8 @@
             <div class="text-blue-500 dark:text-blue-400 mb-2">
                 <x-heroicon-o-globe-alt class="w-8 h-8 mx-auto" />
             </div>
-            <h2 class="text-lg font-semibold text-gray-800 dark:text-gray-200">{!! GoogleTranslate::trans('General Settings', session('locale') ?? 'en') !!}</h2>
-            <p class="text-gray-600 dark:text-gray-400 mt-1">{!! GoogleTranslate::trans('Set your website here', session('locale') ?? 'en') !!}</p>
+            <h2 class="text-lg font-semibold text-gray-800 dark:text-gray-200">{!! TranslationHelper::translateIfNeeded('General Settings') !!}</h2>
+            <p class="text-gray-600 dark:text-gray-400 mt-1">{!! TranslationHelper::translateIfNeeded('Set your website here') !!}</p>
         </div>
     
         <!-- Menu 2 -->
@@ -114,8 +114,8 @@
             <div class="mb-2 text-gray-800 dark:text-gray-200">
                 <x-heroicon-s-currency-dollar class="w-8 h-8 mx-auto" />
             </div>
-            <h2 class="text-lg font-semibold text-gray-800 dark:text-gray-200">{!! GoogleTranslate::trans('Currency', session('locale') ?? 'en') !!}</h2>
-            <p class="text-gray-600 dark:text-gray-400 mt-1">{!! GoogleTranslate::trans('Manage your currency here', session('locale') ?? 'en') !!}</p>
+            <h2 class="text-lg font-semibold text-gray-800 dark:text-gray-200">{!! TranslationHelper::translateIfNeeded('Currency') !!}</h2>
+            <p class="text-gray-600 dark:text-gray-400 mt-1">{!! TranslationHelper::translateIfNeeded('Manage your currency here') !!}</p>
         </div>
         @endif
         <!-- Menu 3 -->
@@ -123,8 +123,8 @@
             <div class="text-yellow-500 dark:text-yellow-400 mb-2">
                 <x-heroicon-c-language class="w-8 h-8 mx-auto" />
             </div>
-            <h2 class="text-lg font-semibold text-gray-800 dark:text-gray-200">{!! GoogleTranslate::trans('Language', session('locale') ?? 'en') !!}</h2>
-            <p class="text-gray-600 dark:text-gray-400 mt-1">{!! GoogleTranslate::trans('Manage your Language', session('locale') ?? 'en') !!}</p>
+            <h2 class="text-lg font-semibold text-gray-800 dark:text-gray-200">{!! TranslationHelper::translateIfNeeded('Language') !!}</h2>
+            <p class="text-gray-600 dark:text-gray-400 mt-1">{!! TranslationHelper::translateIfNeeded('Manage your Language') !!}</p>
         </div>
     </div>
     
@@ -137,14 +137,14 @@
             <!-- Tab buttons on the left -->
             <div class="tab-buttons flex flex-col border-r border-gray-300 dark:border-gray-700 p-4 space-y-2">
 
-                <h1 class="text-lg font-bold border-b border-gray-500 pb-2">{!! GoogleTranslate::trans('Setting', session('locale') ?? 'en') !!}</h1>
-                <button id="tab0" class="tab-button active border border-gray-300 dark:border-gray-700 rounded-lg py-2 px-4 text-gray-800 dark:text-gray-200" onclick="showContentTab(0)">{!! GoogleTranslate::trans('Profile', session('locale') ?? 'en') !!}</button>
+                <h1 class="text-lg font-bold border-b border-gray-500 pb-2">{!! TranslationHelper::translateIfNeeded('Setting') !!}</h1>
+                <button id="tab0" class="tab-button active border border-gray-300 dark:border-gray-700 rounded-lg py-2 px-4 text-gray-800 dark:text-gray-200" onclick="showContentTab(0)">{!! TranslationHelper::translateIfNeeded('Profile') !!}</button>
                 @if (Auth::user()->roles()->pluck('name')->contains('super_admin') || (Auth::user()->roles()->pluck('name')->contains('panel_user')))
-                    <button id="tab1" class="tab-button border border-gray-300 dark:border-gray-700 rounded-lg py-2 px-4 text-gray-800 dark:text-gray-200" onclick="showContentTab(1)">{!! GoogleTranslate::trans('Organization', session('locale') ?? 'en') !!}</button>
+                    <button id="tab1" class="tab-button border border-gray-300 dark:border-gray-700 rounded-lg py-2 px-4 text-gray-800 dark:text-gray-200" onclick="showContentTab(1)">{!! TranslationHelper::translateIfNeeded('Organization') !!}</button>
                 @endif
-                <button id="tab2" class="tab-button border border-gray-300 dark:border-gray-700 rounded-lg py-2 px-4 text-gray-800 dark:text-gray-200" onclick="showContentTab(2)">{!! GoogleTranslate::trans('Import Rules', session('locale') ?? 'en') !!}</button>
-                <button id="tab3" class="tab-button border border-gray-300 dark:border-gray-700 rounded-lg py-2 px-4 text-gray-800 dark:text-gray-200" onclick="showContentTab(3)">{!! GoogleTranslate::trans('API', session('locale') ?? 'en') !!}</button>
-                <button id="tab4" class="tab-button border border-gray-300 dark:border-gray-700 rounded-lg py-2 px-4 text-gray-800 dark:text-gray-200" onclick="showContentTab(4)">{!! GoogleTranslate::trans('Billing', session('locale') ?? 'en') !!}</button>
+                <button id="tab2" class="tab-button border border-gray-300 dark:border-gray-700 rounded-lg py-2 px-4 text-gray-800 dark:text-gray-200" onclick="showContentTab(2)">{!! TranslationHelper::translateIfNeeded('Import Rules') !!}</button>
+                <button id="tab3" class="tab-button border border-gray-300 dark:border-gray-700 rounded-lg py-2 px-4 text-gray-800 dark:text-gray-200" onclick="showContentTab(3)">{!! TranslationHelper::translateIfNeeded('API') !!}</button>
+                <button id="tab4" class="tab-button border border-gray-300 dark:border-gray-700 rounded-lg py-2 px-4 text-gray-800 dark:text-gray-200" onclick="showContentTab(4)">{!! TranslationHelper::translateIfNeeded('Billing') !!}</button>
             </div>
     
             <!-- Tab content on the right -->
@@ -161,18 +161,18 @@
                 </div>
                 {{-- menu Import Rules --}}
                 <div id="content2" class="tab-content p-6 bg-gray-50 dark:bg-gray-800 rounded-lg shadow-md">
-                    <h1 class="text-2xl font-semibold mb-4 text-gray-800 dark:text-gray-200">{!! GoogleTranslate::trans('Import Rules', session('locale') ?? 'en') !!}</h1>
-                    <p class="mb-3 text-gray-600 dark:text-gray-400">{!! GoogleTranslate::trans('These rules will be automatically set for all logs on new imported flights.', session('locale') ?? 'en') !!}<br>{!! GoogleTranslate::trans('Rules will be applied in these flight log importers:', session('locale') ?? 'en') !!}</p>
+                    <h1 class="text-2xl font-semibold mb-4 text-gray-800 dark:text-gray-200">{!! TranslationHelper::translateIfNeeded('Import Rules') !!}</h1>
+                    <p class="mb-3 text-gray-600 dark:text-gray-400">{!! TranslationHelper::translateIfNeeded('These rules will be automatically set for all logs on new imported flights.') !!}<br>{!! TranslationHelper::translateIfNeeded('Rules will be applied in these flight log importers:') !!}</p>
                     
                     <ul class="list-disc pl-5 mb-6">
-                        <li><a href="{{route('filament.admin.resources.manual-imports.index',[Auth()->user()->teams()->first()->id])}}" class="text-blue-600 dark:text-blue-400 hover:underline">{!! GoogleTranslate::trans('Manual Multiple Importer', session('locale') ?? 'en') !!}</a></li>
-                        <li ><a href="#" class="text-blue-600 dark:text-blue-400 hover:underline" onclick="showContentTab(3)">{!! GoogleTranslate::trans('Dji Cloud Importer', session('locale') ?? 'en') !!}</a></li>
+                        <li><a href="{{route('filament.admin.resources.manual-imports.index',[Auth()->user()->teams()->first()->id])}}" class="text-blue-600 dark:text-blue-400 hover:underline">{!! TranslationHelper::translateIfNeeded('Manual Multiple Importer') !!}</a></li>
+                        <li ><a href="#" class="text-blue-600 dark:text-blue-400 hover:underline" onclick="showContentTab(3)">{!! TranslationHelper::translateIfNeeded('Dji Cloud Importer') !!}</a></li>
                     </ul>
-                    <h1 class="text-2xl font-semibold mb-4 text-gray-800 dark:text-gray-200">{!! GoogleTranslate::trans('Default Value', session('locale') ?? 'en') !!}</h1>
+                    <h1 class="text-2xl font-semibold mb-4 text-gray-800 dark:text-gray-200">{!! TranslationHelper::translateIfNeeded('Default Value') !!}</h1>
                     <form class="space-y-4" action="{{route('default-value')}}" method="POST">
                         @csrf
                         <div class="form-group">
-                            <label for="customer" class="font-medium text-gray-700 dark:text-gray-300">{!! GoogleTranslate::trans('Default Customer', session('locale') ?? 'en') !!}</label>
+                            <label for="customer" class="font-medium text-gray-700 dark:text-gray-300">{!! TranslationHelper::translateIfNeeded('Default Customer') !!}</label>
                             <select name="customer" id="customer" class="border border-gray-300 dark:border-gray-600 rounded-lg w-full p-2 mt-1 bg-white dark:bg-gray-700 text-gray-800 dark:text-gray-200 focus:outline-none focus:border-blue-500 dark:focus:border-blue-400">
                                 @if($defaultCountCustomer > 0)
                                     @foreach($default as $key)
@@ -187,7 +187,7 @@
                         </div>
                 
                         <div class="form-group">
-                            <label for="projects" class="font-medium text-gray-700 dark:text-gray-300">{!! GoogleTranslate::trans('Default Project/Job', session('locale') ?? 'en') !!}</label>
+                            <label for="projects" class="font-medium text-gray-700 dark:text-gray-300">{!! TranslationHelper::translateIfNeeded('Default Project/Job') !!}</label>
                             <select name="projects" id="projects" class="border border-gray-300 dark:border-gray-600 rounded-lg w-full p-2 mt-1 bg-white dark:bg-gray-700 text-gray-800 dark:text-gray-200 focus:outline-none focus:border-blue-500 dark:focus:border-blue-400">
                                 @if($defaultCountProject > 0)
                                     @foreach($default as $key)
@@ -202,7 +202,7 @@
                         </div>
                 
                         <div class="form-group">
-                            <label for="Sflight_type" class="font-medium text-gray-700 dark:text-gray-300">{!! GoogleTranslate::trans('Default Flight Type', session('locale') ?? 'en') !!}</label>
+                            <label for="Sflight_type" class="font-medium text-gray-700 dark:text-gray-300">{!! TranslationHelper::translateIfNeeded('Default Flight Type') !!}</label>
                             <select name="flight_type" id="flight_type" class="border border-gray-300 dark:border-gray-600 rounded-lg w-full p-2 mt-1 bg-white dark:bg-gray-700 text-gray-800 dark:text-gray-200 focus:outline-none focus:border-blue-500 dark:focus:border-blue-400">
                                 @if($defaultCountType > 0)
                                     @foreach($default as $key)
@@ -235,34 +235,34 @@
                 
                         <div class="form-group flex items-center space-x-2">
                             <input name="pilot" type="checkbox"  id="pilot" class="form-checkbox h-5 w-5 text-blue-600 dark:text-blue-400 focus:ring-blue-500 dark:focus:ring-blue-400"{{ $isChecked ? 'checked' : '' }}>
-                            <label for="pilot" class="font-medium text-gray-700 dark:text-gray-300">{!! GoogleTranslate::trans('If Pilot not set upfront, set Auto-detected Drone Owner As Pilot', session('locale') ?? 'en') !!}</label>
+                            <label for="pilot" class="font-medium text-gray-700 dark:text-gray-300">{!! TranslationHelper::translateIfNeeded('If Pilot not set upfront, set Auto-detected Drone Owner As Pilot') !!}</label>
                         </div>  
                         <button type="submit" class="bg-blue-600 dark:bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-700 dark:hover:bg-blue-600 transition-all duration-200 ease-in-out">
-                            {!! GoogleTranslate::trans('Submit', session('locale') ?? 'en') !!}
+                            {!! TranslationHelper::translateIfNeeded('Submit') !!}
                         </button>
                     </form>
                 </div> 
                 {{-- form Dji sync --}}
                 <div id="content3" class="tab-content p-6 bg-white dark:bg-gray-800 rounded-lg shadow">
-                    <h1 class="text-2xl font-semibold text-gray-800 dark:text-gray-200 mb-4">{!! GoogleTranslate::trans('DJi Sync', session('locale') ?? 'en') !!}</h1>
+                    <h1 class="text-2xl font-semibold text-gray-800 dark:text-gray-200 mb-4">{!! TranslationHelper::translateIfNeeded('DJi Sync') !!}</h1>
                     <form class="space-y-4">
                         <div class="form-group">
-                            <label for="email" class="font-medium text-gray-700 dark:text-gray-300">{!! GoogleTranslate::trans('Email', session('locale') ?? 'en') !!}</label>
+                            <label for="email" class="font-medium text-gray-700 dark:text-gray-300">{!! TranslationHelper::translateIfNeeded('Email') !!}</label>
                             <input type="email" id="email" class="border border-gray-300 dark:border-gray-600 rounded-lg w-full p-2 mt-1 focus:outline-none focus:border-blue-500 dark:bg-gray-700 dark:text-white" required>
                         </div>
                         
                         <div class="form-group">
-                            <label for="password" class="font-medium text-gray-700 dark:text-gray-300">{!! GoogleTranslate::trans('Password', session('locale') ?? 'en') !!}</label>
+                            <label for="password" class="font-medium text-gray-700 dark:text-gray-300">{!! TranslationHelper::translateIfNeeded('Password') !!}</label>
                             <input type="password" id="password" class="border border-gray-300 dark:border-gray-600 rounded-lg w-full p-2 mt-1 focus:outline-none focus:border-blue-500 dark:bg-gray-700 dark:text-white" required>
                         </div>
                         
                         <div class="form-group">
-                            <label for="since_sync" class="font-medium text-gray-700 dark:text-gray-300">{!! GoogleTranslate::trans('Sync Flights Since', session('locale') ?? 'en') !!}</label>
+                            <label for="since_sync" class="font-medium text-gray-700 dark:text-gray-300">{!! TranslationHelper::translateIfNeeded('Sync Flights Since') !!}</label>
                             <input type="datetime-local" id="since_sync" class="border border-gray-300 dark:border-gray-600 rounded-lg w-full p-2 mt-1 focus:outline-none focus:border-blue-500 dark:bg-gray-700 dark:text-white">
                         </div>
                         
                         <button type="submit" class="w-full bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-all duration-200 ease-in-out">
-                            {!! GoogleTranslate::trans('Sync', session('locale') ?? 'en') !!}
+                            {!! TranslationHelper::translateIfNeeded('Sync') !!}
                         </button>
                     </form>
                 </div>
@@ -276,13 +276,13 @@
     {{--Currency Setting--}}
     <div id="maincontent1" class="main-content flex justify-center bg-gray-50 dark:bg-gray-900 ">
         <div class="max-w-lg w-full p-6 rounded-lg shadow-md border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800">
-            <h1 class="text-2xl font-bold mb-4 text-gray-800 dark:text-gray-200">{!! GoogleTranslate::trans('Currency Settings', session('locale') ?? 'en') !!}</h1>
+            <h1 class="text-2xl font-bold mb-4 text-gray-800 dark:text-gray-200">{!! TranslationHelper::translateIfNeeded('Currency Settings') !!}</h1>
     
             <form action="{{route('currency-store')}}" method="POST">
                 @csrf
                 
                 <div class="mb-4">
-                    <label for="currency" class="block text-sm font-medium text-gray-700 dark:text-gray-400">{!! GoogleTranslate::trans('Choose your currency:', session('locale') ?? 'en') !!}</label>
+                    <label for="currency" class="block text-sm font-medium text-gray-700 dark:text-gray-400">{!! TranslationHelper::translateIfNeeded('Choose your currency:') !!}</label>
                     <select name="currency_id" id="currency" required class="mt-1 block w-full p-2 border border-gray-300 dark:border-gray-600 rounded-md bg-gray-50 dark:bg-gray-700 text-gray-800 dark:text-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500">
                         @php
                             $currencies = App\Models\currencie::all();
@@ -306,7 +306,7 @@
     
                 <div class="flex justify-end">
                     <button type="submit" class="px-4 py-2 font-semibold bg-blue-600 text-white rounded-md hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600 transition duration-150 ease-in-out focus:outline-none focus:ring-2 focus:ring-blue-400 shadow">
-                        {!! GoogleTranslate::trans('Save Changes', session('locale') ?? 'en') !!} 
+                        {!! TranslationHelper::translateIfNeeded('Save Changes') !!} 
                     </button>
                 </div>
             </form>
@@ -316,13 +316,13 @@
     {{--languages Setting--}}
 <div id="maincontent2" class="main-content flex justify-center bg-gray-50 dark:bg-gray-900 mt-6">
     <div class="max-w-lg w-full p-6 rounded-lg shadow-md border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800">
-        <h1 class="text-2xl font-bold mb-4 text-gray-800 dark:text-gray-200">{!! GoogleTranslate::trans('Language Settings', session('locale') ?? 'en') !!}</h1>
+        <h1 class="text-2xl font-bold mb-4 text-gray-800 dark:text-gray-200">{!! TranslationHelper::translateIfNeeded('Language Settings') !!}</h1>
         
         <form action="{{ route('change.language') }}" method="POST">
             @csrf
             
             <div class="mb-4">
-                <label for="language" class="block text-sm font-medium text-gray-700 dark:text-gray-400">{!! GoogleTranslate::trans('Choose your language:', session('locale') ?? 'en') !!}</label>
+                <label for="language" class="block text-sm font-medium text-gray-700 dark:text-gray-400">{!! TranslationHelper::translateIfNeeded('Choose your language:') !!}</label>
                 <select name="language" id="language" required class="mt-1 block w-full p-2 border border-gray-300 dark:border-gray-600 rounded-md bg-gray-50 dark:bg-gray-700 text-gray-800 dark:text-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500">
                     <option value="en" {{ session('locale') == 'en' ? 'selected' : '' }}>English</option>
                     <option value="es" {{ session('locale') == 'es' ? 'selected' : '' }}>Spanish</option>

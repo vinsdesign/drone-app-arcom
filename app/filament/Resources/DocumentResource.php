@@ -21,7 +21,7 @@ use Filament\Infolists\Components\Section;
 use Filament\Infolists\Components\TextEntry;
 use Carbon\Carbon;
 use Filament\Support\Colors\Color;
-use Stichoza\GoogleTranslate\GoogleTranslate;
+use App\Helpers\TranslationHelper;
 
 class DocumentResource extends Resource
 {
@@ -40,11 +40,11 @@ class DocumentResource extends Resource
 
     public static function getNavigationLabel(): string
     {
-        return GoogleTranslate::trans('Documents', session('locale') ?? 'en');
+        return TranslationHelper::translateIfNeeded('Documents');
     }
     public static function getModelLabel(): string
     {
-        return GoogleTranslate::trans('Documents', session('locale') ?? 'en');
+        return TranslationHelper::translateIfNeeded('Documents');
     }
 
     public static function form(Form $form): Form
@@ -55,10 +55,12 @@ class DocumentResource extends Resource
                 Forms\Components\Section::make('')
                 ->description('')
                 ->schema([
-                    Forms\Components\TextInput::make('name')->label(GoogleTranslate::trans('name', session('locale') ?? 'en'))
+                    Forms\Components\TextInput::make('name')
+                    ->label(TranslationHelper::translateIfNeeded('Name'))
                     ->required()
                     ->maxLength(255),
-                Forms\Components\Select::make('type')->label(GoogleTranslate::trans('type', session('locale') ?? 'en'))                    
+                Forms\Components\Select::make('type')
+                    ->label(TranslationHelper::translateIfNeeded('Type'))                   
                     ->required()
                     ->options([
                         'Pilot License' => 'Pilot License',
@@ -76,12 +78,15 @@ class DocumentResource extends Resource
                         'Safety Instruction' => 'Safety Instruction',
                         'Other' => 'Other',
                     ])->searchable()->columnSpan(2),
-                Forms\Components\TextInput::make('refnumber')->label(GoogleTranslate::trans('REF.Number', session('locale') ?? 'en'))
+                Forms\Components\TextInput::make('refnumber')
+                    ->label(TranslationHelper::translateIfNeeded('REF. Number'))
                     ->required()
                     ->maxLength(255),
-                Forms\Components\DatePicker::make('expired_date')->label(GoogleTranslate::trans('Expired Date', session('locale') ?? 'en'))
+                Forms\Components\DatePicker::make('expired_date')
+                    ->label(TranslationHelper::translateIfNeeded('Expired Date'))
                     ->required(),
-                Forms\Components\Select::make('customers_id')->label(GoogleTranslate::trans('Customer', session('locale') ?? 'en'))
+                Forms\Components\Select::make('customers_id')
+                    ->label(TranslationHelper::translateIfNeeded('Customer'))
                     // ->relationship('customers', 'name', function (Builder $query){
                     //     $currentTeamId = auth()->user()->teams()->first()->id;
                     //     $query->where('teams_id', $currentTeamId);
@@ -90,7 +95,8 @@ class DocumentResource extends Resource
                         return customer::where('teams_id', $currentTeamId)->pluck('name', 'id');
                     })
                     ->searchable(),
-                Forms\Components\Select::make('scope')->label(GoogleTranslate::trans('Scope', session('locale') ?? 'en'))
+                Forms\Components\Select::make('scope')
+                    ->label(TranslationHelper::translateIfNeeded('Scope'))
                     ->required()
                     ->options([
                         'Flight' => 'Flight',
@@ -102,7 +108,8 @@ class DocumentResource extends Resource
                         'Incident' => 'Incident',
                     ])
                     ->columnSpan(2),
-                Forms\Components\Select::make('users_id')->label(GoogleTranslate::trans('Owner', session('locale') ?? 'en'))
+                Forms\Components\Select::make('users_id')
+                    ->label(TranslationHelper::translateIfNeeded('Owner'))
                     //->relationship('users', 'name')
                     ->options(function () {
                         $currentTeamId = auth()->user()->teams()->first()->id; 
@@ -113,7 +120,8 @@ class DocumentResource extends Resource
                     })
                     ->searchable()
                     ->required(),
-                    Forms\Components\Select::make('projects_id')->label(GoogleTranslate::trans('Project / Job Reference', session('locale') ?? 'en'))
+                    Forms\Components\Select::make('projects_id')
+                    ->label(TranslationHelper::translateIfNeeded('Project'))
                     // ->relationship('projects', 'case', function (Builder $query){
                     //     $currentTeamId = auth()->user()->teams()->first()->id;;
                     //     $query->where('teams_id', $currentTeamId);
@@ -123,12 +131,15 @@ class DocumentResource extends Resource
                         return projects::where('teams_id', $currentTeamId)->pluck('case', 'id');
                     })
                     ->columnSpanFull(),
-                Forms\Components\FileUpload::make('doc')->label(GoogleTranslate::trans('Upload Document', session('locale') ?? 'en'))
+                Forms\Components\FileUpload::make('doc')
+                    ->label(TranslationHelper::translateIfNeeded('Upload Document'))
                     ->acceptedFileTypes(['application/pdf']),
-                Forms\Components\TextInput::make('external link')->label(GoogleTranslate::trans('Or External Link, your document', session('locale') ?? 'en'))
+                Forms\Components\TextInput::make('external link')
+                    ->label(TranslationHelper::translateIfNeeded('Or External Link, your document'))
                     ->required()
                     ->maxLength(255)->columnSpan(2),
-                Forms\Components\TextArea::make('description')->label(GoogleTranslate::trans('Description', session('locale') ?? 'en'))
+                Forms\Components\TextArea::make('description')
+                    ->label(TranslationHelper::translateIfNeeded('Description'))
                     ->maxLength(255)->columnSpanFull(),
                 Forms\Components\Hidden::make('teams_id')
                     ->default(auth()->user()->teams()->first()->id ?? null),
@@ -171,19 +182,24 @@ class DocumentResource extends Resource
         //     });
         // })
             ->columns([
-                Tables\Columns\TextColumn::make('name')->label(GoogleTranslate::trans('Name', session('locale') ?? 'en'))
+                Tables\Columns\TextColumn::make('name')
+                    ->label(TranslationHelper::translateIfNeeded('Name'))   
                     ->searchable(),
-                Tables\Columns\TextColumn::make('refnumber')->label(GoogleTranslate::trans('REF. Number', session('locale') ?? 'en'))
+                Tables\Columns\TextColumn::make('refnumber')
+                    ->label(TranslationHelper::translateIfNeeded('Ref Number'))   
                     ->searchable(),
-                Tables\Columns\TextColumn::make('users.name')->label(GoogleTranslate::trans('Owner', session('locale') ?? 'en'))
+                Tables\Columns\TextColumn::make('users.name')
+                    ->label(TranslationHelper::translateIfNeeded('Owner'))   
                     ->sortable(),
-                Tables\Columns\TextColumn::make('type')->label(GoogleTranslate::trans('Type', session('locale') ?? 'en'))
+                Tables\Columns\TextColumn::make('type')
+                    ->label(TranslationHelper::translateIfNeeded('Type'))   
                     ->searchable(),
-                Tables\Columns\TextColumn::make('expired_date')->label(GoogleTranslate::trans('Expired Date', session('locale') ?? 'en'))
+                Tables\Columns\TextColumn::make('expired_date')
+                    ->label(TranslationHelper::translateIfNeeded('Expired Date'))   
                     ->date('Y-m-d')
                     ->sortable()
                     ->formatStateUsing(function ($state) {
-                        $translatedText = (new GoogleTranslate(session('locale') ?? 'en'))->translate('Expired');
+                        $translatedText = (TranslationHelper::translateIfNeeded('Expired'));
                         $expiredDate = Carbon::parse($state);
                         $now = Carbon::now();
     
@@ -194,38 +210,43 @@ class DocumentResource extends Resource
                         }
                     })
                     ->html(),
-                // Tables\Columns\TextColumn::make('scope')->label('Scope')
-                //     ->searchable(),
-                Tables\Columns\TextColumn::make('external link')->label(GoogleTranslate::trans('External Link', session('locale') ?? 'en'))
+                // Tables\Columns\TextColumn::make('scope')
+                // ->label('Scope')// 
+                    // ->searchable(),
+                Tables\Columns\TextColumn::make('external link')
+                    ->label(TranslationHelper::translateIfNeeded('External Link'))   
                     ->searchable()
                     ->formatStateUsing(function ($state) {
-                        $translatedText = (new GoogleTranslate(session('locale') ?? 'en'))->translate('Click Here');
+                        $translatedText = (TranslationHelper::translateIfNeeded('Click Here'));
                         $url = preg_match('/^https?:\/\//', $state) ? $state : "https://{$state}";
                         return "<a href='{$url}' target='_blank' style='padding:5px 10px; background-color:#ff8303; color:white; border-radius:5px;' rel='noopener noreferrer'>{$translatedText}</a>";
 
                     })
                     ->html(),
-                // Tables\Columns\TextColumn::make('description')->label('Description')
+                // Tables\Columns\TextColumn::make('description')
+                // ->label('Description')
                 //     ->searchable(),
                     //Belum bisa Link ke Document
                     Tables\Columns\TextColumn::make('doc')
-                    ->label(GoogleTranslate::trans('Document', session('locale') ?? 'en'))
-                    // ->formatStateUsing(fn ($state) => "<a href='/storage/{$state}' target='_blank' rel='noopener noreferrer' style='padding:5px 10px; background-color:#ff8303; color:white; border-radius:5px;'>Open Document</a>")
-                    ->formatStateUsing(function ($state) {
-                        $translatedText = (new GoogleTranslate(session('locale') ?? 'en'))->translate('Open Document');
-                        return "<a href='/storage/{$state}' target='_blank' rel='noopener noreferrer' style='padding:5px 10px; background-color:#ff8303; color:white; border-radius:5px;'>{$translatedText}</a>";
-                    })
-                    ->html()
-                    ->searchable(),
+                        ->label(TranslationHelper::translateIfNeeded('Document')) 
+                        ->formatStateUsing(fn ($state) => "<a href='/storage/{$state}' target='_blank' rel='noopener noreferrer' style='padding:5px 10px; background-color:#ff8303; color:white; border-radius:5px;'>Open Document</a>")
+                        ->formatStateUsing(function ($state) {
+                            $translatedText = (TranslationHelper::translateIfNeeded('Open Document'));
+                            return "<a href='/storage/{$state}' target='_blank' rel='noopener noreferrer' style='padding:5px 10px; background-color:#ff8303; color:white; border-radius:5px;'>{$translatedText}</a>";
+                        })
+                        ->html()
+                        ->searchable(),
                 
-                // Tables\Columns\TextColumn::make('customers.name')->label('Customer')
+                // Tables\Columns\TextColumn::make('customers.name')
+                // ->label('Customer')
                 //     ->numeric()
                 //     ->url(fn($record) => $record->customer_id ? route('filament.admin.resources.customers.index', [
                 //         'tenant' => Auth()->user()->teams()->first()->id,
                 //         'record' => $record->customer_id,
                 //     ]): null)->color(Color::Blue)
                 //     ->sortable(),
-                Tables\Columns\TextColumn::make('project.case')->label(GoogleTranslate::trans('Projects', session('locale') ?? 'en'))
+                Tables\Columns\TextColumn::make('project.case')
+                    ->label(TranslationHelper::translateIfNeeded('Project'))   
                     ->numeric()
                     ->url(fn($record) => $record->project_id ?  route('filament.admin.resources.projects.index', [
                         'tenant' => Auth()->user()->teams()->first()->id,
@@ -233,12 +254,12 @@ class DocumentResource extends Resource
                     ]): null)->color(Color::Blue)
                     ->sortable(),
                 Tables\Columns\TextColumn::make('created_at')
-                    ->label(GoogleTranslate::trans('created_at', session('locale') ?? 'en'))
+                    ->label(TranslationHelper::translateIfNeeded('Created at'))
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('updated_at')
-                    ->label(GoogleTranslate::trans('updated_at', session('locale') ?? 'en'))
+                    ->label(TranslationHelper::translateIfNeeded('Updated at'))
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
@@ -362,11 +383,16 @@ class DocumentResource extends Resource
         ->schema([
             Section::make('Document Overview')
             ->schema([
-                TextEntry::make('name')->label(GoogleTranslate::trans('Name', session('locale') ?? 'en')),
-                TextEntry::make('refnumber')->label(GoogleTranslate::trans('REF Number', session('locale') ?? 'en')),
-                TextEntry::make('users.name')->label(GoogleTranslate::trans('Owner', session('locale') ?? 'en')),
-                TextEntry::make('type')->label(GoogleTranslate::trans('Type', session('locale') ?? 'en')),
-                TextEntry::make('expired_date')->label(GoogleTranslate::trans('Expired Date', session('locale') ?? 'en'))
+                TextEntry::make('name')
+                    ->label(TranslationHelper::translateIfNeeded('Name')),
+                TextEntry::make('refnumber')
+                    ->label(TranslationHelper::translateIfNeeded('Ref Number')),
+                TextEntry::make('users.name')
+                    ->label(TranslationHelper::translateIfNeeded('Owner')),
+                TextEntry::make('type')
+                    ->label(TranslationHelper::translateIfNeeded('Type')),
+                TextEntry::make('expired_date')
+                    ->label(TranslationHelper::translateIfNeeded('Expired Date'))
                     ->date('Y-m-d')
                     ->formatStateUsing(function ($state) {
                         $translatedText = (new GoogleTranslate(session('locale') ?? 'en'))->translate('Expired');
@@ -380,8 +406,10 @@ class DocumentResource extends Resource
                         }
                     })
                     ->html(),
-                TextEntry::make('scope')->label(GoogleTranslate::trans('Scope', session('locale') ?? 'en')),
-                TextEntry::make('external link')->label(GoogleTranslate::trans('External Link', session('locale') ?? 'en'))
+                TextEntry::make('scope')
+                    ->label(TranslationHelper::translateIfNeeded('Scope')),
+                TextEntry::make('external link')
+                    ->label(TranslationHelper::translateIfNeeded('External link'))
                     ->formatStateUsing(function ($state) {
                         $translatedText = (new GoogleTranslate(session('locale') ?? 'en'))->translate('Click Here');
                         $url = preg_match('/^https?:\/\//', $state) ? $state : "https://{$state}";
@@ -389,20 +417,23 @@ class DocumentResource extends Resource
                     })
                     ->html(),
                 TextEntry::make('doc')
-                    ->label(GoogleTranslate::trans('Document', session('locale') ?? 'en'))
+                    ->label(TranslationHelper::translateIfNeeded('Document'))
                     // ->formatStateUsing(fn ($state) => "<a href='/storage/{$state}' target='_blank' rel='noopener noreferrer' style='padding:5px 10px; background-color:#ff8303; color:white; border-radius:5px;'>Open Document</a>")
                     ->formatStateUsing(function ($state) {
                         $translatedText = (new GoogleTranslate(session('locale') ?? 'en'))->translate('Open Document');
                         return "<a href='/storage/{$state}' target='_blank' rel='noopener noreferrer' style='padding:5px 10px; background-color:#ff8303; color:white; border-radius:5px;'>{$translatedText}</a>";
                     })
                     ->html(),
-                TextEntry::make('description')->label(GoogleTranslate::trans('Description', session('locale') ?? 'en')),
-                TextEntry::make('customers.name')->label(GoogleTranslate::trans('Customer', session('locale') ?? 'en'))
+                TextEntry::make('description')
+                    ->label(TranslationHelper::translateIfNeeded('Description')),
+                TextEntry::make('customers.name')
+                    ->label(TranslationHelper::translateIfNeeded('Customers'))
                     ->url(fn($record) => $record->customer_id ? route('filament.admin.resources.customers.index', [
                         'tenant' => Auth()->user()->teams()->first()->id,
                         'record' => $record->customer_id,
                     ]): null)->color(Color::Blue),
-                TextEntry::make('project.case')->label(GoogleTranslate::trans('Project', session('locale') ?? 'en'))
+                TextEntry::make('project.case')
+                    ->label(TranslationHelper::translateIfNeeded('Projects'))
                     ->url(fn($record) => $record->project_id ?  route('filament.admin.resources.projects.index', [
                         'tenant' => Auth()->user()->teams()->first()->id,
                         'record' => $record->project_id,

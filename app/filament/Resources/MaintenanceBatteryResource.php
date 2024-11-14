@@ -21,7 +21,7 @@ use Filament\Notifications\Notification;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Filament\Support\Colors\Color;
-use Stichoza\GoogleTranslate\GoogleTranslate;
+use App\Helpers\TranslationHelper;
 
 class MaintenanceBatteryResource extends Resource
 {
@@ -43,11 +43,11 @@ class MaintenanceBatteryResource extends Resource
 
     public static function getNavigationLabel(): string
     {
-        return GoogleTranslate::trans('Maintenance Equipment/Battery', session('locale') ?? 'en');
+        return TranslationHelper::translateIfNeeded('Maintenance Equipment/Battery');
     }
     public static function getModelLabel(): string
     {
-        return GoogleTranslate::trans('Maintenance Equipment/Battery', session('locale') ?? 'en');
+        return TranslationHelper::translateIfNeeded('Maintenance Equipment/Battery');
     }
 
     public static function form(Form $form): Form
@@ -55,50 +55,50 @@ class MaintenanceBatteryResource extends Resource
         $currentTeamId = auth()->user()->teams()->first()->id;
         return $form
             ->schema([
-                Forms\Components\Section::make(GoogleTranslate::trans('Maintenance Equipment/Battery Overview', session('locale') ?? 'en'))
+                Forms\Components\Section::make(ranslationHelper::translateIfNeeded('Maintenance Equipment/Battery Overview'))
                     ->schema([
                         Forms\Components\Hidden::make('teams_id')
                         ->default(auth()->user()->teams()->first()->id ?? null),
                         Forms\Components\TextInput::make('name')
-                            ->label(GoogleTranslate::trans('Maintenance Description', session('locale') ?? 'en'))
+                        ->label(TranslationHelper::translateIfNeeded('Maintenance Description'))    
                             ->maxLength(255),
                         Forms\Components\Select::make('equidment_id')
-                            ->label(GoogleTranslate::trans('Equipment', session('locale') ?? 'en'))
+                        ->label(TranslationHelper::translateIfNeeded('Equipment'))    
                             ->options(function (callable $get) use ($currentTeamId) {
                                 return equidment::where('teams_id', $currentTeamId)->pluck('name', 'id');
                             })
                             ->searchable()
                             ->columnSpan(1),
                             Forms\Components\Select::make('battrei_id')
-                            ->label(GoogleTranslate::trans('Battery', session('locale') ?? 'en'))
+                            ->label(TranslationHelper::translateIfNeeded('Battery'))
                             ->options(function (callable $get) use ($currentTeamId) {
                                 return battrei::where('teams_id', $currentTeamId)->pluck('name', 'id');
                             })
                             ->searchable()
                             ->columnSpan(1),
                         Forms\Components\DatePicker::make('date')
-                            ->label(GoogleTranslate::trans('Maintenance Date', session('locale') ?? 'en'))   
+                        ->label(TranslationHelper::translateIfNeeded('Maintenance Date'))      
                             ->columnSpan(1),
                         Forms\Components\Select::make('status')
-                            ->label(GoogleTranslate::trans('Status', session('locale') ?? 'en'))
+                        ->label(TranslationHelper::translateIfNeeded('Status'))    
                             ->options([
                                 'schedule'=> 'Schedule',
                                 'in_progress'=> 'In Progress',
                                 'completed'=> 'Completed',
                             ]),
                         Forms\Components\TextInput::make('cost')
-                            ->label(GoogleTranslate::trans('Expense Cost', session('locale') ?? 'en')),
+                        ->label(TranslationHelper::translateIfNeeded('Expense Cost')),   
                         Forms\Components\Select::make('currencies_id')
                         ->options(currencie::all()->mapWithKeys(function ($currency) {
                             return [$currency->id => "{$currency->name} - {$currency->iso}"];}))
                             ->searchable()
-                            ->label(GoogleTranslate::trans('Currency', session('locale') ?? 'en'))
+                            ->label(TranslationHelper::translateIfNeeded('Currency'))
                             ->default(function (){
                                 $currentTeam = auth()->user()->teams()->first();
                                 return $currentTeam ? $currentTeam->currencies_id : null;
                             }),
                         Forms\Components\TextArea::make('notes')
-                            ->label(GoogleTranslate::trans('Notes', session('locale') ?? 'en'))
+                        ->label(TranslationHelper::translateIfNeeded('Notes'))    
                             ->columnSpanFull(),
                 ])->columns(3),
             ]);
@@ -107,72 +107,70 @@ class MaintenanceBatteryResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
-            ->columns([
-                Tables\Columns\TextColumn::make('name')
-                ->label(GoogleTranslate::trans('Name', session('locale') ?? 'en'))
+        ->columns([
+            Tables\Columns\TextColumn::make('name')
+                ->label(TranslationHelper::translateIfNeeded('Name'))
                 ->searchable(),
-                Tables\Columns\TextColumn::make('equidment.name')
-                ->label(GoogleTranslate::trans('Equipment', session('locale') ?? 'en'))
-                ->url(fn($record) => $record->equidment_id?route('filament.admin.resources.equidments.index', [
+            Tables\Columns\TextColumn::make('equidment.name')
+                ->label(TranslationHelper::translateIfNeeded('Equipment'))
+                ->url(fn($record) => $record->equidment_id ? route('filament.admin.resources.equidments.index', [
                     'tenant' => Auth()->user()->teams()->first()->id,
                     'record' => $record->equidment_id,
-                ]):null)->color(Color::Blue)
+                ]) : null)
+                ->color(Color::Blue)
                 ->searchable(),
-                Tables\Columns\TextColumn::make('battrei.name')
-                ->label(GoogleTranslate::trans('Battery', session('locale') ?? 'en'))
-                ->url(fn($record) => $record->battrei_id?route('filament.admin.resources.battreis.index', [
+            Tables\Columns\TextColumn::make('battrei.name')
+                ->label(TranslationHelper::translateIfNeeded('Battery'))
+                ->url(fn($record) => $record->battrei_id ? route('filament.admin.resources.battreis.index', [
                     'tenant' => Auth()->user()->teams()->first()->id,
                     'record' => $record->battrei_id,
-                ]):null)->color(Color::Blue)
+                ]) : null)
+                ->color(Color::Blue)
                 ->searchable(),
-                Tables\Columns\TextColumn::make('date')
-                ->label(GoogleTranslate::trans('Date', session('locale') ?? 'en'))
+            Tables\Columns\TextColumn::make('date')
+                ->label(TranslationHelper::translateIfNeeded('Date'))
                 ->date()
                 ->searchable()
                 ->formatStateUsing(function ($state, $record) {
                     $daysOverdue = Carbon::parse($state);
                     $now = Carbon::now();
                     $formatDate = $daysOverdue->format('Y-m-d');
-
+        
                     if ($record->status !== 'completed') {
                         $daysOverdueDiff = $now->diffInDays($daysOverdue, false);
-
+        
                         if ($daysOverdueDiff < 0){
                             $daysOverdueDiff = abs(intval($daysOverdueDiff));
                             return "<div>{$formatDate}<br><span style='
-                            display: inline-block;
-                            background-color: red; 
-                            color: white; 
-                            padding: 3px 6px;
-                            border-radius: 5px;
-                            font-weight: bold;
-                        '>
-                            Overdue: {$daysOverdueDiff} days
-                        </span>
-                    </div>";
+                                display: inline-block;
+                                background-color: red; 
+                                color: white; 
+                                padding: 3px 6px;
+                                border-radius: 5px;
+                                font-weight: bold;
+                            '>
+                                Overdue: {$daysOverdueDiff} days
+                            </span></div>";
                         }
                     }
-                    // return $daysOverdue->format('Y-m-d');
                     return $formatDate;
                 })
                 ->html(),
-                Tables\Columns\TextColumn::make('status')
-                ->label(GoogleTranslate::trans('Status', session('locale') ?? 'en'))
-                ->color(fn ($record) => match ($record->status){
+            Tables\Columns\TextColumn::make('status')
+                ->label(TranslationHelper::translateIfNeeded('Status'))
+                ->color(fn ($record) => match ($record->status) {
                     'completed' => Color::Green,
-                   'schedule' =>Color::Red,
-                   'in_progress' => Color::Blue
-                 })
+                    'schedule' => Color::Red,
+                    'in_progress' => Color::Blue,
+                })
                 ->searchable(),
-                Tables\Columns\TextColumn::make('cost')
-                ->label(GoogleTranslate::trans('Cost', session('locale') ?? 'en'))
+            Tables\Columns\TextColumn::make('cost')
+                ->label(TranslationHelper::translateIfNeeded('Cost'))
                 ->searchable(),
-                Tables\Columns\TextColumn::make('currencies.iso')
-                ->label(GoogleTranslate::trans('Currencies', session('locale') ?? 'en'))
+            Tables\Columns\TextColumn::make('currencies.iso')
+                ->label(TranslationHelper::translateIfNeeded('Currencies'))
                 ->searchable(),
-                // Tables\Columns\TextColumn::make('notes')
-                // ->searchable(), 
-            ])
+        ])        
         
             ->filters([
                 Tables\Filters\SelectFilter::make('status')
@@ -219,23 +217,34 @@ class MaintenanceBatteryResource extends Resource
     {
         return $infolist
         ->schema([
-            TextEntry::make('name')->label(GoogleTranslate::trans('Name', session('locale') ?? 'en')),
-            TextEntry::make('equidment.name')->label(GoogleTranslate::trans('Equipment', session('locale') ?? 'en'))
-                ->url(fn($record) => $record->equidment_id?route('filament.admin.resources.equidments.index', [
+            TextEntry::make('name')
+                ->label(TranslationHelper::translateIfNeeded('Name')),
+            TextEntry::make('equidment.name')
+                ->label(TranslationHelper::translateIfNeeded('Equipment'))
+                ->url(fn($record) => $record->equidment_id ? route('filament.admin.resources.equidments.index', [
                     'tenant' => Auth()->user()->teams()->first()->id,
                     'record' => $record->equidment_id,
-                ]):null)->color(Color::Blue),
-            TextEntry::make('battrei.name')->label(GoogleTranslate::trans('Battery', session('locale') ?? 'en'))
-                ->url(fn($record) => $record->battrei_id?route('filament.admin.resources.battreis.index', [
+                ]) : null)
+                ->color(Color::Blue),
+            TextEntry::make('battrei.name')
+                ->label(TranslationHelper::translateIfNeeded('Battery'))
+                ->url(fn($record) => $record->battrei_id ? route('filament.admin.resources.battreis.index', [
                     'tenant' => Auth()->user()->teams()->first()->id,
                     'record' => $record->battrei_id,
-                ]):null)->color(Color::Blue),
-            TextEntry::make('date')->label(GoogleTranslate::trans('Date', session('locale') ?? 'en')),
-            TextEntry::make('status')->label(GoogleTranslate::trans('Status', session('locale') ?? 'en')),
-            TextEntry::make('cost')->label(GoogleTranslate::trans('Cost', session('locale') ?? 'en')),
-            TextEntry::make('currencies.iso')->label(GoogleTranslate::trans('Currency', session('locale') ?? 'en')),
-            TextEntry::make('notes')->label(GoogleTranslate::trans('Notes', session('locale') ?? 'en')), 
-        ])->columns(3);
+                ]) : null)
+                ->color(Color::Blue),
+            TextEntry::make('date')
+                ->label(TranslationHelper::translateIfNeeded('Date')),
+            TextEntry::make('status')
+                ->label(TranslationHelper::translateIfNeeded('Status')),
+            TextEntry::make('cost')
+                ->label(TranslationHelper::translateIfNeeded('Cost')),
+            TextEntry::make('currencies.iso')
+                ->label(TranslationHelper::translateIfNeeded('Currency')),
+            TextEntry::make('notes')
+                ->label(TranslationHelper::translateIfNeeded('Notes')),
+        ])
+        ->columns(3);        
     }
 
     public static function getRelations(): array

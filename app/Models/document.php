@@ -22,8 +22,7 @@ class document extends Model
         'projects_id',
         'teams_id',
         'status_visible',
-
-        'shared'
+        'shared',
         'locked'
     ];
 

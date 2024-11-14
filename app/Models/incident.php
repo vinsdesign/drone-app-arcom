@@ -49,7 +49,7 @@ class incident extends Model
 
     public function project()
     {
-        return $this->belongsTo(Project::class, 'project_id');
+        return $this->belongsTo(projects::class, 'project_id');
     }
     public function teams(){
         return $this->belongsTo(Team::class);

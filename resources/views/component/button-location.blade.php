@@ -66,7 +66,7 @@
                     <div>
                         <label class="block text-gray-700 dark:text-gray-300">Project</label>
                         <select id="projects_id" name="projects_id" class="w-full mt-1 p-2 border dark:bg-gray-900 dark:border-gray-700 dark:text-gray-300 rounded-md focus:ring focus:ring-blue-500">
-                            @foreach (App\Models\project::where('teams_id', auth()->user()->teams()->first()->id)->pluck('case', 'id') as $id => $name)
+                            @foreach (App\Models\projects::where('teams_id', auth()->user()->teams()->first()->id)->pluck('case', 'id') as $id => $name)
                                 <option value="{{ $id }}">{{ $name }}</option>
                             @endforeach
                         </select>

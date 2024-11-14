@@ -1,5 +1,5 @@
 @php
-use Stichoza\GoogleTranslate\GoogleTranslate;
+use App\Helpers\TranslationHelper;
 @endphp
 <x-filament-widgets::widget>
     <x-filament::section class="Drak:dark:bg-gray-800">
@@ -14,14 +14,15 @@ use Stichoza\GoogleTranslate\GoogleTranslate;
         <div class="flex flex-col space-y-6 sm:flex-row sm:space-y-0 justify-between items-center">
             <!-- Title Section -->
             <div class="flex items-center space-x-4">
-                <h1 class="text-2xl font-bold text-gray-800 dark:text-white">{!! GoogleTranslate::trans('Flight Log Importer', session('locale') ?? 'en') !!}</h1><br>
+                <h1 class="text-2xl font-bold text-gray-800 dark:text-white">{!! TranslationHelper::translateIfNeeded('Flight Log Importer') !!}</h1><br>
             </div>
         </div>
-        <h3 class="text-base font-medium text-gray-500 dark:text-gray-400">{!! GoogleTranslate::trans('Add a new flight in your logbook by importing your Drone log file.
-        It can take severals minutes to upload big file (Control progress in the browser status bar). Thanks for your patience.
-            Max file size is 5120M.', session('locale') ?? 'en') !!}</h3>
+        <h3 class="text-base font-medium text-gray-500 dark:text-gray-400">{!! TranslationHelper::translateIfNeeded('Add a new flight in your logbook by importing your Drone log file. 
+        It can take several minutes to upload big files (Control progress in the browser status bar). 
+        Thanks for your patience. Max file size is 5120M.') !!}
+        </h3>
             <h3 class="text-base font-medium text-gray-500 dark:text-gray-400">
-                {!! GoogleTranslate::trans('You can customize log type importer list from your Settings.', session('locale') ?? 'en') !!}
+                {!! TranslationHelper::translateIfNeeded('You can customize log type importer list from your Settings.') !!}
             </h3>
     </div>
     </x-filament::section>

@@ -7,7 +7,7 @@ use Filament\Tables;
 use Filament\Tables\Table;
 use App\Filament\Pages\CustomPage;
 use App\Filament\Pages\TeamsList;
-use Stichoza\GoogleTranslate\GoogleTranslate;
+use App\Helpers\TranslationHelper;
 
 class TeamsListResource extends Resource
 
@@ -20,15 +20,15 @@ class TeamsListResource extends Resource
 
     public static function getNavigationLabel(): string
     {
-        return GoogleTranslate::trans('Teams List', session('locale') ?? 'en');
+        return TranslationHelper::translateIfNeeded('Teams List');
     }
     public static function getModelLabel(): string
     {
-        return GoogleTranslate::trans('Teams List', session('locale') ?? 'en');
+        return TranslationHelper::translateIfNeeded('Teams List');
     }
     public static function getNavigationGroup(): string
     {
-        return GoogleTranslate::trans('Teams List', session('locale') ?? 'en');
+        return TranslationHelper::translateIfNeeded('Teams List');
     }
 
     public static function getPages(): array

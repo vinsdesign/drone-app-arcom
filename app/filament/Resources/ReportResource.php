@@ -7,7 +7,7 @@ use Filament\Tables;
 use Filament\Tables\Table;
 use App\Filament\Pages\CustomPage;
 use App\Filament\Pages\Report;
-use Stichoza\GoogleTranslate\GoogleTranslate;
+use App\Helpers\TranslationHelper;
 
 class ReportResource extends Resource
 
@@ -19,15 +19,15 @@ class ReportResource extends Resource
     protected static bool $isLazy = false;
     public static function getNavigationLabel(): string
     {
-        return GoogleTranslate::trans('Report', session('locale') ?? 'en');
+        return TranslationHelper::translateIfNeeded('Report');
     }
     public static function getModelLabel(): string
     {
-        return GoogleTranslate::trans('Report', session('locale') ?? 'en');
+        return TranslationHelper::translateIfNeeded('Report');
     }
     public static function getNavigationGroup(): string
     {
-        return GoogleTranslate::trans('Report', session('locale') ?? 'en');
+        return TranslationHelper::translateIfNeeded('Report');
     }
 
     public static function getPages(): array

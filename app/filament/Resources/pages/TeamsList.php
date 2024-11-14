@@ -9,7 +9,7 @@ use Filament\Tables;
 use Filament\Resources\Pages\Page;
 use Filament\Tables\Actions\Action;
 use Filament\Tables\Columns\IconColumn;
-use Stichoza\GoogleTranslate\GoogleTranslate;
+use App\Helpers\TranslationHelper;
 
 class TeamsList extends Page implements Tables\Contracts\HasTable
 {
@@ -20,11 +20,13 @@ class TeamsList extends Page implements Tables\Contracts\HasTable
 
     public function getHeading(): string
     {
-        return GoogleTranslate::trans('Teams List', session('locale') ?? 'en');
+        return TranslationHelper::translateIfNeeded('Teams List');
+        // return GoogleTranslate::trans('Teams List', session('locale') ?? 'en');
     }
     public function getTitle(): string
     {
-        return GoogleTranslate::trans('Teams List', session('locale') ?? 'en');
+        return TranslationHelper::translateIfNeeded('Teams List');
+        // return GoogleTranslate::trans('Teams List', session('locale') ?? 'en');
     }
 
     public function getTotalTeams(): int
@@ -41,34 +43,34 @@ class TeamsList extends Page implements Tables\Contracts\HasTable
     {
         return [
             TextColumn::make('name')
-            ->label((new GoogleTranslate(session('locale') ?? 'en'))->translate('PT Name'))
-            ->searchable(),
+                ->label(TranslationHelper::translateIfNeeded('PT Name'))
+                ->searchable(),
             TextColumn::make('owner')
-            ->label((new GoogleTranslate(session('locale') ?? 'en'))->translate('Owner'))
-            ->searchable(),
+                ->label(TranslationHelper::translateIfNeeded('Owner'))
+                ->searchable(),
             TextColumn::make('customers_count')
-            ->label((new GoogleTranslate(session('locale') ?? 'en'))->translate('Total Customers'))
-            ->counts('customers'),
+                ->label(TranslationHelper::translateIfNeeded('Total Customers'))
+                ->counts('customers'),
             TextColumn::make('flighs_count')
-            ->label((new GoogleTranslate(session('locale') ?? 'en'))->translate('Total Flight'))
-            ->counts('flighs'),
+                ->label(TranslationHelper::translateIfNeeded('Total Flight'))
+                ->counts('flighs'),
             TextColumn::make('total_flight_duration')
-            ->label((new GoogleTranslate(session('locale') ?? 'en'))->translate('Total Flying Time'))
-            ->getStateUsing(fn($record) => $record->total_flight_duration)
-            ->sortable(),
+                ->label(TranslationHelper::translateIfNeeded('Total Flying Time'))
+                ->getStateUsing(fn($record) => $record->total_flight_duration)
+                ->sortable(),
             IconColumn::make('details')
                 ->label(' ')
                 ->icon('heroicon-o-eyes')
                 ->action(fn($record) => $this->showDetailsModal($record))
-        ];
+        ];        
     }
 
     protected function getTableActions(): array
     {
         return [
             Action::make('showDetails')
-                ->label((new GoogleTranslate(session('locale') ?? 'en'))->translate('Show Details'))
-                ->modalHeading((new GoogleTranslate(session('locale') ?? 'en'))->translate('Details Data'))
+                ->label(TranslationHelper::translateIfNeeded('Show Details'))
+                ->modalHeading(TranslationHelper::translateIfNeeded('Details Data'))            
                 ->modalSubheading(fn ($record) => "{$record->name}")
                 ->modalContent(function ($record) {
                     return view('filament.modals.team-details', [
