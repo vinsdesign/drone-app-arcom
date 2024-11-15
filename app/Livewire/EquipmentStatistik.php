@@ -7,6 +7,7 @@ use DB;
 use Filament\Widgets\ChartWidget;
 use App\Models\fligh;
 use Illuminate\Support\Carbon;
+use App\Helpers\TranslationHelper;
 
 class EquipmentStatistik extends ChartWidget
 {
@@ -74,12 +75,12 @@ class EquipmentStatistik extends ChartWidget
         return [
             'datasets' => [
                 [
-                    'label' => 'Flights Total ',
+                    'label' => (TranslationHelper::translateIfNeeded('Flights Total ')),
                     'data' => $data->pluck('totalFlights')->values()->toArray(),
                     'backgroundColor' => 'rgba(75, 192, 192, 0.6)',
                 ],
                 [
-                    'label' => 'Flight Duration (Hours)',
+                    'label' => (TranslationHelper::translateIfNeeded('Flight Duration (Hours)')),
                     'data' => $data->pluck('totalDuration')->values()->toArray(),
                     'backgroundColor' => 'rgba(255, 99, 132, 0.6)',
                 ],
@@ -132,7 +133,7 @@ class EquipmentStatistik extends ChartWidget
             'plugins' => [
                 'title' => [
                     'display' => true,
-                    'text' => 'Flights Total: ' . $totalFlightsPerMonth . ' | Duration Total: ' . $formattedTotalDuration,
+                    'text' => (TranslationHelper::translateIfNeeded('Flights Total: ')) . $totalFlightsPerMonth . (TranslationHelper::translateIfNeeded(' | Duration Total: ')) . $formattedTotalDuration,
                     'font' => [
                         'size' => 16,
                     ],
@@ -143,7 +144,7 @@ class EquipmentStatistik extends ChartWidget
     }
     public function getDescription(): ?string
 {
-    return 'Total flights and monthly duration';
+    return (TranslationHelper::translateIfNeeded('Total flights and monthly duration'));
 }
     protected function getType(): string
     {

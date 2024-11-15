@@ -1,4 +1,5 @@
 <?php
+            use App\Helpers\TranslationHelper;
             $currentTeamId = Auth()->user()->teams()->first()->id;
             //maintenance
             $maintenance_eq = App\Models\maintence_eq::whereHas('teams', function ($query) use ($currentTeamId) {
@@ -138,19 +139,19 @@
     <!-- Tab headers -->
     <div class="container mx-auto p-5">
         <div class="flex flex-wrap gap-2 border border-gray-300 rounded-lg p-2 bg-black">
-            <button id="tab0" class="tab-button active text-white bg-gray-800 hover:bg-gray-700 px-4 py-2 rounded text-sm sm:text-base w-full sm:w-auto mb-2 mt-2">Summary</button>
-            <button id="tab1" class="tab-button text-white bg-gray-800 hover:bg-gray-700 px-4 py-2 rounded text-sm sm:text-base w-full sm:w-auto mb-2 mt-2">Flights</button>
-            <button id="tab2" class="tab-button text-white bg-gray-800 hover:bg-gray-700 px-4 py-2 rounded text-sm sm:text-base w-full sm:w-auto mb-2 mt-2">Maintenance</button>
-            <button id="tab3" class="tab-button text-white bg-gray-800 hover:bg-gray-700 px-4 py-2 rounded text-sm sm:text-base w-full sm:w-auto mb-2 mt-2">Inventory</button>
-            <button id="tab4" class="tab-button text-white bg-gray-800 hover:bg-gray-700 px-4 py-2 rounded text-sm sm:text-base w-full sm:w-auto mb-2 mt-2">Documents</button>
-            <button id="tab5" class="tab-button text-white bg-gray-800 hover:bg-gray-700 px-4 py-2 rounded text-sm sm:text-base w-full sm:w-auto mb-2 mt-2">Incidents</button>
+            <button id="tab0" class="tab-button active text-white bg-gray-800 hover:bg-gray-700 px-4 py-2 rounded text-sm sm:text-base w-full sm:w-auto mb-2 mt-2">{!! TranslationHelper::translateIfNeeded('Summary') !!}</button>
+            <button id="tab1" class="tab-button text-white bg-gray-800 hover:bg-gray-700 px-4 py-2 rounded text-sm sm:text-base w-full sm:w-auto mb-2 mt-2">{!! TranslationHelper::translateIfNeeded('Flights') !!}</button>
+            <button id="tab2" class="tab-button text-white bg-gray-800 hover:bg-gray-700 px-4 py-2 rounded text-sm sm:text-base w-full sm:w-auto mb-2 mt-2">{!! TranslationHelper::translateIfNeeded('Maintenance') !!}</button>
+            <button id="tab3" class="tab-button text-white bg-gray-800 hover:bg-gray-700 px-4 py-2 rounded text-sm sm:text-base w-full sm:w-auto mb-2 mt-2">{!! TranslationHelper::translateIfNeeded('Inventory') !!}</button>
+            <button id="tab4" class="tab-button text-white bg-gray-800 hover:bg-gray-700 px-4 py-2 rounded text-sm sm:text-base w-full sm:w-auto mb-2 mt-2">{!! TranslationHelper::translateIfNeeded('Documents') !!}</button>
+            <button id="tab5" class="tab-button text-white bg-gray-800 hover:bg-gray-700 px-4 py-2 rounded text-sm sm:text-base w-full sm:w-auto mb-2 mt-2">{!! TranslationHelper::translateIfNeeded('Incidents') !!}</button>
         </div>
 
     <!-- Tab content -->
         <div class="content">
 
                 <div id="content0" class="tab-content active">
-                    <h2 class="text-2xl font-bold mb-4">Your Operations Overview</h2>
+                    <h2 class="text-2xl font-bold mb-4">{!! TranslationHelper::translateIfNeeded('Your Operations Overview') !!}</h2>
                 
                     {{-- untuk tampilan 2 atau lebih widgets --}}
                     <div class="space-y-4">
@@ -168,12 +169,12 @@
                     </div>
                     {{-- buttom Summary --}}
                     <div class="flex flex-wrap space-x-4 border border-gray-300 rounded-lg p-2 bg-yellow-200">
-                        <h1 class="text-2xl font-bold mb-4 w-full dark:text-gray-700">Quick Actions</h1>
-                        <a href="{{route('filament.admin.resources.flighs.create',['tenant' => auth()->user()->teams()->first()->id])}}" class="mb-2"><button id="" class="text-white bg-yellow-500 hover:bg-yellow-400 px-4 py-2 rounded text-sm sm:text-base">Add New <br>Flights</button></a>
-                        <a href="{{route('filament.admin.resources.users.index',['tenant' => auth()->user()->teams()->first()->id])}}" class="mb-2"><button id="" class="text-white bg-yellow-500 hover:bg-yellow-400 px-4 py-2 rounded text-sm sm:text-base">View My <br>Personnel Page</button></a>
-                        <a href="{{route('filament.admin.resources.incidents.index',['tenant' => auth()->user()->teams()->first()->id])}}" class="mb-2"><button id="" class="text-white bg-yellow-500 hover:bg-yellow-400 px-4 py-2 rounded text-sm sm:text-base">Log An <br>Incident</button></a>
-                        <a href="{{route('filament.admin.resources.maintences.index',['tenant' => auth()->user()->teams()->first()->id])}}" class="mb-2"><button id="" class="text-white bg-yellow-500 hover:bg-yellow-400 px-4 py-2 rounded text-sm sm:text-base">Check <br>Maintenance Drone</button></a>
-                        <a href="{{route('filament.admin.resources.maintenance-batteries.index',['tenant' => auth()->user()->teams()->first()->id])}}" class="mb-2"><button id="" class="text-white bg-yellow-500 hover:bg-yellow-400 px-4 py-2 rounded text-sm sm:text-base">Check <br>Maintenance Equipment</button></a>
+                        <h1 class="text-2xl font-bold mb-4 w-full dark:text-gray-700">{!! TranslationHelper::translateIfNeeded('Quick Actions') !!}</h1>
+                        <a href="{{route('filament.admin.resources.flighs.create',['tenant' => auth()->user()->teams()->first()->id])}}" class="mb-2"><button id="" class="text-white bg-yellow-500 hover:bg-yellow-400 px-4 py-2 rounded text-sm sm:text-base">{!! TranslationHelper::translateIfNeeded('Add New') !!} <br>{!! TranslationHelper::translateIfNeeded('Flights') !!}</button></a>
+                        <a href="{{route('filament.admin.resources.users.index',['tenant' => auth()->user()->teams()->first()->id])}}" class="mb-2"><button id="" class="text-white bg-yellow-500 hover:bg-yellow-400 px-4 py-2 rounded text-sm sm:text-base">{!! TranslationHelper::translateIfNeeded('View My') !!} <br>{!! TranslationHelper::translateIfNeeded('Personnel Page') !!}</button></a>
+                        <a href="{{route('filament.admin.resources.incidents.index',['tenant' => auth()->user()->teams()->first()->id])}}" class="mb-2"><button id="" class="text-white bg-yellow-500 hover:bg-yellow-400 px-4 py-2 rounded text-sm sm:text-base"{!! TranslationHelper::translateIfNeeded('Log An') !!}> <br>{!! TranslationHelper::translateIfNeeded('Incident') !!}</button></a>
+                        <a href="{{route('filament.admin.resources.maintences.index',['tenant' => auth()->user()->teams()->first()->id])}}" class="mb-2"><button id="" class="text-white bg-yellow-500 hover:bg-yellow-400 px-4 py-2 rounded text-sm sm:text-base">{!! TranslationHelper::translateIfNeeded('Check') !!} <br>{!! TranslationHelper::translateIfNeeded('Maintenance Drone') !!}</button></a>
+                        <a href="{{route('filament.admin.resources.maintenance-batteries.index',['tenant' => auth()->user()->teams()->first()->id])}}" class="mb-2"><button id="" class="text-white bg-yellow-500 hover:bg-yellow-400 px-4 py-2 rounded text-sm sm:text-base">{!! TranslationHelper::translateIfNeeded('Check') !!} <br>{!! TranslationHelper::translateIfNeeded('Maintenance Equipment') !!}</button></a>
                     </div>
                     {{-- end buttom Summary --}}
 
@@ -185,7 +186,7 @@
                 </div>
 
                 <div id="content1" class="tab-content">
-                    <h2 class="text-2xl font-bold mb-4">Flight Overview</h2>
+                    <h2 class="text-2xl font-bold mb-4">{!! TranslationHelper::translateIfNeeded('Flight Overview')!!}</h2>
                 
                     {{-- untuk tampilan 2 atau lebih widgets --}}
                     <div class="space-y-4">
@@ -204,14 +205,14 @@
                         
                                 {{-- tabel Flight --}}
                             <div class="container mx-auto p-4">
-                                <h2 class="text-2xl font-bold mb-4">Latest Flights (Last 20)</h2>
+                                <h2 class="text-2xl font-bold mb-4">{!! TranslationHelper::translateIfNeeded('Latest Flights (Last 20)')!!})</h2>
                                 @if($flightCount < 1)
                                     <h3 class="text font-bold mb-4">No Flight History Available.</h3>
                                 @endif
 
                                 @if($flightCount>0)
                                     <div class="mt-4 flex justify-end mb-4">
-                                        <a href="{{route('filament.admin.resources.flighs.index',['tenant' => auth()->user()->teams()->first()->id])}}" class="inline-block px-4 py-2 bg-gray-800 text-white rounded hover:bg-gray-700">View All</a>
+                                        <a href="{{route('filament.admin.resources.flighs.index',['tenant' => auth()->user()->teams()->first()->id])}}" class="inline-block px-4 py-2 bg-gray-800 text-white rounded hover:bg-gray-700">{!! TranslationHelper::translateIfNeeded('View All')!!}</a>
                                     </div>
                                 @endif
                             </div>
@@ -220,7 +221,7 @@
                             @foreach($flight as $item)
                                 <div class="flex flex-wrap space-x-4 border border-gray-300 rounded-lg p-2 bg-gray-100 dark:bg-gray-800 max-w-[800px] mx-auto mb-4 shadow-lg"">
                                     <div class="flex-1 min-w-[150px] mb-2 border-r border-gray-300 pr-2">
-                                        <p class="text-sm text-gray-800 dark:text-gray-200 font-semibold">Flight Name</p>
+                                        <p class="text-sm text-gray-800 dark:text-gray-200 font-semibold">{!! TranslationHelper::translateIfNeeded('Flight Name')!!}</p>
                                         <a href="{{route('filament.admin.resources.flighs.view',
                                             ['tenant' => Auth()->user()->teams()->first()->id,
                                             'record' => $item->id,])}}"><p class="text-sm text-gray-700 dark:text-gray-400">{{$item->name}}</p>
@@ -231,7 +232,7 @@
                                         </div>
                                         <a href="{{route('filament.admin.resources.users.view',
                                             ['tenant' => Auth()->user()->teams()->first()->id,
-                                            'record' => $item->users->id,])}}"><p class="text-sm text-gray-700 dark:text-gray-400">Pilot : {{$item->users->name??null}}</p>
+                                            'record' => $item->users->id,])}}"><p class="text-sm text-gray-700 dark:text-gray-400">{!! TranslationHelper::translateIfNeeded('Pilot :')!!} {{$item->users->name??null}}</p>
                                         </a>
                                     </div>
                                     <div class="flex-1 min-w-[150px] mb-2 border-r border-gray-300 pr-2">
@@ -256,6 +257,7 @@
                                     </a>
                                     </div>
                             
+
                                 </div>
                             @endforeach
                         @endif
@@ -263,7 +265,7 @@
                 </div>
                 
                 <div id="content2" class="tab-content">
-                    <h1 class="text-2xl font-bold mb-4">Maintenance Overview</h1>
+                    <h1 class="text-2xl font-bold mb-4">{!! TranslationHelper::translateIfNeeded('Maintenance Overview')!!}</h1>
                     <div class="space-y-4">
                         <div class="flex flex-wrap justify-center gap-6">
                             <div class="rounded-lg shadow-lg p-4 flex-1 max-w-xs sm:max-w-sm md:max-w-md lg:max-w-sm">
@@ -271,20 +273,21 @@
                             </div>
                                {{-- tabel Maintenance --}}
                                <div class="container mx-auto p-4">
-                                <h2 class="text-2xl font-bold mb-4">Maintenance Overdue</h2>
+
+                                <h2 class="text-2xl font-bold mb-4">{!! TranslationHelper::translateIfNeeded('Maintenance Overdue')!!}</h2>
                                 @if(($maintenaceDroneCount + $maintenaceEqCount) < 1)
                                     <h3 class="text-2xl font-bold mb-4">No Maintenance Overdue Available.</h3>
                                 @endif
                                 @if(($maintenaceDroneCount + $maintenaceEqCount) > 0)
                                     <div class="mt-4 flex justify-end mb-4">
-                                        <a href="{{route('filament.admin.resources.maintences.index',['tenant' => auth()->user()->teams()->first()->id])}}" class="inline-block px-4 py-2 bg-gray-800 text-white rounded hover:bg-gray-700">View All</a>
+                                        <a href="{{route('filament.admin.resources.maintences.index',['tenant' => auth()->user()->teams()->first()->id])}}" class="inline-block px-4 py-2 bg-gray-800 text-white rounded hover:bg-gray-700">{!! TranslationHelper::translateIfNeeded('View All')!!}</a>
                                     </div>
                                 @endif
                                 @if($maintenaceDroneCount > 0)
                                     @foreach($maintenance_drone as $item)
                                     <div class="flex flex-wrap space-x-4 border border-gray-300 rounded-lg p-2 bg-gray-100 dark:bg-gray-800 max-w-[800px] mx-auto mb-4 shadow-lg">
                                         <div class="flex-1 min-w-[150px] mb-2 border-r border-gray-300 pr-2">
-                                            <p class="text-sm text-gray-800 dark:text-gray-200 font-semibold">Maintenance Name</p>
+                                            <p class="text-sm text-gray-800 dark:text-gray-200 font-semibold">{!! TranslationHelper::translateIfNeeded('Maintenance Name')!!}</p>
                                             <a href="{{route('filament.admin.resources.maintences.edit',
                                                 ['tenant' => Auth()->user()->teams()->first()->id,
                                                 'record' => $item->id,])}}"><p class="text-sm text-gray-700 dark:text-gray-400">{{$item->name??null}}</p>
@@ -293,13 +296,14 @@
                                         </div>
                                     
                                         <div class="flex-1 min-w-[150px] mb-2 border-r border-gray-300 pr-2">
-                                            <p class="text-sm text-gray-800 dark:text-gray-200 font-semibold">Next Scheduled: <span class="text-sm text-gray-700 dark:text-gray-400">{{$item->date?? null}}</span></p>
+                                            <p class="text-sm text-gray-800 dark:text-gray-200 font-semibold">{!! TranslationHelper::translateIfNeeded('Next Scheduled:')!!} <span class="text-sm text-gray-700 dark:text-gray-400">{{$item->date?? null}}</span></p>
                                             <p class="text-sm text-gray-700 dark:text-gray-400">
                                                 @php
                                                     $now = Carbon\Carbon::now();
                                                     $formatDate = \Carbon\Carbon::parse($item->date)->format('Y-m-d');
                                                     $daysOverdueDiff = $now->diffInDays($item->date, false);
                                                 @endphp
+
                                                     @if($daysOverdueDiff < 0) 
                                                     @php
                                                         $daysOverdueDiff = abs(intval($daysOverdueDiff));
@@ -312,7 +316,7 @@
                                                             border-radius: 5px;
                                                             font-weight: bold;
                                                         ">
-                                                            Overdue: {{ $daysOverdueDiff }} days
+                                                            {!! TranslationHelper::translateIfNeeded('Overdue:')!!} {{ $daysOverdueDiff }} {!! TranslationHelper::translateIfNeeded('days')!!}
                                                         </span>
                                                     </span>
                                                 @else
@@ -322,7 +326,7 @@
                                         </div>
                                     
                                         <div class="flex-1 min-w-[150px] mb-2 border-r border-gray-300 pr-2">
-                                            <p class="text-sm text-gray-800 dark:text-gray-200 font-semibold">Drone</p>
+                                            <p class="text-sm text-gray-800 dark:text-gray-200 font-semibold">{!! TranslationHelper::translateIfNeeded('Drone')!!}</p>
                                             <a href="{{route('drone.statistik', ['drone_id' => $item->drone->id])}}">
                                                 <p class="text-sm text-gray-700 dark:text-gray-400">{{$item->drone->name??null}}</p>
                                             </a>
@@ -374,6 +378,7 @@
                                                 </p>    
                                             </div>
                                         
+
                                             <div class="flex-1 min-w-[150px] mb-2 border-r border-gray-300 pr-2">
                                                 <p class="text-sm text-gray-800 dark:text-gray-200 font-semibold">Batteri / Equipment</p>
                                                     @if($item->equipment == null)
@@ -395,7 +400,7 @@
                                             </div>
                                         
                                             <div class="flex-1 min-w-[150px] mb-2 border-r border-gray-300 pr-2">
-                                                <p class="text-sm text-gray-800 dark:text-gray-200 font-semibold">Technician</p>
+                                                <p class="text-sm text-gray-800 dark:text-gray-200 font-semibold">{!! TranslationHelper::translateIfNeeded('Technician')!!}</p>
                                                 <p class="text-sm text-gray-700 dark:text-gray-400">{{$item->technician??null}}</p>
                                             </div>
                                         </div> 
@@ -409,7 +414,7 @@
                 
                 
                 <div id="content3" class="tab-content">
-                    <h1 class="text-2xl font-bold mb-4">Inventory Overview</h1>
+                    <h1 class="text-2xl font-bold mb-4">{!! TranslationHelper::translateIfNeeded('Inventory Overview')!!}</h1>
                     <div class="space-y-4">
                         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 justify-center">
                             <div class="rounded-lg shadow-lg p-4 max-w-full">
@@ -428,6 +433,7 @@
                     </div>
                         {{-- tabel Inventory --}}
                         <div class="container mx-auto p-4">
+
                         <h2 class="text-2xl font-bold mb-4">Latest Battery / Equipment Used (Last 20)</h2>
                         @if(($battreiCount + $equipmentCount) < 1)
                             <h3 class="text font-bold mb-4">No Battery/Equipment Usage History</h3>
@@ -555,6 +561,7 @@
                                 </div>
                             @endforeach
                         @endif
+
                         </div>
                     {{-- end tabel --}}      
                 </div>

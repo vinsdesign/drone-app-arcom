@@ -167,9 +167,9 @@ class ProjectsResource extends Resource
                     Tables\Actions\Action::make('views')  ->action(function ($record) {
                         session(['project_id' => $record->id]);
                         return redirect()->route('flight-peroject', ['project_id' => $record->id]);
-                    })->label('View')->icon('heroicon-s-eye'),
+                    })->label(TranslationHelper::translateIfNeeded('View'))->icon('heroicon-s-eye'),
                     Tables\Actions\EditAction::make(),
-                    Tables\Actions\Action::make('Archive')->label('Archive')
+                    Tables\Actions\Action::make('Archive')->label(TranslationHelper::translateIfNeeded('Archive'))
                     ->hidden(fn ($record) => $record->status_visible == 'archived')
                             ->action(function ($record) {
                              $record->update(['status_visible' => 'archived']);
@@ -179,7 +179,7 @@ class ProjectsResource extends Resource
                              ->success()
                              ->send();
                         })->icon('heroicon-s-archive-box-arrow-down'),
-                    Tables\Actions\Action::make('Un-Archive')->label(' Un-Archive')
+                    Tables\Actions\Action::make('Un-Archive')->label(TranslationHelper::translateIfNeeded(' Un-Archive'))
                     ->hidden(fn ($record) => $record->status_visible == 'current')
                             ->action(function ($record) {
                              $record->update(['status_visible' => 'current']);
@@ -190,7 +190,7 @@ class ProjectsResource extends Resource
                                 ->send();
                         })->icon('heroicon-s-archive-box'),
                     //Shared action
-                    Tables\Actions\Action::make('Shared')->label('Shared')
+                    Tables\Actions\Action::make('Shared')->label(TranslationHelper::translateIfNeeded('Shared'))
                         ->hidden(fn ($record) => 
                         ($record->shared == 1) ||
                         !(Auth()->user()->roles()->pluck('name')->contains('super_admin') || (Auth()->user()->roles()->pluck('name')->contains('panel_user'))) && 
@@ -205,7 +205,7 @@ class ProjectsResource extends Resource
                             ->send();
                         })->icon('heroicon-m-share'),
                     //Un-Shared action
-                    Tables\Actions\Action::make('Un-Shared')->label('Un-Shared')
+                    Tables\Actions\Action::make('Un-Shared')->label(TranslationHelper::translateIfNeeded('Un-Shared'))
                         ->hidden(fn ($record) => 
                         ($record->shared == 0) ||
                         !(Auth()->user()->roles()->pluck('name')->contains('super_admin') || (Auth()->user()->roles()->pluck('name')->contains('panel_user')))&&

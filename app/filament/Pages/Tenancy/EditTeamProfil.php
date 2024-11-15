@@ -22,7 +22,6 @@ class EditTeamProfil extends EditTenantProfile
     public static function getLabel(): string
     {
         return TranslationHelper::translateIfNeeded('Team Profile');
-        // return GoogleTranslate::trans('Team profile', session('locale') ?? 'en');
     }
  
     public function form(Form $form): Form

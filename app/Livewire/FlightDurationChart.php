@@ -7,6 +7,7 @@ use Carbon\Carbon;
 use Filament\Widgets\ChartWidget;
 use Flowframe\Trend\Trend;
 use Flowframe\Trend\TrendValue;
+use App\Helpers\TranslationHelper;
 
 class FlightDurationChart extends ChartWidget
 {
@@ -43,7 +44,7 @@ class FlightDurationChart extends ChartWidget
     return [
         'datasets' => [
             [
-                'label' => 'Total Flight Duration (Hours)',
+                'label' => TranslationHelper::translateIfNeeded('Total Flight Duration (Hours)'),
                 'data' => $data->values(),
                 'backgroundColor' => 'rgba(255, 99, 132, 0.2)',
                 'borderColor' => 'rgba(255, 99, 132, 1)',

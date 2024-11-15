@@ -1,3 +1,6 @@
+@php
+    use App\Helpers\TranslationHelper;
+@endphp
 <head>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
@@ -13,7 +16,7 @@
   <!-- Tombol untuk Membuka Modal -->
     <button style="font-size: 12px; background-color: #4A5568; color: white; font-weight: bold; padding: 4px 8px; border-radius: 4px; border: none; cursor: pointer;" onclick="openModalDrone()" type="button">
         <span style="color: inherit; text-decoration: none;">
-            Add New Drone
+            {!! TranslationHelper::translateIfNeeded('Add New Drone')!!}
         </span>
     </button>
 
@@ -29,7 +32,7 @@
 
             <!-- Judul Modal -->
             <h2 class="text-center text-lg font-semibold text-gray-900 dark:text-white">
-                Create Drone
+                {!! TranslationHelper::translateIfNeeded('Create Drone')!!}
             </h2>
             <hr class="border-t border-gray-300 dark:border-gray-600 w-24 mx-auto">
 
@@ -41,27 +44,27 @@
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <!-- Name Input -->
                     <div>
-                        <label class="block text-gray-700 dark:text-gray-300">Name</label>
+                        <label class="block text-gray-700 dark:text-gray-300">{!! TranslationHelper::translateIfNeeded('Name')!!}</label>
                         <input id="namedrone" type="text" name="name" maxlength="255" class="w-full mt-1 p-2 border dark:bg-gray-900 dark:border-gray-700 dark:text-gray-300 rounded-md focus:ring focus:ring-blue-500">
                     </div>
             
                     <!-- Model Input -->
                     <div>
-                        <label class="block text-gray-700 dark:text-gray-300">Model</label>
+                        <label class="block text-gray-700 dark:text-gray-300">{!! TranslationHelper::translateIfNeeded('Model')!!}</label>
                         <input id="modeldrone" type="text" name="model" maxlength="255" class="w-full mt-1 p-2 border dark:bg-gray-900 dark:border-gray-700 dark:text-gray-300 rounded-md focus:ring focus:ring-blue-500">
                     </div>
             
                     <!-- Brand Input -->
                     <div>
-                        <label class="block text-gray-700 dark:text-gray-300">Brand</label>
+                        <label class="block text-gray-700 dark:text-gray-300">{!! TranslationHelper::translateIfNeeded('Brand')!!}</label>
                         <input id="branddrone" type="text" name="brand" maxlength="255" class="w-full mt-1 p-2 border dark:bg-gray-900 dark:border-gray-700 dark:text-gray-300 rounded-md focus:ring focus:ring-blue-500">
                     </div>
             
                     <!-- Type Input -->
                     <div>
-                        <label for="type" class="block text-gray-700 dark:text-gray-300">Type</label>
+                        <label for="type" class="block text-gray-700 dark:text-gray-300">{!! TranslationHelper::translateIfNeeded('Type')!!}</label>
                         <select id="typedrone" name="type" class="w-full mt-1 p-2 border dark:bg-gray-900 dark:border-gray-700 dark:text-gray-300 rounded-md focus:ring focus:ring-blue-500">
-                            <option value="" disabled selected>Select Type</option>
+                            <option value="" disabled selected>{!! TranslationHelper::translateIfNeeded('Select Type')!!}</option>
                             <option value="aircraft">Aircraft</option>
                             <option value="autoPilot">AutoPilot</option>
                             <option value="boat">Boat</option>
@@ -82,33 +85,33 @@
             
                     <!-- Serial P Input -->
                     <div>
-                        <label class="block text-gray-700 dark:text-gray-300">Serial Printed</label>
+                        <label class="block text-gray-700 dark:text-gray-300">{!! TranslationHelper::translateIfNeeded('Serial Printed')!!}</label>
                         <input id="serial_pdrone" type="text" name="serial_p" maxlength="255" class="w-full mt-1 p-2 border dark:bg-gray-900 dark:border-gray-700 dark:text-gray-300 rounded-md focus:ring focus:ring-blue-500">
                     </div>
             
                     <!-- Serial I Input -->
                     <div>
-                        <label class="block text-gray-700 dark:text-gray-300">Serial Internal</label>
+                        <label class="block text-gray-700 dark:text-gray-300">{!! TranslationHelper::translateIfNeeded('Serial Internal')!!}</label>
                         <input id="serial_idrone" type="text" name="serial_i" maxlength="255" class="w-full mt-1 p-2 border dark:bg-gray-900 dark:border-gray-700 dark:text-gray-300 rounded-md focus:ring focus:ring-blue-500">
                     </div>
             
                     <!-- Flight Count Input -->
                     <div>
-                        <label class="block text-gray-700 dark:text-gray-300">Flight Count</label>
+                        <label class="block text-gray-700 dark:text-gray-300">{!! TranslationHelper::translateIfNeeded('Flight Count')!!}</label>
                         <input id="flight_cdrone" type="number" name="flight_c" class="w-full mt-1 p-2 border dark:bg-gray-900 dark:border-gray-700 dark:text-gray-300 rounded-md focus:ring focus:ring-blue-500">
                     </div>
             
                     <!-- Remote C Input -->
                     <div>
-                        <label class="block text-gray-700 dark:text-gray-300">Remote Controller</label>
+                        <label class="block text-gray-700 dark:text-gray-300">{!! TranslationHelper::translateIfNeeded('Remote Controller')!!}</label>
                         <input id="remote_cdrone" type="text" name="remote_c" maxlength="255" class="w-full mt-1 p-2 border dark:bg-gray-900 dark:border-gray-700 dark:text-gray-300 rounded-md focus:ring focus:ring-blue-500">
                     </div>
                     <div>
-                        <label class="block text-gray-700 dark:text-gray-300">Remote Controller2</label>
+                        <label class="block text-gray-700 dark:text-gray-300">{!! TranslationHelper::translateIfNeeded('Remote Controller2')!!}</label>
                         <input id="remote_ccdrone" type="text" name="remote_c" maxlength="255" class="w-full mt-1 p-2 border dark:bg-gray-900 dark:border-gray-700 dark:text-gray-300 rounded-md focus:ring focus:ring-blue-500">
                     </div>
                     <div>
-                        <label class="block text-gray-700 dark:text-gray-300">Status</label>
+                        <label class="block text-gray-700 dark:text-gray-300">{!! TranslationHelper::translateIfNeeded('Status')!!}</label>
                         <select id="statusdrone" name="inventory_asset" class="w-full mt-1 p-2 border dark:bg-gray-900 dark:border-gray-700 dark:text-gray-300 rounded-md focus:ring focus:ring-blue-500">
                             <option value="airworthy">airworthy</option>
                             <option value="maintenance">Maintenance</option>
@@ -116,7 +119,7 @@
                         </select>
                     </div>
                     <div>
-                        <label class="block text-gray-700 dark:text-gray-300">Legal ID</label>
+                        <label class="block text-gray-700 dark:text-gray-300">{!! TranslationHelper::translateIfNeeded('Legal ID')!!}</label>
                         <input id="idlegaldrone" type="text" name="remote_c" maxlength="255" class="w-full mt-1 p-2 border dark:bg-gray-900 dark:border-gray-700 dark:text-gray-300 rounded-md focus:ring focus:ring-blue-500">
                     </div>
      
@@ -126,7 +129,7 @@
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <!-- Inventory Asset Input -->
                     <div>
-                        <label class="block text-gray-700 dark:text-gray-300">Inventory Asset</label>
+                        <label class="block text-gray-700 dark:text-gray-300">{!! TranslationHelper::translateIfNeeded('Inventory/Asset')!!}</label>
                         <select id="inventory_assetdrone" name="inventory_asset" class="w-full mt-1 p-2 border dark:bg-gray-900 dark:border-gray-700 dark:text-gray-300 rounded-md focus:ring focus:ring-blue-500">
                             <option value="inventory">Inventory</option>
                             <option value="asset">Asset</option>
@@ -135,9 +138,9 @@
 
                     <!-- drone Geometry -->
                     <div>
-                        <label for="geometry" class="block text-gray-700 dark:text-gray-300">Drone Geomerey</label>
+                        <label for="geometry" class="block text-gray-700 dark:text-gray-300">{!! TranslationHelper::translateIfNeeded('Drone Geometry')!!}</label>
                         <select id="geometrydrone" name="geometry" class="w-full mt-1 p-2 border dark:bg-gray-900 dark:border-gray-700 dark:text-gray-300 rounded-md focus:ring focus:ring-blue-500">
-                            <option value="" disabled selected>Select Geometry</option>
+                            <option value="" disabled selected>{!! TranslationHelper::translateIfNeeded('Select Geometry')!!}</option>
                             <option value="dual_rotor_coaxial">Dual Rotor Coaxial</option>
                             <option value="fixed_wing_1">Fixed Wing 1</option>
                             <option value="fixed_wing_2">Fixed Wing 2</option>
@@ -164,7 +167,7 @@
 
                     <!-- Users Select -->
                     <div>
-                        <label class="block text-gray-700 dark:text-gray-300">Owner</label>
+                        <label class="block text-gray-700 dark:text-gray-300">{!! TranslationHelper::translateIfNeeded('Owner')!!}</label>
                         <select id="users_iddrone" name="users_id" class="w-full mt-1 p-2 border dark:bg-gray-900 dark:border-gray-700 dark:text-gray-300 rounded-md focus:ring focus:ring-blue-500">
                             @foreach (App\Models\User::whereHas('teams', function ($query) {
                                     $query->where('teams.id', auth()->user()->teams()->first()->id);
@@ -176,19 +179,19 @@
             
                     <!-- Firmware Version Input -->
                     <div>
-                        <label class="block text-gray-700 dark:text-gray-300">Firmware Version</label>
+                        <label class="block text-gray-700 dark:text-gray-300">{!! TranslationHelper::translateIfNeeded('Firmware Version')!!}</label>
                         <input id="firmware_vdrone" type="text" name="firmware_v" maxlength="255" class="w-full mt-1 p-2 border dark:bg-gray-900 dark:border-gray-700 dark:text-gray-300 rounded-md focus:ring focus:ring-blue-500">
                     </div>
             
                     <!-- Hardware Version Input -->
                     <div>
-                        <label class="block text-gray-700 dark:text-gray-300">Hardware Version</label>
+                        <label class="block text-gray-700 dark:text-gray-300">{!! TranslationHelper::translateIfNeeded('Hardware Version')!!}</label>
                         <input id="hardware_vdrone" type="text" name="hardware_v" maxlength="255" class="w-full mt-1 p-2 border dark:bg-gray-900 dark:border-gray-700 dark:text-gray-300 rounded-md focus:ring focus:ring-blue-500">
                     </div>
             
                     <!-- Propulsion Version Input -->
                     <div>
-                        <label class="block text-gray-700 dark:text-gray-300">Propulsion Version</label>
+                        <label class="block text-gray-700 dark:text-gray-300">{!! TranslationHelper::translateIfNeeded('Propulsion Version')!!}</label>
                         <select id="propulsion_vdrone" name="propulsion_vdrone" class="w-full mt-1 p-2 border dark:bg-gray-900 dark:border-gray-700 dark:text-gray-300 rounded-md focus:ring focus:ring-blue-500">
                             <option value="electric">Electric</option>
                             <option value="fuel">Fuel</option>
@@ -201,13 +204,13 @@
             
                     <!-- Color Input -->
                     <div>
-                        <label class="block text-gray-700 dark:text-gray-300">Color</label>
+                        <label class="block text-gray-700 dark:text-gray-300">{!! TranslationHelper::translateIfNeeded('Color')!!}</label>
                         <input id="colordrone" type="text" name="color" maxlength="255" class="w-full mt-1 p-2 border dark:bg-gray-900 dark:border-gray-700 dark:text-gray-300 rounded-md focus:ring focus:ring-blue-500">
                     </div>
             
                     <!-- Remote Input -->
                     <div>
-                        <label class="block text-gray-700 dark:text-gray-300">Remote ID</label>
+                        <label class="block text-gray-700 dark:text-gray-300">{!! TranslationHelper::translateIfNeeded('Remote ID')!!}</label>
                         <input id="remotedrone" type="text" name="remote" maxlength="255" class="w-full mt-1 p-2 border dark:bg-gray-900 dark:border-gray-700 dark:text-gray-300 rounded-md focus:ring focus:ring-blue-500">
                     </div>
                 </div>
@@ -216,18 +219,18 @@
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <!-- Conn Card Input -->
                     <div>
-                        <label class="block text-gray-700 dark:text-gray-300">Connection Card</label>
+                        <label class="block text-gray-700 dark:text-gray-300">{!! TranslationHelper::translateIfNeeded('Connection Card')!!}</label>
                         <input id="conn_carddrone" type="text" name="conn_card" maxlength="255" class="w-full mt-1 p-2 border dark:bg-gray-900 dark:border-gray-700 dark:text-gray-300 rounded-md focus:ring focus:ring-blue-500">
                     </div>
                     <!-- Initial Flight Input -->
                     <div>
-                        <label class="block text-gray-700 dark:text-gray-300">Initial Flight</label>
+                        <label class="block text-gray-700 dark:text-gray-300">{!! TranslationHelper::translateIfNeeded('Initial Flight')!!}</label>
                         <input id="initial_flightdrone" type="number" name="initial_flight" maxlength="255" class="w-full mt-1 p-2 border dark:bg-gray-900 dark:border-gray-700 dark:text-gray-300 rounded-md focus:ring focus:ring-blue-500">
                     </div>
             
                     <!-- Initial Flight Time Input -->
                     <div>
-                        <label class="block text-gray-700 dark:text-gray-300">Initial Flight Time</label>
+                        <label class="block text-gray-700 dark:text-gray-300">{!! TranslationHelper::translateIfNeeded('Initial Flight Time')!!}</label>
                         <input 
                             id="initial_flight_timedrone" 
                             type="text" 
@@ -243,13 +246,13 @@
             
                     <!-- Max Flight Time Input -->
                     <div>
-                        <label class="block text-gray-700 dark:text-gray-300">Max Flight Time</label>
+                        <label class="block text-gray-700 dark:text-gray-300">{!! TranslationHelper::translateIfNeeded('Max Flight Time')!!}</label>
                         <input id="max_flight_timedrone" type="number" name="max_flight_time" class="w-full mt-1 p-2 border dark:bg-gray-900 dark:border-gray-700 dark:text-gray-300 rounded-md focus:ring focus:ring-blue-500">
                     </div>
                 </div>
                     <!-- Description Input -->
                     <div>
-                        <label class="block text-gray-700 dark:text-gray-300">Description</label>
+                        <label class="block text-gray-700 dark:text-gray-300">{!! TranslationHelper::translateIfNeeded('Description')!!}</label>
                         <textarea id="descriptiondrone" name="description" maxlength="255" class="w-full mt-1 p-2 border dark:bg-gray-900 dark:border-gray-700 dark:text-gray-300 rounded-md focus:ring focus:ring-blue-500"></textarea>
                     </div>
 
@@ -258,7 +261,7 @@
                     <button id="triggerButton" type="button" 
                         style="font-size: 16px; background-color: #4A5568; color: white; font-weight: bold; padding: 8px 16px; border-radius: 4px; border: none; cursor: pointer;"
                         class="px-6 py-3 bg-blue-600 text-white rounded-md hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600" onclick="createDrone()">
-                        Submit
+                        {!! TranslationHelper::translateIfNeeded('Submit')!!}
                     </button>
                 </div>
                 

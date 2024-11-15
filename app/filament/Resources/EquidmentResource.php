@@ -253,7 +253,7 @@ class EquidmentResource extends Resource
                         $totalDuration = sprintf('%02d:%02d:%02d', $hours, $minutes, $seconds);
                     
                         $totalFlights = $flights->unique('id')->count();
-                        return "<div> {$totalFlights} Flight(s) <div style='border: 1px solid #ccc; padding: 3px; display: inline-block; border-radius: 5px; background-color: #D4D4D4;'>
+                        return "<div> ({$totalFlights}) ". TranslationHelper::translateIfNeeded('Flights') ." <div style='border: 1px solid #ccc; padding: 3px; display: inline-block; border-radius: 5px; background-color: #D4D4D4;'>
                             <strong>{$totalDuration}</strong></div>";
                     })
                      ->sortable()
@@ -275,6 +275,7 @@ class EquidmentResource extends Resource
                     ]):null)->color(Color::Blue)
                      ->sortable(),
                  Tables\Columns\TextColumn::make('users.name')
+                 ->label(TranslationHelper::translateIfNeeded('Users'))
                     ->url(fn($record) => $record->users_id? route('filament.admin.resources.users.view', [
                         'tenant' => Auth()->user()->teams()->first()->id,
                         'record' => $record->users_id,
@@ -289,17 +290,17 @@ class EquidmentResource extends Resource
                    'maintenance' => 'Maintenance',
                    'retired' => 'Retired'
                 ])
-                ->label('Filter by Status'),
+                ->label(TranslationHelper::translateIfNeeded('Filter by Status')),
             ])
             ->actions([
                 Tables\Actions\ActionGroup::make([
                     Tables\Actions\Action::make('showEquipment')
-                    ->url(fn ($record) => route('equipment.statistik', ['equipment_id' => $record->id]))->label('View')
+                    ->url(fn ($record) => route('equipment.statistik', ['equipment_id' => $record->id]))->label(TranslationHelper::translateIfNeeded('View'))
                     ->icon('heroicon-s-eye'),
 
                     Tables\Actions\EditAction::make(),
                     //Shared action
-                    Tables\Actions\Action::make('Shared')->label('Shared')
+                    Tables\Actions\Action::make('Shared')->label(TranslationHelper::translateIfNeeded('Shared'))
                     ->hidden(fn ($record) => 
                     ($record->shared == 1) ||
                     !(Auth()->user()->roles()->pluck('name')->contains('super_admin') || (Auth()->user()->roles()->pluck('name')->contains('panel_user'))) && 
@@ -308,13 +309,13 @@ class EquidmentResource extends Resource
                     ->action(function ($record) {
                         $record->update(['shared' => 1]);
                         Notification::make()
-                        ->title('Shared Updated')
-                        ->body("Shared successfully changed.")
+                        ->title(TranslationHelper::translateIfNeeded('Shared Updated'))
+                        ->body(TranslationHelper::translateIfNeeded("Shared successfully changed."))
                         ->success()
                         ->send();
                     })->icon('heroicon-m-share'),
                 //Un-Shared action
-                Tables\Actions\Action::make('Un-Shared')->label('Un-Shared')
+                Tables\Actions\Action::make('Un-Shared')->label(TranslationHelper::translateIfNeeded('Un-Shared'))
                     ->hidden(fn ($record) => 
                     ($record->shared == 0) ||
                     !(Auth()->user()->roles()->pluck('name')->contains('super_admin') || (Auth()->user()->roles()->pluck('name')->contains('panel_user')))&&
@@ -322,8 +323,8 @@ class EquidmentResource extends Resource
                     ->action(function ($record) {
                         $record->update(['shared' => 0]);
                         Notification::make()
-                        ->title('Un-Shared Updated ')
-                        ->body("Un-Shared successfully changed.")
+                        ->title(TranslationHelper::translateIfNeeded('Un-Shared Updated '))
+                        ->body(TranslationHelper::translateIfNeeded("Un-Shared successfully changed."))
                         ->success()
                         ->send();
                     })->icon('heroicon-m-share'),
@@ -341,7 +342,7 @@ class EquidmentResource extends Resource
     {
         return $infolist
         ->schema([
-            Section::make('Overview')
+            Section::make(TranslationHelper::translateIfNeeded('Overview'))
                 ->schema([
                     TextEntry::make('name')->label(TranslationHelper::translateIfNeeded('Name')),
                     TextEntry::make('model')->label(TranslationHelper::translateIfNeeded('Model')),
@@ -360,7 +361,7 @@ class EquidmentResource extends Resource
                             'record' => $record->for_drone,
                         ]) : null)->color(Color::Blue),
                 ])->columns(4),
-            Section::make('Extra Information')
+            Section::make(TranslationHelper::translateIfNeeded('Extra Information'))
                 ->schema([
                     TextEntry::make('users.name')->label(TranslationHelper::translateIfNeeded('Owner'))
                         ->url(fn($record) => $record->users_id ? route('filament.admin.resources.users.view', [

@@ -296,7 +296,7 @@ class DroneResource extends Resource
                         $lastFlight = $flights->sortByDesc('start_date_flight')->first();
                         $lastFlightDate = optional($lastFlight)->start_date_flight ? $lastFlight->start_date_flight : '';
                     
-                        return "<div>{$totalFlights} Flight(s) <div style='border: 1px solid #ccc; padding: 3px; display: inline-block; border-radius: 5px; background-color: #D4D4D4; '>
+                        return "<div>({$totalFlights}) " . TranslationHelper::translateIfNeeded('Flights') ." <div style='border: 1px solid #ccc; padding: 3px; display: inline-block; border-radius: 5px; background-color: #D4D4D4; '>
                             <strong>{$totalDuration}</strong> </div> <br> {$lastFlightDate}</div>";
                     })
                     ->sortable()
@@ -365,7 +365,7 @@ class DroneResource extends Resource
                    'maintenance' => 'Maintenance',
                    'retired' => 'Retired'
                 ])
-                ->label('Filter by Status'),
+                ->label(TranslationHelper::translateIfNeeded('Filter by Status')),
             ])
             ->actions([
                 Tables\Actions\ActionGroup::make([
@@ -374,7 +374,7 @@ class DroneResource extends Resource
                     ->icon('heroicon-s-eye'),
                     Tables\Actions\EditAction::make(),
                     //Shared action
-                    Tables\Actions\Action::make('shared')->label('Shared')
+                    Tables\Actions\Action::make('shared')->label(TranslationHelper::translateIfNeeded('Shared'))
                     ->hidden(fn ($record) => 
                     ($record->shared == 1) ||
                     !(Auth()->user()->roles()->pluck('name')->contains('super_admin') || (Auth()->user()->roles()->pluck('name')->contains('panel_user'))) && 
@@ -383,13 +383,13 @@ class DroneResource extends Resource
                     ->action(function ($record) {
                         $record->update(['shared' => 1]);
                         Notification::make()
-                        ->title('Shared Updated')
-                        ->body("Shared successfully changed.")
+                        ->title(TranslationHelper::translateIfNeeded('Shared Updated'))
+                        ->body(TranslationHelper::translateIfNeeded("Shared successfully changed."))
                         ->success()
                         ->send();
                     })->icon('heroicon-m-share'),
                 //Un-Shared action
-                Tables\Actions\Action::make('Un-Shared')->label('Un-Shared')
+                Tables\Actions\Action::make('Un-Shared')->label(TranslationHelper::translateIfNeeded('Un-Shared'))
                     ->hidden(fn ($record) => 
                     ($record->shared == 0) ||
                     !(Auth()->user()->roles()->pluck('name')->contains('super_admin') || (Auth()->user()->roles()->pluck('name')->contains('panel_user')))&&
@@ -397,8 +397,8 @@ class DroneResource extends Resource
                     ->action(function ($record) {
                         $record->update(['shared' => 0]);
                         Notification::make()
-                        ->title('Un-Shared Updated ')
-                        ->body("Un-Shared successfully changed.")
+                        ->title(TranslationHelper::translateIfNeeded('Un-Shared Updated '))
+                        ->body(TranslationHelper::translateIfNeeded("Un-Shared successfully changed."))
                         ->success()
                         ->send();
                     })->icon('heroicon-m-share'),
@@ -418,7 +418,7 @@ class DroneResource extends Resource
         return $infolist
         
         ->schema([
-            Section::make('Overview')
+            Section::make(TranslationHelper::translateIfNeeded('Overview'))
                 ->schema([
                     TextEntry::make('name')->label(TranslationHelper::translateIfNeeded('Name')),
                     TextEntry::make('idlegal')->label(TranslationHelper::translateIfNeeded('Legal ID')),
@@ -432,7 +432,7 @@ class DroneResource extends Resource
                     TextEntry::make('model')->label(TranslationHelper::translateIfNeeded('Model')),
                     TextEntry::make('type')->label(TranslationHelper::translateIfNeeded('Type')),
                 ])->columns(3),
-            Section::make('Drone Details')
+            Section::make(TranslationHelper::translateIfNeeded('Drone Details'))
                 ->schema([
                     TextEntry::make('geometry')->label(TranslationHelper::translateIfNeeded('Drone Geometry')),
                     TextEntry::make('color')->label(TranslationHelper::translateIfNeeded('Color')),
@@ -447,7 +447,7 @@ class DroneResource extends Resource
                     TextEntry::make('propulsion_v')->label(TranslationHelper::translateIfNeeded('Propulsion Version')),
                     TextEntry::make('description')->label(TranslationHelper::translateIfNeeded('Description')),
                 ])->columns(5),
-            Section::make('Connect')
+            Section::make(TranslationHelper::translateIfNeeded('Connect'))
                 ->schema([
                     TextEntry::make('serial_p')->label(TranslationHelper::translateIfNeeded('Serial Printed')),
                     TextEntry::make('serial_i')->label(TranslationHelper::translateIfNeeded('Serial Internal')),

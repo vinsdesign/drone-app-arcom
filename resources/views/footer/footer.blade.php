@@ -1,3 +1,6 @@
+@php
+use App\Helpers\TranslationHelper;
+@endphp
 <x-filament-widgets::widget>
     <div class="container mx-auto p-5 w-full px-0 mx-0">
         <!-- Footer -->
@@ -15,7 +18,7 @@
 
                 <!-- Column 2: Contact -->
                 <div class="w-full md:w-1/4 text-left">
-                    <h6 class="uppercase font-bold mb-2">Contact</h6>
+                    <h6 class="uppercase font-bold mb-2">{!! TranslationHelper::translateIfNeeded('Contact')!!}</h6>
                     <p class="flex items-center"><i class="fas fa-home mr-2"></i> Denpasar, Bali, ID</p>
                     <p class="flex items-center"><i class="fas fa-envelope mr-2"></i> admin@example.com</p>
                     <p class="flex items-center"><i class="fas fa-phone mr-2"></i> + 62 234 567 88</p>
@@ -24,7 +27,7 @@
 
                 <!-- Column 3: Social Links -->
                 <div class="w-full md:w-1/4 text-left">
-                    <h6 class="uppercase font-bold mb-2">Follow Us</h6>
+                    <h6 class="uppercase font-bold mb-2">{!! TranslationHelper::translateIfNeeded('Follow Us')!!}</h6>
                     <div class="flex space-x-2">
                         <a class="text-white p-2 bg-blue-600 rounded-full" href="#!" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
                         <a class="text-white p-2 bg-blue-400 rounded-full" href="#!" aria-label="Twitter"><i class="fab fa-twitter"></i></a>

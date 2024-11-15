@@ -517,7 +517,7 @@ class PlannedMissionResource extends Resource
                 ->label(TranslationHelper::translateIfNeeded('End Flight'))
                 ->dateTime()
                 ->sortable(),
-            Tables\Columns\TextColumn::make('duration'),
+            Tables\Columns\TextColumn::make('duration')->label(TranslationHelper::translateIfNeeded('Duration')),
             Tables\Columns\TextColumn::make('fligh_location.name')
                 ->label(TranslationHelper::translateIfNeeded('Location'))
                 ->numeric()
@@ -566,14 +566,15 @@ class PlannedMissionResource extends Resource
                         'cancel' => 'Cancel',
                     ])
                     ->default('planned')
+                    ->label(TranslationHelper::translateIfNeeded('Status'))
             ])
             ->actions([
                 Tables\Actions\ActionGroup::make([
                 //append flight
                 Action::make('append_flight')
-                ->label(fn ($record) => $record->status === 'append' ? 'Already Append' : 'Append Flight')
-                ->modalHeading('Append this Planned Mission to Flight')
-                ->modalSubmitActionLabel('Append')
+                ->label(fn ($record) => $record->status === 'append' ? TranslationHelper::translateIfNeeded('Already Append') : TranslationHelper::translateIfNeeded('Append Flight'))
+                ->modalHeading(TranslationHelper::translateIfNeeded('Append this Planned Mission to Flight'))
+                ->modalSubmitActionLabel(TranslationHelper::translateIfNeeded('Append'))
                 ->action(function ($record) {
                     $flights = fligh::create([ 
                         'name' => $record->name, 
@@ -605,8 +606,8 @@ class PlannedMissionResource extends Resource
                     
                     $record->update(['status' => 'append']);
                     Notification::make()
-                        ->title('Flight Added')
-                        ->body("Planned mission successfully added to Flight.")
+                        ->title(TranslationHelper::translateIfNeeded('Flight Added'))
+                        ->body(TranslationHelper::translateIfNeeded("Planned mission successfully added to Flight."))
                         ->success()
                         ->send();
                 })
@@ -618,21 +619,21 @@ class PlannedMissionResource extends Resource
                 //end append flight 
 
                 Action::make('finalize')
-                ->label('Finalize')
-                ->modalHeading('Complete or Cancel this Mission')
-                ->modalSubmitActionLabel('Submit')
+                ->label(TranslationHelper::translateIfNeeded('Finalize'))
+                ->modalHeading(TranslationHelper::translateIfNeeded('Complete or Cancel this Mission'))
+                ->modalSubmitActionLabel(TranslationHelper::translateIfNeeded('Submit'))
                 ->action(function ($record, array $data) {
                     $record->update(['status' => $data['status']]);
 
                     Notification::make()
-                        ->title('Status Updated')
-                        ->body("Status successfully changed to {$data['status']}.")
+                        ->title(TranslationHelper::translateIfNeeded('Status Updated'))
+                        ->body(TranslationHelper::translateIfNeeded("Status successfully changed to {$data['status']}."))
                         ->success()
                         ->send();
                 })
                 ->form([
                     Forms\Components\Radio::make('status')
-                        ->label('Pilih Status')
+                        ->label(TranslationHelper::translateIfNeeded('Pilih Status'))
                         ->options([
                             'completed' => 'Completed',
                             'cancel' => 'Cancel',

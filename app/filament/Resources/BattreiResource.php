@@ -239,7 +239,7 @@ class BattreiResource extends Resource
                        $totalDuration = sprintf('%02d:%02d:%02d', $hours, $minutes, $seconds);
 
                        $totalFlights = $flights->unique('id')->count();
-                    return "<div> {$totalFlights} Flight(s) <div style='border: 1px solid #ccc; padding: 3px; display: inline-block; border-radius: 5px; background-color: #D4D4D4;'>
+                    return "<div> ({$totalFlights}) " . TranslationHelper::translateIfNeeded('Flights') . " <div style='border: 1px solid #ccc; padding: 3px; display: inline-block; border-radius: 5px; background-color: #D4D4D4;'>
                             <strong>{$totalDuration}</strong></div>";
                    })
                     ->sortable()
@@ -320,11 +320,11 @@ class BattreiResource extends Resource
             ->actions([
                 Tables\Actions\ActionGroup::make([
                     Tables\Actions\Action::make('showBattrey')
-                    ->url(fn ($record) => route('battery.statistik', ['battery_id' => $record->id]))->label('View')
+                    ->url(fn ($record) => route('battery.statistik', ['battery_id' => $record->id]))->label(TranslationHelper::translateIfNeeded('View'))
                     ->icon('heroicon-s-eye'),
                     Tables\Actions\EditAction::make(),
                     //Shared action
-                    Tables\Actions\Action::make('Shared')->label('Shared')
+                    Tables\Actions\Action::make('Shared')->label(TranslationHelper::translateIfNeeded('Shared'))
                     ->hidden(fn ($record) => 
                     ($record->shared == 1) ||
                     !(Auth()->user()->roles()->pluck('name')->contains('super_admin') || (Auth()->user()->roles()->pluck('name')->contains('panel_user'))) && 
@@ -333,13 +333,13 @@ class BattreiResource extends Resource
                     ->action(function ($record) {
                         $record->update(['shared' => 1]);
                         Notification::make()
-                        ->title('Shared Updated')
-                        ->body("Shared successfully changed.")
+                        ->title(TranslationHelper::translateIfNeeded('Shared Updated'))
+                        ->body(TranslationHelper::translateIfNeeded("Shared successfully changed."))
                         ->success()
                         ->send();
                     })->icon('heroicon-m-share'),
                     //Un-Shared action
-                    Tables\Actions\Action::make('Un-Shared')->label('Un-Shared')
+                    Tables\Actions\Action::make('Un-Shared')->label(TranslationHelper::translateIfNeeded('Un-Shared'))
                         ->hidden(fn ($record) => 
                         ($record->shared == 0) ||
                         !(Auth()->user()->roles()->pluck('name')->contains('super_admin') || (Auth()->user()->roles()->pluck('name')->contains('panel_user')))&&
@@ -347,8 +347,8 @@ class BattreiResource extends Resource
                         ->action(function ($record) {
                             $record->update(['shared' => 0]);
                             Notification::make()
-                            ->title('Un-Shared Updated ')
-                            ->body("Un-Shared successfully changed.")
+                            ->title(TranslationHelper::translateIfNeeded('Un-Shared Updated '))
+                            ->body(TranslationHelper::translateIfNeeded("Un-Shared successfully changed."))
                             ->success()
                             ->send();
                         })->icon('heroicon-m-share'),
@@ -367,26 +367,26 @@ public static function infolist(Infolist $infolist): Infolist
     return $infolist
     
     ->schema([
-        Section::make(translateIfNeeded('Overview'))
+        Section::make(TranslationHelper::translateIfNeeded('Overview'))
     ->schema([
-        TextEntry::make('name')->label(translateIfNeeded('Name')),
-        TextEntry::make('model')->label(translateIfNeeded('Model')),
-        TextEntry::make('status')->label(translateIfNeeded('Status'))
+        TextEntry::make('name')->label(TranslationHelper::translateIfNeeded('Name')),
+        TextEntry::make('model')->label(TranslationHelper::translateIfNeeded('Model')),
+        TextEntry::make('status')->label(TranslationHelper::translateIfNeeded('Status'))
             ->color(fn ($record) => match ($record->status) {
                 'airworthy' => Color::Green,
                 'maintenance' => Color::Red,
                 'retired' => Color::Zinc,
             }),
-        TextEntry::make('asset_inventory')->label(translateIfNeeded('Asset Inventory')),
-        TextEntry::make('serial_P')->label(translateIfNeeded('Serial Printed')),
-        TextEntry::make('serial_I')->label(translateIfNeeded('Serial Internal')),
-        TextEntry::make('cellCount')->label(translateIfNeeded('Cell Count')),
-        TextEntry::make('nominal_voltage')->label(translateIfNeeded('Voltage')),
-        TextEntry::make('capacity')->label(translateIfNeeded('Capacity')),
-        TextEntry::make('initial_Cycle_count')->label(translateIfNeeded('Initial Cycles Count')),
-        TextEntry::make('life_span')->label(translateIfNeeded('Life Span')),
-        TextEntry::make('flaight_count')->label(translateIfNeeded('Flight Count')),
-        TextEntry::make('drone.name')->label(translateIfNeeded('For Drone (Optional)'))
+        TextEntry::make('asset_inventory')->label(TranslationHelper::translateIfNeeded('Asset Inventory')),
+        TextEntry::make('serial_P')->label(TranslationHelper::translateIfNeeded('Serial Printed')),
+        TextEntry::make('serial_I')->label(TranslationHelper::translateIfNeeded('Serial Internal')),
+        TextEntry::make('cellCount')->label(TranslationHelper::translateIfNeeded('Cell Count')),
+        TextEntry::make('nominal_voltage')->label(TranslationHelper::translateIfNeeded('Voltage')),
+        TextEntry::make('capacity')->label(TranslationHelper::translateIfNeeded('Capacity')),
+        TextEntry::make('initial_Cycle_count')->label(TranslationHelper::translateIfNeeded('Initial Cycles Count')),
+        TextEntry::make('life_span')->label(TranslationHelper::translateIfNeeded('Life Span')),
+        TextEntry::make('flaight_count')->label(TranslationHelper::translateIfNeeded('Flight Count')),
+        TextEntry::make('drone.name')->label(TranslationHelper::translateIfNeeded('For Drone (Optional)'))
             ->url(fn($record) => $record->for_drone ? route('filament.admin.resources.drones.view', [
                 'tenant' => auth()->user()->teams()->first()->id,
                 'record' => $record->for_drone,
@@ -394,21 +394,21 @@ public static function infolist(Infolist $infolist): Infolist
             ->color(Color::Blue),
     ])->columns(5),
 
-Section::make(translateIfNeeded('Extra Information'))
+Section::make(TranslationHelper::translateIfNeeded('Extra Information'))
     ->schema([
-        TextEntry::make('users.name')->label(translateIfNeeded('Owner'))
+        TextEntry::make('users.name')->label(TranslationHelper::translateIfNeeded('Owner'))
             ->url(fn($record) => $record->for_drone ? route('filament.admin.resources.users.index', [
                 'tenant' => auth()->user()->teams()->first()->id,
                 'record' => $record->users_id,
             ]) : null)
             ->color(Color::Blue),
-        TextEntry::make('purchase_date')->label(translateIfNeeded('Purchase Date')),
-        TextEntry::make('insurable_value')->label(translateIfNeeded('Insurable Value')),
-        TextEntry::make('wight')->label(translateIfNeeded('Weight')),
-        TextEntry::make('firmware_version')->label(translateIfNeeded('Firmware Version')),
-        TextEntry::make('hardware_version')->label(translateIfNeeded('Hardware Version')),
-        IconEntry::make('is_loaner')->boolean()->label(translateIfNeeded('Loaner Battery')),
-        TextEntry::make('description')->label(translateIfNeeded('Description')),
+        TextEntry::make('purchase_date')->label(TranslationHelper::translateIfNeeded('Purchase Date')),
+        TextEntry::make('insurable_value')->label(TranslationHelper::translateIfNeeded('Insurable Value')),
+        TextEntry::make('wight')->label(TranslationHelper::translateIfNeeded('Weight')),
+        TextEntry::make('firmware_version')->label(TranslationHelper::translateIfNeeded('Firmware Version')),
+        TextEntry::make('hardware_version')->label(TranslationHelper::translateIfNeeded('Hardware Version')),
+        IconEntry::make('is_loaner')->boolean()->label(TranslationHelper::translateIfNeeded('Loaner Battery')),
+        TextEntry::make('description')->label(TranslationHelper::translateIfNeeded('Description')),
     ])->columns(4)
                 ]);
 }
