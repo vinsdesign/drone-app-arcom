@@ -191,7 +191,8 @@ class UserResource extends Resource
                         $minutes = floor(($totalSeconds % 3600) / 60);
                         $seconds = $totalSeconds % 60;
                         $totalDuration = sprintf('%02d:%02d:%02d', $hours, $minutes, $seconds);
-                        return "{$totalFlights} Flight(s) <br> <div style='border: 1px solid #ccc; padding: 3px; display: inline-block; border-radius: 5px; background-color: #D4D4D4; '>
+                        $TranslateText = TranslationHelper::translateIfNeeded('Flights');
+                        return "{$totalFlights} {$TranslateText} <br> <div style='border: 1px solid #ccc; padding: 3px; display: inline-block; border-radius: 5px; background-color: #D4D4D4; '>
                             <strong>{$totalDuration}</strong> </div>";
                     })
                     ->sortable()
@@ -204,7 +205,7 @@ class UserResource extends Resource
                 Tables\Actions\Action::make('views')  ->action(function ($record) {
                     session(['personnel_id' => $record->id]);
                     return redirect()->route('flight-personnel', ['personnel_id' => $record->id]);
-                })->label('View')->icon('heroicon-s-eye'),
+                })->label(TranslationHelper::translateIfNeeded('View'))->icon('heroicon-s-eye'),
                 Tables\Actions\EditAction::make(),
             ])
             ->bulkActions([
@@ -230,7 +231,7 @@ class UserResource extends Resource
                     TextEntry::make('sertif')->label(TranslationHelper::translateIfNeeded('certificate')),
                     TextEntry::make('roles.name')->label(TranslationHelper::translateIfNeeded('roles')),
                     TextEntry::make('address')->label(TranslationHelper::translateIfNeeded('address')),
-                ])->columns(2)
+                ])->columns(2),
                  Section::make('')
                     ->schema([
                         InfolistView::make('component.flight-personnel')

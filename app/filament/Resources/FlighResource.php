@@ -633,7 +633,8 @@ class FlighResource extends Resource
                 ->label(TranslationHelper::translateIfNeeded('End Flight'))
                 ->dateTime()
                 ->sortable(),
-            Tables\Columns\TextColumn::make('duration'),
+            Tables\Columns\TextColumn::make('duration')
+                ->label(TranslationHelper::translateIfNeeded('Duration')),
             Tables\Columns\TextColumn::make('fligh_location.name')
                 ->label(TranslationHelper::translateIfNeeded('Flight Location'))
                 ->numeric()
@@ -681,8 +682,8 @@ class FlighResource extends Resource
                     ->form([
                         Forms\Components\Grid::make(2)
                             ->schema([
-                        Forms\Components\DatePicker::make('from')->label('Flight Date From'),
-                        Forms\Components\DatePicker::make('until')->label('Until'),
+                        Forms\Components\DatePicker::make('from')->label(TranslationHelper::translateIfNeeded('Flight Date From')),
+                        Forms\Components\DatePicker::make('until')->label(TranslationHelper::translateIfNeeded('Until')),
                             ]),
                     ])
                     ->query(function (Builder $query, array $data){
@@ -694,13 +695,13 @@ class FlighResource extends Resource
                         $currentTeamId = auth()->user()->teams()->first()->id;;
                         $query->where('teams_id', $currentTeamId);
                     })    
-                    ->label('Filter by Project'),
+                    ->label(TranslationHelper::translateIfNeeded('Filter by Project')),
                 Tables\Filters\SelectFilter::make('drones_id')
                     ->relationship('drones', 'name', function (Builder $query){
                         $currentTeamId = auth()->user()->teams()->first()->id;;
                         $query->where('teams_id', $currentTeamId);
                     })    
-                    ->label('Filter by Drones'),
+                    ->label(TranslationHelper::translateIfNeeded('Filter by Drones')),
                 Tables\Filters\SelectFilter::make('users_id')
                     ->relationship('users', 'name', function (Builder $query) {
                         $currentTeamId = auth()->user()->teams()->first()->id;
@@ -711,14 +712,14 @@ class FlighResource extends Resource
                             $query->where('roles.name', 'Pilot');
                         });
                     })
-                    ->label('Filter by Pilot')
+                    ->label(TranslationHelper::translateIfNeeded('Filter by Pilot'))
             ])
             ->actions([
                 Tables\Actions\ActionGroup::make([
                     Tables\Actions\ViewAction::make(),
                     Tables\Actions\EditAction::make(),
                     //Shared action
-                    Tables\Actions\Action::make('Shared')->label('Shared')
+                    Tables\Actions\Action::make('Shared')->label(TranslationHelper::translateIfNeeded('Shared'))
                     ->hidden(fn ($record) => 
                     ($record->shared == 1) ||
                     !(Auth()->user()->roles()->pluck('name')->contains('super_admin') || (Auth()->user()->roles()->pluck('name')->contains('panel_user'))) && 
@@ -727,13 +728,13 @@ class FlighResource extends Resource
                     ->action(function ($record) {
                         $record->update(['shared' => 1]);
                         Notification::make()
-                        ->title('Shared Updated')
-                        ->body("Shared successfully changed.")
+                        ->title(TranslationHelper::translateIfNeeded('Shared Updated'))
+                        ->body(TranslationHelper::translateIfNeeded("Shared successfully changed."))
                         ->success()
                         ->send();
                     })->icon('heroicon-m-share'),
                     //Un-Shared action
-                    Tables\Actions\Action::make('Un-Shared')->label('Un-Shared')
+                    Tables\Actions\Action::make('Un-Shared')->label(TranslationHelper::translateIfNeeded('Un-Shared'))
                         ->hidden(fn ($record) => 
                         ($record->shared == 0) ||
                         !(Auth()->user()->roles()->pluck('name')->contains('super_admin') || (Auth()->user()->roles()->pluck('name')->contains('panel_user')))&&
@@ -741,8 +742,8 @@ class FlighResource extends Resource
                         ->action(function ($record) {
                             $record->update(['shared' => 0]);
                             Notification::make()
-                            ->title('Un-Shared Updated ')
-                            ->body("Un-Shared successfully changed.")
+                            ->title(TranslationHelper::translateIfNeeded('Un-Shared Updated '))
+                            ->body(TranslationHelper::translateIfNeeded("Un-Shared successfully changed."))
                             ->success()
                             ->send();
                         })->icon('heroicon-m-share'),
@@ -750,23 +751,23 @@ class FlighResource extends Resource
                     ->hidden(fn ($record) => $record->locked_flight)
                     ->url(fn ($record) => $record->locked_flight ? '#' : route('filament.admin.resources.flighs.edit', ['tenant' => Auth()->user()->teams()->first()->id, $record->id])),
                     Tables\Actions\DeleteAction::make(),
-                    Tables\Actions\Action::make('test')->label('Lock')
+                    Tables\Actions\Action::make('test')->label(TranslationHelper::translateIfNeeded('Lock'))
                         ->action(function ($record) {
                             $record->update(['locked_flight' => 'locked']);
                             Notification::make()
-                                ->title('Data Locked')
-                                ->body('This record is now locked and cannot be edited.')
+                                ->title(TranslationHelper::translateIfNeeded('Data Locked'))
+                                ->body(TranslationHelper::translateIfNeeded('This record is now locked and cannot be edited.'))
                                 ->success()
                                 ->send();
                         })
                         ->icon('heroicon-s-lock-closed')
                         ->hidden(fn ($record) => $record->locked_flight), 
-                    Tables\Actions\Action::make('test1')->label('Unlock')
+                    Tables\Actions\Action::make('test1')->label(TranslationHelper::translateIfNeeded('Unlock'))
                         ->action(function ($record) {
                             $record->update(['locked_flight' => 'unlocked']);
                             Notification::make()
-                                ->title('Data Un-Locked')
-                                ->body('This record is now unlocked and can be edited.')
+                                ->title(TranslationHelper::translateIfNeeded('Data Un-Locked'))
+                                ->body(TranslationHelper::translateIfNeeded('This record is now unlocked and can be edited.'))
                                 ->success()
                                 ->send();
                         })
@@ -790,7 +791,7 @@ class FlighResource extends Resource
         return $infolist
 
         ->schema([
-            Section::make('Flight Detail')
+            Section::make(TranslationHelper::translateIfNeeded('Flight Detail'))
                 ->schema([
                     TextEntry::make('name')->label(TranslationHelper::translateIfNeeded('Name')),
                     TextEntry::make('start_date_flight')->label(TranslationHelper::translateIfNeeded('Date Flight')),
@@ -810,7 +811,7 @@ class FlighResource extends Resource
                             'record' => $record->projects_id,
                         ]) : null)->color(Color::Blue),
                 ])->columns(5),
-            Section::make('Personnel')
+            Section::make(TranslationHelper::translateIfNeeded('Personnel'))
                 ->schema([
                     TextEntry::make('users.name')->label(TranslationHelper::translateIfNeeded('Pilot'))
                         ->url(fn($record) => $record->users_id ? route('filament.admin.resources.users.view', [
@@ -821,7 +822,7 @@ class FlighResource extends Resource
                     TextEntry::make('vo')->label(TranslationHelper::translateIfNeeded('VO')),
                     TextEntry::make('po')->label(TranslationHelper::translateIfNeeded('PO')),
                 ])->columns(4),
-            Section::make('Drone & Equipments')
+            Section::make(TranslationHelper::translateIfNeeded('Drone & Equipments'))
                 ->schema([
                     TextEntry::make('kits.name')->label(TranslationHelper::translateIfNeeded('Kits')),
                     TextEntry::make('drones.name')->label(TranslationHelper::translateIfNeeded('Drone'))

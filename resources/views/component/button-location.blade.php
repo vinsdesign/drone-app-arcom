@@ -1,3 +1,6 @@
+@php
+    use App\Helpers\TranslationHelper;
+@endphp
 <head>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
@@ -15,7 +18,7 @@
   <!-- Tombol untuk Membuka Modal -->
     <button style="font-size: 12px; background-color: #4A5568; color: white; font-weight: bold; padding: 4px 8px; border-radius: 4px; border: none; cursor: pointer;" onclick="openModalLocation()" type="button">
         <span style="color: inherit; text-decoration: none;">
-            Add New Location
+            {!! TranslationHelper::translateIfNeeded('Add New Location')!!}
         </span>
     </button>
 
@@ -31,7 +34,7 @@
 
             <!-- Judul Modal -->
             <h2 class="text-center text-lg font-semibold text-gray-900 dark:text-white">
-                Create Location
+                {!! TranslationHelper::translateIfNeeded('Create Location')!!}
             </h2>
             <hr class="border-t border-gray-300 dark:border-gray-600 w-24 mx-auto">
 
@@ -42,19 +45,19 @@
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <!-- Name Input -->
                     <div>
-                        <label class="block text-gray-700 dark:text-gray-300">Name</label>
+                        <label class="block text-gray-700 dark:text-gray-300">{!! TranslationHelper::translateIfNeeded('Name')!!}</label>
                         <input id="name" type="text" name="name" maxlength="255" class="w-full mt-1 p-2 border dark:bg-gray-900 dark:border-gray-700 dark:text-gray-300 rounded-md focus:ring focus:ring-blue-500">
                     </div>
             
                     <!-- Description Input -->
                     <div>
-                        <label class="block text-gray-700 dark:text-gray-300">Description</label>
+                        <label class="block text-gray-700 dark:text-gray-300">{!! TranslationHelper::translateIfNeeded('Description')!!}</label>
                         <textarea id="descriptionlocation" name="descriptionlocation" maxlength="255" class="w-full mt-1 p-2 border dark:bg-gray-900 dark:border-gray-700 dark:text-gray-300 rounded-md focus:ring focus:ring-blue-500"></textarea>
                     </div>
 
                     <!-- Customer Select -->
                     <div>
-                        <label class="block text-gray-700 dark:text-gray-300">Customer</label>
+                        <label class="block text-gray-700 dark:text-gray-300">{!! TranslationHelper::translateIfNeeded('Customer')!!}</label>
                         <select id="customers_id" name="customers_id" class="w-full mt-1 p-2 border dark:bg-gray-900 dark:border-gray-700 dark:text-gray-300 rounded-md focus:ring focus:ring-blue-500">
                             @foreach (App\Models\customer::where('teams_id', auth()->user()->teams()->first()->id)->pluck('name', 'id') as $id => $name)
                                 <option value="{{ $id }}">{{ $name }}</option>
@@ -64,7 +67,7 @@
             
                     <!-- Project Select -->
                     <div>
-                        <label class="block text-gray-700 dark:text-gray-300">Project</label>
+                        <label class="block text-gray-700 dark:text-gray-300">{!! TranslationHelper::translateIfNeeded('Project')!!}</label>
                         <select id="projects_id" name="projects_id" class="w-full mt-1 p-2 border dark:bg-gray-900 dark:border-gray-700 dark:text-gray-300 rounded-md focus:ring focus:ring-blue-500">
                             @foreach (App\Models\projects::where('teams_id', auth()->user()->teams()->first()->id)->pluck('case', 'id') as $id => $name)
                                 <option value="{{ $id }}">{{ $name }}</option>
@@ -74,48 +77,48 @@
             
                     <!-- Address Input -->
                     <div>
-                        <label class="block text-gray-700 dark:text-gray-300">Address</label>
+                        <label class="block text-gray-700 dark:text-gray-300">{!! TranslationHelper::translateIfNeeded('Address')!!}</label>
                         <input id="address" type="text" name="address" maxlength="255" class="w-full mt-1 p-2 border dark:bg-gray-900 dark:border-gray-700 dark:text-gray-300 rounded-md focus:ring focus:ring-blue-500">
                     </div>
                     <!-- Country Input -->
                     <div>
-                        <label class="block text-gray-700 dark:text-gray-300">Country</label>
+                        <label class="block text-gray-700 dark:text-gray-300">{!! TranslationHelper::translateIfNeeded('Country')!!}</label>
                         <input id="country" type="text" name="country" maxlength="255" class="w-full mt-1 p-2 border dark:bg-gray-900 dark:border-gray-700 dark:text-gray-300 rounded-md focus:ring focus:ring-blue-500">
                     </div>
             
                     <!-- City Input -->
                     <div>
-                        <label class="block text-gray-700 dark:text-gray-300">City</label>
+                        <label class="block text-gray-700 dark:text-gray-300">{!! TranslationHelper::translateIfNeeded('City')!!}</label>
                         <input id="city" type="text" name="city" maxlength="255" class="w-full mt-1 p-2 border dark:bg-gray-900 dark:border-gray-700 dark:text-gray-300 rounded-md focus:ring focus:ring-blue-500">
                     </div>
             
                     <!-- State Input -->
                     <div>
-                        <label class="block text-gray-700 dark:text-gray-300">State</label>
+                        <label class="block text-gray-700 dark:text-gray-300">{!! TranslationHelper::translateIfNeeded('State')!!}</label>
                         <input id="states" type="text" name="states" maxlength="255" class="w-full mt-1 p-2 border dark:bg-gray-900 dark:border-gray-700 dark:text-gray-300 rounded-md focus:ring focus:ring-blue-500">
                     </div>
             
                     <!-- Postal Code Input -->
                     <div>
-                        <label class="block text-gray-700 dark:text-gray-300">Postal Code</label>
+                        <label class="block text-gray-700 dark:text-gray-300">{!! TranslationHelper::translateIfNeeded('Postal Code')!!}</label>
                         <input id="pos_code" type="number" name="pos_code" maxlength="255" class="w-full mt-1 p-2 border dark:bg-gray-900 dark:border-gray-700 dark:text-gray-300 rounded-md focus:ring focus:ring-blue-500">
                     </div>
             
                     <!-- Latitude Input -->
                     <div>
-                        <label class="block text-gray-700 dark:text-gray-300">Latitude</label>
+                        <label class="block text-gray-700 dark:text-gray-300">{!! TranslationHelper::translateIfNeeded('Latitude')!!}</label>
                         <input id="latitude" type="number" name="latitude" maxlength="255" class="w-full mt-1 p-2 border dark:bg-gray-900 dark:border-gray-700 dark:text-gray-300 rounded-md focus:ring focus:ring-blue-500">
                     </div>
             
                     <!-- Longitude Input -->
                     <div>
-                        <label class="block text-gray-700 dark:text-gray-300">Longitude</label>
+                        <label class="block text-gray-700 dark:text-gray-300">{!! TranslationHelper::translateIfNeeded('Longitude')!!}</label>
                         <input id="longitude" type="number" name="longitude" maxlength="255" class="w-full mt-1 p-2 border dark:bg-gray-900 dark:border-gray-700 dark:text-gray-300 rounded-md focus:ring focus:ring-blue-500">
                     </div>
             
                     <!-- Altitude Input -->
                     <div>
-                        <label class="block text-gray-700 dark:text-gray-300">Altitude</label>
+                        <label class="block text-gray-700 dark:text-gray-300">{!! TranslationHelper::translateIfNeeded('Altitude')!!}</label>
                         <input id="altitude" type="number" name="altitude" maxlength="255" class="w-full mt-1 p-2 border dark:bg-gray-900 dark:border-gray-700 dark:text-gray-300 rounded-md focus:ring focus:ring-blue-500">
                     </div>
                 </div>
@@ -125,7 +128,7 @@
                     <button id="triggerButtonLocation" type="button" 
                         style="font-size: 16px; background-color: #4A5568; color: white; font-weight: bold; padding: 8px 16px; border-radius: 4px; border: none; cursor: pointer;"
                         class="px-6 py-3 bg-blue-600 text-white rounded-md hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600" onclick="createLocation()">
-                        Submit
+                        {!! TranslationHelper::translateIfNeeded('Submit')!!}
                     </button>
                 </div>
             </div>

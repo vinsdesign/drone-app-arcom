@@ -217,28 +217,28 @@ class FlighLocationResource extends Resource
             ->actions([
                 Tables\Actions\ActionGroup::make([
                         Tables\Actions\EditAction::make(),
-                        Tables\Actions\Action::make('Archive')->label('Archive')
+                        Tables\Actions\Action::make('Archive')->label(TranslationHelper::translateIfNeeded('Archive'))
                             ->hidden(fn ($record) => $record->status_visible == 'archived')
                                     ->action(function ($record) {
                                     $record->update(['status_visible' => 'archived']);
                                     Notification::make()
-                                    ->title('Status Updated')
-                                    ->body("Status successfully changed.")
+                                    ->title(TranslationHelper::translateIfNeeded('Status Updated'))
+                                    ->body(TranslationHelper::translateIfNeeded("Status successfully changed."))
                                     ->success()
                                     ->send();
                                 })->icon('heroicon-s-archive-box-arrow-down'),
-                        Tables\Actions\Action::make('Un-Archive')->label(' Un-Archive')
+                        Tables\Actions\Action::make('Un-Archive')->label(TranslationHelper::translateIfNeeded(' Un-Archive'))
                             ->hidden(fn ($record) => $record->status_visible == 'current')
                                     ->action(function ($record) {
                                     $record->update(['status_visible' => 'current']);
                                     Notification::make()
-                                    ->title('Status Updated')
-                                    ->body("Status successfully changed.")
+                                    ->title(TranslationHelper::translateIfNeeded('Status Updated'))
+                                    ->body(TranslationHelper::translateIfNeeded("Status successfully changed."))
                                     ->success()
                                     ->send();
                                 })->icon('heroicon-s-archive-box'),
                         //Shared action
-                        Tables\Actions\Action::make('Shared')->label('Shared')
+                        Tables\Actions\Action::make('Shared')->label(TranslationHelper::translateIfNeeded('Shared'))
                         ->hidden(fn ($record) => 
                         ($record->shared == 1) ||
                         !(Auth()->user()->roles()->pluck('name')->contains('super_admin') || (Auth()->user()->roles()->pluck('name')->contains('panel_user'))) && 
@@ -247,13 +247,13 @@ class FlighLocationResource extends Resource
                         ->action(function ($record) {
                             $record->update(['shared' => 1]);
                             Notification::make()
-                            ->title('Shared Updated')
-                            ->body("Shared successfully changed.")
+                            ->title(TranslationHelper::translateIfNeeded('Shared Updated'))
+                            ->body(TranslationHelper::translateIfNeeded("Shared successfully changed."))
                             ->success()
                             ->send();
                         })->icon('heroicon-m-share'),
                     //Un-Shared action
-                    Tables\Actions\Action::make('Un-Shared')->label('Un-Shared')
+                    Tables\Actions\Action::make('Un-Shared')->label(TranslationHelper::translateIfNeeded('Un-Shared'))
                         ->hidden(fn ($record) => 
                         ($record->shared == 0) ||
                         !(Auth()->user()->roles()->pluck('name')->contains('super_admin') || (Auth()->user()->roles()->pluck('name')->contains('panel_user')))&&
@@ -261,8 +261,8 @@ class FlighLocationResource extends Resource
                         ->action(function ($record) {
                             $record->update(['shared' => 0]);
                             Notification::make()
-                            ->title('Un-Shared Updated ')
-                            ->body("Un-Shared successfully changed.")
+                            ->title(TranslationHelper::translateIfNeeded('Un-Shared Updated '))
+                            ->body(TranslationHelper::translateIfNeeded("Un-Shared successfully changed."))
                             ->success()
                             ->send();
                         })->icon('heroicon-m-share'),

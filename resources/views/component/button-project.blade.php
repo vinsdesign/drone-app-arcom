@@ -1,3 +1,6 @@
+@php
+    use App\Helpers\TranslationHelper;
+@endphp
 <head>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
@@ -31,7 +34,7 @@
   <!-- Tombol untuk Membuka Modal -->
     <button style="font-size: 12px; background-color: #4A5568; color: white; font-weight: bold; padding: 4px 8px; border-radius: 4px; border: none; cursor: pointer;" onclick="openModal()" type="button">
         <span style="color: inherit; text-decoration: none;">
-            Add New Project
+            {!! TranslationHelper::translateIfNeeded('Add New Project')!!}
         </span>
     </button>
 
@@ -47,7 +50,7 @@
 
             <!-- Judul Modal -->
             <h2 class="text-center text-lg font-semibold text-gray-900 dark:text-white">
-                Create Project
+                {!! TranslationHelper::translateIfNeeded('Create Project')!!}
             </h2>
             <hr class="border-t border-gray-300 dark:border-gray-600 w-24 mx-auto">
 
@@ -59,19 +62,19 @@
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <!-- Case Input -->
                     <div>
-                        <label class="block text-gray-700 dark:text-gray-300">Case</label>
+                        <label class="block text-gray-700 dark:text-gray-300">{!! TranslationHelper::translateIfNeeded('Case')!!}</label>
                         <input id="case" type="text" name="case" maxlength="255" class="w-full mt-1 p-2 border dark:bg-gray-900 dark:border-gray-700 dark:text-gray-300 rounded-md focus:ring focus:ring-blue-500">
                     </div>
 
                     <!-- Revenue Input -->
                     <div>
-                        <label class="block text-gray-700 dark:text-gray-300">Revenue</label>
+                        <label class="block text-gray-700 dark:text-gray-300">{!! TranslationHelper::translateIfNeeded('Revenue')!!}</label>
                         <input id="revenue" type="number" name="revenue" class="w-full mt-1 p-2 border dark:bg-gray-900 dark:border-gray-700 dark:text-gray-300 rounded-md focus:ring focus:ring-blue-500">
                     </div>
 
                     <!-- Currency Select -->
                     <div>
-                        <label class="block text-gray-700 dark:text-gray-300">Currency</label>
+                        <label class="block text-gray-700 dark:text-gray-300">{!! TranslationHelper::translateIfNeeded('Currency')!!}</label>
                         <select id="currencies_id" name="currencies_id" class="w-full mt-1 p-2 border dark:bg-gray-900 dark:border-gray-700 dark:text-gray-300 rounded-md focus:ring focus:ring-blue-500">
                             @php
                                 $defaultCurrencyId = auth()->user()->teams()->first()?->currencies_id;
@@ -86,7 +89,7 @@
 
                     <!-- Customer Select -->
                     <div>
-                        <label class="block text-gray-700 dark:text-gray-300">Customer Name</label>
+                        <label class="block text-gray-700 dark:text-gray-300">{!! TranslationHelper::translateIfNeeded('Customer Name')!!}</label>
                         <select id="customers_id" name="customers_id" class="w-full mt-1 p-2 border dark:bg-gray-900 dark:border-gray-700 dark:text-gray-300 rounded-md focus:ring focus:ring-blue-500">
                             @foreach (App\Models\customer::where('teams_id', auth()->user()->teams()->first()->id)->pluck('name', 'id') as $id => $name)
                                 <option value="{{ $id }}">{{ $name }}</option>
@@ -97,7 +100,7 @@
 
                 <!-- Description Text Area -->
                 <div>
-                    <label class="block text-gray-700 dark:text-gray-300">Description</label>
+                    <label class="block text-gray-700 dark:text-gray-300">{!! TranslationHelper::translateIfNeeded('Description')!!}</label>
                     <textarea id="description" name="description" maxlength="255" class="w-full mt-1 p-2 border dark:bg-gray-900 dark:border-gray-700 dark:text-gray-300 rounded-md focus:ring focus:ring-blue-500"></textarea>
                 </div>
 
@@ -106,7 +109,7 @@
                     <button id="triggerButton" type="button" 
                         style="font-size: 16px; background-color: #4A5568; color: white; font-weight: bold; padding: 8px 16px; border-radius: 4px; border: none; cursor: pointer;"
                         class="px-6 py-3 bg-blue-600 text-white rounded-md hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600">
-                        Submit
+                        {!! TranslationHelper::translateIfNeeded('Submit')!!}
                     </button>
                 </div>
                 

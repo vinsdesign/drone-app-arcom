@@ -276,7 +276,7 @@ class DocumentResource extends Resource
                     'Equidments/Battry' => 'Equidments/Battry',
                     'Incident' => 'Incident',
                 ])
-                ->label('Filter by Scope'),
+                ->label(TranslationHelper::translateIfNeeded('Filter by Scope')),
                 Tables\Filters\SelectFilter::make('status_visible')
                 ->label('')
                 ->options([
@@ -292,29 +292,29 @@ class DocumentResource extends Resource
                     ->hidden(fn ($record) => $record->locked)
                     ->url(fn ($record) => $record->locked ? '#' : route('filament.admin.resources.documents.edit', ['tenant' => Auth()->user()->teams()->first()->id, $record->id])),
                     Tables\Actions\DeleteAction::make(),
-                    Tables\Actions\Action::make('Archive')->label('Archive')
+                    Tables\Actions\Action::make('Archive')->label(TranslationHelper::translateIfNeeded('Archive'))
                     ->hidden(fn ($record) => $record->status_visible == 'archived')
                             ->action(function ($record) {
                              $record->update(['status_visible' => 'archived']);
                              Notification::make()
-                             ->title('Status Updated')
-                             ->body("Status successfully changed.")
+                             ->title(TranslationHelper::translateIfNeeded('Status Updated'))
+                             ->body(TranslationHelper::translateIfNeeded("Status successfully changed."))
                              ->success()
                              ->send();
                         })->icon('heroicon-s-archive-box-arrow-down'),
-                    Tables\Actions\Action::make('Un-Archive')->label(' Un-Archive')
+                    Tables\Actions\Action::make('Un-Archive')->label(TranslationHelper::translateIfNeeded(' Un-Archive'))
                     ->hidden(fn ($record) => $record->status_visible == 'current')
                             ->action(function ($record) {
                              $record->update(['status_visible' => 'current']);
                              Notification::make()
-                             ->title('Status Updated')
-                             ->body("Status successfully changed.")
+                             ->title(TranslationHelper::translateIfNeeded('Status Updated'))
+                             ->body(TranslationHelper::translateIfNeeded("Status successfully changed."))
                              ->success()
                              ->send();
                         })->icon('heroicon-s-archive-box'),
 
                     //Shared action
-                    Tables\Actions\Action::make('Shared')->label('Shared')
+                    Tables\Actions\Action::make('Shared')->label(TranslationHelper::translateIfNeeded('Shared'))
                         ->hidden(fn ($record) => 
                         ($record->shared == 1) ||
                         !(Auth()->user()->roles()->pluck('name')->contains('super_admin') || (Auth()->user()->roles()->pluck('name')->contains('panel_user'))) && 
@@ -323,13 +323,13 @@ class DocumentResource extends Resource
                         ->action(function ($record) {
                             $record->update(['shared' => 1]);
                             Notification::make()
-                            ->title('Shared Updated')
-                            ->body("Shared successfully changed.")
+                            ->title(TranslationHelper::translateIfNeeded('Shared Updated'))
+                            ->body(TranslationHelper::translateIfNeeded("Shared successfully changed."))
                             ->success()
                             ->send();
                         })->icon('heroicon-m-share'),
                     //Un-Shared action
-                    Tables\Actions\Action::make('Un-Shared')->label('Un-Shared')
+                    Tables\Actions\Action::make('Un-Shared')->label(TranslationHelper::translateIfNeeded('Un-Shared'))
                         ->hidden(fn ($record) => 
                         ($record->shared == 0) ||
                         !(Auth()->user()->roles()->pluck('name')->contains('super_admin') || (Auth()->user()->roles()->pluck('name')->contains('panel_user')))&&
@@ -337,28 +337,28 @@ class DocumentResource extends Resource
                         ->action(function ($record) {
                             $record->update(['shared' => 0]);
                             Notification::make()
-                            ->title('Un-Shared Updated ')
-                            ->body("Un-Shared successfully changed.")
+                            ->title(TranslationHelper::translateIfNeeded('Un-Shared Updated '))
+                            ->body(TranslationHelper::translateIfNeeded("Un-Shared successfully changed."))
                             ->success()
                             ->send();
                         })->icon('heroicon-m-share'),
-                    Tables\Actions\Action::make('Lock')->label('Lock')
+                    Tables\Actions\Action::make('Lock')->label(TranslationHelper::translateIfNeeded('Lock'))
                         ->action(function ($record) {
                             $record->update(['locked' => 'locked']);
                             Notification::make()
-                                ->title('Data Locked')
-                                ->body('This record is now locked and cannot be edited.')
+                                ->title(TranslationHelper::translateIfNeeded('Data Locked'))
+                                ->body(TranslationHelper::translateIfNeeded('This record is now locked and cannot be edited.'))
                                 ->success()
                                 ->send();
                         })
                         ->icon('heroicon-s-lock-closed')
                         ->hidden(fn ($record) => $record->locked), 
-                    Tables\Actions\Action::make('Un-Lock')->label('Unlock')
+                    Tables\Actions\Action::make('Un-Lock')->label(TranslationHelper::translateIfNeeded('Unlock'))
                         ->action(function ($record) {
                             $record->update(['locked' => 'unlocked']);
                             Notification::make()
-                                ->title('Data Un-Locked')
-                                ->body('This record is now unlocked and can be edited.')
+                                ->title(TranslationHelper::translateIfNeeded('Data Un-Locked'))
+                                ->body(TranslationHelper::translateIfNeeded('This record is now unlocked and can be edited.'))
                                 ->success()
                                 ->send();
                         })
@@ -381,7 +381,7 @@ class DocumentResource extends Resource
     {
         return $infolist
         ->schema([
-            Section::make('Document Overview')
+            Section::make(TranslationHelper::translateIfNeeded('Document Overview'))
             ->schema([
                 TextEntry::make('name')
                     ->label(TranslationHelper::translateIfNeeded('Name')),
@@ -395,7 +395,7 @@ class DocumentResource extends Resource
                     ->label(TranslationHelper::translateIfNeeded('Expired Date'))
                     ->date('Y-m-d')
                     ->formatStateUsing(function ($state) {
-                        $translatedText = (new GoogleTranslate(session('locale') ?? 'en'))->translate('Expired');
+                        $translatedText = (TranslationHelper::translateIfNeeded('Expired'));
                         $expiredDate = Carbon::parse($state);
                         $now = Carbon::now();
     
@@ -411,7 +411,7 @@ class DocumentResource extends Resource
                 TextEntry::make('external link')
                     ->label(TranslationHelper::translateIfNeeded('External link'))
                     ->formatStateUsing(function ($state) {
-                        $translatedText = (new GoogleTranslate(session('locale') ?? 'en'))->translate('Click Here');
+                        $translatedText = (TranslationHelper::translateIfNeeded('Click Here'));
                         $url = preg_match('/^https?:\/\//', $state) ? $state : "https://{$state}";
                         return "<a href='{$url}' target='_blank' style='padding:5px 10px; background-color:#ff8303; color:white; border-radius:5px;' rel='noopener noreferrer'>{$translatedText}</a>";
                     })
@@ -420,7 +420,7 @@ class DocumentResource extends Resource
                     ->label(TranslationHelper::translateIfNeeded('Document'))
                     // ->formatStateUsing(fn ($state) => "<a href='/storage/{$state}' target='_blank' rel='noopener noreferrer' style='padding:5px 10px; background-color:#ff8303; color:white; border-radius:5px;'>Open Document</a>")
                     ->formatStateUsing(function ($state) {
-                        $translatedText = (new GoogleTranslate(session('locale') ?? 'en'))->translate('Open Document');
+                        $translatedText = (TranslationHelper::translateIfNeeded('Open Document'));
                         return "<a href='/storage/{$state}' target='_blank' rel='noopener noreferrer' style='padding:5px 10px; background-color:#ff8303; color:white; border-radius:5px;'>{$translatedText}</a>";
                     })
                     ->html(),

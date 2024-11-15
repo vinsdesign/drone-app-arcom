@@ -1,4 +1,5 @@
 <?php
+use App\Helpers\TranslationHelper;
 $teams = Auth()->user()->teams()->first()->id;
 $projects = session('project_id');
 $flights = App\Models\Fligh::where('teams_id', $teams)->where('projects_id',$projects)->get();
@@ -14,7 +15,7 @@ $count = $flights->count('id');
 @if(request()->routeIs('filament.admin.resources.projects.view'))
 <div class="flex items-center justify-between py-4 px-6 border-b border-gray-300 bg-gray-100 dark:bg-gray-800 mb-4">
     <h2 class="text-xl font-bold text-gray-800 dark:text-gray-200">
-        {{$count}} Flights
+        {{$count}} {!! TranslationHelper::translateIfNeeded('Flights')!!}
     </h2>
 </div>
     @foreach($flights as $item)
@@ -22,7 +23,7 @@ $count = $flights->count('id');
         <!-- Container utama dengan lebar lebih besar di bagian atas -->
         <div class="flex flex-wrap space-x-4 border border-gray-300 rounded-lg p-2 bg-gray-100 dark:bg-gray-800 max-w-[900px] mx-auto shadow-lg">
             <div class="flex-1 min-w-[180px] border-r border-gray-300 pr-4">
-                <p class="text-sm text-gray-800 dark:text-gray-200 font-semibold">Name</p>
+                <p class="text-sm text-gray-800 dark:text-gray-200 font-semibold">{!! TranslationHelper::translateIfNeeded('Name')!!}</p>
                 <a href="{{route('filament.admin.resources.flighs.view',
                         ['tenant' => Auth()->user()->teams()->first()->id,
                         'record' => $item->id,])}}">
@@ -36,11 +37,11 @@ $count = $flights->count('id');
                         {{$item->start_date_flight ?? null}}
                     </p>
                 </div>
-                <p class="text-sm text-gray-700 dark:text-gray-400">Pilot: {{$item->users->name ?? null}}</p>
+                <p class="text-sm text-gray-700 dark:text-gray-400">{!! TranslationHelper::translateIfNeeded('Pilot:')!!} {{$item->users->name ?? null}}</p>
             </div>
         
             <div class="flex-1 min-w-[180px] border-r border-gray-300 pr-4 px-4">
-                <p class="text-sm text-gray-800 dark:text-gray-200 font-semibold">Drone</p>
+                <p class="text-sm text-gray-800 dark:text-gray-200 font-semibold">{!! TranslationHelper::translateIfNeeded('Drone')!!}</p>
                 <a href="{{route('filament.admin.resources.drones.view',
                 ['tenant' => Auth()->user()->teams()->first()->id,
                 'record' => $item->drones->id,])}}"><p class="text-sm text-gray-700 dark:text-gray-400" style="color:rgb(0, 85, 255)">{{$item->drones->name}}</p></a>  
@@ -48,12 +49,12 @@ $count = $flights->count('id');
             </div>
         
             <div class="flex-1 min-w-[180px] border-r border-gray-300 pr-2">
-                <p class="text-sm text-gray-800 dark:text-gray-200 font-semibold">Customer</p>
+                <p class="text-sm text-gray-800 dark:text-gray-200 font-semibold">{!! TranslationHelper::translateIfNeeded('Customer')!!}</p>
                 <p class="text-sm text-gray-700 dark:text-gray-400">{{$item->customers->name ?? null}}</p>
             </div>
         
             <div class="flex-1 min-w-[180px] border-r border-gray-300 pr-4">
-                <p class="text-sm text-gray-800 dark:text-gray-200 font-semibold">Location</p>
+                <p class="text-sm text-gray-800 dark:text-gray-200 font-semibold">{!! TranslationHelper::translateIfNeeded('Location')!!}</p>
                 <a href="{{route('filament.admin.resources.flighs.view',
                         ['tenant' => Auth()->user()->teams()->first()->id,
                         'record' => $item->fligh_location->id,])}}">
@@ -66,7 +67,7 @@ $count = $flights->count('id');
                 <button
                 class="inline-block text-sm text-white rounded px-4 py-3 transition-all duration-300 ease-in-out bg-gray-400 dark:bg-gray-700 dark:bg-gray-600 dark:hover:bg-gray-500 dark:text-white dark:hover:text-white focus:outline-none"
                 onclick="showContent({{ $item->id }})">
-                More Info
+                {!! TranslationHelper::translateIfNeeded('More Info')!!}
             </button>
             
             </div>
@@ -77,15 +78,15 @@ $count = $flights->count('id');
             <!-- Container pertama dengan ukuran lebih besar -->
             <div class="flex flex-wrap justify-between py-4 px-6 border-t border-gray-400 bg-gray-300 dark:bg-gray-700  shadow-lg">
                 <div class="flex-1 min-w-[180px]">
-                    <p class="text-sm text-gray-800 dark:text-gray-200 font-semibold">Landing</p>
+                    <p class="text-sm text-gray-800 dark:text-gray-200 font-semibold">{!! TranslationHelper::translateIfNeeded('Landing')!!}</p>
                     <p class="text-sm text-gray-700 dark:text-gray-400">{{$item->landings ?? null}}</p>
                 </div>
                 <div class="flex-1 min-w-[180px">
-                    <p class="text-sm text-gray-800 dark:text-gray-200 font-semibold">Type</p>
+                    <p class="text-sm text-gray-800 dark:text-gray-200 font-semibold">{!! TranslationHelper::translateIfNeeded('Type')!!}</p>
                     <p class="text-sm text-gray-700 dark:text-gray-400">{{$item->type ?? null}}</p>
                 </div>
                 <div class="flex-1 min-w-[180px]">
-                    <p class="text-sm text-gray-800 dark:text-gray-200 font-semibold">Operation</p>
+                    <p class="text-sm text-gray-800 dark:text-gray-200 font-semibold">{!! TranslationHelper::translateIfNeeded('Operation')!!}</p>
                     <p class="text-sm text-gray-700 dark:text-gray-400">{{$item->ops ?? null}}</p>
                 </div>
             </div>
@@ -93,7 +94,7 @@ $count = $flights->count('id');
             <!-- Container kedua dengan ukuran lebih kecil -->
             <div class="flex items-center justify-between py-4 px-6 border-t border-gray-400 bg-gray-300 dark:bg-gray-700  shadow-lg">
                 <div class="flex-1 min-w-[180px]">
-                    <p class="text-sm text-gray-700 dark:text-gray-400"><strong>Personnel: </strong>{{$item->users->name}} (Pilot) {{$item->instructor}} (Instructor)</p>
+                    <p class="text-sm text-gray-700 dark:text-gray-400"><strong>{!! TranslationHelper::translateIfNeeded('Personnel:')!!} </strong>{{$item->users->name}} (Pilot) {{$item->instructor}} (Instructor)</p>
                 </div>
             </div>
         </div>

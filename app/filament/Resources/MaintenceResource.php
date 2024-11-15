@@ -175,6 +175,9 @@ class MaintenceResource extends Resource
 
                             if ($daysOverdueDiff < 0){
                                 $daysOverdueDiff = abs(intval($daysOverdueDiff));
+
+                                $overdueLabel = TranslationHelper::translateIfNeeded('Overdue');
+                                $daysLabel = TranslationHelper::translateIfNeeded('days');
                                 return "<div>{$formatDate}<br><span style='
                                 display: inline-block;
                                 background-color: red; 
@@ -183,7 +186,7 @@ class MaintenceResource extends Resource
                                 border-radius: 5px;
                                 font-weight: bold;
                             '>
-                                Overdue: {$daysOverdueDiff} days
+                                {$overdueLabel}: {$daysOverdueDiff} {$daysLabel}
                             </span>
                         </div>";
                             }
@@ -217,8 +220,9 @@ class MaintenceResource extends Resource
                     'in_progress' => 'In Progress',
                     'completed' => 'Completed'
                 ])
-                ->label('Filter by Status'),
+                ->label(TranslationHelper::translateIfNeeded('Filter by Status')),
                 Filter::make('Overdue')
+                ->label(TranslationHelper::translateIfNeeded('Overdue'))
                 ->query(function ($query) {
                     $query->where('status', '!=', 'completed')
                           ->whereDate('date', '<', Carbon::now());
@@ -228,14 +232,14 @@ class MaintenceResource extends Resource
                 Tables\Actions\ViewAction::make(),
                 Tables\Actions\EditAction::make(),
                 Tables\Actions\Action::make('resolve')
-                    ->label('Resolve')
+                    ->label(TranslationHelper::translateIfNeeded('Resolve'))
                     ->icon('heroicon-o-check-circle')
                     ->action(function ($record){
                         $record->status = 'completed';
                         $record->save();
                         Notification::make()
-                            ->title('Task Resolved')
-                            ->body('The task has been successfully resolved.')
+                            ->title(TranslationHelper::translateIfNeeded('Task Resolved'))
+                            ->body(TranslationHelper::translateIfNeeded('The task has been successfully resolved.'))
                             ->send();
                     })
                     ->button()

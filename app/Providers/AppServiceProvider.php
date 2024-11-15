@@ -38,13 +38,13 @@ class AppServiceProvider extends ServiceProvider
         }
         //end test untuk merubah nama aplikasi (khusus untuk Super admin
 
-        // LanguageSwitch::configureUsing(function (LanguageSwitch $switch) {
-        //     $switch
-        //         ->locales(['ar','en','fr', 'id', 'ko', 'ja', 'es'])
-        //         ->visible(outsidePanels: true)
-        //         ->outsidePanelPlacement(Placement::TopRight)
-        //         ->displayLocale('en')
-        //         ->renderHook('panels::global-search.before');
-        // });
+        LanguageSwitch::configureUsing(function (LanguageSwitch $switch) {
+            $switch
+                ->locales(['ar','en','fr', 'id', 'ko', 'ja', 'es'])
+                ->visible(outsidePanels: true)
+                ->outsidePanelPlacement(Placement::TopRight)
+                ->displayLocale('en')
+                ->renderHook('panels::global-search.before');
+        });
     }
 }
