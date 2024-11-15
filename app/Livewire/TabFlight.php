@@ -101,7 +101,7 @@ class TabFlight extends ChartWidget
         'plugins' => [
                 'title' => [
                     'display' => true,
-                    'text' => "$totalProject Project \f $totalFlight Flight",
+                    'text' => "Total $totalFlight Flights Across $totalProject Projects",
                     'font' => [
                         'size' => 16,
                     ],

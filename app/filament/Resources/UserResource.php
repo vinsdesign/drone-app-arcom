@@ -230,7 +230,7 @@ class UserResource extends Resource
                     TextEntry::make('sertif')->label(TranslationHelper::translateIfNeeded('certificate')),
                     TextEntry::make('roles.name')->label(TranslationHelper::translateIfNeeded('roles')),
                     TextEntry::make('address')->label(TranslationHelper::translateIfNeeded('address')),
-                ])->columns(2)
+                ])->columns(2),
                  Section::make('')
                     ->schema([
                         InfolistView::make('component.flight-personnel')

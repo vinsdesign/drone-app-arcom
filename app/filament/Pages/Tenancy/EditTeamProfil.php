@@ -102,17 +102,17 @@ class EditTeamProfil extends EditTenantProfile
         public function mount():void
         {
             parent::mount();
-        $allowedRoles = ['super_admin', 'panel_user'];
-        $userRoles = Auth::user()->roles()->pluck('name')->toArray();
+            $allowedRoles = ['super_admin', 'panel_user'];
+            $userRoles = Auth::user()->roles()->pluck('name')->toArray();
 
-        if (!array_intersect($allowedRoles, $userRoles)) {
-            Notification::make()
-                ->title('Access Denied')
-                ->danger()
-                ->body('You do not have permission to access this page.')
-                ->send();
-            abort(403, 'Unauthorized');
+            if (!array_intersect($allowedRoles, $userRoles)) {
+                Notification::make()
+                    ->title('Access Denied')
+                    ->danger()
+                    ->body('You do not have permission to access this page.')
+                    ->send();
+                abort(403, 'Unauthorized');
+            }
         }
-    }
     
 }

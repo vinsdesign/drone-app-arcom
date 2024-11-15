@@ -78,7 +78,7 @@ class ProjectsResource extends Resource
                             ->options(customer::where('teams_id', auth()->user()->teams()->first()->id)
                             ->pluck('name', 'id')
                             )->searchable()
-                            ->placeholder((new GoogleTranslate(session('locale') ?? 'en'))->translate('Select an Customer'))
+                            ->placeholder(TranslationHelper::translateIfNeeded('Select an Customer'))
                             ->required(),
                         Forms\Components\TextArea::make('description')
                         ->label(TranslationHelper::translateIfNeeded('Description'))

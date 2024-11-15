@@ -50,13 +50,14 @@ class AdminPanelProvider extends PanelProvider
             ->login()
             ->registration()
             ->spa()
+            ->favicon(url('asset/favicon.png'))
             //subscribe
             ->plugin(\TomatoPHP\FilamentSubscriptions\FilamentSubscriptionsPlugin::make())
             ->pages([
                 Billing::class
             ])
             ->tenantBillingProvider(new FilamentSubscriptionsProvider())
-            ->requiresTenantSubscription() //error ketika mequest subscriptions
+            ->requiresTenantSubscription()
 
             //shield
             ->plugins([
@@ -97,7 +98,7 @@ class AdminPanelProvider extends PanelProvider
                 'profile' => MenuItem::make()->label('Edit Team Profile')->visible(function () {
                     $roles = Auth::user()->roles()->pluck('name');
                     return $roles->contains('super_admin') || $roles->contains('panel_user');
-                }),
+                    }),
                 // ...
             ])
             ->colors([

@@ -95,7 +95,7 @@ class EquipmentStatistik extends ChartWidget
         ->select('fligh_id')
         ->distinct()
         ->pluck('fligh_id');
-    $flights = fligh::where('teams_id', $tenant_id)
+        $flights = fligh::where('teams_id', $tenant_id)
         ->whereIn('id', $pivotEquipment)
         ->whereBetween('start_date_flight', [now()->startOfYear(), now()->endOfYear()])
         ->get();

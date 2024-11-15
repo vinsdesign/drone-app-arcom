@@ -3,11 +3,15 @@
 namespace App\Providers;
 
 use Filament\Facades\Filament;
+use Filament\Navigation\MenuItem;
+use Filament\Navigation\NavigationItem;
 use Illuminate\Support\ServiceProvider;
 use TomatoPHP\FilamentSubscriptions\Facades\FilamentSubscriptions;
 use Illuminate\Support\Facades\Gate;
 use BezhanSalleh\FilamentLanguageSwitch\LanguageSwitch;
 use BezhanSalleh\FilamentLanguageSwitch\Enums\Placement;
+use TomatoPHP\FilamentSubscriptions\Filament\Resources\PlanResource;
+use TomatoPHP\FilamentSubscriptions\Filament\Resources\SubscriptionResource;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -38,13 +42,13 @@ class AppServiceProvider extends ServiceProvider
         }
         //end test untuk merubah nama aplikasi (khusus untuk Super admin
 
-        // LanguageSwitch::configureUsing(function (LanguageSwitch $switch) {
-        //     $switch
-        //         ->locales(['ar','en','fr', 'id', 'ko', 'ja', 'es'])
-        //         ->visible(outsidePanels: true)
-        //         ->outsidePanelPlacement(Placement::TopRight)
-        //         ->displayLocale('en')
-        //         ->renderHook('panels::global-search.before');
-        // });
+        LanguageSwitch::configureUsing(function (LanguageSwitch $switch) {
+            $switch
+                ->locales(['ar','en','fr', 'id', 'ko', 'ja', 'es'])
+                ->visible(outsidePanels: true)
+                ->outsidePanelPlacement(Placement::TopRight)
+                ->displayLocale('en')
+                ->renderHook('panels::global-search.before');
+        });
     }
 }
