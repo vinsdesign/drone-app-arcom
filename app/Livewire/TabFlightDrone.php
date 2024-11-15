@@ -67,7 +67,7 @@ class TabFlightDrone extends ChartWidget
         'plugins' => [
                 'title' => [
                     'display' => true,
-                    'text' => "$totalDrones Drone \f $totalFlight Flight",
+                    'text' => "Total $totalFlight Flights with $totalDrones Drones.",
                     'font' => [
                         'size' => 16,
                     ],

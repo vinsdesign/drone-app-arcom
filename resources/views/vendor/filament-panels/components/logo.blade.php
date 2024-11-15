@@ -1,1 +1,1 @@
-<img src="" alt="DroneLogBook" class="h-16">
+<img src="{" alt="DroneLogBook" class="h-16">

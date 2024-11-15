@@ -11,7 +11,7 @@ use App\Helpers\TranslationHelper;
 
 class FlightDurationChart extends ChartWidget
 {
-    protected static ?string $heading = 'Duration Flight Hours';
+    protected static ?string $heading = 'Flight Duration in the Last 30 Days';
     protected static string $color = 'success';
     protected static bool $isLazy = false;
     protected static ?int $sort = 4;
@@ -20,7 +20,7 @@ class FlightDurationChart extends ChartWidget
     {
         $tenant_id = Auth()->User()->teams()->first()->id;
         $teams = fligh::where('teams_id', $tenant_id)
-        ->whereBetween('start_date_flight', [now()->startOfYear(), now()->endOfYear()])
+        ->whereBetween('start_date_flight', [now()->subDays(30), now()])
         ->get();
         $data = $teams->groupBy(function ($item) {
             return Carbon::parse($item->start_date_flight)->format('Y-m-d');
@@ -59,6 +59,55 @@ class FlightDurationChart extends ChartWidget
 
     protected function getType(): string
     {
-        return 'line';
+        return 'bar';
+    }
+    //Option Header
+    protected function getOptions(): array
+    {
+        $tenant_id = Auth()->User()->teams()->first()->id;
+        //drone
+        $flights= fligh::where('teams_id', $tenant_id)
+        ->whereBetween('start_date_flight', [now()->subDays(30), now()])
+        ->get();
+        $data = $flights->groupBy(function ($item) {
+            return Carbon::parse($item->start_date_flight)->format('Y-m-d');
+        })->map(function ($group) {
+            $totalFlights = $group->count();
+            $totalDurationInSeconds = $group->sum(function ($flight) {
+                list($hours, $minutes, $seconds) = explode(':', $flight->duration);
+                return ($hours * 3600) + ($minutes * 60) + $seconds;
+            });
+            $totalHours = floor($totalDurationInSeconds / 3600);
+            $totalMinutes = floor(($totalDurationInSeconds % 3600) / 60);
+            $totalSeconds = $totalDurationInSeconds % 60;
+        
+            return [
+                'totalFlights' => $totalFlights,
+                'totalDuration' => sprintf('%02d:%02d:%02d', $totalHours, $totalMinutes, $totalSeconds), 
+            ];
+        });
+    
+        $totalDurationInSeconds = $flights->sum(function ($flight) {
+            list($hours, $minutes, $seconds) = explode(':', $flight->duration);
+            return ($hours * 3600) + ($minutes * 60) + $seconds;
+        });
+        
+        $totalHours = floor($totalDurationInSeconds / 3600);
+        $totalMinutes = floor(($totalDurationInSeconds % 3600) / 60);
+        $totalSeconds = $totalDurationInSeconds % 60;
+        // Format total durasi
+        $formattedTotalDuration = sprintf('%02d:%02d:%02d', $totalHours, $totalMinutes, $totalSeconds);
+
+        return [
+        'plugins' => [
+                'title' => [
+                    'display' => true,
+                    'text' => "$formattedTotalDuration Hours",
+                    'font' => [
+                        'size' => 14,
+                    ],
+                ],
+            ],
+        ];
     }
 }

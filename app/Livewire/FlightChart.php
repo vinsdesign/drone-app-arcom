@@ -11,7 +11,7 @@ use App\Helpers\TranslationHelper;
 
 class FlightChart extends ChartWidget
 {
-    protected static ?string $heading = 'Flight';
+    protected static ?string $heading = 'Flights in the Last 30 Days';
     protected static bool $isLazy = false;
     protected static ?int $sort = 3;
 
@@ -19,8 +19,7 @@ class FlightChart extends ChartWidget
     {
         $tenant_id = Auth()->User()->teams()->first()->id;
         $teams = fligh::where('teams_id', $tenant_id)
-
-        ->whereBetween('Start_date_flight', [now()->startOfYear(), now()->endOfYear()])
+        ->whereBetween('start_date_flight', [now()->subDays(30), now()])
         ->get();
         $data = $teams->groupBy(function ($item) {
             return Carbon::parse($item->start_date_flight)->format('Y-m-d');
@@ -46,6 +45,27 @@ class FlightChart extends ChartWidget
 
     protected function getType(): string
     {
-        return 'line';
+        return 'bar';
+    }
+    //option header
+    protected function getOptions(): array
+    {
+        $tenant_id = Auth()->User()->teams()->first()->id;
+        //drone
+        $totalFlight= fligh::where('teams_id', $tenant_id)
+        ->whereBetween('start_date_flight', [now()->subDays(30), now()])
+        ->count('name');
+
+        return [
+        'plugins' => [
+                'title' => [
+                    'display' => true,
+                    'text' => "$totalFlight Flight",
+                    'font' => [
+                        'size' => 14,
+                    ],
+                ],
+            ],
+        ];
     }
 }
