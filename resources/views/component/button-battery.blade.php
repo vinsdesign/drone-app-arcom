@@ -1,3 +1,6 @@
+@php
+ use App\Helpers\TranslationHelper;
+@endphp
 <head>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
@@ -15,7 +18,7 @@
   <!-- Tombol untuk Membuka Modal -->
     <button style="font-size: 12px; background-color: #4A5568; color: white; font-weight: bold; padding: 4px 8px; border-radius: 4px; border: none; cursor: pointer;" onclick="openModalBattrei()" type="button">
         <span style="color: inherit; text-decoration: none;">
-            Add New Batterei
+            {!! TranslationHelper::translateIfNeeded('Add New Battery')!!}
         </span>
     </button>
 
@@ -31,7 +34,7 @@
 
             <!-- Judul Modal -->
             <h2 class="text-center text-lg font-semibold text-gray-900 dark:text-white">
-                Create Batterei
+                {!! TranslationHelper::translateIfNeeded('Create Battery')!!}
             </h2>
             <hr class="border-t border-gray-300 dark:border-gray-600 w-24 mx-auto">
 
@@ -42,19 +45,19 @@
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <!-- Name Input -->
                     <div>
-                        <label class="block text-gray-700 dark:text-gray-300">Name</label>
+                        <label class="block text-gray-700 dark:text-gray-300">{!! TranslationHelper::translateIfNeeded('Name')!!}</label>
                         <input id="namebattrei" type="text" name="name" maxlength="255" class="w-full mt-1 p-2 border dark:bg-gray-900 dark:border-gray-700 dark:text-gray-300 rounded-md focus:ring focus:ring-blue-500">
                     </div>
             
                     <!-- Model Input -->
                     <div>
-                        <label class="block text-gray-700 dark:text-gray-300">Model</label>
+                        <label class="block text-gray-700 dark:text-gray-300">{!! TranslationHelper::translateIfNeeded('Model')!!}</label>
                         <input id="modelbattrei" type="text" name="model" maxlength="255" class="w-full mt-1 p-2 border dark:bg-gray-900 dark:border-gray-700 dark:text-gray-300 rounded-md focus:ring focus:ring-blue-500">
                     </div>
             
                     <!-- Status Input -->
                     <div>
-                        <label class="block text-gray-700 dark:text-gray-300">Status</label>
+                        <label class="block text-gray-700 dark:text-gray-300">{!! TranslationHelper::translateIfNeeded('Status')!!}</label>
                         <select id="statusbattrei" name="statusbattreit" class="w-full mt-1 p-2 border dark:bg-gray-900 dark:border-gray-700 dark:text-gray-300 rounded-md focus:ring focus:ring-blue-500">
                             <option value="airworthy">airworthy</option>
                             <option value="maintenance">Maintenance</option>
@@ -64,7 +67,7 @@
             
                     <!-- Inventory Asset Input -->
                     <div>
-                        <label class="block text-gray-700 dark:text-gray-300">Asset Inventory</label>
+                        <label class="block text-gray-700 dark:text-gray-300">{!! TranslationHelper::translateIfNeeded('Asset/Inventory')!!}</label>
                         <select id="inventory_assetequipment" name="inventory_asset" class="w-full mt-1 p-2 border dark:bg-gray-900 dark:border-gray-700 dark:text-gray-300 rounded-md focus:ring focus:ring-blue-500">
                             <option value="inventory">Inventory</option>
                             <option value="asset">Asset</option>
@@ -74,90 +77,90 @@
             
                     <!-- Serial P Input -->
                     <div>
-                        <label class="block text-gray-700 dark:text-gray-300">Serial P</label>
+                        <label class="block text-gray-700 dark:text-gray-300">{!! TranslationHelper::translateIfNeeded('Serial P')!!}</label>
                         <input id="serial_Pbattrei" type="text" name="serial_P" maxlength="255" class="w-full mt-1 p-2 border dark:bg-gray-900 dark:border-gray-700 dark:text-gray-300 rounded-md focus:ring focus:ring-blue-500">
                     </div>
             
                     <!-- Serial I Input -->
                     <div>
-                        <label class="block text-gray-700 dark:text-gray-300">Serial I</label>
+                        <label class="block text-gray-700 dark:text-gray-300">{!! TranslationHelper::translateIfNeeded('Serial I')!!}</label>
                         <input id="serial_Ibattrei" type="text" name="serial_I" maxlength="255" class="w-full mt-1 p-2 border dark:bg-gray-900 dark:border-gray-700 dark:text-gray-300 rounded-md focus:ring focus:ring-blue-500">
                     </div>
             
                     <!-- Cell Count Input -->
                     <div>
-                        <label class="block text-gray-700 dark:text-gray-300">Cell Count</label>
+                        <label class="block text-gray-700 dark:text-gray-300">{!! TranslationHelper::translateIfNeeded('Cell Count')!!}</label>
                         <input id="cellCountbattrei" type="number" name="cellCount" class="w-full mt-1 p-2 border dark:bg-gray-900 dark:border-gray-700 dark:text-gray-300 rounded-md focus:ring focus:ring-blue-500">
                     </div>
             
                     <!-- Nominal Voltage Input -->
                     <div>
-                        <label class="block text-gray-700 dark:text-gray-300">Nominal Voltage</label>
+                        <label class="block text-gray-700 dark:text-gray-300">{!! TranslationHelper::translateIfNeeded('Nominal Voltage')!!}</label>
                         <input id="nominal_voltagebattrei" type="number" name="nominal_voltage" class="w-full mt-1 p-2 border dark:bg-gray-900 dark:border-gray-700 dark:text-gray-300 rounded-md focus:ring focus:ring-blue-500">
                     </div>
             
                     <!-- Capacity Input -->
                     <div>
-                        <label class="block text-gray-700 dark:text-gray-300">Capacity</label>
+                        <label class="block text-gray-700 dark:text-gray-300">{!! TranslationHelper::translateIfNeeded('Capacity')!!}</label>
                         <input id="capacitybattrei" type="number" name="capacity" class="w-full mt-1 p-2 border dark:bg-gray-900 dark:border-gray-700 dark:text-gray-300 rounded-md focus:ring focus:ring-blue-500">
                     </div>
             
                     <!-- Initial Cycle Count Input -->
                     <div>
-                        <label class="block text-gray-700 dark:text-gray-300">Initial Cycle Count</label>
+                        <label class="block text-gray-700 dark:text-gray-300">{!! TranslationHelper::translateIfNeeded('Initial Cycle Count')!!}</label>
                         <input id="initial_Cycle_countbattrei" type="number" name="initial_Cycle_count" class="w-full mt-1 p-2 border dark:bg-gray-900 dark:border-gray-700 dark:text-gray-300 rounded-md focus:ring focus:ring-blue-500">
                     </div>
             
                     <!-- Life Span Input -->
                     <div>
-                        <label class="block text-gray-700 dark:text-gray-300">Life Span</label>
+                        <label class="block text-gray-700 dark:text-gray-300">{!! TranslationHelper::translateIfNeeded('Life Span')!!}</label>
                         <input id="life_spanbattrei" type="number" name="life_span" class="w-full mt-1 p-2 border dark:bg-gray-900 dark:border-gray-700 dark:text-gray-300 rounded-md focus:ring focus:ring-blue-500">
                     </div>
             
                     <!-- Flight Count Input -->
                     <div>
-                        <label class="block text-gray-700 dark:text-gray-300">Flight Count</label>
+                        <label class="block text-gray-700 dark:text-gray-300">{!! TranslationHelper::translateIfNeeded('Flight Count')!!}</label>
                         <input id="fligh_countbattrei" type="number" name="flaight_count" class="w-full mt-1 p-2 border dark:bg-gray-900 dark:border-gray-700 dark:text-gray-300 rounded-md focus:ring focus:ring-blue-500">
                     </div>
             
                     <!-- For Drone Input -->
                     <div>
-                        <label class="block text-gray-700 dark:text-gray-300">For Drone</label>
+                        <label class="block text-gray-700 dark:text-gray-300">{!! TranslationHelper::translateIfNeeded('For Drone')!!}</label>
                         <input id="for_dronebattrei" type="text" name="for_drone" maxlength="255" class="w-full mt-1 p-2 border dark:bg-gray-900 dark:border-gray-700 dark:text-gray-300 rounded-md focus:ring focus:ring-blue-500">
                     </div>
             
                     <!-- Purchase Date Input -->
                     <div>
-                        <label class="block text-gray-700 dark:text-gray-300">Purchase Date</label>
+                        <label class="block text-gray-700 dark:text-gray-300">{!! TranslationHelper::translateIfNeeded('Purchase Date')!!}</label>
                         <input id="purchase_datebattrei" type="date" name="purchase_date" class="w-full mt-1 p-2 border dark:bg-gray-900 dark:border-gray-700 dark:text-gray-300 rounded-md focus:ring focus:ring-blue-500">
                     </div>
             
                     <!-- Insurable Value Input -->
                     <div>
-                        <label class="block text-gray-700 dark:text-gray-300">Insurable Value</label>
+                        <label class="block text-gray-700 dark:text-gray-300">{!! TranslationHelper::translateIfNeeded('Insurable Value')!!}</label>
                         <input id="insurable_valuebattrei" type="number" name="insurable_value" class="w-full mt-1 p-2 border dark:bg-gray-900 dark:border-gray-700 dark:text-gray-300 rounded-md focus:ring focus:ring-blue-500">
                     </div>
             
                     <!-- Weight Input -->
                     <div>
-                        <label class="block text-gray-700 dark:text-gray-300">Weight</label>
+                        <label class="block text-gray-700 dark:text-gray-300">{!! TranslationHelper::translateIfNeeded('Weight')!!}</label>
                         <input id="weightbattrei" type="number" name="weight" class="w-full mt-1 p-2 border dark:bg-gray-900 dark:border-gray-700 dark:text-gray-300 rounded-md focus:ring focus:ring-blue-500">
                     </div>
             
                     <!-- Firmware Version Input -->
                     <div>
-                        <label class="block text-gray-700 dark:text-gray-300">Firmware Version</label>
+                        <label class="block text-gray-700 dark:text-gray-300">{!! TranslationHelper::translateIfNeeded('Firmware Version')!!}</label>
                         <input id="firmware_versionbattrei" type="text" name="firmware_version" maxlength="255" class="w-full mt-1 p-2 border dark:bg-gray-900 dark:border-gray-700 dark:text-gray-300 rounded-md focus:ring focus:ring-blue-500">
                     </div>
             
                     <!-- Hardware Version Input -->
                     <div>
-                        <label class="block text-gray-700 dark:text-gray-300">Hardware Version</label>
+                        <label class="block text-gray-700 dark:text-gray-300">{!! TranslationHelper::translateIfNeeded('Hardware Version')!!}</label>
                         <input id="hardware_versionbattrei" type="text" name="hardware_version" maxlength="255" class="w-full mt-1 p-2 border dark:bg-gray-900 dark:border-gray-700 dark:text-gray-300 rounded-md focus:ring focus:ring-blue-500">
                     </div>
                     <!-- owner Input-->
                     <div>
-                        <label class="block text-gray-700 dark:text-gray-300">Owner</label>
+                        <label class="block text-gray-700 dark:text-gray-300">{!! TranslationHelper::translateIfNeeded('Owner')!!}</label>
                         <select id="users_idbattrei" name="users_id" class="w-full mt-1 p-2 border dark:bg-gray-900 dark:border-gray-700 dark:text-gray-300 rounded-md focus:ring focus:ring-blue-500">
                             @foreach (App\Models\User::whereHas('teams', function ($query) {
                                     $query->where('teams.id', auth()->user()->teams()->first()->id);
@@ -168,7 +171,7 @@
                     </div>
                     <!-- Is Loaner Input -->
                     <div>
-                        <label class="block text-gray-700 dark:text-gray-300">Is Loaner</label>
+                        <label class="block text-gray-700 dark:text-gray-300">{!! TranslationHelper::translateIfNeeded('Is Loaner')!!}</label>
                         <select id="is_loanerbattrei" name="is_loaner" class="w-full mt-1 p-2 border dark:bg-gray-900 dark:border-gray-700 dark:text-gray-300 rounded-md focus:ring focus:ring-blue-500">
                             <option value="1">Yes</option>
                             <option value="0">No</option>
@@ -178,7 +181,7 @@
             
                 <!-- Description Text Area -->
                 <div>
-                    <label class="block text-gray-700 dark:text-gray-300">Description</label>
+                    <label class="block text-gray-700 dark:text-gray-300">{!! TranslationHelper::translateIfNeeded('Description')!!}</label>
                     <textarea id="descriptionbattrei" name="description" maxlength="255" class="w-full mt-1 p-2 border dark:bg-gray-900 dark:border-gray-700 dark:text-gray-300 rounded-md focus:ring focus:ring-blue-500"></textarea>
                 </div>
             
@@ -187,7 +190,7 @@
                     <button id="triggerButtonB" type="button" 
                         style="font-size: 16px; background-color: #4A5568; color: white; font-weight: bold; padding: 8px 16px; border-radius: 4px; border: none; cursor: pointer;"
                         class="px-6 py-3 bg-blue-600 text-white rounded-md hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600" onclick="createBattrei()">
-                        Submit
+                        {!! TranslationHelper::translateIfNeeded('Submit')!!}
                     </button>
                 </div>
             </div>

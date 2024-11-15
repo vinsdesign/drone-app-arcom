@@ -163,7 +163,7 @@ class CustomerResource extends Resource
     {
         return $infolist
         ->schema([
-            Section::make('Customer Overview')
+            Section::make(TranslationHelper::translateIfNeeded('Customer Overview'))
             ->label(TranslationHelper::translateIfNeeded('Customer Overview'))
             ->schema([
                 TextEntry::make('name')

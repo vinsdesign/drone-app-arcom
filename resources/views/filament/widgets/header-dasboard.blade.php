@@ -1,4 +1,5 @@
 @php
+    use App\Helpers\TranslationHelper;
     $user = Auth()->user()->Teams()->first()->id;
     $sumFlight = App\Models\fligh::Where('teams_id',$user)->count('name');
     $flights = App\Models\fligh::Where('teams_id',$user)->get();
@@ -34,12 +35,12 @@
             <!-- Status indicators (Airworthy, Maintenance, Retired) -->
             <div class="flex space-x-12">
                 <div class="text-center">
-                    <h2 class="text-sm font-semibold text-gray-500 dark:text-gray-400">Flying Time</h2>
+                    <h2 class="text-sm font-semibold text-gray-500 dark:text-gray-400">{!! TranslationHelper::translateIfNeeded('Flying Time') !!}</h2>
                     <h1 class="text-3xl font-bold text-gray-600 dark:text-gray-300">{{ $formattedTotalDuration }}</h1>
                 </div>
                 <br>
                 <div class="text-center">
-                    <h2 class="text-sm font-semibold text-gray-500 dark:text-gray-400">Flights</h2>
+                    <h2 class="text-sm font-semibold text-gray-500 dark:text-gray-400">{!! TranslationHelper::translateIfNeeded('Flights') !!}</h2>
                     <h1 class="text-3xl font-bold text-gray-600 dark:text-gray-300">{{ $sumFlight }}</h1>
                 </div>
                 <br>

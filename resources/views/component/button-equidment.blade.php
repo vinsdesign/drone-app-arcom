@@ -2,6 +2,9 @@
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head> --}}
+@php
+    use App\Helpers\TranslationHelper;
+@endphp
 <script src="https://cdn.tailwindcss.com"></script>
 <div>
 <!--alret massage   -->
@@ -16,7 +19,7 @@
   <!-- Tombol untuk Membuka Modal -->
     <button style="font-size: 12px; background-color: #4A5568; color: white; font-weight: bold; padding: 4px 8px; border-radius: 4px; border: none; cursor: pointer;" onclick="openModalEquipment()" type="button">
         <span style="color: inherit; text-decoration: none;">
-            Add New Equipment
+            {!! TranslationHelper::translateIfNeeded('Add New Equipment')!!}
         </span>
     </button>
 
@@ -32,7 +35,7 @@
 
             <!-- Judul Modal -->
             <h2 class="text-center text-lg font-semibold text-gray-900 dark:text-white">
-                Create Equipment
+                {!! TranslationHelper::translateIfNeeded('Create Equipment')!!}
             </h2>
             <hr class="border-t border-gray-300 dark:border-gray-600 w-24 mx-auto">
 
@@ -43,19 +46,19 @@
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <!-- Name Input -->
                     <div>
-                        <label class="block text-gray-700 dark:text-gray-300">Name</label>
+                        <label class="block text-gray-700 dark:text-gray-300">{!! TranslationHelper::translateIfNeeded('Name')!!}</label>
                         <input id="nameequipment" type="text" name="name" maxlength="255" class="w-full mt-1 p-2 border dark:bg-gray-900 dark:border-gray-700 dark:text-gray-300 rounded-md focus:ring focus:ring-blue-500">
                     </div>
             
                     <!-- Model Input -->
                     <div>
-                        <label class="block text-gray-700 dark:text-gray-300">Model</label>
+                        <label class="block text-gray-700 dark:text-gray-300">{!! TranslationHelper::translateIfNeeded('Model')!!}</label>
                         <input id="modelequipment" type="text" name="model" maxlength="255" class="w-full mt-1 p-2 border dark:bg-gray-900 dark:border-gray-700 dark:text-gray-300 rounded-md focus:ring focus:ring-blue-500">
                     </div>
             
                     <!-- Status Input -->
                     <div>
-                        <label class="block text-gray-700 dark:text-gray-300">Status</label>
+                        <label class="block text-gray-700 dark:text-gray-300">{!! TranslationHelper::translateIfNeeded('Status')!!}</label>
                         <select id="statusequipment" name="statusbattrei" class="w-full mt-1 p-2 border dark:bg-gray-900 dark:border-gray-700 dark:text-gray-300 rounded-md focus:ring focus:ring-blue-500">
                             <option value="airworthy">airworthy</option>
                             <option value="maintenance">Maintenance</option>
@@ -65,7 +68,7 @@
             
                     <!-- Inventory Asset Input -->
                     <div>
-                        <label class="block text-gray-700 dark:text-gray-300">Inventory Asset</label>
+                        <label class="block text-gray-700 dark:text-gray-300">{!! TranslationHelper::translateIfNeeded('Inventory/Asset')!!}</label>
                         <select id="inventory_assetequipment" name="inventory_asset" class="w-full mt-1 p-2 border dark:bg-gray-900 dark:border-gray-700 dark:text-gray-300 rounded-md focus:ring focus:ring-blue-500">
                             <option value="inventory">Inventory</option>
                             <option value="asset">Asset</option>
@@ -74,13 +77,13 @@
             
                     <!-- Serial Input -->
                     <div>
-                        <label class="block text-gray-700 dark:text-gray-300">Serial</label>
+                        <label class="block text-gray-700 dark:text-gray-300">{!! TranslationHelper::translateIfNeeded('Serial')!!}</label>
                         <input id="serialequipment" type="text" name="serial" maxlength="255" class="w-full mt-1 p-2 border dark:bg-gray-900 dark:border-gray-700 dark:text-gray-300 rounded-md focus:ring focus:ring-blue-500">
                     </div>
             
                     <!-- Type Input -->
                     <div>
-                        <label class="block text-gray-700 dark:text-gray-300">Type</label>
+                        <label class="block text-gray-700 dark:text-gray-300">{!! TranslationHelper::translateIfNeeded('Type')!!}</label>
                         <select id="typeequipment" name="type" class="w-full mt-1 p-2 border dark:bg-gray-900 dark:border-gray-700 dark:text-gray-300 rounded-md focus:ring focus:ring-blue-500">
                             <option value="airframe">Airframe</option>
                             <option value="anenometer">Anenometer</option>
@@ -119,7 +122,7 @@
             
                     <!-- Drone Select -->
                     <div>
-                        <label class="block text-gray-700 dark:text-gray-300">Drone</label>
+                        <label class="block text-gray-700 dark:text-gray-300">{!! TranslationHelper::translateIfNeeded('Drone')!!}</label>
                         <select id="drones_idequipment" name="drones_id" class="w-full mt-1 p-2 border dark:bg-gray-900 dark:border-gray-700 dark:text-gray-300 rounded-md focus:ring focus:ring-blue-500">
                             @foreach (App\Models\Drone::where('teams_id', auth()->user()->teams()->first()->id)->pluck('name', 'id') as $id => $name)
                                 <option value="{{ $id }}">{{ $name }}</option>
@@ -129,7 +132,7 @@
             
                     <!-- User Select -->
                     <div>
-                        <label class="block text-gray-700 dark:text-gray-300">Owner</label>
+                        <label class="block text-gray-700 dark:text-gray-300">{!! TranslationHelper::translateIfNeeded('Owner')!!}</label>
                         <select id="users_idequipment" name="users_idequipment" class="w-full mt-1 p-2 border dark:bg-gray-900 dark:border-gray-700 dark:text-gray-300 rounded-md focus:ring focus:ring-blue-500">
                             @foreach (App\Models\User::whereHas('teams', function ($query) {
                                     $query->where('teams.id', auth()->user()->teams()->first()->id);
@@ -141,25 +144,25 @@
             
                     <!-- Purchase Date Input -->
                     <div>
-                        <label class="block text-gray-700 dark:text-gray-300">Purchase Date</label>
+                        <label class="block text-gray-700 dark:text-gray-300">{!! TranslationHelper::translateIfNeeded('Purchase Date')!!}</label>
                         <input id="purchase_dateequipment" type="date" name="purchase_date" class="w-full mt-1 p-2 border dark:bg-gray-900 dark:border-gray-700 dark:text-gray-300 rounded-md focus:ring focus:ring-blue-500">
                     </div>
             
                     <!-- Insurable Value Input -->
                     <div>
-                        <label class="block text-gray-700 dark:text-gray-300">Insurable Value</label>
+                        <label class="block text-gray-700 dark:text-gray-300">{!! TranslationHelper::translateIfNeeded('Insurable Value')!!}</label>
                         <input id="insurable_valueequipment" type="number" name="insurable_value" class="w-full mt-1 p-2 border dark:bg-gray-900 dark:border-gray-700 dark:text-gray-300 rounded-md focus:ring focus:ring-blue-500">
                     </div>
             
                     <!-- Weight Input -->
                     <div>
-                        <label class="block text-gray-700 dark:text-gray-300">Weight</label>
+                        <label class="block text-gray-700 dark:text-gray-300">{!! TranslationHelper::translateIfNeeded('Weight')!!}</label>
                         <input id="weightequipment" type="number" name="weight" class="w-full mt-1 p-2 border dark:bg-gray-900 dark:border-gray-700 dark:text-gray-300 rounded-md focus:ring focus:ring-blue-500">
                     </div>
             
                     <!-- Is Loaner Input -->
                     <div>
-                        <label class="block text-gray-700 dark:text-gray-300">Is Loaner</label>
+                        <label class="block text-gray-700 dark:text-gray-300">{!! TranslationHelper::translateIfNeeded('Is Loaner')!!}</label>
                         <select id="is_loanerequipment" name="is_loaner" class="w-full mt-1 p-2 border dark:bg-gray-900 dark:border-gray-700 dark:text-gray-300 rounded-md focus:ring focus:ring-blue-500">
                             <option value="1">Yes</option>
                             <option value="0">No</option>
@@ -168,20 +171,20 @@
             
                     <!-- Firmware Version Input -->
                     <div>
-                        <label class="block text-gray-700 dark:text-gray-300">Firmware Version</label>
+                        <label class="block text-gray-700 dark:text-gray-300">{!! TranslationHelper::translateIfNeeded('Firmware Version')!!}</label>
                         <input id="firmware_vequipment" type="text" name="firmware_v" maxlength="255" class="w-full mt-1 p-2 border dark:bg-gray-900 dark:border-gray-700 dark:text-gray-300 rounded-md focus:ring focus:ring-blue-500">
                     </div>
             
                     <!-- Hardware Version Input -->
                     <div>
-                        <label class="block text-gray-700 dark:text-gray-300">Hardware Version</label>
+                        <label class="block text-gray-700 dark:text-gray-300">{!! TranslationHelper::translateIfNeeded('Hardware Version')!!}</label>
                         <input id="hardware_vequipment" type="text" name="hardware_v" maxlength="255" class="w-full mt-1 p-2 border dark:bg-gray-900 dark:border-gray-700 dark:text-gray-300 rounded-md focus:ring focus:ring-blue-500">
                     </div>
             
                 </div>
                      <!-- Description Text Area -->
                      <div>
-                        <label class="block text-gray-700 dark:text-gray-300">Description</label>
+                        <label class="block text-gray-700 dark:text-gray-300">{!! TranslationHelper::translateIfNeeded('Description')!!}</label>
                         <textarea id="descriptionequipment" name="description" maxlength="255" class="w-full mt-1 p-2 border dark:bg-gray-900 dark:border-gray-700 dark:text-gray-300 rounded-md focus:ring focus:ring-blue-500"></textarea>
                     </div>
             
@@ -190,7 +193,7 @@
                     <button id="triggerButton" type="button" 
                         style="font-size: 16px; background-color: #4A5568; color: white; font-weight: bold; padding: 8px 16px; border-radius: 4px; border: none; cursor: pointer;"
                         class="px-6 py-3 bg-blue-600 text-white rounded-md hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600" onclick="createEquipment()">
-                        Submit
+                        {!! TranslationHelper::translateIfNeeded('Submit')!!}
                     </button>
                 </div>
             </div>            

@@ -7,6 +7,7 @@ use Carbon\Carbon;
 use Filament\Widgets\ChartWidget;
 use Flowframe\Trend\Trend;
 use Flowframe\Trend\TrendValue;
+use App\Helpers\TranslationHelper;
 
 class FlightChart extends ChartWidget
 {
@@ -30,7 +31,7 @@ class FlightChart extends ChartWidget
     return [
         'datasets' => [
             [
-                'label' => 'Flight PerDay',
+                'label' => TranslationHelper::translateIfNeeded('Flight PerDay'),
                 'data' => $data->map(fn ($value) => round($value))->values(),
                 'backgroundColor' => 'rgba(75, 192, 192, 0.6)',
                 'borderColor' => 'rgba(255, 99, 132, 1)',

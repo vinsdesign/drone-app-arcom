@@ -8,7 +8,7 @@ use App\Models\drone;
 use App\Models\fligh;
 use App\Models\fligh_location;
 use App\Models\Incident;
-use App\Models\project;
+use App\Models\Projects;
 use App\Models\User;
 use Filament\Forms;
 use Filament\Infolists\Components\Section;
@@ -106,7 +106,7 @@ class IncidentResource extends Resource
                         // ->relationship('project','case')
                         ->label(TranslationHelper::translateIfNeeded('Projects'))
                         ->options(function (callable $get) use ($currentTeamId) {
-                            return project::where('teams_id', $currentTeamId)->pluck('case', 'id');
+                            return Projects::where('teams_id', $currentTeamId)->pluck('case', 'id');
                         })
                         ->searchable()
                         ->required(),
@@ -221,7 +221,7 @@ class IncidentResource extends Resource
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('updated_at')
-                ->label(TranslationHelper::translateIfNeeded('Updated at'))
+                    ->label(TranslationHelper::translateIfNeeded('Updated at'))
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
@@ -234,8 +234,10 @@ class IncidentResource extends Resource
                 ->options([
                     false => 'Closed',
                     true => 'Under Review',
-                ]),
+                ])
+                ->label(TranslationHelper::translateIfNeeded('Status')),
                 Tables\Filters\SelectFilter::make('create_at') 
+                ->label(TranslationHelper::translateIfNeeded('Create at'))
             ])
             ->actions([
                 // Action::make('viewFlight')

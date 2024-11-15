@@ -9,6 +9,7 @@ use App\Models\Drone;
 use Livewire\Component;
 use Illuminate\Contracts\View\View;
 use Route;
+use App\Helpers\TranslationHelper;
 class DroneStatistik extends ChartWidget
 {
     protected static bool $isLazy = false;
@@ -65,12 +66,12 @@ class DroneStatistik extends ChartWidget
         return [
             'datasets' => [
                 [
-                    'label' => 'Flights Total ',
+                    'label' => (TranslationHelper::translateIfNeeded('Flights Total ')),
                     'data' => $data->pluck('totalFlights')->values()->toArray(),
                     'backgroundColor' => 'rgba(75, 192, 192, 0.6)',
                 ],
                 [
-                    'label' => 'Flight Duration (Hours)',
+                    'label' => (TranslationHelper::translateIfNeeded('Flight Duration (Hours)')),
                     'data' => $data->pluck('totalDuration')->values()->toArray(),
                     'backgroundColor' => 'rgba(255, 99, 132, 0.6)',
                 ],
@@ -119,7 +120,7 @@ class DroneStatistik extends ChartWidget
             'plugins' => [
                 'title' => [
                     'display' => true,
-                    'text' => 'Flights Total: ' . $totalFlightsPerMonth . ' | Duration Total: ' . $formattedTotalDuration,
+                    'text' => (TranslationHelper::translateIfNeeded('Flights Total: ')) . $totalFlightsPerMonth . (TranslationHelper::translateIfNeeded(' | Duration Total: ')) . $formattedTotalDuration,
                     'font' => [
                         'size' => 16,
                     ],
@@ -130,7 +131,7 @@ class DroneStatistik extends ChartWidget
     }
     public function getDescription(): ?string
 {
-    return 'Total flights and monthly duration';
+    return (TranslationHelper::translateIfNeeded('Total flights and monthly duration'));
 }
     protected function getType(): string
     {
