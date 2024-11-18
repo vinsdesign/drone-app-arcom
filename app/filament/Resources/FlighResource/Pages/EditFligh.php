@@ -12,6 +12,7 @@ class EditFligh extends EditRecord
 {
     protected static string $resource = FlighResource::class;
 
+
     public function mount($record): void
     {
         parent::mount($record);

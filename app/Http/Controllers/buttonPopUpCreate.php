@@ -34,7 +34,7 @@ class buttonPopUpCreate extends Controller
         if($sql){
             $sql->teams()->attach($id);
             session()->flash('successfully', 'Data berhasil ditambahkan!');
-            return response()->json(['success' => 'Create successfully.',
+            return response()->json(['success' => 'Create successfully',
             'case' => $revenue]);      
         }else{
             return response()->json(['error' => 'Error To Create.']);

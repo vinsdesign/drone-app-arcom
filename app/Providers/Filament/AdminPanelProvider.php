@@ -43,6 +43,7 @@ class AdminPanelProvider extends PanelProvider
 {
     public function panel(Panel $panel): Panel
     {
+        
         return $panel
             ->default()
             ->id('admin')
@@ -50,7 +51,10 @@ class AdminPanelProvider extends PanelProvider
             ->login()
             ->registration()
             ->spa()
-            // ->favicon(url('asset/favicon.png'))
+
+            ->favicon(asset('asset/favicon.png'))
+            ->tenantRoutePrefix('team')
+
             //subscribe
             ->plugin(\TomatoPHP\FilamentSubscriptions\FilamentSubscriptionsPlugin::make())
             ->pages([

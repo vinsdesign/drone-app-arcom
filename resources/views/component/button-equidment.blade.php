@@ -5,7 +5,7 @@
 @php
     use App\Helpers\TranslationHelper;
 @endphp
-<script src="https://cdn.tailwindcss.com"></script>
+{{-- <script src="https://cdn.tailwindcss.com"></script> --}}
 <div>
 <!--alret massage   -->
 <div id="success-notification-equipment" class="hidden-notif bg-green-500 text-white p-4 rounded-lg shadow-lg flex items-center justify-between">
@@ -122,7 +122,7 @@
             
                     <!-- Drone Select -->
                     <div>
-                        <label class="block text-gray-700 dark:text-gray-300">{!! TranslationHelper::translateIfNeeded('Drone')!!}</label>
+                        <label class="block text-gray-700 dark:text-gray-300">{!! TranslationHelper::translateIfNeeded('For Drone (Optional)')!!}</label>
                         <select id="drones_idequipment" name="drones_id" class="w-full mt-1 p-2 border dark:bg-gray-900 dark:border-gray-700 dark:text-gray-300 rounded-md focus:ring focus:ring-blue-500">
                             @foreach (App\Models\Drone::where('teams_id', auth()->user()->teams()->first()->id)->pluck('name', 'id') as $id => $name)
                                 <option value="{{ $id }}">{{ $name }}</option>

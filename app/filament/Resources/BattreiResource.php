@@ -42,7 +42,7 @@ class BattreiResource extends Resource
 
     public static function getNavigationLabel(): string
     {
-        return TranslationHelper::translateIfNeeded('Documents');
+        return TranslationHelper::translateIfNeeded('Batteries');
     }
     public static function getModelLabel(): string
     {
@@ -323,6 +323,7 @@ class BattreiResource extends Resource
                     ->url(fn ($record) => route('battery.statistik', ['battery_id' => $record->id]))->label(TranslationHelper::translateIfNeeded('View'))
                     ->icon('heroicon-s-eye'),
                     Tables\Actions\EditAction::make(),
+                    Tables\Actions\DeleteAction::make(),
                     //Shared action
                     Tables\Actions\Action::make('Shared')->label(TranslationHelper::translateIfNeeded('Shared'))
                     ->hidden(fn ($record) => 

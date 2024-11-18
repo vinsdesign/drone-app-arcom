@@ -4,7 +4,7 @@
 <head>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
-<script src="https://cdn.tailwindcss.com"></script>
+{{-- <script src="https://cdn.tailwindcss.com"></script> --}}
 <div>
 <!--alret massage   -->
 <div id="success-notification-battrei" class="hidden-notif bg-green-500 text-white p-4 rounded-lg shadow-lg flex items-center justify-between">
@@ -68,7 +68,7 @@
                     <!-- Inventory Asset Input -->
                     <div>
                         <label class="block text-gray-700 dark:text-gray-300">{!! TranslationHelper::translateIfNeeded('Asset/Inventory')!!}</label>
-                        <select id="inventory_assetequipment" name="inventory_asset" class="w-full mt-1 p-2 border dark:bg-gray-900 dark:border-gray-700 dark:text-gray-300 rounded-md focus:ring focus:ring-blue-500">
+                        <select id="inventory_assetbattrei" name="inventory_asset" class="w-full mt-1 p-2 border dark:bg-gray-900 dark:border-gray-700 dark:text-gray-300 rounded-md focus:ring focus:ring-blue-500">
                             <option value="inventory">Inventory</option>
                             <option value="asset">Asset</option>
                         </select>
@@ -125,8 +125,12 @@
             
                     <!-- For Drone Input -->
                     <div>
-                        <label class="block text-gray-700 dark:text-gray-300">{!! TranslationHelper::translateIfNeeded('For Drone')!!}</label>
-                        <input id="for_dronebattrei" type="text" name="for_drone" maxlength="255" class="w-full mt-1 p-2 border dark:bg-gray-900 dark:border-gray-700 dark:text-gray-300 rounded-md focus:ring focus:ring-blue-500">
+                        <label class="block text-gray-700 dark:text-gray-300">{!! TranslationHelper::translateIfNeeded('For Drone (Optional)')!!}</label>
+                        <select id="for_dronebattrei" name="for_drone" class="w-full mt-1 p-2 border dark:bg-gray-900 dark:border-gray-700 dark:text-gray-300 rounded-md focus:ring focus:ring-blue-500">
+                            @foreach (App\Models\Drone::where('teams_id', auth()->user()->teams()->first()->id)->pluck('name', 'id') as $id => $name)
+                                <option value="{{ $id }}">{{ $name }}</option>
+                            @endforeach
+                        </select>
                     </div>
             
                     <!-- Purchase Date Input -->
@@ -218,7 +222,7 @@
         const nameValue = $('#namebattrei').val();
         const modelValue = $('#modelbattrei').val();
         const statusValue = $('#statusbattrei').val();
-        const assetInventoryValue = $('#asset_inventorybattrei').val();
+        const assetInventoryValue = $('#inventory_assetbattrei').val();
         const serialPValue = $('#serial_Pbattrei').val();
         const serialIValue = $('#serial_Ibattrei').val();
         const cellCountValue = $('#cellCountbattrei').val();
@@ -262,7 +266,7 @@
             users_id: userIdValue
         });
 
-        // Validate empty fields
+        // // Validate empty fields
         if (
                 nameValue.trim() === '' ||
                 modelValue.trim() === '' ||

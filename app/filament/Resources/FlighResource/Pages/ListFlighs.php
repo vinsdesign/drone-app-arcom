@@ -4,6 +4,7 @@ namespace App\Filament\Resources\FlighResource\Pages;
 
 use App\Filament\Resources\FlighResource;
 use App\Livewire\HeaderWidget\HeaderFlight;
+use App\Livewire\HeaderWidget\HeaderKit;
 use Filament\Actions;
 use Filament\Resources\Pages\ListRecords;
 
@@ -23,4 +24,9 @@ class ListFlighs extends ListRecords
             HeaderFlight::class,
         ];
     }
+    // protected function getHeaderWidgets(): array{
+    //     return[
+    //         HeaderKit::class,
+    //     ];
+    // }
 }

@@ -151,7 +151,7 @@ class FlighResource extends Resource
                     ->required()
                     ->numeric(),
                 Forms\Components\Grid::make(1)->schema([
-                    view::make('component.button-project')
+                    View::make('component.button-project')
                     ->extraAttributes(['class' => 'mr-6 custom-spacing']),
                     Forms\Components\Select::make('projects_id')
                     ->label(TranslationHelper::translateIfNeeded('Projects'))
@@ -179,7 +179,7 @@ class FlighResource extends Resource
                 ])->columnSpan(1),
                 //grid location
                 Forms\Components\Grid::make(1)->schema([
-                    view::make('component.button-location'),
+                    View::make('component.button-location'),
                     Forms\Components\Select::make('location_id')
                     // ->relationship('fligh_location', 'name', function (Builder $query) {
                     //     $currentTeamId = auth()->user()->teams()->first()->id;
@@ -603,7 +603,7 @@ class FlighResource extends Resource
                                 });
                             })
                             ->pluck('name', 'id');
-                    })                    
+                    })                   
                     ->searchable()
                     ->saveRelationshipsUsing(function ($component, $state) {
                         $component->getRecord()->equidments()->sync($state);
@@ -757,13 +757,14 @@ class FlighResource extends Resource
                     Tables\Actions\DeleteAction::make(),
                     //Shared action
                     Tables\Actions\Action::make('Shared')->label(TranslationHelper::translateIfNeeded('Shared'))
+
                     ->hidden(fn ($record) => 
                     ($record->shared == 1) ||
                     !(Auth()->user()->roles()->pluck('name')->contains('super_admin') || (Auth()->user()->roles()->pluck('name')->contains('panel_user'))) && 
                     ($record->users_id != Auth()->user()->id))
     
                     ->action(function ($record) {
-                        $record->update(['shared' => 1]);
+                        // $record->update(['shared' => 1]);
                         Notification::make()
                         ->title(TranslationHelper::translateIfNeeded('Shared Updated'))
                         ->body(TranslationHelper::translateIfNeeded("Shared successfully changed."))
@@ -786,6 +787,7 @@ class FlighResource extends Resource
                         })->icon('heroicon-m-share'),
                     Tables\Actions\Action::make('lockFlight')
                     ->label(TranslationHelper::translateIfNeeded('Lock'))
+
                         ->action(function ($record) {
                             $record->update(['locked_flight' => 'locked']);
                             Notification::make()
