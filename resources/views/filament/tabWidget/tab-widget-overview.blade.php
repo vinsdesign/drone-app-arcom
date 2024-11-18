@@ -205,9 +205,9 @@
                         
                                 {{-- tabel Flight --}}
                             <div class="container mx-auto p-4">
-                                <h2 class="text-2xl font-bold mb-4">{!! TranslationHelper::translateIfNeeded('Latest Flights (Last 20)')!!})</h2>
+                                <h2 class="text-2xl font-bold mb-4">{!! TranslationHelper::translateIfNeeded('Latest Flights (Last 20)')!!}</h2>
                                 @if($flightCount < 1)
-                                    <h3 class="text font-bold mb-4">No Flight History Available.</h3>
+                                    <h3 class="text font-bold mb-4">{!! TranslationHelper::translateIfNeeded('No Flight History Available.') !!}</h3>
                                 @endif
 
                                 @if($flightCount>0)
@@ -236,7 +236,7 @@
                                         </a>
                                     </div>
                                     <div class="flex-1 min-w-[150px] mb-2 border-r border-gray-300 pr-2">
-                                        <p class="text-sm text-gray-800 dark:text-gray-200 font-semibold">Drone</p>
+                                        <p class="text-sm text-gray-800 dark:text-gray-200 font-semibold">{!! TranslationHelper::translateIfNeeded('Drone') !!}</p>
                                         <a href="{{route('drone.statistik', ['drone_id' => $item->drones->id])}}">
                                             <p class="text-sm text-gray-700 dark:text-gray-400">{{$item->drones->name?? null}}</p>
                                         </a>
@@ -245,12 +245,12 @@
                                     </div>
                                 
                                     <div class="flex-1 min-w-[150px] mb-2 border-r border-gray-300 pr-2">
-                                        <p class="text-sm text-gray-800 dark:text-gray-200 font-semibold">Flight Type</p>
+                                        <p class="text-sm text-gray-800 dark:text-gray-200 font-semibold">{!! TranslationHelper::translateIfNeeded('Flight Type')!!}</p>
                                         <p class="text-sm text-gray-700 dark:text-gray-400">{{$item->type??null}}</p>
                                     </div>
                                 
                                     <div class="flex-1 min-w-[150px] mb-2 border-r border-gray-300 pr-2">
-                                        <p class="text-sm text-gray-800 dark:text-gray-200 font-semibold">Flight Location</p>
+                                        <p class="text-sm text-gray-800 dark:text-gray-200 font-semibold">{!! TranslationHelper::translateIfNeeded('Flight Location') !!}</p>
                                         <a href="{{route('filament.admin.resources.fligh-locations.edit',
                                         ['tenant' => Auth()->user()->teams()->first()->id,
                                         'record' => $item->fligh_location->id,])}}"><p class="text-sm text-gray-700 dark:text-gray-400">{{$item->fligh_location->name?? null}}</p>
@@ -276,7 +276,7 @@
 
                                 <h2 class="text-2xl font-bold mb-4">{!! TranslationHelper::translateIfNeeded('Maintenance Overdue')!!}</h2>
                                 @if(($maintenaceDroneCount + $maintenaceEqCount) < 1)
-                                    <h3 class="text-2xl font-bold mb-4">No Maintenance Overdue Available.</h3>
+                                    <h3 class="text-2xl font-bold mb-4">{!! TranslationHelper::translateIfNeeded('No Maintenance Overdue Available.') !!}</h3>
                                 @endif
                                 @if(($maintenaceDroneCount + $maintenaceEqCount) > 0)
                                     <div class="mt-4 flex justify-end mb-4">
@@ -334,7 +334,7 @@
                                         </div>
                                     
                                         <div class="flex-1 min-w-[150px] mb-2 border-r border-gray-300 pr-2">
-                                            <p class="text-sm text-gray-800 dark:text-gray-200 font-semibold">Technician</p>
+                                            <p class="text-sm text-gray-800 dark:text-gray-200 font-semibold">{!! TranslationHelper::translateIfNeeded('Technician') !!}</p>
                                             <p class="text-sm text-gray-700 dark:text-gray-400">{{$item->technician??null}}</p>
                                         </div>
                                     </div> 
@@ -342,15 +342,15 @@
                                 @endif
                                 @if($maintenaceEqCount > 0)
                                     @foreach($maintenance_eq as $item)
-                                        <div class="flex flex-wrap space-x-4 border border-gray-300 rounded-lg p-2 bg-gray-100 dark:bg-gray-800 max-w-[800px] mx-auto mb-4 shadow-lg"">
+                                        <div class="flex flex-wrap space-x-4 border border-gray-300 rounded-lg p-2 bg-gray-100 dark:bg-gray-800 max-w-[800px] mx-auto mb-4 shadow-lg">
                                             <div class="flex-1 min-w-[150px] mb-2 border-r border-gray-300 pr-2">
-                                                <p class="text-sm text-gray-800 dark:text-gray-200 font-semibold">Maintenance Name</p>
+                                                <p class="text-sm text-gray-800 dark:text-gray-200 font-semibold">{!! TranslationHelper::translateIfNeeded('Maintenance Name') !!}</p>
                                                 <p class="text-sm text-gray-700 dark:text-gray-400">{{$item->name??null}}</p>
                                                 <p class="text-sm text-gray-700 dark:text-gray-400">{{$item->date??null}}</p>
                                             </div>
                                         
                                             <div class="flex-1 min-w-[150px] mb-2 border-r border-gray-300 pr-2">
-                                                <p class="text-sm text-gray-800 dark:text-gray-200 font-semibold">Next Scheduled: <span class="text-sm text-gray-700 dark:text-gray-400">{{$item->date?? null}}</span></p>
+                                                <p class="text-sm text-gray-800 dark:text-gray-200 font-semibold">{!! TranslationHelper::translateIfNeeded('Next Scheduled:') !!} <span class="text-sm text-gray-700 dark:text-gray-400">{{$item->date?? null}}</span></p>
                                                 <p class="text-sm text-gray-700 dark:text-gray-400">
                                                     @php
                                                         $now = Carbon\Carbon::now();
@@ -369,7 +369,7 @@
                                                                 border-radius: 5px;
                                                                 font-weight: bold;
                                                             ">
-                                                                Overdue: {{ $daysOverdueDiff }} days
+                                                                {!! TranslationHelper::translateIfNeeded('Overdue:')!!} {{ $daysOverdueDiff }} {!! TranslationHelper::translateIfNeeded('days')!!}
                                                             </span>
                                                         </span>
                                                     @else
@@ -380,14 +380,14 @@
                                         
 
                                             <div class="flex-1 min-w-[150px] mb-2 border-r border-gray-300 pr-2">
-                                                <p class="text-sm text-gray-800 dark:text-gray-200 font-semibold">Batteri / Equipment</p>
-                                                    @if($item->equipment == null)
-                                                        <a href="{{route('battery.statistik', ['battery_id' => $item->battrei->id])}}">
+                                                <p class="text-sm text-gray-800 dark:text-gray-200 font-semibold">{!! TranslationHelper::translateIfNeeded('Battery / Equipment') !!}</p>
+                                                    @if($item->equidment_id == null)
+                                                        <a href="{{route('battery.statistik', ['battery_id' => $item->battrei_id])}}">
                                                             <p class="text-sm text-gray-700 dark:text-gray-400">{{ $item->battrei->name ?? null }}</p>
                                                         </a>
                                                     @else
-                                                        <a href="{{route('equipment.statistik', ['equipment_id' => $item->equipment->id])}}">
-                                                            <p class="text-sm text-gray-700 dark:text-gray-400">{{ $item->equipment->name ?? null }}</p>
+                                                        <a href="{{route('equipment.statistik', ['equipment_id' => $item->equidment_id])}}">
+                                                            <p class="text-sm text-gray-700 dark:text-gray-400">{{ $item->equidment->name ?? null }}</p>
                                                         </a>
                                                     @endif
                                                 <p class="text-sm text-gray-700 dark:text-gray-400">
@@ -434,31 +434,31 @@
                         {{-- tabel Inventory --}}
                         <div class="container mx-auto p-4">
 
-                        <h2 class="text-2xl font-bold mb-4">Latest Battery / Equipment Used (Last 20)</h2>
+                        <h2 class="text-2xl font-bold mb-4">{!! TranslationHelper::translateIfNeeded('Latest Battery / Equipment Used (Last 20)') !!}</h2>
                         @if(($battreiCount + $equipmentCount) < 1)
-                            <h3 class="text font-bold mb-4">No Battery/Equipment Usage History</h3>
+                            <h3 class="text font-bold mb-4">{!! TranslationHelper::translateIfNeeded('No Battery/Equipment Usage History') !!}</h3>
                         @endif
                         @if(($battreiCount + $equipmentCount) > 0)
                             <div class="mt-4 flex justify-end mb-4">
-                                <a href="{{route('filament.admin.resources.battreis.index',['tenant' => auth()->user()->teams()->first()->id])}}" class="inline-block px-4 py-2 bg-gray-800 text-white rounded hover:bg-gray-700">View All</a>
+                                <a href="{{route('filament.admin.resources.battreis.index',['tenant' => auth()->user()->teams()->first()->id])}}" class="inline-block px-4 py-2 bg-gray-800 text-white rounded hover:bg-gray-700">{!! TranslationHelper::translateIfNeeded('View All') !!}</a>
                             </div>
                         @endif
                         @if($battreiCount > 0)
                             @foreach($battreiUsage as $item)
                                 <div class="flex flex-wrap space-x-4 border border-gray-300 rounded-lg p-2 bg-gray-100 dark:bg-gray-800 max-w-[800px] mx-auto mb-4 shadow-lg">
                                     <div class="flex-1 min-w-[150px] mb-2 border-r border-gray-300 pr-2">
-                                        <p class="text-sm text-gray-800 dark:text-gray-200 font-semibold">Item:</p>
+                                        <p class="text-sm text-gray-800 dark:text-gray-200 font-semibold">{!! TranslationHelper::translateIfNeeded('Item:') !!}</p>
                                         <p class="text-sm text-gray-700 dark:text-gray-400">
                                         <a href="{{route('battery.statistik', ['battery_id' => $item->id])}}">
-                                            <p class="text-sm text-gray-700 dark:text-gray-400">{{ $item->name ?? 'No Battery' }} <br> Battereis</p>
+                                            <p class="text-sm text-gray-700 dark:text-gray-400">{{ $item->name ?? 'No Battery' }} <br> {!! TranslationHelper::translateIfNeeded('Batteries') !!}</p>
                                         </a>
                                     </div>
                                 
                                     <div class="flex-1 min-w-[150px] mb-2 border-r border-gray-300 pr-2">
-                                        <p class="text-sm text-gray-800 dark:text-gray-200 font-semibold">Flight</p>
+                                        <p class="text-sm text-gray-800 dark:text-gray-200 font-semibold">{!! TranslationHelper::translateIfNeeded('Flight') !!}</p>
                                         <p class="text-sm text-gray-700 dark:text-gray-400"></p>
                                         <div class="flex justify-between items-center rounded">
-                                            <p class="text-sm text-gray-700 dark:text-gray-400">{{$item->usage_count}} Flight</p> 
+                                            <p class="text-sm text-gray-700 dark:text-gray-400">{{$item->usage_count}} {!! TranslationHelper::translateIfNeeded('Flight') !!}</p> 
                         
                                             @if($item->fligh->isNotEmpty())
                                             
@@ -478,7 +478,7 @@
                                             @endphp
                         
                                             <p class="text-sm text-gray-700 dark:text-gray-400">
-                                            Total Duration: {{ $formattedTotalDuration }} <!-- Menampilkan durasi yang diformat -->
+                                            {!! TranslationHelper::translateIfNeeded('Total Duration:') !!} {{ $formattedTotalDuration }} <!-- Menampilkan durasi yang diformat -->
                                             </p>
                                         @else
                                             <p class="text-sm text-gray-500">null</p>
@@ -487,14 +487,14 @@
                                     </div>
                                 
                                     <div class="flex-1 min-w-[150px] mb-2 border-r border-gray-300 pr-2">
-                                        <p class="text-sm text-gray-800 dark:text-gray-200 font-semibold">Serial #</p>
+                                        <p class="text-sm text-gray-800 dark:text-gray-200 font-semibold">{!! TranslationHelper::translateIfNeeded('Serial #')!!}</p>
                                         <p class="text-sm text-gray-700 dark:text-gray-400">
                                                 {{ $item->serial_I ?? 'N/A' }}
                                         </p>
                                     </div>
                                 
                                     <div class="flex-1 min-w-[150px] mb-2 border-r border-gray-300 pr-2">
-                                            <p class="text-sm text-gray-800 dark:text-gray-200 font-semibold">For Drone</p>
+                                            <p class="text-sm text-gray-800 dark:text-gray-200 font-semibold">{!! TranslationHelper::translateIfNeeded('For Drone')!!}</p>
                                             <p class="text-sm text-gray-700 dark:text-gray-400">{{$item->drone->name??null}}</p>
                                             <p class="text-sm text-gray-700 dark:text-gray-400">{{$item->drone->brand??null}} - {{$item->drone->model??null}}</p>
                                     </div>
@@ -505,7 +505,7 @@
                             @foreach($equipmentUsage  as $item)
                                 <div class="flex flex-wrap space-x-4 border border-gray-300 rounded-lg p-2 bg-gray-100 dark:bg-gray-800 max-w-[800px] mx-auto mb-4 shadow-lg">
                                     <div class="flex-1 min-w-[150px] mb-2 border-r border-gray-300 pr-2">
-                                        <p class="text-sm text-gray-800 dark:text-gray-200 font-semibold">Item:</p>
+                                        <p class="text-sm text-gray-800 dark:text-gray-200 font-semibold">{!! TranslationHelper::translateIfNeeded('Item:')!!}</p>
                                         <p class="text-sm text-gray-700 dark:text-gray-400">
                                             <a href="{{route('equipment.statistik', ['equipment_id' => $item->id])}}">
                                                 <p class="text-sm text-gray-700 dark:text-gray-400">{{ $item->name ?? 'No Equipment' }} <br> {{$item->type ?? 'test'}}</p>
@@ -514,10 +514,10 @@
                                     </div>
                                 
                                     <div class="flex-1 min-w-[150px] mb-2 border-r border-gray-300 pr-2">
-                                        <p class="text-sm text-gray-800 dark:text-gray-200 font-semibold">Flight</p>
+                                        <p class="text-sm text-gray-800 dark:text-gray-200 font-semibold">{!! TranslationHelper::translateIfNeeded('Flight')!!}</p>
                                         <p class="text-sm text-gray-700 dark:text-gray-400"></p>
                                         <div class="flex justify-between items-center rounded">
-                                            <p class="text-sm text-gray-700 dark:text-gray-400">{{$item->usage_count}} Flight</p> 
+                                            <p class="text-sm text-gray-700 dark:text-gray-400">{{$item->usage_count}} {!! TranslationHelper::translateIfNeeded('Flight')!!}</p> 
                         
                                             @if($item->fligh->isNotEmpty())
                                             
@@ -538,7 +538,7 @@
                                             @endphp
                         
                                             <p class="text-sm text-gray-700 dark:text-gray-400">
-                                            Total Duration: {{ $formattedTotalDuration }} <!-- Menampilkan durasi yang diformat -->
+                                            {!! TranslationHelper::translateIfNeeded('Total Duration:')!!} {{ $formattedTotalDuration }} <!-- Menampilkan durasi yang diformat -->
                                             </p>
                                         @else
                                             <p class="text-sm text-gray-500">null</p>
@@ -547,14 +547,14 @@
                                     </div>
                                 
                                     <div class="flex-1 min-w-[150px] mb-2 border-r border-gray-300 pr-2">
-                                        <p class="text-sm text-gray-800 dark:text-gray-200 font-semibold">Serial #</p>
+                                        <p class="text-sm text-gray-800 dark:text-gray-200 font-semibold">{!! TranslationHelper::translateIfNeeded('Serial #')!!}</p>
                                         <p class="text-sm text-gray-700 dark:text-gray-400">
                                                 {{ $item->serial ?? 'N/A' }}
                                         </p>
                                     </div>
                                 
                                     <div class="flex-1 min-w-[150px] mb-2 border-r border-gray-300 pr-2">
-                                            <p class="text-sm text-gray-800 dark:text-gray-200 font-semibold">For Drone</p>
+                                            <p class="text-sm text-gray-800 dark:text-gray-200 font-semibold">{!! TranslationHelper::translateIfNeeded('For Drone')!!}</p>
                                             <p class="text-sm text-gray-700 dark:text-gray-400">{{$item->drones->name??null}}</p>
                                             <p class="text-sm text-gray-700 dark:text-gray-400">{{$item->drones->brand??null}} - {{$item->drones->model??null}}</p>
                                     </div>
@@ -570,13 +570,13 @@
                     {{-- tabel Document --}}
 
                     <div class="container mx-auto p-4">
-                        <h2 class="text-2xl font-bold mb-4">Document Overview</h2>
+                        <h2 class="text-2xl font-bold mb-4">{!! TranslationHelper::translateIfNeeded('Document Overview')!!}</h2>
                         @if($documentCount < 1)
-                            <h3 class="text font-bold mb-4">No document found</h3>
+                            <h3 class="text font-bold mb-4">{!! TranslationHelper::translateIfNeeded('No document found')!!}</h3>
                         @endif
                         @if($documentCount > 0)
                             <div class="mt-4 flex justify-end mb-4">
-                                <a href="{{route('filament.admin.resources.documents.index',['tenant' => auth()->user()->teams()->first()->id])}}" class="inline-block px-4 py-2 bg-gray-800 text-white rounded hover:bg-gray-700">View All</a>
+                                <a href="{{route('filament.admin.resources.documents.index',['tenant' => auth()->user()->teams()->first()->id])}}" class="inline-block px-4 py-2 bg-gray-800 text-white rounded hover:bg-gray-700">{!! TranslationHelper::translateIfNeeded('View All')!!}</a>
                             </div>
                         @endif
                         @if($documentCount > 0)
@@ -585,35 +585,35 @@
                                     
                                     <!-- Kolom Name -->
                                     <div class="flex-1 min-w-[150px] mb-2 border-r border-gray-300 pr-2">
-                                        <p class="text-sm text-gray-800 dark:text-gray-200 font-semibold">Name:</p>
-                                        <p class="text-sm text-gray-700 dark:text-gray-400">{{ $item->name ?? 'No Name' }}</p>
+                                        <p class="text-sm text-gray-800 dark:text-gray-200 font-semibold">{!! TranslationHelper::translateIfNeeded('Name:')!!}</p>
+                                        <p class="text-sm text-gray-700 dark:text-gray-400">{{ $item->name ?? TranslationHelper::translateIfNeeded('No Name') }}</p>
                                     </div>
                             
                                     <!-- Kolom Owner -->
                                     <div class="flex-1 min-w-[150px] mb-2 border-r border-gray-300 pr-2">
-                                        <p class="text-sm text-gray-800 dark:text-gray-200 font-semibold">Owner:</p>
-                                        <p class="text-sm text-gray-700 dark:text-gray-400">{{ $item->users->name ?? 'No Owner' }}</p>
+                                        <p class="text-sm text-gray-800 dark:text-gray-200 font-semibold">{!! TranslationHelper::translateIfNeeded('Owner:')!!}</p>
+                                        <p class="text-sm text-gray-700 dark:text-gray-400">{{ $item->users->name ??  TranslationHelper::translateIfNeeded('No Owner') }}</p>
                                     </div>
                             
                                     <!-- Kolom Scope -->
                                     <div class="flex-1 min-w-[150px] mb-2 border-r border-gray-300 pr-2">
-                                        <p class="text-sm text-gray-800 dark:text-gray-200 font-semibold">Scope:</p>
-                                        <p class="text-sm text-gray-700 dark:text-gray-400">{{ $item->scope ?? 'No Scope' }}</p>
+                                        <p class="text-sm text-gray-800 dark:text-gray-200 font-semibold">{!! TranslationHelper::translateIfNeeded('Scope:')!!}</p>
+                                        <p class="text-sm text-gray-700 dark:text-gray-400">{{ $item->scope ??  TranslationHelper::translateIfNeeded('No Scope') }}</p>
                                     </div>
                             
                                     <!-- Kolom Type -->
                                     <div class="flex-1 min-w-[150px] mb-2 border-r border-gray-300 pr-2">
-                                        <p class="text-sm text-gray-800 dark:text-gray-200 font-semibold">Type:</p>
-                                        <p class="text-sm text-gray-700 dark:text-gray-400">{{ $item->type ?? 'No Type' }}</p>
+                                        <p class="text-sm text-gray-800 dark:text-gray-200 font-semibold">{!! TranslationHelper::translateIfNeeded('Type:')!!}</p>
+                                        <p class="text-sm text-gray-700 dark:text-gray-400">{{ $item->type ??  TranslationHelper::translateIfNeeded('No Type') }}</p>
                                     </div>
                             
                                     <!-- Kolom Link -->
                                     <div class="flex-1 min-w-[150px] mb-2">
-                                        <p class="text-sm text-gray-800 dark:text-gray-200 font-semibold">Link:</p>
+                                        <p class="text-sm text-gray-800 dark:text-gray-200 font-semibold">{!! TranslationHelper::translateIfNeeded('Link:')!!}</p>
                                         <a href="/storage/{{ $item->doc }}" target="_blank" rel="noopener noreferrer" 
                                         class="inline-block text-sm bg-orange-500 text-white rounded px-3 py-2 hover:bg-orange-600"
                                         style="background-color:#ff8303;">
-                                            Open Document
+                                            {!! TranslationHelper::translateIfNeeded('Open Document')!!}
                                         </a>
                                     </div>
                             
@@ -627,13 +627,13 @@
                 <div id="content5" class="tab-content">
                     {{-- tabel INcident --}}
                     <div class="container mx-auto p-4">
-                        <h2 class="text-2xl font-bold mb-4">Recent Incidents (Last 10)</h2>
+                        <h2 class="text-2xl font-bold mb-4">{!! TranslationHelper::translateIfNeeded('Recent Incidents (Last 10)')!!}</h2>
                         @if($incidentCount < 1)
-                            <h3 class="text font-bold mb-4">No incidents found</h3>
+                            <h3 class="text font-bold mb-4">{!! TranslationHelper::translateIfNeeded('No incidents found')!!}</h3>
                         @endif
                         @if($incidentCount > 0)
                             <div class="mt-4 flex justify-end mb-4">
-                                <a href="{{route('filament.admin.resources.incidents.index',['tenant' => auth()->user()->teams()->first()->id])}}" class="inline-block px-4 py-2 bg-gray-800 text-white rounded hover:bg-gray-700">View All</a>
+                                <a href="{{route('filament.admin.resources.incidents.index',['tenant' => auth()->user()->teams()->first()->id])}}" class="inline-block px-4 py-2 bg-gray-800 text-white rounded hover:bg-gray-700">{!! TranslationHelper::translateIfNeeded('View All')!!}</a>
                             </div>
                         @endif
                         @if($incidentCount > 0)
@@ -642,11 +642,11 @@
                                     
                                     <!-- Kolom Cause dan Status -->
                                     <div class="flex-1 min-w-[150px] mb-2 border-r border-gray-300 pr-2">
-                                        <p class="text-sm text-gray-800 dark:text-gray-200 font-semibold">Cause:</p>
+                                        <p class="text-sm text-gray-800 dark:text-gray-200 font-semibold">{!! TranslationHelper::translateIfNeeded('Cause:')!!}</p>
                                         <div class="flex items-center justify-between">
                                             <div>
                                                 <p class="text-sm text-gray-700 dark:text-gray-400">{{ $item->cause }}</p>
-                                                <p class="text-xs text-gray-500 dark:text-gray-300">Date: {{ $item->incident_date }}</p>
+                                                <p class="text-xs text-gray-500 dark:text-gray-300">{!! TranslationHelper::translateIfNeeded('Date:')!!} {{ $item->incident_date }}</p>
                                             </div>
                                             <span class="px-2 py-1 rounded text-white text-xs {{ $item->status == 'closed' ? 'bg-green-500' : 'bg-red-500' }}">
                                                 {{ ucfirst($item->status) }}
@@ -656,27 +656,27 @@
                             
                                     <!-- Kolom Drone Name -->
                                     <div class="flex-1 min-w-[150px] mb-2 border-r border-gray-300 pr-2">
-                                        <p class="text-sm text-gray-800 dark:text-gray-200 font-semibold">Drone:</p>
-                                        <p class="text-sm text-gray-700 dark:text-gray-400">{{ $item->drone->name ?? 'No Drone' }}</p>
-                                        <p class="text-sm text-gray-700 dark:text-gray-400">{{ $item->drone->brand ?? 'No Drone' }} / {{$item->drone->model}}</p>
+                                        <p class="text-sm text-gray-800 dark:text-gray-200 font-semibold">{!! TranslationHelper::translateIfNeeded('Drone:')!!}</p>
+                                        <p class="text-sm text-gray-700 dark:text-gray-400">{{ $item->drone->name ??  TranslationHelper::translateIfNeeded('No Drone') }}</p>
+                                        <p class="text-sm text-gray-700 dark:text-gray-400">{{ $item->drone->brand ??  TranslationHelper::translateIfNeeded('No Drone') }} / {{$item->drone->model}}</p>
                                     </div>
                             
                                     <!-- Kolom Personnel Involved -->
                                     <div class="flex-1 min-w-[150px] mb-2 border-r border-gray-300 pr-2">
-                                        <p class="text-sm text-gray-800 dark:text-gray-200 font-semibold">Personnel Involved:</p>
-                                        <p class="text-sm text-gray-700 dark:text-gray-400">{{ $item->users->name ?? 'No Personnel' }}</p>
+                                        <p class="text-sm text-gray-800 dark:text-gray-200 font-semibold">{!! TranslationHelper::translateIfNeeded('Personnel Involved:')!!}</p>
+                                        <p class="text-sm text-gray-700 dark:text-gray-400">{{ $item->users->name ??  TranslationHelper::translateIfNeeded('No Personnel') }}</p>
                                     </div>
                             
                                     <!-- Kolom Location -->
                                     <div class="flex-1 min-w-[150px] mb-2 border-r border-gray-300 pr-2">
-                                        <p class="text-sm text-gray-800 dark:text-gray-200 font-semibold">Location:</p>
-                                        <p class="text-sm text-gray-700 dark:text-gray-400">{{ $item->fligh_locations->name ?? 'No Location' }}</p>
+                                        <p class="text-sm text-gray-800 dark:text-gray-200 font-semibold">{!! TranslationHelper::translateIfNeeded('Location:')!!}</p>
+                                        <p class="text-sm text-gray-700 dark:text-gray-400">{{ $item->fligh_locations->name ??  TranslationHelper::translateIfNeeded('No Location') }}</p>
                                     </div>
                             
                                     <!-- Kolom Project -->
                                     <div class="flex-1 min-w-[150px] mb-2">
-                                        <p class="text-sm text-gray-800 dark:text-gray-200 font-semibold">Project:</p>
-                                        <p class="text-sm text-gray-700 dark:text-gray-400">{{ $item->project->case ?? 'No Project' }}</p>
+                                        <p class="text-sm text-gray-800 dark:text-gray-200 font-semibold">{!! TranslationHelper::translateIfNeeded('Project:')!!}</p>
+                                        <p class="text-sm text-gray-700 dark:text-gray-400">{{ $item->project->case ??  TranslationHelper::translateIfNeeded('No Project') }}</p>
                                     </div>
                             
                                 </div>

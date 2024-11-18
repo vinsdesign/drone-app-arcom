@@ -200,7 +200,7 @@ class FlighResource extends Resource
                 Forms\Components\TextInput::make('customers_name')
                 ->label(TranslationHelper::translateIfNeeded('Customers Name'))    
                     //->relationship('customers', 'name')
-                    ->required()
+                    // ->required()
                     ->disabled()
 
                     ->default(function (){
@@ -219,8 +219,9 @@ class FlighResource extends Resource
                             $currentTeamId = auth()->user()->teams()->first()->id;
                             $startDate = $get('start_date_flight');
                             $endDate = $get('end_date_flight');
+                            $isEdit = $get('id') !== null;
                         
-                            if (!$startDate || !$endDate) {
+                            if (!$startDate || !$endDate || $isEdit) {
                                 return $query->whereHas('teams', function (Builder $query) use ($currentTeamId) {
                                     $query->where('team_id', $currentTeamId);
                                     })->whereHas('roles', function (Builder $query){
@@ -252,6 +253,7 @@ class FlighResource extends Resource
                     $startDate = $get('start_date_flight');
                     $endDate = $get('end_date_flight');
                     $selectedUserId = $get('users_id');
+                    $isEdit = $get('id') !== null;
                     
                     // Tambahkan pengecekan nilai untuk debugging
                     dump($startDate, $endDate, $selectedUserId);
@@ -264,7 +266,7 @@ class FlighResource extends Resource
                     });
                 
                     // Filter berdasarkan tanggal jika ada startDate dan endDate
-                    if ($startDate && $endDate) {
+                    if ($startDate && $endDate && $isEdit) {
                         $query->whereDoesntHave('fligh', function ($query) use ($startDate, $endDate) {
                             $query->where(function ($query) use ($startDate, $endDate) {
                                 $query->where('start_date_flight', '<=', $endDate)
@@ -324,7 +326,24 @@ class FlighResource extends Resource
                                 });
                             })
                             ->pluck('name', 'id');
-                    })->saveRelationshipsUsing(function ($state, callable $get) {
+                    })
+                    ->default(function ($get) {
+                        $record = $get('record');
+                        
+                        if ($record && isset($record->drone)) {
+                            return $record->drone_id;  
+                        }
+                        return null;
+                    })
+                    ->afterStateHydrated(function ($state, callable $set) {
+                        if ($state) {
+                            $drone = drone::find($state);
+                            if ($drone) {
+                                $set('drones_id', $drone->name); 
+                            }
+                        }
+                    })
+                    ->saveRelationshipsUsing(function ($state, callable $get) {
                         $start = $get('start_date_flight');
                         $end = $get('end_date_flight');
                         $state = is_array($state) ? $state : [$state];
@@ -436,6 +455,22 @@ class FlighResource extends Resource
                 })                                   
                 ->searchable()
                 ->reactive()
+                ->default(function ($get) {
+                    $record = $get('record');
+                    
+                    if ($record && isset($record->kits)) {
+                        return $record->kits_id;  
+                    }
+                    return null;
+                })
+                ->afterStateHydrated(function ($state, callable $set) {
+                    if ($state) {
+                        $kits = kits::find($state);
+                        if ($kits) {
+                            $set('kits_id', $kits->name); 
+                        }
+                    }
+                })
                 ->afterStateUpdated(function ($state, callable $set) {
                     if ($state) {
                         $kit = kits::find($state);
@@ -717,7 +752,9 @@ class FlighResource extends Resource
             ->actions([
                 Tables\Actions\ActionGroup::make([
                     Tables\Actions\ViewAction::make(),
-                    Tables\Actions\EditAction::make(),
+                    Tables\Actions\EditAction::make()
+                    ->hidden(fn ($record) => $record->locked_flight === 'locked'),
+                    Tables\Actions\DeleteAction::make(),
                     //Shared action
                     Tables\Actions\Action::make('Shared')->label(TranslationHelper::translateIfNeeded('Shared'))
                     ->hidden(fn ($record) => 
@@ -747,11 +784,8 @@ class FlighResource extends Resource
                             ->success()
                             ->send();
                         })->icon('heroicon-m-share'),
-                    Tables\Actions\EditAction::make()
-                    ->hidden(fn ($record) => $record->locked_flight)
-                    ->url(fn ($record) => $record->locked_flight ? '#' : route('filament.admin.resources.flighs.edit', ['tenant' => Auth()->user()->teams()->first()->id, $record->id])),
-                    Tables\Actions\DeleteAction::make(),
-                    Tables\Actions\Action::make('test')->label(TranslationHelper::translateIfNeeded('Lock'))
+                    Tables\Actions\Action::make('lockFlight')
+                    ->label(TranslationHelper::translateIfNeeded('Lock'))
                         ->action(function ($record) {
                             $record->update(['locked_flight' => 'locked']);
                             Notification::make()
@@ -761,8 +795,8 @@ class FlighResource extends Resource
                                 ->send();
                         })
                         ->icon('heroicon-s-lock-closed')
-                        ->hidden(fn ($record) => $record->locked_flight), 
-                    Tables\Actions\Action::make('test1')->label(TranslationHelper::translateIfNeeded('Unlock'))
+                        ->hidden(fn ($record) => $record->locked_flight === 'locked'), 
+                    Tables\Actions\Action::make('unlockFlight')->label(TranslationHelper::translateIfNeeded('Unlock'))
                         ->action(function ($record) {
                             $record->update(['locked_flight' => 'unlocked']);
                             Notification::make()
@@ -772,11 +806,8 @@ class FlighResource extends Resource
                                 ->send();
                         })
                         ->icon('heroicon-s-lock-open')
-                        ->hidden(fn ($record) => !$record->locked_flight)
-                        ->visible(function ($record) {
-                            return $record->locked_flight !== false && auth()->user()->hasRole(['panel_user']);
-                        }),  
-
+                        ->hidden(fn ($record) => $record->locked_flight === 'unlocked')
+                        ->visible(fn ($record) => auth()->user()->hasRole(['panel_user'])),  
                 ])
             ])
             ->bulkActions([

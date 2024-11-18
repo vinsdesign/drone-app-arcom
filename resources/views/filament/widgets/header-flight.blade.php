@@ -14,10 +14,7 @@
             $formattedTotalDuration = sprintf('%02d:%02d:%02d', $totalHours, $totalMinutes, $totalSeconds);;
     
 @endphp
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-</head>
+
 <x-filament-widgets::widget>
     <x-filament::section>
 
