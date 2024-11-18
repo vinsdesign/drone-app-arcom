@@ -5,7 +5,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
 <div>
-<script src="https://cdn.tailwindcss.com"></script>
+{{-- <script src="https://cdn.tailwindcss.com"></script> --}}
 <!--alret massage   -->
 <div id="success-notification-drone" class="hidden-notif bg-green-500 text-white p-4 rounded-lg shadow-lg flex items-center justify-between">
     <span>Successfully</span>
@@ -118,11 +118,11 @@
                             <option value="retired">Retired</option>
                         </select>
                     </div>
-                    <div>
-                        <label class="block text-gray-700 dark:text-gray-300">{!! TranslationHelper::translateIfNeeded('Legal ID')!!}</label>
-                        <input id="idlegaldrone" type="text" name="remote_c" maxlength="255" class="w-full mt-1 p-2 border dark:bg-gray-900 dark:border-gray-700 dark:text-gray-300 rounded-md focus:ring focus:ring-blue-500">
-                    </div>
-     
+                </div>
+                <!--Legal ID-->
+                <div>
+                    <label class="block text-gray-700 dark:text-gray-300">{!! TranslationHelper::translateIfNeeded('Legal ID')!!}</label>
+                    <input id="idlegaldrone" type="text" name="remote_c" maxlength="255" class="w-full mt-1 p-2 border dark:bg-gray-900 dark:border-gray-700 dark:text-gray-300 rounded-md focus:ring focus:ring-blue-500">
                 </div>
             
                 <!-- Drone Details Section -->
@@ -247,7 +247,15 @@
                     <!-- Max Flight Time Input -->
                     <div>
                         <label class="block text-gray-700 dark:text-gray-300">{!! TranslationHelper::translateIfNeeded('Max Flight Time')!!}</label>
-                        <input id="max_flight_timedrone" type="number" name="max_flight_time" class="w-full mt-1 p-2 border dark:bg-gray-900 dark:border-gray-700 dark:text-gray-300 rounded-md focus:ring focus:ring-blue-500">
+                        <input 
+                        id="max_flight_timedrone" 
+                        type="text" 
+                        name="max_flight_time" 
+                        class="w-full mt-1 p-2 border dark:bg-gray-900 dark:border-gray-700 dark:text-gray-300 rounded-md focus:ring focus:ring-blue-500"
+                        oninput="this.value = this.value.replace(/[^0-9:]/g, '').replace(/^([0-9]{2})([0-9]{2})/, '$1:$2:');" 
+                        placeholder="HH:mm:ss" 
+                        value="00:00:00"
+                        >
                     </div>
                 </div>
                     <!-- Description Input -->

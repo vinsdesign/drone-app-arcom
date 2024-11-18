@@ -299,6 +299,7 @@ class EquidmentResource extends Resource
                     ->icon('heroicon-s-eye'),
 
                     Tables\Actions\EditAction::make(),
+                    Tables\Actions\DeleteAction::make(),
                     //Shared action
                     Tables\Actions\Action::make('Shared')->label(TranslationHelper::translateIfNeeded('Shared'))
                     ->hidden(fn ($record) => 

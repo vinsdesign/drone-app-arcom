@@ -372,6 +372,7 @@ class DroneResource extends Resource
                     Tables\Actions\Action::make('showDrone')
                     ->url(fn ($record) => route('drone.statistik', ['drone_id' => $record->id]))->label(TranslationHelper::translateIfNeeded('View'))
                     ->icon('heroicon-s-eye'),
+                    Tables\Actions\DeleteAction::make(),
                     Tables\Actions\EditAction::make(),
                     //Shared action
                     Tables\Actions\Action::make('shared')->label(TranslationHelper::translateIfNeeded('Shared'))

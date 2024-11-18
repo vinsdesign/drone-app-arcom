@@ -21,16 +21,23 @@
     }
 
 </style>
-<script src="https://cdn.tailwindcss.com"></script>
+{{-- <script src="https://cdn.tailwindcss.com"></script> --}}
 
 <div>
 <!--alret massage   -->
-    <div id="success-notification" class="hidden-notif bg-green-500 text-white p-4 rounded-lg shadow-lg flex items-center justify-between">
+@php
+$response =session('successfully');
+// dd($response);
+@endphp
+@if($response != null)
+    <div id="success-notification-project" class="notification bg-green-500 text-white p-4 rounded-lg shadow-lg flex items-center justify-between">
         <span>Successfully</span>
-        <button id="close-notification" class="ml-4 text-white hover:text-gray-200 focus:outline-none">
+        <button id="close-notification-project" class="ml-4 text-white hover:text-gray-200 focus:outline-none">
             <i class="fas fa-times"></i>
         </button>
     </div>
+@endif
+
   <!-- Tombol untuk Membuka Modal -->
     <button style="font-size: 12px; background-color: #4A5568; color: white; font-weight: bold; padding: 4px 8px; border-radius: 4px; border: none; cursor: pointer;" onclick="openModal()" type="button">
         <span style="color: inherit; text-decoration: none;">
@@ -77,14 +84,19 @@
                         <label class="block text-gray-700 dark:text-gray-300">{!! TranslationHelper::translateIfNeeded('Currency')!!}</label>
                         <select id="currencies_id" name="currencies_id" class="w-full mt-1 p-2 border dark:bg-gray-900 dark:border-gray-700 dark:text-gray-300 rounded-md focus:ring focus:ring-blue-500">
                             @php
-                                $defaultCurrencyId = auth()->user()->teams()->first()?->currencies_id;
+                                $currencies = App\Models\currencie::all()->mapWithKeys(function ($currency) {
+                                    return [$currency->id => "{$currency->name} - {$currency->iso}"];
+                                });
+
+                                $defaultCurrencyId = optional(auth()->user()->teams()->first())->currencies_id;
                             @endphp
-                            @foreach (App\Models\currencie::all() as $currency)
-                            <option value="{{ $currency->id }}" {{ $currency->id == $defaultCurrencyId ? 'selected' : '' }}>
-                                {{ $currency->name }} - {{ $currency->iso }}
-                            </option>
+                            <option value="" disabled selected>Choose a currency</option>
+                            @foreach ($currencies as $id => $currency)
+                                <option value="{{ $id }}" {{ $defaultCurrencyId == $id ? 'selected' : '' }}>
+                                    {{ $currency }}
+                                </option>
                             @endforeach
-                        </select>
+                                </select>
                     </div>
 
                     <!-- Customer Select -->
@@ -108,7 +120,7 @@
                 <div class="flex justify-end mt-4">
                     <button id="triggerButton" type="button" 
                         style="font-size: 16px; background-color: #4A5568; color: white; font-weight: bold; padding: 8px 16px; border-radius: 4px; border: none; cursor: pointer;"
-                        class="px-6 py-3 bg-blue-600 text-white rounded-md hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600">
+                        class="px-6 py-3 bg-blue-600 text-white rounded-md hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600" onclick="closeModal()">
                         {!! TranslationHelper::translateIfNeeded('Submit')!!}
                     </button>
                 </div>
@@ -159,8 +171,8 @@
                     },
                     success: function(response) {
                         console.log(response);
-                        $("#success-notification").removeClass("hidden-notif");
-                        $("#success-notification").addClass("notification");
+                        // $("#success-notification-project").removeClass("hidden-notif");
+                        // $("#success-notification-project").addClass("notification");
                         setTimeout(() => {
                             location.reload();
                         }, 3000);
@@ -176,8 +188,8 @@
 {{-- notification --}}
 <script>
     document.addEventListener('DOMContentLoaded', function () {
-        const notification = document.getElementById('success-notification');
-        const closeButton = document.getElementById('close-notification');
+        const notification = document.getElementById('success-notification-project');
+        const closeButton = document.getElementById('close-notification-project');
         if (notification) {
             setTimeout(() => {
                 notification.style.display = 'none';

@@ -43,8 +43,8 @@ return new class extends Migration
         });
         Schema::create('drone_team', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('team_id')->constrainedTo('teams');
-            $table->foreignId('drone_id')->constrained('drones');
+            $table->foreignId('team_id')->constrainedTo('teams')->cascadeOnDelete();
+            $table->foreignId('drone_id')->constrained('drones')->cascadeOnDelete();
         });
     }
 

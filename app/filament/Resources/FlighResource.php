@@ -151,7 +151,7 @@ class FlighResource extends Resource
                     ->required()
                     ->numeric(),
                 Forms\Components\Grid::make(1)->schema([
-                    view::make('component.button-project')
+                    View::make('component.button-project')
                     ->extraAttributes(['class' => 'mr-6 custom-spacing']),
                     Forms\Components\Select::make('projects_id')
                     ->label(TranslationHelper::translateIfNeeded('Projects'))
@@ -179,7 +179,7 @@ class FlighResource extends Resource
                 ])->columnSpan(1),
                 //grid location
                 Forms\Components\Grid::make(1)->schema([
-                    view::make('component.button-location'),
+                    View::make('component.button-location'),
                     Forms\Components\Select::make('location_id')
                     // ->relationship('fligh_location', 'name', function (Builder $query) {
                     //     $currentTeamId = auth()->user()->teams()->first()->id;
@@ -568,7 +568,7 @@ class FlighResource extends Resource
                                 });
                             })
                             ->pluck('name', 'id');
-                    })                    
+                    })                   
                     ->searchable()
                     ->saveRelationshipsUsing(function ($component, $state) {
                         $component->getRecord()->equidments()->sync($state);
@@ -717,16 +717,18 @@ class FlighResource extends Resource
             ->actions([
                 Tables\Actions\ActionGroup::make([
                     Tables\Actions\ViewAction::make(),
-                    Tables\Actions\EditAction::make(),
-                    //Shared action
-                    Tables\Actions\Action::make('Shared')->label(TranslationHelper::translateIfNeeded('Shared'))
+                    Tables\Actions\DeleteAction::make()->before(function ($record) {
+                        \Log::info('Delete action triggered for record: ' . $record->id);
+                    }),
+                    
+                    Tables\Actions\Action::make('Shareds')->label(TranslationHelper::translateIfNeeded('Shared'))
                     ->hidden(fn ($record) => 
                     ($record->shared == 1) ||
                     !(Auth()->user()->roles()->pluck('name')->contains('super_admin') || (Auth()->user()->roles()->pluck('name')->contains('panel_user'))) && 
                     ($record->users_id != Auth()->user()->id))
     
                     ->action(function ($record) {
-                        $record->update(['shared' => 1]);
+                        // $record->update(['shared' => 1]);
                         Notification::make()
                         ->title(TranslationHelper::translateIfNeeded('Shared Updated'))
                         ->body(TranslationHelper::translateIfNeeded("Shared successfully changed."))
@@ -748,9 +750,9 @@ class FlighResource extends Resource
                             ->send();
                         })->icon('heroicon-m-share'),
                     Tables\Actions\EditAction::make()
-                    ->hidden(fn ($record) => $record->locked_flight)
-                    ->url(fn ($record) => $record->locked_flight ? '#' : route('filament.admin.resources.flighs.edit', ['tenant' => Auth()->user()->teams()->first()->id, $record->id])),
-                    Tables\Actions\DeleteAction::make(),
+                    // ->hidden(fn ($record) => $record->locked_flight)
+                    // ->url(fn ($record) => $record->locked_flight ? '#' : route('filament.admin.resources.flighs.edit', ['tenant' => Auth()->user()->teams()->first()->id, $record->id])),
+                    ,
                     Tables\Actions\Action::make('test')->label(TranslationHelper::translateIfNeeded('Lock'))
                         ->action(function ($record) {
                             $record->update(['locked_flight' => 'locked']);

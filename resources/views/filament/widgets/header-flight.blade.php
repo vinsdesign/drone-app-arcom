@@ -14,10 +14,6 @@
             $formattedTotalDuration = sprintf('%02d:%02d:%02d', $totalHours, $totalMinutes, $totalSeconds);;
     
 @endphp
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-</head>
 <x-filament-widgets::widget>
     <x-filament::section>
 
@@ -33,12 +29,12 @@
             <div class="flex space-x-12">
                 <div class="text-center p-4">
                     <h2 class="text-sm font-semibold text-gray-500 dark:text-gray-400">{!! TranslationHelper::translateIfNeeded('Flying Time') !!}</h2>
-                    <h1 class="text-3xl font-bold text-gray-600 dark:text-gray-300">{{ $formattedTotalDuration }}</h1>
+                    <h1 class="text-3xl font-bold text-gray-600 dark:text-gray-300"></h1>
                 </div>
                 <br>
                 <div class="text-center p-4">
                     <h2 class="text-sm font-semibold text-gray-500 dark:text-gray-400">{!! TranslationHelper::translateIfNeeded('Flights') !!}</h2>
-                    <h1 class="text-3xl font-bold text-gray-600 dark:text-gray-300">{{ $sumFlight }}</h1>
+                    <h1 class="text-3xl font-bold text-gray-600 dark:text-gray-300"></h1>
                 </div>
                 <br>
             </div>
