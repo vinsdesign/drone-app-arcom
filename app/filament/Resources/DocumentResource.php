@@ -289,8 +289,7 @@ class DocumentResource extends Resource
                 Tables\Actions\ActionGroup::make([
                     Tables\Actions\ViewAction::make(),
                     Tables\Actions\EditAction::make()
-                    ->hidden(fn ($record) => $record->locked)
-                    ->url(fn ($record) => $record->locked ? '#' : route('filament.admin.resources.documents.edit', ['tenant' => Auth()->user()->teams()->first()->id, $record->id])),
+                    ->hidden(fn ($record) => $record->locked === 'locked'),
                     Tables\Actions\DeleteAction::make(),
                     Tables\Actions\Action::make('Archive')->label(TranslationHelper::translateIfNeeded('Archive'))
                     ->hidden(fn ($record) => $record->status_visible == 'archived')
@@ -352,7 +351,7 @@ class DocumentResource extends Resource
                                 ->send();
                         })
                         ->icon('heroicon-s-lock-closed')
-                        ->hidden(fn ($record) => $record->locked), 
+                        ->hidden(fn ($record) => $record->locked === 'locked'), 
                     Tables\Actions\Action::make('Un-Lock')->label(TranslationHelper::translateIfNeeded('Unlock'))
                         ->action(function ($record) {
                             $record->update(['locked' => 'unlocked']);
@@ -363,10 +362,8 @@ class DocumentResource extends Resource
                                 ->send();
                         })
                         ->icon('heroicon-s-lock-open')
-                        ->hidden(fn ($record) => !$record->locked)
-                        ->visible(function ($record) {
-                            return $record->locked !== false && auth()->user()->hasRole(['panel_user']);
-                        }), 
+                        ->hidden(fn ($record) => $record->locked === 'unlocked')
+                        ->visible(fn ($record) => auth()->user()->hasRole(['panel_user'])), 
                 ])
                 
             ])

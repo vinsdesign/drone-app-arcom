@@ -183,11 +183,10 @@ class PlannedMissionResource extends Resource
                 Forms\Components\Hidden::make('customers_id') 
                     ->required(),
                 Forms\Components\TextInput::make('customers_name')
-                ->label(TranslationHelper::translateIfNeeded('Customer Name'))    
-                    ->required()
+                ->label(TranslationHelper::translateIfNeeded('Customer Name'))
                     ->disabled()
                     ->helperText(function () {
-                        return TranslationHelper::translateIfNeeded('Automatically filled when selecting kits');
+                        return TranslationHelper::translateIfNeeded('Automatically filled when selecting projects');
                     }) 
                     ->default(function (){
                         $currentTeam = auth()->user()->teams()->first();

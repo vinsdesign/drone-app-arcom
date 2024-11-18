@@ -14,6 +14,7 @@
             $formattedTotalDuration = sprintf('%02d:%02d:%02d', $totalHours, $totalMinutes, $totalSeconds);;
     
 @endphp
+
 <x-filament-widgets::widget>
     <x-filament::section>
 

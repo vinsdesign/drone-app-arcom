@@ -51,6 +51,7 @@ class AdminPanelProvider extends PanelProvider
             ->login()
             ->registration()
             ->spa()
+
             ->favicon(asset('asset/favicon.png'))
             ->tenantRoutePrefix('team')
 
