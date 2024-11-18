@@ -50,7 +50,7 @@ class AdminPanelProvider extends PanelProvider
             ->login()
             ->registration()
             ->spa()
-            ->favicon(url('asset/favicon.png'))
+            // ->favicon(url('asset/favicon.png'))
             //subscribe
             ->plugin(\TomatoPHP\FilamentSubscriptions\FilamentSubscriptionsPlugin::make())
             ->pages([

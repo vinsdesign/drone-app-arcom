@@ -5,6 +5,8 @@ namespace App\Filament\Resources\DocumentResource\Pages;
 use App\Filament\Resources\DocumentResource;
 use Filament\Actions;
 use Filament\Resources\Pages\EditRecord;
+use Filament\Notifications\Notification;
+use App\Helpers\TranslationHelper;
 
 class EditDocument extends EditRecord
 {
@@ -13,7 +15,13 @@ class EditDocument extends EditRecord
     public function mount($record): void
     {
         parent::mount($record);
-        if ($this->record->locked) {
+        if ($this->record->locked === 'locked') {
+            Notification::make()
+            ->title(TranslationHelper::translateIfNeeded('Access Denied'))
+            ->body(TranslationHelper::translateIfNeeded('This record is locked and cannot be edited.'))
+            ->danger()
+            ->send();
+
             $this->redirect(DocumentResource::getUrl('index'));
         }
     }
