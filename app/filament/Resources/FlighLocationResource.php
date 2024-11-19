@@ -32,7 +32,8 @@ class FlighLocationResource extends Resource
     protected static bool $isLazy = false;
 
     public static function getNavigationBadge(): ?string{
-        return static::getModel()::count();
+        $teamID = Auth()->user()->teams()->first()->id;
+        return static::getModel()::Where('teams_id',$teamID)->count();
     }
 
     public static function getNavigationLabel(): string
@@ -150,10 +151,7 @@ class FlighLocationResource extends Resource
             return $query;
         }else{
             $query->where(function ($query) use ($userId) {
-                $query->where('users_id', $userId);
-            })
-            ->orWhere(function ($query) use ($userId) {
-                $query->where('users_id', '!=', $userId)->where('shared', 1);
+                $query->where('shared', 1);
             });
             return $query;
         }

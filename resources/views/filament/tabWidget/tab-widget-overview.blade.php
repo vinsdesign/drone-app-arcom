@@ -232,12 +232,12 @@
                                         </div>
                                         <a href="{{route('filament.admin.resources.users.view',
                                             ['tenant' => Auth()->user()->teams()->first()->id,
-                                            'record' => $item->users->id,])}}"><p class="text-sm text-gray-700 dark:text-gray-400">{!! TranslationHelper::translateIfNeeded('Pilot :')!!} {{$item->users->name??null}}</p>
+                                            'record' => $item->users->id ?? 0])}}"><p class="text-sm text-gray-700 dark:text-gray-400">{!! TranslationHelper::translateIfNeeded('Pilot :')!!} {{$item->users->name??null}}</p>
                                         </a>
                                     </div>
                                     <div class="flex-1 min-w-[150px] mb-2 border-r border-gray-300 pr-2">
                                         <p class="text-sm text-gray-800 dark:text-gray-200 font-semibold">{!! TranslationHelper::translateIfNeeded('Drone') !!}</p>
-                                        <a href="{{route('drone.statistik', ['drone_id' => $item->drones->id])}}">
+                                        <a href="{{route('drone.statistik', ['drone_id' => $item->drones->id ?? null])}}">
                                             <p class="text-sm text-gray-700 dark:text-gray-400">{{$item->drones->name?? null}}</p>
                                         </a>
                                         <p class="text-sm text-gray-700 dark:text-gray-400">{{$item->drones->brand?? null}} / {{$item->drones->model??null}}</p>
@@ -253,7 +253,7 @@
                                         <p class="text-sm text-gray-800 dark:text-gray-200 font-semibold">{!! TranslationHelper::translateIfNeeded('Flight Location') !!}</p>
                                         <a href="{{route('filament.admin.resources.fligh-locations.edit',
                                         ['tenant' => Auth()->user()->teams()->first()->id,
-                                        'record' => $item->fligh_location->id,])}}"><p class="text-sm text-gray-700 dark:text-gray-400">{{$item->fligh_location->name?? null}}</p>
+                                        'record' => $item->fligh_location->id ?? 0])}}"><p class="text-sm text-gray-700 dark:text-gray-400">{{$item->fligh_location->name?? null}}</p>
                                     </a>
                                     </div>
                             
@@ -327,7 +327,7 @@
                                     
                                         <div class="flex-1 min-w-[150px] mb-2 border-r border-gray-300 pr-2">
                                             <p class="text-sm text-gray-800 dark:text-gray-200 font-semibold">{!! TranslationHelper::translateIfNeeded('Drone')!!}</p>
-                                            <a href="{{route('drone.statistik', ['drone_id' => $item->drone->id])}}">
+                                            <a href="{{route('drone.statistik', ['drone_id' => $item->drone->id ?? 0])}}">
                                                 <p class="text-sm text-gray-700 dark:text-gray-400">{{$item->drone->name??null}}</p>
                                             </a>
                                             <p class="text-sm text-gray-700 dark:text-gray-400">{{$item->drone->brand?? null}}/{{$item->drone->model??null}}</p>    
@@ -345,7 +345,11 @@
                                         <div class="flex flex-wrap space-x-4 border border-gray-300 rounded-lg p-2 bg-gray-100 dark:bg-gray-800 max-w-[800px] mx-auto mb-4 shadow-lg">
                                             <div class="flex-1 min-w-[150px] mb-2 border-r border-gray-300 pr-2">
                                                 <p class="text-sm text-gray-800 dark:text-gray-200 font-semibold">{!! TranslationHelper::translateIfNeeded('Maintenance Name') !!}</p>
-                                                <p class="text-sm text-gray-700 dark:text-gray-400">{{$item->name??null}}</p>
+                                                <a href="{{route('filament.admin.resources.maintenance-batteries.edit',
+                                                ['tenant' => Auth()->user()->teams()->first()->id,
+                                                'record' =>$item->id])}}">
+                                                    <p class="text-sm text-gray-700 dark:text-gray-400">{{$item->name??null}}</p>
+                                                </a>
                                                 <p class="text-sm text-gray-700 dark:text-gray-400">{{$item->date??null}}</p>
                                             </div>
                                         
@@ -391,10 +395,10 @@
                                                         </a>
                                                     @endif
                                                 <p class="text-sm text-gray-700 dark:text-gray-400">
-                                                    @if($item->equipment == null)
-                                                        {{ $item->battrei->model ?? null }}
+                                                    @if($item->equidment == false)
+                                                        {!! TranslationHelper::translateIfNeeded('Battery') !!}
                                                     @else
-                                                        {{ $item->equipment->model?? null }}
+                                                        {{ $item->equidment->type?? null }}
                                                     @endif
                                                 </p>
                                             </div>
@@ -495,7 +499,9 @@
                                 
                                     <div class="flex-1 min-w-[150px] mb-2 border-r border-gray-300 pr-2">
                                             <p class="text-sm text-gray-800 dark:text-gray-200 font-semibold">{!! TranslationHelper::translateIfNeeded('For Drone')!!}</p>
-                                            <p class="text-sm text-gray-700 dark:text-gray-400">{{$item->drone->name??null}}</p>
+                                            <a href="{{route('drone.statistik', ['drone_id' => $item->drone->id ?? 0])}}">
+                                                <p class="text-sm text-gray-700 dark:text-gray-400">{{$item->drone->name??null}}</p>
+                                            </a>
                                             <p class="text-sm text-gray-700 dark:text-gray-400">{{$item->drone->brand??null}} - {{$item->drone->model??null}}</p>
                                     </div>
                                 </div>
@@ -555,7 +561,9 @@
                                 
                                     <div class="flex-1 min-w-[150px] mb-2 border-r border-gray-300 pr-2">
                                             <p class="text-sm text-gray-800 dark:text-gray-200 font-semibold">{!! TranslationHelper::translateIfNeeded('For Drone')!!}</p>
-                                            <p class="text-sm text-gray-700 dark:text-gray-400">{{$item->drones->name??null}}</p>
+                                            <a href="{{route('drone.statistik', ['drone_id' => $item->drones->id ?? 0])}}">
+                                                <p class="text-sm text-gray-700 dark:text-gray-400">{{$item->drones->name??null}}</p>
+                                            </a>                 
                                             <p class="text-sm text-gray-700 dark:text-gray-400">{{$item->drones->brand??null}} - {{$item->drones->model??null}}</p>
                                     </div>
                                 </div>
@@ -586,13 +594,17 @@
                                     <!-- Kolom Name -->
                                     <div class="flex-1 min-w-[150px] mb-2 border-r border-gray-300 pr-2">
                                         <p class="text-sm text-gray-800 dark:text-gray-200 font-semibold">{!! TranslationHelper::translateIfNeeded('Name:')!!}</p>
-                                        <p class="text-sm text-gray-700 dark:text-gray-400">{{ $item->name ?? TranslationHelper::translateIfNeeded('No Name') }}</p>
+                                        <a href="{{route('filament.admin.resources.documents.edit',['tenant' => Auth()->user()->teams()->first()->id , 'record' => $item->id])}}">
+                                            <p class="text-sm text-gray-700 dark:text-gray-400">{{ $item->name ?? TranslationHelper::translateIfNeeded('No Name') }}</p>
+                                        </a>
                                     </div>
                             
                                     <!-- Kolom Owner -->
                                     <div class="flex-1 min-w-[150px] mb-2 border-r border-gray-300 pr-2">
                                         <p class="text-sm text-gray-800 dark:text-gray-200 font-semibold">{!! TranslationHelper::translateIfNeeded('Owner:')!!}</p>
-                                        <p class="text-sm text-gray-700 dark:text-gray-400">{{ $item->users->name ??  TranslationHelper::translateIfNeeded('No Owner') }}</p>
+                                        <a href="{{route('filament.admin.resources.users.view',['tenant' => Auth()->user()->teams()->first()->id, 'record'=>$item->users->id])}}">
+                                            <p class="text-sm text-gray-700 dark:text-gray-400">{{ $item->users->name ??  TranslationHelper::translateIfNeeded('No Owner') }}</p>
+                                        </a>
                                     </div>
                             
                                     <!-- Kolom Scope -->
@@ -645,11 +657,17 @@
                                         <p class="text-sm text-gray-800 dark:text-gray-200 font-semibold">{!! TranslationHelper::translateIfNeeded('Cause:')!!}</p>
                                         <div class="flex items-center justify-between">
                                             <div>
-                                                <p class="text-sm text-gray-700 dark:text-gray-400">{{ $item->cause }}</p>
+                                                <a href="{{route('filament.admin.resources.incidents.edit',['tenant'=>Auth()->user()->teams()->first()->id,'record'=>$item->id])}}">
+                                                    <p class="text-sm text-gray-700 dark:text-gray-400">{{ $item->cause }}</p>
+                                                </a>
                                                 <p class="text-xs text-gray-500 dark:text-gray-300">{!! TranslationHelper::translateIfNeeded('Date:')!!} {{ $item->incident_date }}</p>
                                             </div>
-                                            <span class="px-2 py-1 rounded text-white text-xs {{ $item->status == 'closed' ? 'bg-green-500' : 'bg-red-500' }}">
-                                                {{ ucfirst($item->status) }}
+                                            <span class="px-2 py-1 rounded text-white text-xs {{ $item->status == 0 ? 'bg-green-500' : 'bg-red-500' }}">
+                                                @if($item->status == 0)
+                                                    Closed
+                                                @else
+                                                    Under Review
+                                                @endif
                                             </span>
                                         </div>
                                     </div>
@@ -657,26 +675,34 @@
                                     <!-- Kolom Drone Name -->
                                     <div class="flex-1 min-w-[150px] mb-2 border-r border-gray-300 pr-2">
                                         <p class="text-sm text-gray-800 dark:text-gray-200 font-semibold">{!! TranslationHelper::translateIfNeeded('Drone:')!!}</p>
-                                        <p class="text-sm text-gray-700 dark:text-gray-400">{{ $item->drone->name ??  TranslationHelper::translateIfNeeded('No Drone') }}</p>
+                                        <a href="{{route('drone.statistik', ['drone_id' => $item->drone->id ?? 0])}}">
+                                            <p class="text-sm text-gray-700 dark:text-gray-400">{{ $item->drone->name ??  TranslationHelper::translateIfNeeded('No Drone') }}</p>
+                                        </a>
                                         <p class="text-sm text-gray-700 dark:text-gray-400">{{ $item->drone->brand ??  TranslationHelper::translateIfNeeded('No Drone') }} / {{$item->drone->model}}</p>
                                     </div>
                             
                                     <!-- Kolom Personnel Involved -->
                                     <div class="flex-1 min-w-[150px] mb-2 border-r border-gray-300 pr-2">
                                         <p class="text-sm text-gray-800 dark:text-gray-200 font-semibold">{!! TranslationHelper::translateIfNeeded('Personnel Involved:')!!}</p>
-                                        <p class="text-sm text-gray-700 dark:text-gray-400">{{ $item->users->name ??  TranslationHelper::translateIfNeeded('No Personnel') }}</p>
+                                        <a href="{{route('filament.admin.resources.users.view',['tenant'=>Auth()->user()->teams()->first()->id, 'record'=> $item->users->id ?? 0])}}">
+                                            <p class="text-sm text-gray-700 dark:text-gray-400">{{ $item->users->name ??  TranslationHelper::translateIfNeeded('No Personnel') }}</p>
+                                        </a>
                                     </div>
                             
                                     <!-- Kolom Location -->
                                     <div class="flex-1 min-w-[150px] mb-2 border-r border-gray-300 pr-2">
                                         <p class="text-sm text-gray-800 dark:text-gray-200 font-semibold">{!! TranslationHelper::translateIfNeeded('Location:')!!}</p>
-                                        <p class="text-sm text-gray-700 dark:text-gray-400">{{ $item->fligh_locations->name ??  TranslationHelper::translateIfNeeded('No Location') }}</p>
+                                        <a href="{{route('filament.admin.resources.fligh-locations.edit',['tenant' =>Auth()->user()->teams()->first()->id,'record'=>$item->fligh_locations->id ?? 0])}}">
+                                            <p class="text-sm text-gray-700 dark:text-gray-400">{{ $item->fligh_locations->name ??  TranslationHelper::translateIfNeeded('No Location') }}</p>
+                                        </a>
                                     </div>
                             
                                     <!-- Kolom Project -->
                                     <div class="flex-1 min-w-[150px] mb-2">
                                         <p class="text-sm text-gray-800 dark:text-gray-200 font-semibold">{!! TranslationHelper::translateIfNeeded('Project:')!!}</p>
-                                        <p class="text-sm text-gray-700 dark:text-gray-400">{{ $item->project->case ??  TranslationHelper::translateIfNeeded('No Project') }}</p>
+                                        <a href="{{route('filament.admin.resources.projects.view',['tenant'=>Auth()->user()->teams()->first()->id,'record'=>$item->project->id])}}">
+                                            <p class="text-sm text-gray-700 dark:text-gray-400">{{ $item->project->case ??  TranslationHelper::translateIfNeeded('No Project') }}</p>
+                                        </a>
                                     </div>
                             
                                 </div>

@@ -30,12 +30,12 @@
             <div class="flex space-x-12">
                 <div class="text-center p-4">
                     <h2 class="text-sm font-semibold text-gray-500 dark:text-gray-400">{!! TranslationHelper::translateIfNeeded('Flying Time') !!}</h2>
-                    <h1 class="text-3xl font-bold text-gray-600 dark:text-gray-300"></h1>
+                    <h1 class="text-3xl font-bold text-gray-600 dark:text-gray-300">{{$formattedTotalDuration}}</h1>
                 </div>
                 <br>
                 <div class="text-center p-4">
                     <h2 class="text-sm font-semibold text-gray-500 dark:text-gray-400">{!! TranslationHelper::translateIfNeeded('Flights') !!}</h2>
-                    <h1 class="text-3xl font-bold text-gray-600 dark:text-gray-300"></h1>
+                    <h1 class="text-3xl font-bold text-gray-600 dark:text-gray-300">{{$sumFlight}}</h1>
                 </div>
                 <br>
             </div>

@@ -49,7 +49,8 @@ class FlighResource extends Resource
     public static ?string $navigationGroup = 'flight';
     protected static bool $isLazy = false;
     public static function getNavigationBadge(): ?string{
-        return static::getModel()::count();
+        $teamID = Auth()->user()->teams()->first()->id;
+        return static::getModel()::Where('teams_id',$teamID)->count();
     }
 
     public static function getNavigationLabel(): string

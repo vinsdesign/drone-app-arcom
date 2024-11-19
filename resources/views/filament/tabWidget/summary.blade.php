@@ -60,16 +60,34 @@
                         @foreach($flightSummary as $item)
                             <div class="flex flex-col border-b border-gray-200 dark:border-gray-600 pb-2">
                                 <div class="mb-2 flex justify-between items-center">
-                                    <span class="font-semibold text-gray-900 dark:text-gray-200">{{$item->name ?? null}}</span>
+                                    <a href="{{route('filament.admin.resources.flighs.view',['tenant'=>Auth()->user()->teams()->first()->id, 'record'=>$item->id ?? 0])}}">
+                                        <span class="font-semibold text-gray-900 dark:text-gray-200">{{$item->name ?? null}}</span>
+                                    </a>
                                     <div class="text-sm text-gray-600 dark:text-gray-400">{!! TranslationHelper::translateIfNeeded('Missions Date:')!!} {{$item->start_date_flight ?? null}}</div>
                                 </div>
                                 <div class="flex justify-between items-center">
-                                    <div class="text-sm text-gray-600 dark:text-gray-400">{!! TranslationHelper::translateIfNeeded('Project name:')!!} {{$item->projects->case ?? null}}</div>
-                                    <div class="text-red-900 dark:text-red-300">{!! TranslationHelper::translateIfNeeded('Pilot:')!!} {{$item->users->name ?? null}}</div>
+                                    <div class="text-sm text-gray-600 dark:text-gray-400">{!! TranslationHelper::translateIfNeeded('Project name:')!!} 
+                                        <a href="{{route('flight-peroject',['project_id' => $item->projects->id ?? 0])}}">
+                                            {{$item->projects->case ?? null}}
+                                        </a>
+                                    </div>
+                                    <div class="text-red-900 dark:text-red-300">{!! TranslationHelper::translateIfNeeded('Pilot:')!!} 
+                                        <a href="{{route('flight-personnel',['personnel_id'=>$item->users->id])}}">
+                                            {{$item->users->name ?? null}}
+                                        </a>
+                                    </div>
                                 </div>
                                 <div class="flex justify-between items-center">
-                                    <span class="text-sm text-gray-600 dark:text-gray-400">{!! TranslationHelper::translateIfNeeded('Customers:')!!} {{$item->customers->name ?? null}}</span>
-                                    <div class="text-sm text-gray-600 dark:text-gray-400">{!! TranslationHelper::translateIfNeeded('Locations:')!!} {{$item->fligh_location->name ?? null}}</div>
+                                    <span class="text-sm text-gray-600 dark:text-gray-400">{!! TranslationHelper::translateIfNeeded('Customers:')!!} 
+                                        <a href="{{route('filament.admin.resources.customers.edit',['tenant'=>Auth()->user()->teams()->first()->id, 'record'=>$item->customers->id ?? 0])}}">
+                                            {{$item->customers->name ?? null}}
+                                        </a>
+                                    </span>
+                                    <div class="text-sm text-gray-600 dark:text-gray-400">{!! TranslationHelper::translateIfNeeded('Locations:')!!} 
+                                        <a href="{{route('filament.admin.resources.fligh-locations.edit',['tenant'=> Auth()->user()->teams()->first()->id, 'record' => $item->fligh_location->id])}}">
+                                            {{$item->fligh_location->name ?? null}}
+                                        </a>    
+                                    </div>
                                 </div>
                             </div>
                         @endforeach
@@ -85,20 +103,38 @@
                     @endif
                     <div class="text-gray-800 dark:text-gray-200 overflow-y-auto flex-grow" style="max-height: 300px;"> 
                        @foreach($flightSummaryMonth as $item)
-                           <div class="flex flex-col border-b border-gray-200 dark:border-gray-600 pb-2">
-                               <div class="mb-2 flex justify-between items-center">
-                                   <span class="font-semibold text-gray-900 dark:text-gray-200">{{$item->name ?? null}}</span>
-                                   <div class="text-sm text-gray-600 dark:text-gray-400">{!! TranslationHelper::translateIfNeeded('Missions Date:')!!} {{$item->start_date_flight ?? null}}</div>
-                               </div>
-                               <div class="flex justify-between items-center">
-                                   <div class="text-sm text-gray-600 dark:text-gray-400">{!! TranslationHelper::translateIfNeeded('Project name:')!!} {{$item->projects->case ?? null}}</div>
-                                   <div class="text-red-900 dark:text-red-300">{!! TranslationHelper::translateIfNeeded('Pilot:')!!} {{$item->users->name ?? null}}</div>
-                               </div>
-                               <div class="flex justify-between items-center">
-                                   <span class="text-sm text-gray-600 dark:text-gray-400">{!! TranslationHelper::translateIfNeeded('Customers:')!!} {{$item->customers->name ?? null}}</span>
-                                   <div class="text-sm text-gray-600 dark:text-gray-400">{!! TranslationHelper::translateIfNeeded('Locations:')!!} {{$item->fligh_location->name ?? null}}</div>
-                               </div>
-                           </div>
+                       <div class="flex flex-col border-b border-gray-200 dark:border-gray-600 pb-2">
+                        <div class="mb-2 flex justify-between items-center">
+                            <a href="{{route('filament.admin.resources.flighs.view',['tenant'=>Auth()->user()->teams()->first()->id, 'record'=>$item->id ?? 0])}}">
+                                <span class="font-semibold text-gray-900 dark:text-gray-200">{{$item->name ?? null}}</span>
+                            </a>
+                            <div class="text-sm text-gray-600 dark:text-gray-400">{!! TranslationHelper::translateIfNeeded('Missions Date:')!!} {{$item->start_date_flight ?? null}}</div>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <div class="text-sm text-gray-600 dark:text-gray-400">{!! TranslationHelper::translateIfNeeded('Project name:')!!} 
+                                <a href="{{route('flight-peroject',['project_id' => $item->projects->id ?? 0])}}">
+                                    {{$item->projects->case ?? null}}
+                                </a>
+                            </div>
+                            <div class="text-red-900 dark:text-red-300">{!! TranslationHelper::translateIfNeeded('Pilot:')!!} 
+                                <a href="{{route('flight-personnel',['personnel_id'=>$item->users->id])}}">
+                                    {{$item->users->name ?? null}}
+                                </a>
+                            </div>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <span class="text-sm text-gray-600 dark:text-gray-400">{!! TranslationHelper::translateIfNeeded('Customers:')!!} 
+                                <a href="{{route('filament.admin.resources.customers.edit',['tenant'=>Auth()->user()->teams()->first()->id, 'record'=>$item->customers->id ?? 0])}}">
+                                    {{$item->customers->name ?? null}}
+                                </a>
+                            </span>
+                            <div class="text-sm text-gray-600 dark:text-gray-400">{!! TranslationHelper::translateIfNeeded('Locations:')!!} 
+                                <a href="{{route('filament.admin.resources.fligh-locations.edit',['tenant'=> Auth()->user()->teams()->first()->id, 'record' => $item->fligh_location->id])}}">
+                                    {{$item->fligh_location->name ?? null}}
+                                </a>    
+                            </div>
+                        </div>
+                    </div>
                        @endforeach
                     </div>
                  </div>      
@@ -127,7 +163,9 @@
                     @foreach($maintenance_drone as $item)
                         <div class="flex flex-col border-b border-gray-200 dark:border-gray-600 pb-2">
                             <div class="mb-2 flex justify-between items-center">
-                                <span class="font-semibold text-gray-900 dark:text-gray-200">{{$item->name??null}}</span>
+                                <a href="{{route('filament.admin.resources.maintences.edit',['tenant'=>Auth()->user()->teams()->first()->id, 'record'=>$item->id])}}">
+                                    <span class="font-semibold text-gray-900 dark:text-gray-200">{{$item->name??null}}</span>
+                                </a>
                                 <div class="text-sm text-gray-600 dark:text-gray-400">{!! TranslationHelper::translateIfNeeded('Maintenance Date:')!!} {{$item->date??null}}</div>
                             </div>
                             <div class="flex justify-between items-center">
@@ -139,11 +177,12 @@
                                     $daysOverdueDiff = abs(intval($daysOverdueDiff));
                                 @endphp
                                 <div class="text-red-900 font dark:text-red-300">{!! TranslationHelper::translateIfNeeded('Overdue:')!!} {{$daysOverdueDiff}}</div>     
-
                             </div>
                             <div class="flex justify-between items-center">
-                                <span class="text-sm text-gray-600 dark:text-gray-400">{{$item->drone->brand?? null}}</span>
-                                <div class="text-sm text-gray-600 dark:text-gray-400">{{$item->drone->name??null}}</div>
+                                <span class="text-sm text-gray-600 dark:text-gray-400">{{$item->drones->brand?? null}}</span>
+                                <a href="{{route('drone.statistik',['drone_id'=>$item->drone->id ?? 0])}}">
+                                    <div class="text-sm text-gray-600 dark:text-gray-400">{{$item->drones->name??null}}</div>
+                                </a>
                             </div>
                         </div>
                     @endforeach
@@ -151,7 +190,10 @@
                     @foreach($maintenance_eq as $item)
                         <div class="flex flex-col border-b border-gray-200 dark:border-gray-600 pb-2">
                             <div class="mb-2 flex justify-between items-center">
-                                <span class="font-semibold text-gray-900 dark:text-gray-200">{{$item->name??null}}</span>
+                                <a href="{{route('filament.admin.resources.maintenance-batteries.edit',['tenant'=>Auth()->user()->teams()->first()->id,'record'=>$item->id])}}">
+                                    <span class="font-semibold text-gray-900 dark:text-gray-200">{{$item->name??null}}</span>
+                                </a>
+                               
                                 <div class="text-sm text-gray-600 dark:text-gray-400">{!! TranslationHelper::translateIfNeeded('Maintenance Date:')!!} {{$item->date??null}}</div>
                             </div>
                             <div class="flex justify-between items-center">
@@ -164,10 +206,21 @@
                                 @endphp
                                 <div class="text-red-900 font dark:text-red-300">{!! TranslationHelper::translateIfNeeded('Overdue:')!!} {{$daysOverdueDiff}}</div>     
                             </div>
-                            <div class="flex justify-between items-center">
-                                <span class="text-sm text-gray-600 dark:text-gray-400">{{$item->drone->brand?? null}}</span>
-                                <div class="text-sm text-gray-600 dark:text-gray-400">{{$item->drone->name??null}}</div>
-                            </div>
+                            @if($item->equidment == true)
+                                <div class="flex justify-between items-center">
+                                    <span class="text-sm text-gray-600 dark:text-gray-400">{{$item->equidment->type?? null}}</span>
+                                    <a href="{{route('equipment.statistik',['equipment_id'=>$item->equidment->id ?? 0])}}">
+                                        <div class="text-sm text-gray-600 dark:text-gray-400">{{$item->equidment->name??null}}</div>
+                                    </a>  
+                                </div>
+                            @elseif($item->battrei == true)
+                                <div class="flex justify-between items-center">
+                                    <span class="text-sm text-gray-600 dark:text-gray-400">{!! TranslationHelper::translateIfNeeded('Batteries:')!!}</span>
+                                    <a href="{{route('battery.statistik',['battery_id'=>$item->battrei->id ?? 0])}}">
+                                        <div class="text-sm text-gray-600 dark:text-gray-400">{{$item->battrei->name??null}}</div>
+                                    </a>  
+                                </div>
+                            @endif
                         </div>
                     @endforeach
                     <!--end-->

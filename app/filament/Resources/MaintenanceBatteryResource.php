@@ -38,7 +38,8 @@ class MaintenanceBatteryResource extends Resource
     protected static bool $isLazy = false;
 
     public static function getNavigationBadge(): ?string{
-        return static::getModel()::where('status','!=','completed')->count();
+        $teamID = Auth()->user()->teams()->first()->id;
+        return static::getModel()::where('status','!=','completed')->Where('teams_id',$teamID)->count();
     }
 
     public static function getNavigationLabel(): string
@@ -97,6 +98,11 @@ class MaintenanceBatteryResource extends Resource
                                 $currentTeam = auth()->user()->teams()->first();
                                 return $currentTeam ? $currentTeam->currencies_id : null;
                             }),
+                        Forms\Components\TextInput::make('technician')
+                        ->label(TranslationHelper::translateIfNeeded('Technician'))    
+                            ->maxLength(255)
+                            ->columnSpan(2),
+
                         Forms\Components\TextArea::make('notes')
                         ->label(TranslationHelper::translateIfNeeded('Notes'))    
                             ->columnSpanFull(),
@@ -174,6 +180,9 @@ class MaintenanceBatteryResource extends Resource
             Tables\Columns\TextColumn::make('currencies.iso')
                 ->label(TranslationHelper::translateIfNeeded('Currencies'))
                 ->searchable(),
+            Tables\Columns\TextColumn::make('technician')
+                ->label(TranslationHelper::translateIfNeeded('Technician'))
+                ->sortable(),
         ])        
         
             ->filters([
@@ -192,8 +201,6 @@ class MaintenanceBatteryResource extends Resource
                 }),
             ])
             ->actions([
-                Tables\Actions\ViewAction::make(),
-                Tables\Actions\EditAction::make(),
                 Tables\Actions\Action::make('resolve')
                     ->label(TranslationHelper::translateIfNeeded('Resolve'))
                     ->icon('heroicon-o-check-circle')
@@ -209,7 +216,12 @@ class MaintenanceBatteryResource extends Resource
                     ->requiresConfirmation()
                     ->visible(function ($record){
                         return $record->status !== 'completed' && auth()->user()->hasRole(['maintenance', 'panel_user']);
-                    })
+                    }),
+                    Tables\Actions\ActionGroup::make([
+                        Tables\Actions\ViewAction::make(),
+                        Tables\Actions\EditAction::make(),
+                        Tables\Actions\DeleteAction::make()
+                    ]),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
@@ -246,6 +258,8 @@ class MaintenanceBatteryResource extends Resource
                 ->label(TranslationHelper::translateIfNeeded('Cost')),
             TextEntry::make('currencies.iso')
                 ->label(TranslationHelper::translateIfNeeded('Currency')),
+            TextEntry::make('technician')
+                ->label(TranslationHelper::translateIfNeeded('Technician')),
             TextEntry::make('notes')
                 ->label(TranslationHelper::translateIfNeeded('Notes')),
         ])

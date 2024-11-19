@@ -30,7 +30,7 @@ $response =session('successfully');
 // dd($response);
 @endphp
 @if($response != null)
-    <div id="success-notification-project" class="notification bg-green-500 text-white p-4 rounded-lg shadow-lg flex items-center justify-between">
+    <div id="success-notification-project" class="notification text-white p-4 rounded-lg shadow-lg flex items-center justify-between" style="background:#00c711">
         <span>Successfully</span>
         <button id="close-notification-project" class="ml-4 text-white hover:text-gray-200 focus:outline-none">
             <i class="fas fa-times"></i>

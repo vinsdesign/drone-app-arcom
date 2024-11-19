@@ -33,7 +33,8 @@ class CustomerResource extends Resource
     protected static bool $isLazy = false;
 
     public static function getNavigationBadge(): ?string{
-        return static::getModel()::count();
+        $teamID = Auth()->user()->teams()->first()->id;
+        return static::getModel()::Where('teams_id',$teamID)->count();
     }
 
     public static function getNavigationLabel(): string
@@ -146,8 +147,8 @@ class CustomerResource extends Resource
                 //
             ])
             ->actions([
-                Tables\Actions\ViewAction::make(),
-                Tables\Actions\EditAction::make()
+                    Tables\Actions\ViewAction::make(),
+                    Tables\Actions\EditAction::make(),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
