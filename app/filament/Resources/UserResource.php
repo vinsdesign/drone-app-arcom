@@ -36,7 +36,10 @@ class UserResource extends Resource
     protected static bool $isLazy = false;
 
     public static function getNavigationBadge(): ?string{
-        return static::getModel()::count();
+        $teamId = Auth()->user()->teams()->first()->id;
+        return static::getModel()::whereHas('teams', function ($query) use ($teamId) {
+            $query->where('team_id', $teamId);
+        })->count();
     }
 
     public static function getNavigationLabel(): string
@@ -202,11 +205,15 @@ class UserResource extends Resource
                 //
             ])
             ->actions([
-                Tables\Actions\Action::make('views')  ->action(function ($record) {
-                    session(['personnel_id' => $record->id]);
-                    return redirect()->route('flight-personnel', ['personnel_id' => $record->id]);
-                })->label(TranslationHelper::translateIfNeeded('View'))->icon('heroicon-s-eye'),
-                Tables\Actions\EditAction::make(),
+                Tables\Actions\ActionGroup::make([
+                    Tables\Actions\Action::make('views')  ->action(function ($record) {
+                        session(['personnel_id' => $record->id]);
+                        return redirect()->route('flight-personnel', ['personnel_id' => $record->id]);
+                    })->label(TranslationHelper::translateIfNeeded('View'))->icon('heroicon-s-eye'),
+                    Tables\Actions\EditAction::make(),
+                    Tables\Actions\DeleteAction::make(),
+                ])
+
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([

@@ -34,7 +34,8 @@ class ProjectsResource extends Resource
     protected static bool $isLazy = false;
 
     public static function getNavigationBadge(): ?string{
-        return static::getModel()::count();
+        $teamID = Auth()->user()->teams()->first()->id;
+        return static::getModel()::Where('teams_id',$teamID)->count();
     }
 
     public static function getNavigationLabel(): string
@@ -95,15 +96,12 @@ class ProjectsResource extends Resource
     {
         $userId = auth()->user()->id;
         $query = parent::getEloquentQuery();
-
+        
         if (Auth()->user()->roles()->pluck('name')->contains('super_admin') || (Auth()->user()->roles()->pluck('name')->contains('panel_user'))) {
             return $query;
         }else{
             $query->where(function ($query) use ($userId) {
-                $query->where('users_id', $userId);
-            })
-            ->orWhere(function ($query) use ($userId) {
-                $query->where('users_id', '!=', $userId)->where('shared', 1);
+                $query->where('shared', 1);
             });
             return $query;
         }

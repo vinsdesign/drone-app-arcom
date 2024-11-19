@@ -39,7 +39,8 @@ class MaintenceResource extends Resource
     protected static bool $isLazy = false;
     
     public static function getNavigationBadge(): ?string{
-        return static::getModel()::where('status','!=','completed')->count();
+        $teamID = Auth()->user()->teams()->first()->id;
+        return static::getModel()::where('status','!=','completed')->Where('teams_id',$teamID)->count();
     }
 
     public static function getNavigationLabel(): string
@@ -229,8 +230,6 @@ class MaintenceResource extends Resource
                 }),
             ])
             ->actions([
-                Tables\Actions\ViewAction::make(),
-                Tables\Actions\EditAction::make(),
                 Tables\Actions\Action::make('resolve')
                     ->label(TranslationHelper::translateIfNeeded('Resolve'))
                     ->icon('heroicon-o-check-circle')
@@ -246,7 +245,12 @@ class MaintenceResource extends Resource
                     ->requiresConfirmation()
                     ->visible(function ($record) {
                         return $record->status !== 'completed' && auth()->user()->hasRole(['maintenance', 'panel_user']);
-                    })
+                    }),
+                    Tables\Actions\ActionGroup::make([
+                        Tables\Actions\ViewAction::make(),
+                        Tables\Actions\EditAction::make(),
+                        Tables\Actions\DeleteAction::make()
+                    ]),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([

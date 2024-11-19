@@ -14,17 +14,6 @@ class TabFlight extends ChartWidget
 {
     // protected static ?string $heading = 'Drone Inventory';
     protected static bool $isLazy = false;
-    // protected static string $view = 'filament.widgets.tab-flight';
-
-    // public function render(): \Illuminate\Contracts\View\View
-    // {
-    //     return view(static::$view, [
-    //         'datasets' => $this->getData()['datasets'],
-    //         'labels' => $this->getData()['labels'],
-    //         'chartType' => $this->getType(),
-    //     ]);
-    // }
-
     protected function getData(): array
     {
         $tenant_id = Auth()->User()->teams()->first()->id;
@@ -42,23 +31,6 @@ class TabFlight extends ChartWidget
             $data[] = $project->flight_count;
             $color[] = '#' . substr(md5(uniqid(rand(), true)), 0, 6);
         };
-        //drone
-        // $flightsDrone = fligh::where('teams_id', $tenant_id)
-        // ->selectRaw('drones_id, COUNT(id) as flight_count')
-        // ->groupBy('drones_id')
-        // ->with('drones') // Pastikan ada relasi drone di model flight
-        // ->get();
-
-        // $droneLabels = [];
-        // $droneData = [];
-        // $droneColors = [];
-
-        // foreach ($flightsDrone as $flight) {
-        //     $droneLabels[] = $flight->drones->name;
-        //     $droneData[] = $flight->flight_count;
-        //     $droneColors[] = '#' . substr(md5(uniqid(rand(), true)), 0, 6);
-        // }
-        //end
         return [
             'datasets' => [
                 [
@@ -67,17 +39,7 @@ class TabFlight extends ChartWidget
                     'backgroundColor' => $color,
                     'borderColor' => 'rgba(255, 99, 132, 1)',
                     'borderWidth' => 2,
-                    // 'hoverBackgroundColor' => 'rgba(255, 99, 132, 0.8)', // Change color on hover
-                    // 'hoverBorderColor'=>'rgba(255, 255, 255, 1)', // Change border color on hover
-                    // 'hoverBorderWidth'=> 4,
                 ],
-                // [
-                //     'label' => 'Flight Per Drone',
-                //     'data' => [$droneData],
-                //     'backgroundColor' => $droneColors,
-                //     'borderColor' => 'rgba(255, 99, 132, 1)',
-                //     'borderWidth' => 2,
-                // ],
             ],
             'labels' =>$label
 

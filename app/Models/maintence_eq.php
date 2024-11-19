@@ -18,7 +18,8 @@ class maintence_eq extends Model
         'notes',
         'equidment_id',
         'battrei_id',
-        'teams_id'
+        'teams_id',
+        'technician',
     ];
 
     protected static function booted()

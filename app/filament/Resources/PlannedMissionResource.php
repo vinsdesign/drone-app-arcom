@@ -39,7 +39,8 @@ class PlannedMissionResource extends Resource
     public static ?int $navigationSort = 5;
 
     public static function getNavigationBadge(): ?string{
-        return static::getModel()::where('status','!=','append')->count();
+        $teamID = Auth()->user()->teams()->first()->id;
+        return static::getModel()::where('status','!=','append')->Where('teams_id',$teamID)->count();
     }
 
     public static function getNavigationLabel(): string

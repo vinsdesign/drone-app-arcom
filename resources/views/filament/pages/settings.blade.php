@@ -138,13 +138,13 @@
             <div class="tab-buttons flex flex-col border-r border-gray-300 dark:border-gray-700 p-4 space-y-2">
 
                 <h1 class="text-lg font-bold border-b border-gray-500 pb-2">{!! TranslationHelper::translateIfNeeded('Setting') !!}</h1>
-                <button id="tab0" class="tab-button active border border-gray-300 dark:border-gray-700 rounded-lg py-2 px-4 text-gray-800 dark:text-gray-200" onclick="showContentTab(0)">{!! TranslationHelper::translateIfNeeded('Profile') !!}</button>
+                <button id="tab0" data-index="0" class="tab-button active border border-gray-300 dark:border-gray-700 rounded-lg py-2 px-4 text-gray-800 dark:text-gray-200" onclick="showContentTab(0)">{!! TranslationHelper::translateIfNeeded('Profile') !!}</button>
                 @if (Auth::user()->roles()->pluck('name')->contains('super_admin') || (Auth::user()->roles()->pluck('name')->contains('panel_user')))
-                    <button id="tab1" class="tab-button border border-gray-300 dark:border-gray-700 rounded-lg py-2 px-4 text-gray-800 dark:text-gray-200" onclick="showContentTab(1)">{!! TranslationHelper::translateIfNeeded('Organization') !!}</button>
+                    <button id="tab1" data-index="1" class="tab-button border border-gray-300 dark:border-gray-700 rounded-lg py-2 px-4 text-gray-800 dark:text-gray-200" onclick="showContentTab(1)">{!! TranslationHelper::translateIfNeeded('Organization') !!}</button>
                 @endif
-                <button id="tab2" class="tab-button border border-gray-300 dark:border-gray-700 rounded-lg py-2 px-4 text-gray-800 dark:text-gray-200" onclick="showContentTab(2)">{!! TranslationHelper::translateIfNeeded('Import Rules') !!}</button>
-                <button id="tab3" class="tab-button border border-gray-300 dark:border-gray-700 rounded-lg py-2 px-4 text-gray-800 dark:text-gray-200" onclick="showContentTab(3)">{!! TranslationHelper::translateIfNeeded('API') !!}</button>
-                <button id="tab4" class="tab-button border border-gray-300 dark:border-gray-700 rounded-lg py-2 px-4 text-gray-800 dark:text-gray-200" onclick="showContentTab(4)">{!! TranslationHelper::translateIfNeeded('Billing') !!}</button>
+                <button id="tab2" data-index="2" class="tab-button border border-gray-300 dark:border-gray-700 rounded-lg py-2 px-4 text-gray-800 dark:text-gray-200" onclick="showContentTab(2)">{!! TranslationHelper::translateIfNeeded('Import Rules') !!}</button>
+                <button id="tab3" data-index="3" class="tab-button border border-gray-300 dark:border-gray-700 rounded-lg py-2 px-4 text-gray-800 dark:text-gray-200" onclick="showContentTab(3)">{!! TranslationHelper::translateIfNeeded('API') !!}</button>
+                <button id="tab4" data-index="4" class="tab-button border border-gray-300 dark:border-gray-700 rounded-lg py-2 px-4 text-gray-800 dark:text-gray-200" onclick="showContentTab(4)">{!! TranslationHelper::translateIfNeeded('Billing') !!}</button>
             </div>
     
             <!-- Tab content on the right -->
@@ -156,9 +156,13 @@
                     @livewire('update-password')
                 </div>
                 {{-- menu Team --}}
+                
                 <div id="content1" class="tab-content">
-                    @livewire(\app\filament\Pages\Tenancy\EditTeamProfil::class)
+                    @if (Auth::user()->roles()->pluck('name')->contains('super_admin') || (Auth::user()->roles()->pluck('name')->contains('panel_user')))
+                        @livewire(\app\filament\Pages\Tenancy\EditTeamProfil::class)
+                    @endif
                 </div>
+                
                 {{-- menu Import Rules --}}
                 <div id="content2" class="tab-content p-6 bg-gray-50 dark:bg-gray-800 rounded-lg shadow-md">
                     <h1 class="text-2xl font-semibold mb-4 text-gray-800 dark:text-gray-200">{!! TranslationHelper::translateIfNeeded('Import Rules') !!}</h1>
@@ -282,19 +286,37 @@
                 @csrf
                 
                 <div class="mb-4">
+                    
                     <label for="currency" class="block text-sm font-medium text-gray-700 dark:text-gray-400">{!! TranslationHelper::translateIfNeeded('Choose your currency:') !!}</label>
-                    <select name="currency_id" id="currency" required class="mt-1 block w-full p-2 border border-gray-300 dark:border-gray-600 rounded-md bg-gray-50 dark:bg-gray-700 text-gray-800 dark:text-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500">
-                        @php
-                            $currencies = App\Models\currencie::all();
-                            $currentTeam = auth()->user()->teams()->first();
-                            $selectedCurrencyId = $currentTeam ? $currentTeam->currencies_id : null;
-                        @endphp
-                        @foreach($currencies as $currency)
-                            <option value="{{ $currency->id }}" {{ $currency->id == $selectedCurrencyId ? 'selected' : '' }}>
-                                {{ $currency->name }} ({{ $currency->iso }})
-                            </option>
-                        @endforeach
-                    </select>
+                    <div class="relative">
+                        <input 
+                            type="text" 
+                            id="search-box" 
+                            placeholder="Search currency..." 
+                            class="mt-1 block w-full p-2 border border-gray-300 dark:border-gray-600 rounded-md bg-gray-50 dark:bg-gray-700 text-gray-800 dark:text-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500 mb-2" 
+                            oninput="filterAndSelect(this.value)"
+                        >
+                        <select 
+                            name="currency_id" 
+                            id="currency" 
+                            required 
+                            class="block w-full p-2 border border-gray-300 dark:border-gray-600 rounded-md bg-gray-50 dark:bg-gray-700 text-gray-800 dark:text-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                            @php
+                                $currencies = App\Models\currencie::all();
+                                $currentTeam = auth()->user()->teams()->first();
+                                $selectedCurrencyId = $currentTeam ? $currentTeam->currencies_id : null;
+                            @endphp
+                            @foreach($currencies as $currency)
+                                <option 
+                                    value="{{ $currency->id }}" 
+                                    {{ $currency->id == $selectedCurrencyId ? 'selected' : '' }}>
+                                    {{ $currency->name }} ({{ $currency->iso }})
+                                </option>
+                            @endforeach
+                        </select>
+                    </div>
+                    
+                    
                 </div>
     
                 {{-- <div class="mb-4">
@@ -350,18 +372,6 @@
 </div>
     
     <script>
-        // JavaScript to handle active tab button and content display
-        // document.querySelectorAll('.tab-button').forEach(button => {
-        //     button.addEventListener('click', () => {
-        //         document.querySelectorAll('.tab-button').forEach(btn => btn.classList.remove('active'));
-        //         document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
-                
-        //         button.classList.add('active');
-        //         const contentId = `content${button.id.charAt(button.id.length - 1)}`;
-        //         document.getElementById(contentId).classList.add('active');
-        //     });
-        // });
-
         function showContentTab(index) {
             const contents = document.querySelectorAll('.tab-content');
             contents.forEach((content, i) => {
@@ -371,12 +381,13 @@
                 }
             });
             const contentss = document.querySelectorAll('.tab-button');
-            contentss.forEach((contentsss, i) => {
+            contentss.forEach((contentsss) => {
                 contentsss.classList.remove('active');
-                if (i === index) {
-                    contentsss.classList.add('active');
-                }
             });
+            const target = document.querySelector(`.tab-button[data-index="${index}"]`);
+            if (target) {
+                target.classList.add('active');
+            }
         }
         function showContent(index) {
             const contents = document.querySelectorAll('.main-content');
@@ -387,15 +398,37 @@
                 }
             });
         }
+    </script>
+    {{-- search Currency --}}
+    <script>
+        function filterAndSelect(searchValue) {
+            const select = document.getElementById('currency');
+            const options = select.querySelectorAll('option');
 
-    //currency
-    $(document).ready(function() {
-        $('#currency').select2({
-            placeholder: "Select a currency",
-            allowClear: true,
-            width: '100%'
-        });
-    });
+            // search value
+            const query = searchValue.toLowerCase();
+            let foundAndSelected = false;
+            options.forEach(option => {
+                const text = option.textContent.toLowerCase();
+
+                // Show/hide options
+                if (text.includes(query)) {
+                    option.style.display = '';
+                    if (!foundAndSelected) {
+                        select.value = option.value;
+                        foundAndSelected = true;
+                    }
+                } else {
+                    option.style.display = 'none';
+                }
+            });
+
+            if (!foundAndSelected) {
+                select.value = '';
+            }
+        }
+
+
     </script>
     
     {{--end tab --}}
