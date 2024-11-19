@@ -184,6 +184,21 @@ class PlannedMissionResource extends Resource
                     ->required(),
                 Forms\Components\TextInput::make('customers_name')
                 ->label(TranslationHelper::translateIfNeeded('Customer Name'))
+                ->afterStateHydrated(function ($state, $component, $record) {
+                    if ($record) {
+                        $customerId = \DB::table('planned_missions')
+                            ->where('id', $record->id)
+                            ->value('customers_id'); 
+
+                        if ($customerId) {
+                            $customerName = \DB::table('customers')
+                                ->where('id', $customerId)
+                                ->value('name'); 
+            
+                            $component->state($customerName);
+                        }
+                    }
+                })
                     ->disabled()
                     ->helperText(function () {
                         return TranslationHelper::translateIfNeeded('Automatically filled when selecting projects');
@@ -203,8 +218,9 @@ class PlannedMissionResource extends Resource
                             $currentTeamId = auth()->user()->teams()->first()->id;
                             $startDate = $get('start_date_flight');
                             $endDate = $get('end_date_flight');
+                            $isEdit = $get('id') !== null;
                         
-                            if (!$startDate || !$endDate) {
+                            if (!$startDate || !$endDate || $isEdit) {
                                 return $query->whereHas('teams', function (Builder $query) use ($currentTeamId) {
                                     $query->where('team_id', $currentTeamId);
                                     })->whereHas('roles', function (Builder $query){
@@ -237,30 +253,63 @@ class PlannedMissionResource extends Resource
                     Forms\Components\Select::make('drones_id')
                     ->required()
                     ->label(TranslationHelper::translateIfNeeded('Drones'))
-                    ->options(function (callable $get) use ($currentTeamId) { 
+                    // ->options(function (callable $get) use ($currentTeamId) { 
+                    //     $startDate = $get('start_date_flight');
+                    //     $endDate = $get('end_date_flight');
+                    
+                    //     return drone::where('teams_id', $currentTeamId)
+                    //         ->where('status', 'airworthy')
+                    //         ->where(function ($query) {
+                    //             $query->doesntHave('maintence_drone')
+                    //                 ->orWhereHas('maintence_drone', function ($query) {
+                    //                     $query->where('status', 'completed'); 
+                    //                 });
+                    //         })
+                    //         ->when($startDate && $endDate, function ($query) use ($startDate, $endDate) {
+                    //             $query->whereDoesntHave('fligh', function ($query) use ($startDate, $endDate) {
+                    //                 $query->where(function ($query) use ($startDate, $endDate) {
+                    //                     $query->where(function ($query) use ($startDate, $endDate) {
+                    //                         $query->where('start_date_flight', '<=', $endDate)
+                    //                               ->where('end_date_flight', '>=', $startDate);
+                    //                     });
+                    //                 });
+                    //             });
+                    //         })
+                    //         ->pluck('name', 'id');
+                    // })
+                    ->relationship('drones', 'name', function (Builder $query, callable $get) {
+                        $currentTeamId = auth()->user()->teams()->first()->id; 
                         $startDate = $get('start_date_flight');
                         $endDate = $get('end_date_flight');
+                        $isEdit = $get('id') !== null; 
+                        
+                        if (!$startDate || !$endDate || $isEdit) {
+                            return $query->where('teams_id', $currentTeamId)
+                                     ->where('status', 'airworthy')
+                                     ->where(function ($query) {
+                                         $query->doesntHave('maintence_drone')
+                                               ->orWhereHas('maintence_drone', function ($query) {
+                                                   $query->where('status', 'completed'); 
+                                               });
+                                     });
+                        }
                     
-                        return drone::where('teams_id', $currentTeamId)
-                            ->where('status', 'airworthy')
-                            ->where(function ($query) {
-                                $query->doesntHave('maintence_drone')
-                                    ->orWhereHas('maintence_drone', function ($query) {
-                                        $query->where('status', 'completed'); 
-                                    });
-                            })
-                            ->when($startDate && $endDate, function ($query) use ($startDate, $endDate) {
-                                $query->whereDoesntHave('fligh', function ($query) use ($startDate, $endDate) {
-                                    $query->where(function ($query) use ($startDate, $endDate) {
-                                        $query->where(function ($query) use ($startDate, $endDate) {
-                                            $query->where('start_date_flight', '<=', $endDate)
-                                                  ->where('end_date_flight', '>=', $startDate);
-                                        });
-                                    });
-                                });
-                            })
-                            ->pluck('name', 'id');
-                    })->saveRelationshipsUsing(function ($state, callable $get) {
+                        return $query->where('teams_id', $currentTeamId)
+                                     ->where('status', 'airworthy')
+                                     ->where(function ($query) {
+                                         $query->doesntHave('maintence_drone')
+                                               ->orWhereHas('maintence_drone', function ($query) {
+                                                   $query->where('status', 'completed'); 
+                                               });
+                                     })
+                                     ->whereDoesntHave('fligh', function ($query) use ($startDate, $endDate) {
+                                         $query->where(function ($query) use ($startDate, $endDate) {
+                                             $query->where('start_date_flight', '<=', $endDate)
+                                                   ->where('end_date_flight', '>=', $startDate);
+                                         });
+                                     });
+                    })
+                    ->saveRelationshipsUsing(function ($state, callable $get) {
                         $start = $get('start_date_flight');
                         $end = $get('end_date_flight');
                         $state = is_array($state) ? $state : [$state];
@@ -341,16 +390,26 @@ class PlannedMissionResource extends Resource
                     $endDate = $get('end_date_flight');
                     $droneId = $get('drones_id');
                     $showAllKits = $get('show_all_kits');
+                    $isEdit = $get('id') !== null;
 
                     if ($showAllKits){
                         return Kits::where('teams_id', $currentTeamId)->pluck('name', 'id');
                     }
+                    if (!$startDate || !$endDate || $isEdit) {
+                        return Kits::whereHas('teams', function (Builder $query) use ($currentTeamId, $droneId) {
+                            $query->where('teams_id', $currentTeamId)
+                                  ->when($droneId, function ($query) use ($droneId) {
+                                      $query->where('drone_id', $droneId);
+                                  });
+                        })->pluck('name', 'id'); 
+                    }
+                    
                     
                     return kits::where('teams_id', $currentTeamId)
                         ->when($droneId, function ($query) use ($droneId){
                             $query->where('drone_id', $droneId);
                         })
-                        ->when($startDate && $endDate, function ($query) use ($startDate, $endDate) {
+                        ->when($startDate && $endDate && $isEdit, function ($query) use ($startDate, $endDate) {
                             $query->whereDoesntHave('fligh', function ($query) use ($startDate, $endDate) {
                                 $query->where(function ($query) use ($startDate, $endDate) {
                                     $query->where(function ($query) use ($startDate, $endDate) {
@@ -361,7 +420,7 @@ class PlannedMissionResource extends Resource
                             });
                         })
                         ->pluck('name', 'id'); 
-                })                                   
+                })                                       
                 ->searchable()
                 ->reactive()
                 ->afterStateUpdated(function ($state, callable $set) {
@@ -395,18 +454,80 @@ class PlannedMissionResource extends Resource
                 //end grid Kits
 
                 Forms\Components\TextInput::make('battery_name')
-                ->label(TranslationHelper::translateIfNeeded('Battery'))        
+                ->label(TranslationHelper::translateIfNeeded('Battery')) 
+                ->afterStateHydrated(function ($state, $component, $record) {
+                    if ($record) {
+                        $kitId = $record->kits_id;
+                        $batteriesId = \DB::table('planned_missions')
+                            ->where('kits_id', $kitId)
+                            ->pluck('id')
+                            ->toArray(); 
+
+                        if ($batteriesId) {
+                            $batteriesName = \DB::table('battreis')
+                                ->where('id', $batteriesId)
+                                ->pluck('name')
+                                ->toArray(); 
+            
+                            $component->state(implode(', ', $batteriesName));
+                        } else {
+                            $component->state(null);
+                        }
+                    }
+                })         
                 ->helperText(function () {
                     return TranslationHelper::translateIfNeeded('Automatically filled when selecting kits');
                 }) 
                         ->disabled(), 
                 Forms\Components\TextInput::make('camera_gimbal')
-                ->label(TranslationHelper::translateIfNeeded('Camera/Gimbal'))        
+                ->label(TranslationHelper::translateIfNeeded('Camera/Gimbal'))
+                ->afterStateHydrated(function ($state, $component, $record) {
+                    if ($record) {
+                        $kitId = $record->kits_id;
+                        $equipmentIds = \DB::table('planned_missions')
+                            ->where('kits_id', $kitId)
+                            ->pluck('id')
+                            ->toArray(); 
+
+                        if ($equipmentIds) {
+                            $eqName = \DB::table('equidments')
+                            ->whereIn('id', $equipmentIds)
+                                ->whereIn('type', ['camera', 'gimbal'])
+                                ->pluck('type')
+                                ->toArray(); 
+            
+                            $component->state(implode(', ', $eqName));
+                        } else {
+                            $component->state(null);
+                        }
+                    }
+                })             
                 ->helperText(function () {
                     return TranslationHelper::translateIfNeeded('Automatically filled when selecting kits');
                 }) 
                         ->disabled(), 
                 Forms\Components\TextInput::make('others')
+                ->afterStateHydrated(function ($state, $component, $record) {
+                    if ($record) {
+                        $kitId = $record->kits_id;
+                        $equipmentIds = \DB::table('planned_missions')
+                            ->where('kits_id', $kitId)
+                            ->pluck('id')
+                            ->toArray(); 
+
+                        if ($equipmentIds) {
+                            $eqName = \DB::table('equidments')
+                            ->whereIn('id', $equipmentIds)
+                                ->whereNotIn('type', ['camera', 'gimbal'])
+                                ->pluck('type')
+                                ->toArray(); 
+            
+                            $component->state(implode(', ', $eqName));
+                        } else {
+                            $component->state(null);
+                        }
+                    }
+                })     
                 ->helperText(function () {
                     return TranslationHelper::translateIfNeeded('Automatically filled when selecting kits');
                 })  
