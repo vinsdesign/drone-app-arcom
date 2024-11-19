@@ -202,7 +202,21 @@ class FlighResource extends Resource
                     //->relationship('customers', 'name')
                     // ->required()
                     ->disabled()
+                    ->afterStateHydrated(function ($state, $component, $record) {
+                        if ($record) {
+                            $customerId = \DB::table('flighs')
+                                ->where('id', $record->id)
+                                ->value('customers_id'); 
 
+                            if ($customerId) {
+                                $customerName = \DB::table('customers')
+                                    ->where('id', $customerId)
+                                    ->value('name'); 
+                
+                                $component->state($customerName);
+                            }
+                        }
+                    })
                     ->default(function (){
                         $currentTeam = auth()->user()->teams()->first();
                         return $currentTeam ? $currentTeam->id_customers  : null;
@@ -303,45 +317,37 @@ class FlighResource extends Resource
                     // })    
                     ->required()
                     ->label(TranslationHelper::translateIfNeeded('Drones'))
-                    ->options(function (callable $get) use ($currentTeamId) { 
+                    ->relationship('drones', 'name', function (Builder $query, callable $get) {
+                        $currentTeamId = auth()->user()->teams()->first()->id; 
                         $startDate = $get('start_date_flight');
                         $endDate = $get('end_date_flight');
-                    
-                        return drone::where('teams_id', $currentTeamId)
-                            ->where('status', 'airworthy')
-                            ->where(function ($query) {
-                                $query->doesntHave('maintence_drone')
-                                    ->orWhereHas('maintence_drone', function ($query) {
-                                        $query->where('status', 'completed'); 
-                                    });
-                            })
-                            ->when($startDate && $endDate, function ($query) use ($startDate, $endDate) {
-                                $query->whereDoesntHave('fligh', function ($query) use ($startDate, $endDate) {
-                                    $query->where(function ($query) use ($startDate, $endDate) {
-                                        $query->where(function ($query) use ($startDate, $endDate) {
-                                            $query->where('start_date_flight', '<=', $endDate)
-                                                  ->where('end_date_flight', '>=', $startDate);
-                                        });
-                                    });
-                                });
-                            })
-                            ->pluck('name', 'id');
-                    })
-                    ->default(function ($get) {
-                        $record = $get('record');
+                        $isEdit = $get('id') !== null; 
                         
-                        if ($record && isset($record->drone)) {
-                            return $record->drone_id;  
+                        if (!$startDate || !$endDate || $isEdit) {
+                            return $query->where('teams_id', $currentTeamId)
+                                     ->where('status', 'airworthy')
+                                     ->where(function ($query) {
+                                         $query->doesntHave('maintence_drone')
+                                               ->orWhereHas('maintence_drone', function ($query) {
+                                                   $query->where('status', 'completed'); 
+                                               });
+                                     });
                         }
-                        return null;
-                    })
-                    ->afterStateHydrated(function ($state, callable $set) {
-                        if ($state) {
-                            $drone = drone::find($state);
-                            if ($drone) {
-                                $set('drones_id', $drone->name); 
-                            }
-                        }
+                    
+                        return $query->where('teams_id', $currentTeamId)
+                                     ->where('status', 'airworthy')
+                                     ->where(function ($query) {
+                                         $query->doesntHave('maintence_drone')
+                                               ->orWhereHas('maintence_drone', function ($query) {
+                                                   $query->where('status', 'completed'); 
+                                               });
+                                     })
+                                     ->whereDoesntHave('fligh', function ($query) use ($startDate, $endDate) {
+                                         $query->where(function ($query) use ($startDate, $endDate) {
+                                             $query->where('start_date_flight', '<=', $endDate)
+                                                   ->where('end_date_flight', '>=', $startDate);
+                                         });
+                                     });
                     })
                     ->saveRelationshipsUsing(function ($state, callable $get) {
                         $start = $get('start_date_flight');
@@ -432,16 +438,26 @@ class FlighResource extends Resource
                     $endDate = $get('end_date_flight');
                     $droneId = $get('drones_id');
                     $showAllKits = $get('show_all_kits');
+                    $isEdit = $get('id') !== null;
 
                     if ($showAllKits){
                         return Kits::where('teams_id', $currentTeamId)->pluck('name', 'id');
                     }
+                    if (!$startDate || !$endDate || $isEdit) {
+                        return Kits::whereHas('teams', function (Builder $query) use ($currentTeamId, $droneId) {
+                            $query->where('teams_id', $currentTeamId)
+                                  ->when($droneId, function ($query) use ($droneId) {
+                                      $query->where('drone_id', $droneId);
+                                  });
+                        })->pluck('name', 'id'); 
+                    }
+                    
                     
                     return kits::where('teams_id', $currentTeamId)
                         ->when($droneId, function ($query) use ($droneId){
                             $query->where('drone_id', $droneId);
                         })
-                        ->when($startDate && $endDate, function ($query) use ($startDate, $endDate) {
+                        ->when($startDate && $endDate && $isEdit, function ($query) use ($startDate, $endDate) {
                             $query->whereDoesntHave('fligh', function ($query) use ($startDate, $endDate) {
                                 $query->where(function ($query) use ($startDate, $endDate) {
                                     $query->where(function ($query) use ($startDate, $endDate) {
@@ -455,22 +471,6 @@ class FlighResource extends Resource
                 })                                   
                 ->searchable()
                 ->reactive()
-                ->default(function ($get) {
-                    $record = $get('record');
-                    
-                    if ($record && isset($record->kits)) {
-                        return $record->kits_id;  
-                    }
-                    return null;
-                })
-                ->afterStateHydrated(function ($state, callable $set) {
-                    if ($state) {
-                        $kits = kits::find($state);
-                        if ($kits) {
-                            $set('kits_id', $kits->name); 
-                        }
-                    }
-                })
                 ->afterStateUpdated(function ($state, callable $set) {
                     if ($state) {
                         $kit = kits::find($state);
@@ -502,18 +502,80 @@ class FlighResource extends Resource
                 
                 //end grid Kits
                 Forms\Components\TextInput::make('battery_name')
-                ->label(TranslationHelper::translateIfNeeded('Battery'))        
+                        ->label(TranslationHelper::translateIfNeeded('Battery'))
+                        ->afterStateHydrated(function ($state, $component, $record) {
+                            if ($record) {
+                                $kitId = $record->kits_id;
+                                $batteriesId = \DB::table('battrei_kits')
+                                    ->where('kits_id', $kitId)
+                                    ->pluck('battrei_id')
+                                    ->toArray(); 
+
+                                if ($batteriesId) {
+                                    $batteriesName = \DB::table('battreis')
+                                        ->where('id', $batteriesId)
+                                        ->pluck('name')
+                                        ->toArray(); 
+                    
+                                    $component->state(implode(', ', $batteriesName));
+                                } else {
+                                    $component->state(null);
+                                }
+                            }
+                        })        
                         ->helperText(function () {
                             return TranslationHelper::translateIfNeeded('Automatically filled when selecting kits');
                         })                        
                         ->disabled(), 
                 Forms\Components\TextInput::make('camera_gimbal')
-                ->label(TranslationHelper::translateIfNeeded('Camera/Gimbal'))        
+                ->label(TranslationHelper::translateIfNeeded('Camera/Gimbal')) 
+                ->afterStateHydrated(function ($state, $component, $record) {
+                    if ($record) {
+                        $kitId = $record->kits_id;
+                        $equipmentIds = \DB::table('equidment_kits')
+                            ->where('kits_id', $kitId)
+                            ->pluck('equidment_id')
+                            ->toArray(); 
+
+                        if ($equipmentIds) {
+                            $eqName = \DB::table('equidments')
+                            ->whereIn('id', $equipmentIds)
+                                ->whereIn('type', ['camera', 'gimbal'])
+                                ->pluck('type')
+                                ->toArray(); 
+            
+                            $component->state(implode(', ', $eqName));
+                        } else {
+                            $component->state(null);
+                        }
+                    }
+                })               
                         ->helperText(function () {
                             return TranslationHelper::translateIfNeeded('Automatically filled when selecting kits');
                         })                        
                         ->disabled(), 
                 Forms\Components\TextInput::make('others')
+                ->afterStateHydrated(function ($state, $component, $record) {
+                    if ($record) {
+                        $kitId = $record->kits_id;
+                        $others = \DB::table('equidment_kits')
+                            ->where('kits_id', $kitId)
+                            ->pluck('equidment_id')
+                            ->toArray(); 
+
+                        if ($others) {
+                            $eqothers = \DB::table('equidments')
+                            ->whereIn('id', $others)
+                                ->whereNotIn('type', ['camera', 'gimbal'])
+                                ->pluck('type')
+                                ->toArray(); 
+            
+                            $component->state(implode(', ', $eqothers));
+                        } else {
+                            $component->state(null);
+                        }
+                    }
+                })          
                         ->helperText(function () {
                             return TranslationHelper::translateIfNeeded('Automatically filled when selecting kits');
                         })                        
@@ -551,7 +613,21 @@ class FlighResource extends Resource
                                 });
                             })
                             ->pluck('name', 'id'); 
-                    })   
+                    })
+                    ->afterStateHydrated(function ($state, $component, $record) {
+                        if ($record) {
+                            $batteryIds = \DB::table('fligh_battrei')
+                                ->where('fligh_id', $record->id)
+                                ->pluck('battrei_id')
+                                ->toArray();
+                            
+                            $batteryNames = \DB::table('battreis')
+                                ->whereIn('id', $batteryIds)
+                                ->pluck('id')
+                                ->toArray();
+                            $component->state($batteryNames);
+                        }
+                    })     
                     ->multiple()
                     ->searchable()
                     ->saveRelationshipsUsing(function ($component, $state) {
@@ -603,7 +679,23 @@ class FlighResource extends Resource
                                 });
                             })
                             ->pluck('name', 'id');
-                    })                   
+                    }) 
+                    ->afterStateHydrated(function ($state, $component, $record) {
+                        if ($record) {
+                            $equidmentIds = \DB::table('fligh_equidment')
+                                ->where('fligh_id', $record->id)
+                                ->pluck('equidment_id')
+                                ->toArray();
+                            
+                            // $equidmentNames = \DB::table('equidments')
+                            //     ->whereIn('id', $equidmentIds)
+                            //     ->pluck('name', 'id')
+                            //     ->toArray();
+
+                                // dd($equidmentIds);
+                            $component->state($equidmentIds);
+                        }
+                    })               
                     ->searchable()
                     ->saveRelationshipsUsing(function ($component, $state) {
                         $component->getRecord()->equidments()->sync($state);
@@ -808,7 +900,7 @@ class FlighResource extends Resource
                                 ->send();
                         })
                         ->icon('heroicon-s-lock-open')
-                        ->hidden(fn ($record) => $record->locked_flight === 'unlocked')
+                        ->hidden(fn ($record) => $record->locked_flight === null || $record->locked_flight === 'unlocked')
                         ->visible(fn ($record) => auth()->user()->hasRole(['panel_user'])),  
                 ])
             ])

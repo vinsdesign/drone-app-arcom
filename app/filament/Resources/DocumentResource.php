@@ -362,7 +362,7 @@ class DocumentResource extends Resource
                                 ->send();
                         })
                         ->icon('heroicon-s-lock-open')
-                        ->hidden(fn ($record) => $record->locked === 'unlocked')
+                        ->hidden(fn ($record) => $record->locked === null || $record->locked === 'unlocked')
                         ->visible(fn ($record) => auth()->user()->hasRole(['panel_user'])), 
                 ])
                 
