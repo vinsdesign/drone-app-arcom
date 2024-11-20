@@ -72,18 +72,54 @@ class FlighLocationResource extends Resource
                         ->options(function (callable $get) use ($currentTeamId) {
                             return projects::where('teams_id', $currentTeamId)->pluck('case', 'id');
                         })
+                        ->afterStateUpdated(function ($state, callable $set) {
+                            if ($state) {
+                                $project = Projects::find($state);
+                                $set('customers_id', $project ? $project->customers_id : null);
+                                $set('customers_name', $project && $project->customers ? $project->customers->name : null);
+                            } else {
+                                $set('customers_id', null);
+                                $set('customers_name', null);
+                            }
+                        })
+                        ->reactive()
                         ->searchable(),  
-                        Forms\Components\Select::make('customers_id')
-                        // ->relationship('customers','name', function (Builder $query){
-                        //     $currentTeamId = auth()->user()->teams()->first()->id;
-                        //     $query->where('teams_id', $currentTeamId);
+                        // Forms\Components\Select::make('customers_id')
+                        // // ->relationship('customers','name', function (Builder $query){
+                        // //     $currentTeamId = auth()->user()->teams()->first()->id;
+                        // //     $query->where('teams_id', $currentTeamId);
+                        // // })  
+                        // ->options(function (callable $get) use ($currentTeamId) {
+                        //     return customer::where('teams_id', $currentTeamId)->pluck('name', 'id');
                         // })  
-                        ->options(function (callable $get) use ($currentTeamId) {
-                            return customer::where('teams_id', $currentTeamId)->pluck('name', 'id');
-                        })  
-                        ->label(TranslationHelper::translateIfNeeded('Customers'))
-                        ->searchable()
-                        ->columnSpanFull(),
+                        // ->label(TranslationHelper::translateIfNeeded('Customers'))
+                        // ->searchable()
+                        // ->columnSpanFull(),
+                        Forms\Components\Hidden::make('customers_id') 
+                            ->required(),
+                        Forms\Components\TextInput::make('customers_name')
+                            ->label(TranslationHelper::translateIfNeeded('Customers Name'))    
+                            ->disabled()
+                            ->afterStateHydrated(function ($state, $component, $record) {
+                                if ($record) {
+                                    $customerId = \DB::table('fligh_locations')
+                                        ->where('id', $record->id)
+                                        ->value('customers_id'); 
+
+                                    if ($customerId) {
+                                        $customerName = \DB::table('customers')
+                                            ->where('id', $customerId)
+                                            ->value('name'); 
+                        
+                                        $component->state($customerName);
+                                    }
+                                }
+                            })
+                            ->default(function (){
+                                $currentTeam = auth()->user()->teams()->first();
+                                return $currentTeam ? $currentTeam->id_customers  : null;
+                            })
+                            ->columnSpanFull(),
                         Forms\Components\TextArea::make('description')
                         ->label(TranslationHelper::translateIfNeeded('Descriptions'))
                         ->columnSpanFull(),
@@ -179,8 +215,16 @@ class FlighLocationResource extends Resource
                 ]) : null)->color(Color::Blue)
                     ->searchable(),
                 Tables\Columns\TextColumn::make('address')
-                ->label(TranslationHelper::translateIfNeeded('Address'))
+                    ->label(TranslationHelper::translateIfNeeded('Address'))
                     ->searchable(),
+                Tables\Columns\TextColumn::make('total_flights')
+                    ->label(TranslationHelper::translateIfNeeded('Total Flights'))    
+                        ->getStateUsing(function ($record) {
+                            $totalFlights = $record->fligh()->count();
+                            $TranslateText = TranslationHelper::translateIfNeeded('Flights');
+                            return "{$totalFlights} {$TranslateText}";
+                        })
+                        ->html(),
                 Tables\Columns\TextColumn::make('city')
                 ->label(TranslationHelper::translateIfNeeded('City'))
                     ->searchable(),

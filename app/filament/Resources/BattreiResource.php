@@ -203,11 +203,30 @@ class BattreiResource extends Resource
                     ->searchable(),
                 Tables\Columns\TextColumn::make('status')
                     ->label(TranslationHelper::translateIfNeeded('Status'))
-                    ->color(fn ($record) => match ($record->status){
-                        'airworthy' => Color::Green,
-                       'maintenance' =>Color::Red,
-                       'retired' => Color::Zinc
-                     })
+                    // ->color(fn ($record) => match ($record->status){
+                    //     'airworthy' => Color::Green,
+                    //    'maintenance' =>Color::Red,
+                    //    'retired' => Color::Zinc
+                    //  })
+                    ->formatStateUsing(function ($state) {
+                        $colors = [
+                            'airworthy' => '#28a745',
+                            'maintenance' => 'red',
+                            'retired' => 'gray',
+                        ];
+                
+                        $color = $colors[$state] ?? 'gray';
+                
+                        return "<span style='
+                                display: inline-block;
+                                width: 10px;
+                                height: 10px;
+                                background-color: {$color};
+                                border-radius: 50%;
+                                margin-right: 5px;
+                            '></span><span style='color: {$color};'>{$state}</span>";
+                    })
+                    ->html()
                     ->searchable(),
                 Tables\Columns\TextColumn::make('flight_time')
                     ->label(TranslationHelper::translateIfNeeded('Flights & Flying Time'))
@@ -240,8 +259,8 @@ class BattreiResource extends Resource
                        $totalDuration = sprintf('%02d:%02d:%02d', $hours, $minutes, $seconds);
 
                        $totalFlights = $flights->unique('id')->count();
-                    return "<div> ({$totalFlights}) " . TranslationHelper::translateIfNeeded('Flights') . " <div style='border: 1px solid #ccc; padding: 3px; display: inline-block; border-radius: 5px; background-color: #D4D4D4;'>
-                            <strong>{$totalDuration}</strong></div>";
+                    return "<div> ({$totalFlights}) " . TranslationHelper::translateIfNeeded('Flights') . " <div class='inline-block border border-gray-300 dark:border-gray-600 px-2 py-1 rounded bg-gray-200 dark:bg-gray-700'>
+                            <strong class='text-gray-800 dark:text-gray-200'>{$totalDuration}</strong></div>";
                    })
                     ->sortable()
                     ->html(),

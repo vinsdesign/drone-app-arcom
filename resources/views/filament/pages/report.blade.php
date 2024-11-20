@@ -12,12 +12,12 @@ use App\Helpers\TranslationHelper;
                 <form method="POST" action="{{ route('filament.report.download') }}">
                     @csrf
                     <div class="mb-4">
-                        <label for="start_date" class="block text-sm font-medium text-gray-700 dark:text-gray-300">{!! TranslationHelper::translateIfNeeded('From:') !!}</label>
+                        <label for="start_date" class="block text-sm font-medium text-gray-700 dark:text-white">{!! TranslationHelper::translateIfNeeded('From:') !!}</label>
                         <input type="date" name="start_date" class="mt-1 block w-full border border-gray-300 dark:border-gray-600 rounded-md p-2 dark:bg-gray-700 dark:text-gray-300" required>
                     </div>
                     
                     <div class="mb-4">
-                        <label for="end_date" class="block text-sm font-medium text-gray-700 dark:text-gray-300">{!! TranslationHelper::translateIfNeeded('To:') !!}</label>
+                        <label for="end_date" class="block text-sm font-medium text-gray-700 dark:text-white">{!! TranslationHelper::translateIfNeeded('To:') !!}</label>
                         <input type="date" name="end_date" class="mt-1 block w-full border border-gray-300 dark:border-gray-600 rounded-md p-2 dark:bg-gray-700 dark:text-gray-300" required>
                     </div>
     
@@ -42,12 +42,12 @@ use App\Helpers\TranslationHelper;
                 <form method="POST" action="{{ route('filament.report.incomeExpense.download') }}">
                     @csrf
                     <div class="mb-4">
-                        <label for="start_date" class="block text-sm font-medium text-gray-700 dark:text-gray-300">{!! TranslationHelper::translateIfNeeded('From: ') !!}</label>
+                        <label for="start_date" class="block text-sm font-medium text-gray-700 dark:text-white">{!! TranslationHelper::translateIfNeeded('From: ') !!}</label>
                         <input type="date" name="start_date" class="mt-1 block w-full border border-gray-300 dark:border-gray-600 rounded-md p-2 dark:bg-gray-700 dark:text-gray-300" required>
                     </div>
                     
                     <div class="mb-4">
-                        <label for="end_date" class="block text-sm font-medium text-gray-700 dark:text-gray-300">{!! TranslationHelper::translateIfNeeded('To: ') !!}</label>
+                        <label for="end_date" class="block text-sm font-medium text-gray-700 dark:text-white">{!! TranslationHelper::translateIfNeeded('To: ') !!}</label>
                         <input type="date" name="end_date" class="mt-1 block w-full border border-gray-300 dark:border-gray-600 rounded-md p-2 dark:bg-gray-700 dark:text-gray-300" required>
                     </div>
     

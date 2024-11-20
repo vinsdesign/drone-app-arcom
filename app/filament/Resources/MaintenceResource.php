@@ -207,11 +207,30 @@ class MaintenceResource extends Resource
                     ->sortable(),
                 Tables\Columns\TextColumn::make('status')
                 ->label(TranslationHelper::translateIfNeeded('Status'))
-                    ->color(fn ($record) => match ($record->status){
-                        'completed' => Color::Green,
-                        'schedule' =>Color::Red,
-                        'in_progress' => Color::Blue
+                    // ->color(fn ($record) => match ($record->status){
+                    //     'completed' => Color::Green,
+                    //     'schedule' =>Color::Red,
+                    //     'in_progress' => Color::Blue
+                    // })
+                    ->formatStateUsing(function ($state) {
+                        $colors = [
+                            'completed' => '#28a745',
+                            'schedule' => 'red',
+                            'in_progress' => 'gray',
+                        ];
+                
+                        $color = $colors[$state] ?? 'gray';
+                
+                        return "<span style='
+                                display: inline-block;
+                                width: 10px;
+                                height: 10px;
+                                background-color: {$color};
+                                border-radius: 50%;
+                                margin-right: 5px;
+                            '></span><span style='color: {$color};'>{$state}</span>";
                     })
+                    ->html()
                     ->searchable(),
             ])
             ->filters([

@@ -195,8 +195,10 @@ class UserResource extends Resource
                         $seconds = $totalSeconds % 60;
                         $totalDuration = sprintf('%02d:%02d:%02d', $hours, $minutes, $seconds);
                         $TranslateText = TranslationHelper::translateIfNeeded('Flights');
-                        return "{$totalFlights} {$TranslateText} <br> <div style='border: 1px solid #ccc; padding: 3px; display: inline-block; border-radius: 5px; background-color: #D4D4D4; '>
-                            <strong>{$totalDuration}</strong> </div>";
+                        return "{$totalFlights} {$TranslateText} <br> 
+                                <div class='inline-block border border-gray-300 dark:border-gray-600 px-2 py-1 rounded bg-gray-200 dark:bg-gray-700'>
+                                    <strong class='text-gray-800 dark:text-gray-200'>{$totalDuration}</strong>
+                                </div>";
                     })
                     ->sortable()
                     ->html(),
