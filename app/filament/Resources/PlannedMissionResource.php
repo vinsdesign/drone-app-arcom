@@ -633,7 +633,36 @@ class PlannedMissionResource extends Resource
             Tables\Columns\TextColumn::make('start_date_flight')
                 ->label(TranslationHelper::translateIfNeeded('Start Flight'))
                 ->dateTime()
-                ->sortable(),
+                ->sortable()
+                ->formatStateUsing(function ($state, $record) {
+                    $daysOverdue = Carbon::parse($state);
+                    $now = Carbon::now();
+                    $formatDate = $daysOverdue->format('Y-m-d H:i:s');
+        
+                    if ($record->status !== 'completed') {
+                        $daysOverdueDiff = $now->diffInDays($daysOverdue, false);
+        
+                        if ($daysOverdueDiff < 0){
+                            $daysOverdueDiff = abs(intval($daysOverdueDiff));
+
+                            $overdueLabel = TranslationHelper::translateIfNeeded('Expired');
+                            $daysLabel = TranslationHelper::translateIfNeeded('days ago');
+
+                            return "<div>{$formatDate}<br><span style='
+                                display: inline-block;
+                                background-color: red; 
+                                color: white; 
+                                padding: 3px 6px;
+                                border-radius: 5px;
+                                font-weight: bold;
+                            '>
+                                {$overdueLabel} {$daysOverdueDiff} {$daysLabel}
+                            </span></div>";
+                        }
+                    }
+                    return $formatDate;
+                })
+                ->html(),
             Tables\Columns\TextColumn::make('end_date_flight')
                 ->label(TranslationHelper::translateIfNeeded('End Flight'))
                 ->dateTime()
@@ -708,7 +737,7 @@ class PlannedMissionResource extends Resource
                         'customers_id' => $record->customers_id,
                         'location_id' => $record->location_id,
                         'projects_id' => $record->projects_id,
-                        'kits_id' => $record->kits_id,
+                        'kits_id' => $record->kits_id ?: null,
                         'users_id' => $record->users_id,
                         'vo' => null, 
                         'po' => null, 

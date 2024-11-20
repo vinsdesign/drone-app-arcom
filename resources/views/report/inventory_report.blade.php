@@ -72,31 +72,31 @@
             <th colspan="6" style="text-align: center; font-size: 25px">Drone</th>
             <tr>
                 <th>Name</th>
-                <th>Status</th>
                 <th>Type</th>
                 <th>Brand</th>
                 <th>Model</th>
                 <th>Legal ID</th>
+                <th>Hours</th>
             </tr>
         </thead>
         <tbody>
             @foreach ($drone as $drones)
                 <tr class="drone">
                     <td>{{ $drones->name ?? null}}</td>
-                    <td>{{ $drones->status ?? null}}</td>
                     <td>{{ $drones->type ?? null}}</td>
                     <td>{{ $drones->brand ?? null}}</td>
                     <td>{{ $drones->model ?? null}}</td>
                     <td>{{ $drones->idlegal ?? null}}</td>
+                    <td>{{ $drones->total_flying_time ?? '00:00:00'}}</td>
                 </tr>
                 <tr>
                     <td colspan="6" class="row-span">
-                        <strong>Drone Geometry:</strong> {{ $drones->geometry ?? null}} 
+                        <strong>Status:</strong> {{ $drones->status ?? null}} 
                         <br>
                         <strong>Owner:</strong> {{ $drones->users->name ?? null}}
                         <br>
-                        <strong>Initial Flight Count:</strong> {{ $drones->flight_c ?? null}} &nbsp;&nbsp; 
-                        <strong>Initial Flying Time:</strong> {{ $drones->total_flying_time ?? '00:00:00'}}
+                        <strong>Initial Flight Count:</strong> {{ $drones->initial_flight ?? null}} &nbsp;&nbsp; 
+                        <strong>Initial Flying Time:</strong> {{ $drones->initial_flight_time ?? '00:00:00'}}
                         <br>
                         <strong>Inventory/Asset:</strong> {{ $drones->inventory_asset ?? null}} &nbsp;&nbsp;
                         <strong>Serial Printed:</strong> {{ $drones->serial_p ?? null}} &nbsp;&nbsp;

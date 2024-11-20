@@ -30,12 +30,10 @@ class Report extends Page
     public function getHeading(): string
     {
         return TranslationHelper::translateIfNeeded('Report');
-        // return GoogleTranslate::trans('Report', session('locale') ?? 'en');
     }
     public function getTitle(): string
     {
         return TranslationHelper::translateIfNeeded('Report');
-        // return GoogleTranslate::trans('Report', session('locale') ?? 'en');
     }
 
     public function downloadReport(Request $request)
@@ -46,11 +44,11 @@ class Report extends Page
         $currentTeamId = auth()->user()->teams()->first()->id;
 
         $flight = fligh::with(['drones', 'battreis', 'equidments', 'users'])
-            ->where('teams_id', $currentTeamId) // Filter berdasarkan tim
+            ->where('teams_id', $currentTeamId) 
             ->whereBetween('start_date_flight', [$startDate, $endDate])
             ->get();
         $user = User::whereHas('teams', function (Builder $query) use ($currentTeamId) {
-                $query->where('team_user.team_id', $currentTeamId); // Pastikan nama tabel pivot benar
+                $query->where('team_user.team_id', $currentTeamId); 
             })->get();
         $drone = drone::whereHas('teams', function ($query) use ($currentTeamId) {
                 $query->where('teams.id', $currentTeamId);

@@ -39,7 +39,7 @@ class fligh_location extends Model
 
     public function fligh()
     {
-        return $this->hasMany(fligh::class);
+        return $this->hasMany(fligh::class, 'location_id');
     }
     public function Incidents()
     {

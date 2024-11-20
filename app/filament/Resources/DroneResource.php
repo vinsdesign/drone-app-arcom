@@ -265,12 +265,26 @@ class DroneResource extends Resource
                 ->label(TranslationHelper::translateIfNeeded('Drone Name'))
                     ->searchable(),
                 Tables\Columns\TextColumn::make('status')
-                ->label(TranslationHelper::translateIfNeeded('Status'))
-                ->color(fn ($record) => match ($record->status){
-                    'airworthy' => Color::Green,
-                   'maintenance' =>Color::Red,
-                   'retired' => Color::Zinc
-                 })
+                    ->label(TranslationHelper::translateIfNeeded('Status'))
+                    ->formatStateUsing(function ($state) {
+                        $colors = [
+                            'airworthy' => '#28a745',
+                            'maintenance' => 'red',
+                            'retired' => 'gray',
+                        ];
+                
+                        $color = $colors[$state] ?? 'gray';
+                
+                        return "<span style='
+                                display: inline-block;
+                                width: 10px;
+                                height: 10px;
+                                background-color: {$color};
+                                border-radius: 50%;
+                                margin-right: 5px;
+                            '></span><span style='color: {$color};'>{$state}</span>";
+                    })
+                    ->html()
                     ->searchable(),
                 Tables\Columns\TextColumn::make('flight_date')
                     
@@ -297,8 +311,8 @@ class DroneResource extends Resource
                         $lastFlight = $flights->sortByDesc('start_date_flight')->first();
                         $lastFlightDate = optional($lastFlight)->start_date_flight ? $lastFlight->start_date_flight : '';
                     
-                        return "<div>({$totalFlights}) " . TranslationHelper::translateIfNeeded('Flights') ." <div style='border: 1px solid #ccc; padding: 3px; display: inline-block; border-radius: 5px; background-color: #D4D4D4; '>
-                            <strong>{$totalDuration}</strong> </div> <br> {$lastFlightDate}</div>";
+                        return "<div>({$totalFlights}) " . TranslationHelper::translateIfNeeded('Flights') ." <div class='inline-block border border-gray-300 dark:border-gray-600 px-2 py-1 rounded bg-gray-200 dark:bg-gray-700'>
+                            <strong class='text-gray-800 dark:text-gray-200'>{$totalDuration}</strong> </div> <br> {$lastFlightDate}</div>";
                     })
                     ->sortable()
                     ->html(),

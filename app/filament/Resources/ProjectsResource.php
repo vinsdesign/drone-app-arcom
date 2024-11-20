@@ -121,7 +121,8 @@ class ProjectsResource extends Resource
                         $lastFlight = $record->flighs()->orderBy('start_date_flight', 'desc')->first();
                         $totalFlights = $record->flighs()->count();
                         $lastFlightDate = optional($lastFlight)->start_date_flight ? $lastFlight->start_date_flight : '';
-                        return "({$totalFlights}) Flights<br> {$lastFlightDate}";
+                        $TranslateText = TranslationHelper::translateIfNeeded('Flights');
+                        return "({$totalFlights}) {$TranslateText}<br> {$lastFlightDate}";
                     })
                     ->sortable()
                     ->html(),
