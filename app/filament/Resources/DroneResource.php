@@ -8,6 +8,7 @@ use App\Models\Drone;
 use App\Models\User;
 use Filament\Forms;
 use Filament\Forms\Form;
+use Filament\Infolists\Components\View;
 use Filament\Notifications\Notification;
 use Filament\Resources\Resource;
 use Filament\Tables;
@@ -421,7 +422,7 @@ class DroneResource extends Resource
         
         ->schema([
             Section::make(TranslationHelper::translateIfNeeded('Overview'))
-                ->schema([
+                ->schema([       
                     TextEntry::make('name')->label(TranslationHelper::translateIfNeeded('Name')),
                     TextEntry::make('idlegal')->label(TranslationHelper::translateIfNeeded('Legal ID')),
                     TextEntry::make('status')->label(TranslationHelper::translateIfNeeded('Status'))

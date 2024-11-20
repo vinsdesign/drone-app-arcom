@@ -50,4 +50,5 @@ Route::post('/create-location',[buttonPopUpCreate::class,'buttonLocation'])->nam
 
 //language change
 Route::post('/change-language', [LanguageController::class, 'changeLanguage'])->name('change.language');
+//chart js
 

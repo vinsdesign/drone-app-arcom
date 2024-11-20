@@ -190,19 +190,19 @@
                 
                     {{-- untuk tampilan 2 atau lebih widgets --}}
                     <div class="space-y-4">
-                        <div class="flex flex-col md:flex-row md:flex-nowrap justify-center gap-4 md:gap-6">
-                            <div class="rounded-lg shadow-lg p-2 sm:p-4 flex-1 max-w-xs sm:max-w-sm md:max-w-md lg:max-w-sm w-full">
-                                @livewire(App\Livewire\TabFlight::class)
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div class="rounded-lg shadow-lg p-2 sm:p-4 flex-1 max-w-xs sm:max-w-[100px] md:max-w-[150px] lg:max-w-[200px] w-full">
+                                    @livewire(App\Livewire\TabFlight::class)
+                                </div>
+                                <div class="rounded-lg shadow-lg p-2 sm:p-4 flex-1 max-w-xs sm:max-w-[100px] md:max-w-[150px] lg:max-w-[200px] w-full">
+                                    @livewire(App\Livewire\TabFlightDrone::class)
+                                </div>
                             </div>
-                            <div class="rounded-lg shadow-lg p-2 sm:p-4 flex-1 max-w-xs sm:max-w-sm md:max-w-md lg:max-w-sm w-full">
-                                @livewire(App\Livewire\TabFlightDrone::class)
-                            </div>
-                            <div class="rounded-lg shadow-lg p-2 sm:p-4 flex-1 max-w-xs sm:max-w-sm md:max-w-md lg:max-w-sm w-full">
+                            <div class="rounded-lg shadow-lg p-4 flex-1 max-w-xs sm:max-w-sm md:max-w-md lg:max-w-full dark:bg-gray-900">
                                 @livewire(App\Livewire\TabFlightChartBar::class)
                             </div>
                         </div>
-                        
-                        
                                 {{-- tabel Flight --}}
                             <div class="container mx-auto p-4">
                                 <h2 class="text-2xl font-bold mb-4">{!! TranslationHelper::translateIfNeeded('Latest Flights (Last 20)')!!}</h2>
