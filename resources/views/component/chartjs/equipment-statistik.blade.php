@@ -2,27 +2,38 @@
     $tenant_id = Auth()->user()->teams()->first()->id;
         $equipmentID = session('equipment_id');
 
-        //ulang baru
-        //end
         $pivotEquipment_id = DB::table('fligh_equidment')->where('equidment_id', $equipmentID)
         ->select('fligh_id')
-        ->distinct() // Mengambil id unik dari penerbangan
+        ->distinct()
         ->pluck('fligh_id');
-    
-        // Step 2: Ambil data penerbangan dari tabel `fligh`
+
+        $kitsEquiomentID = DB::table('equidment_kits')
+            ->where('equidment_id', $equipmentID)
+            ->distinct()
+            ->pluck('kits_id');
+        //tinggal masukan $kitsEquiomentID samakan dengan $flights kemudian merge
+        dd($kitsEquiomentID);
+        
+        $pivotKitsFlight_id = DB::table('flighs')
+            ->whereIn('kits_id', $kitsEquiomentID)
+            ->distinct()
+            ->pluck('id');
+        $allFlightId = $$pivotEquipment_id->merge($pivotKitsFlight_id)->unique();
+        
+        
         $flights = App\Models\fligh::where('teams_id', $tenant_id)
-            ->whereIn('id', $pivotEquipment_id)
+            ->whereIn('id', $allFlightId)
             ->whereBetween('start_date_flight', [now()->startOfYear(), now()->endOfYear()])
             ->get();
         
-        // Step 3 & 4: Kelompokkan data berdasarkan tanggal dan hitung total penerbangan dan durasi
+        
         $data = $flights->groupBy(function ($item) {
             return Carbon\Carbon::parse($item->start_date_flight)->format('Y-m');
         })->map(function ($group) {
             // Hitung total penerbangan
             $totalFlights = $group->count();
         
-            // Hitung total durasi (dalam detik) dan konversi ke jam
+            //konversi ke hours
             $totalDuration = $group->sum(function ($flight) {
                 list($hours, $minutes, $seconds) = explode(':', $flight->duration);
                 return ($hours * 3600) + ($minutes * 60) + $seconds;

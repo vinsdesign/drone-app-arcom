@@ -89,7 +89,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <style>
         /* Tab buttons styling */
-        .tab-button {
+        /* .tab-button {
             background-color: #e2e8f0;
             color: #333;
             padding: 10px 20px;
@@ -98,7 +98,7 @@
             border: none;
             cursor: pointer;
             transition: all 0.3s ease;
-        }
+        } */
         .tab-button:hover {
             background-color: #cbd5e1;
             color: #000;
@@ -138,7 +138,7 @@
 <div class="container tab-border-warna">
     <!-- Tab headers -->
     <div class="container mx-auto p-5">
-        <div class="flex flex-wrap gap-2 border border-gray-300 rounded-lg p-2 bg-black">
+        <div class="flex flex-wrap gap-2 border border-gray-300 rounded-lg p-2 bg-black dark:bg-gray-900">
             <button id="tab0" class="tab-button active text-white bg-gray-800 hover:bg-gray-700 px-4 py-2 rounded text-sm sm:text-base w-full sm:w-auto mb-2 mt-2">{!! TranslationHelper::translateIfNeeded('Summary') !!}</button>
             <button id="tab1" class="tab-button text-white bg-gray-800 hover:bg-gray-700 px-4 py-2 rounded text-sm sm:text-base w-full sm:w-auto mb-2 mt-2">{!! TranslationHelper::translateIfNeeded('Flights') !!}</button>
             <button id="tab2" class="tab-button text-white bg-gray-800 hover:bg-gray-700 px-4 py-2 rounded text-sm sm:text-base w-full sm:w-auto mb-2 mt-2">{!! TranslationHelper::translateIfNeeded('Maintenance') !!}</button>
@@ -168,13 +168,13 @@
                         {{-- end buttom --}}
                     </div>
                     {{-- buttom Summary --}}
-                    <div class="flex flex-wrap space-x-4 border border-gray-300 rounded-lg p-2 bg-yellow-200">
+                    <div class="flex flex-wrap space-x-4 border border-gray-300 rounded-lg p-2 bg-yellow-200 dark:bg-gray-900">
                         <h1 class="text-2xl font-bold mb-4 w-full dark:text-gray-700">{!! TranslationHelper::translateIfNeeded('Quick Actions') !!}</h1>
-                        <a href="{{route('filament.admin.resources.flighs.create',['tenant' => auth()->user()->teams()->first()->id])}}" class="mb-2"><button id="" class="text-white bg-yellow-500 hover:bg-yellow-400 px-4 py-2 rounded text-sm sm:text-base">{!! TranslationHelper::translateIfNeeded('Add New') !!} <br>{!! TranslationHelper::translateIfNeeded('Flights') !!}</button></a>
-                        <a href="{{route('filament.admin.resources.users.index',['tenant' => auth()->user()->teams()->first()->id])}}" class="mb-2"><button id="" class="text-white bg-yellow-500 hover:bg-yellow-400 px-4 py-2 rounded text-sm sm:text-base">{!! TranslationHelper::translateIfNeeded('View My') !!} <br>{!! TranslationHelper::translateIfNeeded('Personnel Page') !!}</button></a>
-                        <a href="{{route('filament.admin.resources.incidents.index',['tenant' => auth()->user()->teams()->first()->id])}}" class="mb-2"><button id="" class="text-white bg-yellow-500 hover:bg-yellow-400 px-4 py-2 rounded text-sm sm:text-base"{!! TranslationHelper::translateIfNeeded('Log An') !!}> <br>{!! TranslationHelper::translateIfNeeded('Incident') !!}</button></a>
-                        <a href="{{route('filament.admin.resources.maintences.index',['tenant' => auth()->user()->teams()->first()->id])}}" class="mb-2"><button id="" class="text-white bg-yellow-500 hover:bg-yellow-400 px-4 py-2 rounded text-sm sm:text-base">{!! TranslationHelper::translateIfNeeded('Check') !!} <br>{!! TranslationHelper::translateIfNeeded('Maintenance Drone') !!}</button></a>
-                        <a href="{{route('filament.admin.resources.maintenance-batteries.index',['tenant' => auth()->user()->teams()->first()->id])}}" class="mb-2"><button id="" class="text-white bg-yellow-500 hover:bg-yellow-400 px-4 py-2 rounded text-sm sm:text-base">{!! TranslationHelper::translateIfNeeded('Check') !!} <br>{!! TranslationHelper::translateIfNeeded('Maintenance Equipment') !!}</button></a>
+                        <a href="{{route('filament.admin.resources.flighs.create',['tenant' => auth()->user()->teams()->first()->id])}}" class="mb-2"><button id="" class="text-white bg-primary-500 dark::bg-primary-600 hover:bg-yellow-400 px-4 py-2 rounded text-sm sm:text-base">{!! TranslationHelper::translateIfNeeded('Add New') !!} <br>{!! TranslationHelper::translateIfNeeded('Flights') !!}</button></a>
+                        <a href="{{route('filament.admin.resources.users.index',['tenant' => auth()->user()->teams()->first()->id])}}" class="mb-2"><button id="" class="text-white bg-primary-500 dark::bg-primary-600 hover:bg-yellow-400 px-4 py-2 rounded text-sm sm:text-base">{!! TranslationHelper::translateIfNeeded('View My') !!} <br>{!! TranslationHelper::translateIfNeeded('Personnel Page') !!}</button></a>
+                        <a href="{{route('filament.admin.resources.incidents.index',['tenant' => auth()->user()->teams()->first()->id])}}" class="mb-2"><button id="" class="text-white bg-primary-500 dark::bg-primary-600 hover:bg-yellow-400 px-4 py-2 rounded text-sm sm:text-base"{!! TranslationHelper::translateIfNeeded('Log An') !!}> <br>{!! TranslationHelper::translateIfNeeded('Incident') !!}</button></a>
+                        <a href="{{route('filament.admin.resources.maintences.index',['tenant' => auth()->user()->teams()->first()->id])}}" class="mb-2"><button id="" class="text-white bg-primary-500 dark::bg-primary-600 hover:bg-yellow-400 px-4 py-2 rounded text-sm sm:text-base">{!! TranslationHelper::translateIfNeeded('Check') !!} <br>{!! TranslationHelper::translateIfNeeded('Maintenance Drone') !!}</button></a>
+                        <a href="{{route('filament.admin.resources.maintenance-batteries.index',['tenant' => auth()->user()->teams()->first()->id])}}" class="mb-2"><button id="" class="text-white bg-primary-500 dark::bg-primary-600 hover:bg-yellow-400 px-4 py-2 rounded text-sm sm:text-base">{!! TranslationHelper::translateIfNeeded('Check') !!} <br>{!! TranslationHelper::translateIfNeeded('Maintenance Equipment') !!}</button></a>
                     </div>
                     {{-- end buttom Summary --}}
 
@@ -192,10 +192,10 @@
                     <div class="space-y-4">
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                <div class="rounded-lg shadow-lg p-2 sm:p-4 flex-1 max-w-xs sm:max-w-[100px] md:max-w-[150px] lg:max-w-[200px] w-full">
+                                <div class="rounded-lg shadow-lg p-2 sm:p-4 flex-1 max-w-xs sm:max-w-[100px] md:max-w-[150px] lg:max-w-[200px] w-full dark:bg-gray-900">
                                     @livewire(App\Livewire\TabFlight::class)
                                 </div>
-                                <div class="rounded-lg shadow-lg p-2 sm:p-4 flex-1 max-w-xs sm:max-w-[100px] md:max-w-[150px] lg:max-w-[200px] w-full">
+                                <div class="rounded-lg shadow-lg p-2 sm:p-4 flex-1 max-w-xs sm:max-w-[100px] md:max-w-[150px] lg:max-w-[200px] w-full dark:bg-gray-900">
                                     @livewire(App\Livewire\TabFlightDrone::class)
                                 </div>
                             </div>
