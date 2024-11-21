@@ -23,10 +23,9 @@
            
         $chartDataFlight = json_encode($data);
 ?>
-<head>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-</head>
+
 <x-filament-widgets::widget>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <canvas id="dualAxisChart"></canvas>  
 </x-filament-widgets::widget>
 <script>

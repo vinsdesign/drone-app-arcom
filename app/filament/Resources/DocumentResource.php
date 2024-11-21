@@ -151,37 +151,42 @@ class DocumentResource extends Resource
             ]);
     }
     //edit query untuk action shared un-shared
-    public static function getEloquentQuery(): Builder
-    {
-        $userId = auth()->user()->id;
-        $query = parent::getEloquentQuery();
+    // public static function getEloquentQuery(): Builder
+    // {
+    //     $userId = auth()->user()->id;
+    //     $query = parent::getEloquentQuery();
 
-        if (Auth()->user()->roles()->pluck('name')->contains('super_admin') || (Auth()->user()->roles()->pluck('name')->contains('panel_user'))) {
-            return $query;
-        }else{
-            $query->where(function ($query) use ($userId) {
-                $query->where('users_id', $userId);
-            })
-            ->orWhere(function ($query) use ($userId) {
-                $query->where('users_id', '!=', $userId)->where('shared', 1);
-            });
-            return $query;
-        }
+    //     if (Auth()->user()->roles()->pluck('name')->contains('super_admin') || (Auth()->user()->roles()->pluck('name')->contains('panel_user'))) {
+    //         return $query;
+    //     }else{
+    //         $query->where(function ($query) use ($userId) {
+    //             $query->where('users_id', $userId);
+    //         })
+    //         ->orWhere(function ($query) use ($userId) {
+    //             $query->where('users_id', '!=', $userId)->where('shared', 1);
+    //         });
+    //         return $query;
+    //     }
 
-    }
+    // }
     public static function table(Table $table): Table
     {
         return $table
-        // ->modifyQueryUsing(function (Builder $query) {
-        //     // Remove global scopes
-        //     $query->withoutGlobalScopes();
-
-        //     // You can also add custom filtering logic here
-        //     $userId = auth()->user()->id;
-        //     return $query->where(function ($query) use ($userId) {
-        //         $query->where('shared',0);
-        //     });
-        // })
+        //edit query untuk action shared un-shared
+        ->modifyQueryUsing(function (Builder $query) {
+            $userId = auth()->user()->id;
+            if (Auth()->user()->roles()->pluck('name')->contains('super_admin') || (Auth()->user()->roles()->pluck('name')->contains('panel_user'))) {
+                return $query;
+            }else{
+                $query->where(function ($query) use ($userId) {
+                    $query->where('users_id', $userId);
+                })
+                ->orWhere(function ($query) use ($userId) {
+                    $query->where('users_id', '!=', $userId)->where('shared', 1);
+                });
+                return $query;
+            }
+        })
             ->columns([
                 Tables\Columns\TextColumn::make('name')
                     ->label(TranslationHelper::translateIfNeeded('Name'))   

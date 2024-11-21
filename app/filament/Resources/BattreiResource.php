@@ -171,29 +171,27 @@ class BattreiResource extends Resource
             ]);
     }
 
-    //edit query untuk action shared un-shared
-    public static function getEloquentQuery(): Builder
-    {
-        $userId = auth()->user()->id;
-        $query = parent::getEloquentQuery();
-
-        if (Auth()->user()->roles()->pluck('name')->contains('super_admin') || (Auth()->user()->roles()->pluck('name')->contains('panel_user'))) {
-            return $query;
-        }else{
-            $query->where(function ($query) use ($userId) {
-                $query->where('users_id', $userId);
-            })
-            ->orWhere(function ($query) use ($userId) {
-                $query->where('users_id', '!=', $userId)->where('shared', 1);
-            });
-            return $query;
-        }
-
-    }
+    
 
     public static function table(Table $table): Table
     {
         return $table
+            //edit query untuk action shared un-shared
+            ->modifyQueryUsing(function (Builder $query) {
+                $userId = auth()->user()->id;
+
+                if (Auth()->user()->roles()->pluck('name')->contains('super_admin') || (Auth()->user()->roles()->pluck('name')->contains('panel_user'))) {
+                    return $query;
+                }else{
+                    $query->where(function ($query) use ($userId) {
+                        $query->where('users_id', $userId);
+                    })
+                    ->orWhere(function ($query) use ($userId) {
+                        $query->where('users_id', '!=', $userId)->where('shared', 1);
+                    });
+                    return $query;
+                }
+            })
             ->columns([
                 Tables\Columns\TextColumn::make('name')
                     ->label(TranslationHelper::translateIfNeeded('Name'))
