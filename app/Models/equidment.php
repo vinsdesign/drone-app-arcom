@@ -54,4 +54,7 @@ class equidment extends Model
     public function fligh(){
         return $this->belongsToMany(fligh::class, 'fligh_equidment', 'equidment_id', 'fligh_id');
     }
+    public function PlannedMission(){
+        return $this->belongsToMany(PlannedMission::class, 'planned_equipment', 'equidment_id', 'planned_id');
+    }
 }

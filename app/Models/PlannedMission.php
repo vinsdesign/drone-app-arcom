@@ -59,12 +59,12 @@ class PlannedMission extends Model
 
     public function battreis()
     {
-        return $this->belongsToMany(battrei::class, 'fligh_battrei', 'fligh_id', 'battrei_id');
+        return $this->belongsToMany(battrei::class, 'planned_battery', 'planned_id', 'battrei_id');
     }
 
     public function equidments()
     {
-        return $this->belongsToMany(Equidment::class, 'fligh_equidment', 'fligh_id', 'equidment_id');
+        return $this->belongsToMany(Equidment::class, 'planned_equipment', 'planned_id', 'equidment_id');
     }
     public function teams(){
         return $this->belongsTo(team::class);

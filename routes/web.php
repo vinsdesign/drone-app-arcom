@@ -41,6 +41,10 @@ Route::get('/flight-project/{project_id}', function(){
 Route::get('/flight-personnel/{personnel_id}', function(){
     return view('component.flight-personnel');
 })->name('flight-personnel');
+//location flight
+Route::get('/flight-location/{location_id}', function(){
+    return view('component.flight-location');
+})->name('flight-location');
 //pop-up button flight create
 Route::post('/create-project',[buttonPopUpCreate::class,'buttonProject'])->name('create-project');
 Route::post('/create-customer',[buttonPopUpCreate::class,'buttonDrone'])->name('create-drone');

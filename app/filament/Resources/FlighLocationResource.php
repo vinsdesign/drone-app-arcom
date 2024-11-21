@@ -18,6 +18,10 @@ use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Dotswan\MapPicker\Fields\Map;
 use Filament\Support\Colors\Color;
 use App\Helpers\TranslationHelper;
+use Filament\Infolists\Infolist;
+use Filament\Infolists\Components\Section;
+use Filament\Infolists\Components\TextEntry;
+use Filament\Infolists\Components\View as InfolistView;
 
 class FlighLocationResource extends Resource
 {
@@ -198,7 +202,7 @@ class FlighLocationResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('name')
-                ->label(TranslationHelper::translateIfNeeded('Name'))
+                ->label(TranslationHelper::translateIfNeeded('Location Name'))
                     ->searchable(),
                 Tables\Columns\TextColumn::make('projects.case')
                 ->label(TranslationHelper::translateIfNeeded('Project Case'))
@@ -214,38 +218,40 @@ class FlighLocationResource extends Resource
                     'record' => $record->customer_id,
                 ]) : null)->color(Color::Blue)
                     ->searchable(),
-                Tables\Columns\TextColumn::make('address')
-                    ->label(TranslationHelper::translateIfNeeded('Address'))
-                    ->searchable(),
                 Tables\Columns\TextColumn::make('total_flights')
                     ->label(TranslationHelper::translateIfNeeded('Total Flights'))    
                         ->getStateUsing(function ($record) {
                             $totalFlights = $record->fligh()->count();
+                            $totalMission = $record->PlannedMission()->whereIn('status', ['completed'])->count();
+                            $totalAll = $totalFlights + $totalMission;
                             $TranslateText = TranslationHelper::translateIfNeeded('Flights');
-                            return "{$totalFlights} {$TranslateText}";
+                            return "{$totalAll} {$TranslateText}";
                         })
                         ->html(),
+                Tables\Columns\TextColumn::make('address')
+                    ->label(TranslationHelper::translateIfNeeded('Address'))
+                    ->searchable(),
                 Tables\Columns\TextColumn::make('city')
                 ->label(TranslationHelper::translateIfNeeded('City'))
                     ->searchable(),
                 Tables\Columns\TextColumn::make('pos_code')
                 ->label(TranslationHelper::translateIfNeeded('Postal Code'))
                     ->searchable(),
-                Tables\Columns\TextColumn::make('state')
-                ->label(TranslationHelper::translateIfNeeded('State'))
-                    ->searchable(),
-                Tables\Columns\TextColumn::make('country')
-                ->label(TranslationHelper::translateIfNeeded('Country'))
-                    ->searchable(),
-                Tables\Columns\TextColumn::make('latitude')
-                ->label(TranslationHelper::translateIfNeeded('Latitude'))
-                    ->searchable(),
-                Tables\Columns\TextColumn::make('longitude')
-                ->label(TranslationHelper::translateIfNeeded('Longitude'))
-                    ->searchable(),
-                Tables\Columns\TextColumn::make('altitude')
-                ->label(TranslationHelper::translateIfNeeded('Altitude'))
-                    ->searchable(),
+                // Tables\Columns\TextColumn::make('state')
+                // ->label(TranslationHelper::translateIfNeeded('State'))
+                //     ->searchable(),
+                // Tables\Columns\TextColumn::make('country')
+                // ->label(TranslationHelper::translateIfNeeded('Country'))
+                //     ->searchable(),
+                // Tables\Columns\TextColumn::make('latitude')
+                // ->label(TranslationHelper::translateIfNeeded('Latitude'))
+                //     ->searchable(),
+                // Tables\Columns\TextColumn::make('longitude')
+                // ->label(TranslationHelper::translateIfNeeded('Longitude'))
+                //     ->searchable(),
+                // Tables\Columns\TextColumn::make('altitude')
+                // ->label(TranslationHelper::translateIfNeeded('Altitude'))
+                //     ->searchable(),
             ])
             ->filters([
                 Tables\Filters\SelectFilter::make('status_visible')
@@ -258,6 +264,14 @@ class FlighLocationResource extends Resource
             ])
             ->actions([
                 Tables\Actions\ActionGroup::make([
+                        // Tables\Actions\ViewAction::make(),
+                        Tables\Actions\Action::make('views')  
+                            ->action(function ($record) {
+                                session(['location_id' => $record->id]);
+                                return redirect()->route('flight-location', ['location_id' => $record->id]);
+                            })
+                            ->label(TranslationHelper::translateIfNeeded('View'))
+                            ->icon('heroicon-s-eye'),
                         Tables\Actions\EditAction::make(),
                         Tables\Actions\DeleteAction::make(),
                         Tables\Actions\Action::make('Archive')->label(TranslationHelper::translateIfNeeded('Archive'))
@@ -318,6 +332,37 @@ class FlighLocationResource extends Resource
             ]);
     }
 
+    public static function infolist(Infolist $infolist): Infolist
+    {
+        return $infolist
+
+        ->schema([
+            Section::make(TranslationHelper::translateIfNeeded('Locations Overview'))
+            ->schema([
+                TextEntry::make('name')->label(TranslationHelper::translateIfNeeded('Location Name')),
+                TextEntry::make('projects.case')->label(TranslationHelper::translateIfNeeded('Project Case')),
+                TextEntry::make('customers.name')->label(TranslationHelper::translateIfNeeded('Customers Name')),
+                TextEntry::make('description')->label(TranslationHelper::translateIfNeeded('Description'))
+            ])->columns(2),
+            Section::make(TranslationHelper::translateIfNeeded('Locations Address'))
+            ->schema([
+                TextEntry::make('address')->label(TranslationHelper::translateIfNeeded('Address')),
+                TextEntry::make('city')->label(TranslationHelper::translateIfNeeded('City')),
+                TextEntry::make('pos_code')->label(TranslationHelper::translateIfNeeded('Postal Code')),
+                TextEntry::make('state')->label(TranslationHelper::translateIfNeeded('State')),
+                TextEntry::make('country')->label(TranslationHelper::translateIfNeeded('Country')),
+                TextEntry::make('latitude')->label(TranslationHelper::translateIfNeeded('Latitude')),
+                TextEntry::make('longitude')->label(TranslationHelper::translateIfNeeded('Longitude')),
+                TextEntry::make('altitude')->label(TranslationHelper::translateIfNeeded('Altitude'))
+            ])->columns(4),
+            Section::make('')
+                ->schema([
+                    InfolistView::make('component.flight-location'),
+                ])
+
+        ]);
+    }
+
     public static function getRelations(): array
     {
         return [
@@ -331,6 +376,7 @@ class FlighLocationResource extends Resource
             'index' => Pages\ListFlighLocations::route('/'),
             'create' => Pages\CreateFlighLocation::route('/create'),
             'edit' => Pages\EditFlighLocation::route('/{record}/edit'),
+            'view' => Pages\ViewFlighLocation::route('/{record}'),
         ];
     }
 }

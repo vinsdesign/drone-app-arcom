@@ -53,6 +53,9 @@ class battrei extends Model
     public function fligh(){
         return $this->belongsToMany(fligh::class, 'fligh_battrei', 'battrei_id', 'fligh_id');
     }
+    public function PlannedMission(){
+        return $this->belongsToMany(PlannedMission::class, 'planned_battery', 'battrei_id', 'planned_id');
+    }
     public function maintence_eq()
     {
         return $this->hasMany(maintence_eq::class);

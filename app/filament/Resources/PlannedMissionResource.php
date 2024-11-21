@@ -639,14 +639,14 @@ class PlannedMissionResource extends Resource
                     $now = Carbon::now();
                     $formatDate = $daysOverdue->format('Y-m-d H:i:s');
         
-                    if ($record->status !== 'completed') {
+                    if ($record->status !== 'completed' && $record->status !== 'append') {
                         $daysOverdueDiff = $now->diffInDays($daysOverdue, false);
         
                         if ($daysOverdueDiff < 0){
                             $daysOverdueDiff = abs(intval($daysOverdueDiff));
 
                             $overdueLabel = TranslationHelper::translateIfNeeded('Expired');
-                            $daysLabel = TranslationHelper::translateIfNeeded('days ago');
+                            $daysLabel = TranslationHelper::translateIfNeeded('days');
 
                             return "<div>{$formatDate}<br><span style='
                                 display: inline-block;
@@ -885,6 +885,7 @@ class PlannedMissionResource extends Resource
             'index' => Pages\ListPlannedMissions::route('/'),
             'create' => Pages\CreatePlannedMission::route('/create'),
             'edit' => Pages\EditPlannedMission::route('/{record}/edit'),
+            'view' => Pages\ViewPlannedMission::route('/{record}'),
         ];
     }
 }
