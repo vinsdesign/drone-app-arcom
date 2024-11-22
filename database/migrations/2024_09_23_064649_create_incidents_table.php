@@ -24,10 +24,10 @@ return new class extends Migration
             $table->date('rectification_date')->nullable();
             $table->string('Technician')->nullable();
             $table->string('status');
-            $table->foreignId('location_id')->nullable()->constrainedTo('fligh_location')->cascadeDelete();
-            $table->foreignId('drone_id')->nullable()->constrainedTo('drone')->cascadeDelete();
-            $table->foreignId('project_id')->nullable()->constrainedTo('project')->cascadeDelete();
-            $table->foreignId('personel_involved_id')->nullable()->constrainedTo('users')->cascadeDelete();
+            $table->foreignId('location_id')->nullable()->constrained('fligh_locations')->onDelete('set null');
+            $table->foreignId('drone_id')->nullable()->constrained('drones')->onDelete('set null');
+            // $table->foreignId('project_id')->nullable()->constrained('projects')->onDelete('set null');
+            $table->foreignId('personel_involved_id')->nullable()->references('id')->on('users')->onDelete('set null');
             $table->foreignIdFor(Team::class,'teams_id')->index()->cascadeOnDelete();
             $table->timestamps();
         });

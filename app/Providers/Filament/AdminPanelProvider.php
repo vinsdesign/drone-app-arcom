@@ -51,7 +51,8 @@ class AdminPanelProvider extends PanelProvider
             ->login()
             ->registration()
             // ->spa()
-
+            ->sidebarCollapsibleOnDesktop()
+             ->collapsedSidebarWidth('9rem')
             ->favicon(asset('asset/favicon.png'))
             ->tenantRoutePrefix('team')
 

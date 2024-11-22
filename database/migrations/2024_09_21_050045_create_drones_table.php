@@ -28,7 +28,7 @@ return new class extends Migration
             $table->string('geometry')->nullable();
             $table->string('inventory_asset')->nullable();
             $table->string('description')->nullable();
-            $table->foreignId('users_id')->nullable()->constrained('users')->nullable()->cascadeOnDelete()->nullable();
+            $table->foreignId('users_id')->nullable()->constrained('users')->nullable()->onDelete('set null')->nullable();
             $table->string('firmware_v')->nullable();
             $table->string('hardware_v')->nullable();
             $table->string('propulsion_v')->nullable();

@@ -17,10 +17,10 @@ return new class extends Migration
             $table->date('date')->nullable();
             $table->integer('status')->nullable();
             $table->integer('cost')->nullable();
-            $table->foreignId('currencies_id')->nullable()->constrained('currencies')->cascadeDelete();
+            $table->foreignId('currencies_id')->nullable()->constrained('currencies')->onDelete('set null');
             $table->string('notes')->nullable();
-            $table->foreignId('drone_id')->nullable()->constrainedTo('drone')->cascadeDelete();
-            $table->foreignId('task_id')->nullable()->constrainedTo('task')->cascadeDelete();
+            $table->foreignId('drone_id')->nullable()->constrained('drones')->onDelete('set null');
+            // $table->foreignId('task_id')->nullable()->constrained('tasks')->onDelete('set null');
             $table->foreignIdFor(Team::class,'teams_id')->index()->cascadeOnDelete();
             $table->timestamps();
         });

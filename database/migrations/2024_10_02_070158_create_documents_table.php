@@ -22,9 +22,9 @@ return new class extends Migration
             $table->string('description')->nullable();
             $table->string('doc')->nullable();
             $table->foreignIdFor(Team::class,'teams_id')->index();
-            $table->foreignId('users_id')->constrained('users')->cascadeOnDelete()->nullable();
-            $table->foreignId('customers_id')->nullable()->constrained('customers')->cascadeOnDelete();
-            $table->foreignId('projects_id')->nullable()->constrained('projects')->cascadeOnDelete(); 
+            $table->foreignId('users_id')->nullable()->constrained('users')->onDelete('set null');
+            $table->foreignId('customers_id')->nullable()->constrained('customers')->onDelete('set null');
+            $table->foreignId('projects_id')->nullable()->constrained('projects')->onDelete('set null'); 
             $table->timestamps();
         });
         Schema::create('document_team', function (Blueprint $table) {
