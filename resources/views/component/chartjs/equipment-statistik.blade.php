@@ -7,24 +7,25 @@
         ->distinct()
         ->pluck('fligh_id');
 
-        $kitsEquiomentID = DB::table('equidment_kits')
+        $kitsEquioment_id = DB::table('equidment_kits')
             ->where('equidment_id', $equipmentID)
             ->distinct()
-            ->pluck('kits_id');
-        //tinggal masukan $kitsEquiomentID samakan dengan $flights kemudian merge
-        dd($kitsEquiomentID);
+            ->pluck('kits_id');        
         
-        $pivotKitsFlight_id = DB::table('flighs')
-            ->whereIn('kits_id', $kitsEquiomentID)
-            ->distinct()
-            ->pluck('id');
-        $allFlightId = $$pivotEquipment_id->merge($pivotKitsFlight_id)->unique();
-        
-        
-        $flights = App\Models\fligh::where('teams_id', $tenant_id)
-            ->whereIn('id', $allFlightId)
+        $flightsEquipmentPivot = App\Models\fligh::where('teams_id', $tenant_id)
+            ->whereIn('id', $pivotEquipment_id)
             ->whereBetween('start_date_flight', [now()->startOfYear(), now()->endOfYear()])
             ->get();
+
+        $flightsKitsEquipment = App\Models\fligh::where('teams_id', $tenant_id)
+            ->whereIn('kits_id', $kitsEquioment_id)
+            ->whereBetween('start_date_flight', [now()->startOfYear(), now()->endOfYear()])
+            ->get();
+
+        $flights = $flightsEquipmentPivot->merge($flightsKitsEquipment);
+
+        // dd($flights);
+        
         
         
         $data = $flights->groupBy(function ($item) {

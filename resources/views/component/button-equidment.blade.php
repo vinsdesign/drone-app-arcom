@@ -4,6 +4,9 @@
 </head> --}}
 @php
     use App\Helpers\TranslationHelper;
+    $users = App\Models\User::whereHas('teams', function ($query) {
+    $query->where('teams.id', auth()->user()->teams()->first()->id);
+ });
 @endphp
 {{-- <script src="https://cdn.tailwindcss.com"></script> --}}
 <div>
@@ -85,6 +88,7 @@
                     <div>
                         <label class="block text-gray-700 dark:text-gray-300">{!! TranslationHelper::translateIfNeeded('Type')!!}</label>
                         <select id="typeequipment" name="type" class="w-full mt-1 p-2 border dark:bg-gray-900 dark:border-gray-700 dark:text-gray-300 rounded-md focus:ring focus:ring-blue-500">
+                            <option value="" disabled selected>{!! TranslationHelper::translateIfNeeded('Select an type Equipment')!!}</option>
                             <option value="airframe">Airframe</option>
                             <option value="anenometer">Anenometer</option>
                             <option value="battery">Battery</option>
@@ -124,9 +128,14 @@
                     <div>
                         <label class="block text-gray-700 dark:text-gray-300">{!! TranslationHelper::translateIfNeeded('For Drone (Optional)')!!}</label>
                         <select id="drones_idequipment" name="drones_id" class="w-full mt-1 p-2 border dark:bg-gray-900 dark:border-gray-700 dark:text-gray-300 rounded-md focus:ring focus:ring-blue-500">
-                            @foreach (App\Models\Drone::where('teams_id', auth()->user()->teams()->first()->id)->pluck('name', 'id') as $id => $name)
-                                <option value="{{ $id }}">{{ $name }}</option>
-                            @endforeach
+                            <option value="" disabled selected>{!! TranslationHelper::translateIfNeeded('Select an Drone')!!}</option>
+                            @if(App\Models\Drone::where('teams_id', auth()->user()->teams()->first()->id)->count() == null)
+                                <option value="" disabled>{!! TranslationHelper::translateIfNeeded('No Drones Found')!!}</option>
+                            @else
+                                @foreach (App\Models\Drone::where('teams_id', auth()->user()->teams()->first()->id)->pluck('name', 'id') as $id => $name)
+                                    <option value="{{ $id }}">{{ $name }}</option>
+                                @endforeach
+                            @endif
                         </select>
                     </div>
             
@@ -134,11 +143,16 @@
                     <div>
                         <label class="block text-gray-700 dark:text-gray-300">{!! TranslationHelper::translateIfNeeded('Owner')!!}</label>
                         <select id="users_idequipment" name="users_idequipment" class="w-full mt-1 p-2 border dark:bg-gray-900 dark:border-gray-700 dark:text-gray-300 rounded-md focus:ring focus:ring-blue-500">
-                            @foreach (App\Models\User::whereHas('teams', function ($query) {
-                                    $query->where('teams.id', auth()->user()->teams()->first()->id);
-                                })->pluck('name', 'id') as $id => $name)
-                                <option value="{{ $id }}">{{ $name }}</option>
-                            @endforeach
+                            <option value="" disabled selected>{!! TranslationHelper::translateIfNeeded('Select Users')!!}</option>
+                            @if($users === null)
+                                <option value="" disabled selected>{!! TranslationHelper::translateIfNeeded('No Users Foundr')!!}</option>
+                            @else
+                                @foreach (App\Models\User::whereHas('teams', function ($query) {
+                                        $query->where('teams.id', auth()->user()->teams()->first()->id);
+                                    })->pluck('name', 'id') as $id => $name)
+                                    <option value="{{ $id }}">{{ $name }}</option>
+                                @endforeach
+                            @endif
                         </select>
                     </div>
             

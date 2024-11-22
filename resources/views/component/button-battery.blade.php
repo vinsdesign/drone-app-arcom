@@ -1,5 +1,9 @@
 @php
  use App\Helpers\TranslationHelper;
+ $users = App\Models\User::whereHas('teams', function ($query) {
+    $query->where('teams.id', auth()->user()->teams()->first()->id);
+ });
+
 @endphp
 <head>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
@@ -127,9 +131,14 @@
                     <div>
                         <label class="block text-gray-700 dark:text-gray-300">{!! TranslationHelper::translateIfNeeded('For Drone (Optional)')!!}</label>
                         <select id="for_dronebattrei" name="for_drone" class="w-full mt-1 p-2 border dark:bg-gray-900 dark:border-gray-700 dark:text-gray-300 rounded-md focus:ring focus:ring-blue-500">
-                            @foreach (App\Models\Drone::where('teams_id', auth()->user()->teams()->first()->id)->pluck('name', 'id') as $id => $name)
-                                <option value="{{ $id }}">{{ $name }}</option>
-                            @endforeach
+                            <option value="" disabled selected>{!! TranslationHelper::translateIfNeeded('Select an Drone')!!}</option>
+                            @if(App\Models\Drone::where('teams_id', auth()->user()->teams()->first()->id)->count() == null)
+                                <option value="" disabled>{!! TranslationHelper::translateIfNeeded('No Drones Found')!!}</option>
+                            @else
+                                @foreach (App\Models\Drone::where('teams_id', auth()->user()->teams()->first()->id)->pluck('name', 'id') as $id => $name)
+                                    <option value="{{ $id }}">{{ $name }}</option>
+                                @endforeach
+                            @endif
                         </select>
                     </div>
             
@@ -166,11 +175,16 @@
                     <div>
                         <label class="block text-gray-700 dark:text-gray-300">{!! TranslationHelper::translateIfNeeded('Owner')!!}</label>
                         <select id="users_idbattrei" name="users_id" class="w-full mt-1 p-2 border dark:bg-gray-900 dark:border-gray-700 dark:text-gray-300 rounded-md focus:ring focus:ring-blue-500">
-                            @foreach (App\Models\User::whereHas('teams', function ($query) {
-                                    $query->where('teams.id', auth()->user()->teams()->first()->id);
-                                })->pluck('name', 'id') as $id => $name)
-                                <option value="{{ $id }}">{{ $name }}</option>
-                            @endforeach
+                            <option value="" disabled selected>{!! TranslationHelper::translateIfNeeded('Select an Users')!!}</option>
+                            @if($users === null)
+                                <option value="" disabled selected>{!! TranslationHelper::translateIfNeeded('No Users Found')!!}</option>
+                            @else
+                                @foreach (App\Models\User::whereHas('teams', function ($query) {
+                                        $query->where('teams.id', auth()->user()->teams()->first()->id);
+                                    })->pluck('name', 'id') as $id => $name)
+                                    <option value="{{ $id }}">{{ $name }}</option>
+                                @endforeach
+                            @endif
                         </select>
                     </div>
                     <!-- Is Loaner Input -->

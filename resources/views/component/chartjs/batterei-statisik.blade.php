@@ -1,16 +1,26 @@
 <?php
     $tenant_id = Auth()->user()->teams()->first()->id;
-        $batteryID = session('battery_id');
-        $pivotBattrei = DB::table('fligh_battrei')->where('battrei_id', $batteryID)
+        $battery_id = session('battery_id');
+        $pivotBattrei_id = DB::table('fligh_battrei')->where('battrei_id', $battery_id)
         ->select('fligh_id')
         ->distinct()
         ->pluck('fligh_id');
-    
+
+        $kitsBattrei_id = DB::table('battrei_kits')
+            ->where('battrei_id', $battery_id)
+            ->distinct()
+            ->pluck('kits_id');
         
-        $flights = App\Models\fligh::where('teams_id', $tenant_id)
-            ->whereIn('id', $pivotBattrei)
+        $flightsBattrei = App\Models\fligh::where('teams_id', $tenant_id)
+            ->whereIn('id', $pivotBattrei_id)
             ->whereBetween('start_date_flight', [now()->startOfYear(), now()->endOfYear()])
             ->get();
+        $flightsKits = App\Models\fligh::where('teams_id', $tenant_id)
+            ->whereIn('kits_id', $kitsBattrei_id)
+            ->whereBetween('start_date_flight', [now()->startOfYear(), now()->endOfYear()])
+            ->get();
+    
+        $flights = $flightsBattrei->merge($flightsKits);
         
         
         $data = $flights->groupBy(function ($item) {
