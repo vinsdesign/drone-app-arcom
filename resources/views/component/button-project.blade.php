@@ -90,7 +90,7 @@ $response =session('successfully');
 
                                 $defaultCurrencyId = optional(auth()->user()->teams()->first())->currencies_id;
                             @endphp
-                            <option value="" disabled selected>Choose a currency</option>
+                            <option value="" disabled selected>{!! TranslationHelper::translateIfNeeded('Choose a currency')!!}</option>
                             @foreach ($currencies as $id => $currency)
                                 <option value="{{ $id }}" {{ $defaultCurrencyId == $id ? 'selected' : '' }}>
                                     {{ $currency }}
@@ -103,9 +103,14 @@ $response =session('successfully');
                     <div>
                         <label class="block text-gray-700 dark:text-gray-300">{!! TranslationHelper::translateIfNeeded('Customer Name')!!}</label>
                         <select id="customers_id" name="customers_id" class="w-full mt-1 p-2 border dark:bg-gray-900 dark:border-gray-700 dark:text-gray-300 rounded-md focus:ring focus:ring-blue-500">
-                            @foreach (App\Models\customer::where('teams_id', auth()->user()->teams()->first()->id)->pluck('name', 'id') as $id => $name)
-                                <option value="{{ $id }}">{{ $name }}</option>
-                            @endforeach
+                            <option value="" disabled selected>{!! TranslationHelper::translateIfNeeded('Select an Customer')!!}</option>
+                            @if(App\Models\customer::where('teams_id', auth()->user()->teams()->first()->id)->count() == null)
+                                <option value="" disabled>{!! TranslationHelper::translateIfNeeded('SNo Customer Found')!!}</option>
+                            @else
+                                @foreach (App\Models\customer::where('teams_id', auth()->user()->teams()->first()->id)->pluck('name', 'id') as $id => $name)
+                                    <option value="{{ $id }}">{{ $name }}</option>
+                                @endforeach
+                            @endif
                         </select>
                     </div>
                 </div>

@@ -411,6 +411,7 @@ class FlighResource extends Resource
                         }
                     })
                     ->searchable()
+                    ->preload()
                     ->columnSpanFull(),
                     //end flight
                 ])->columnSpan(2), 
@@ -434,6 +435,7 @@ class FlighResource extends Resource
                 //         $query->where('team_id', $currentTeamId);
                 //     });
                 // })
+                ->relationship('kits', 'name')
                 ->options(function (callable $get) use ($currentTeamId) { 
                     $startDate = $get('start_date_flight');
                     $endDate = $get('end_date_flight');
@@ -594,7 +596,7 @@ class FlighResource extends Resource
                     //     $currentTeamId = auth()->user()->teams()->first()->id;;
                     //     $query->where('teams_id', $currentTeamId);
                     // }),
-
+                    ->relationship('battreis', 'name')
                     ->options(function (callable $get) use ($currentTeamId) { 
                         $startDate = $get('start_date_flight');
                         $endDate = $get('end_date_flight');
@@ -658,6 +660,7 @@ class FlighResource extends Resource
                     //     $query->where('teams_id', $currentTeamId);
                     // }),
                     ->multiple()
+                    ->relationship('equidments', 'name')
                     ->options(function (callable $get) use ($currentTeamId) { 
                         $startDate = $get('start_date_flight');
                         $endDate = $get('end_date_flight');
@@ -667,7 +670,7 @@ class FlighResource extends Resource
                             ->where(function ($query) {
                                 $query->doesntHave('maintence_eq')
                                     ->orWhereHas('maintence_eq', function ($query) {
-                                        $query->where('status', 'completed'); 
+                                        $query->where('status', 'completed');  
                                     });
                             })
                           ->whereDoesntHave('kits', function ($query) {
@@ -680,7 +683,8 @@ class FlighResource extends Resource
                                 });
                             })
                             ->pluck('name', 'id');
-                    }) 
+                    })
+                  
                     ->afterStateHydrated(function ($state, $component, $record) {
                         if ($record) {
                             $equidmentIds = \DB::table('fligh_equidment')

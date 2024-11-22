@@ -12,13 +12,16 @@ $currentTeamId = auth()->user()->teams()->first()->id;
     $locations = App\Models\fligh_location::where('teams_id', $currentTeamId)->pluck('name', 'id');
     
     $batteries = App\Models\battrei::where('teams_id', $currentTeamId)
+        ->where('status', 'airworthy')
         ->whereDoesntHave('kits')
         ->pluck('name', 'id');
+    
         
     $equipments = App\Models\equidment::where('teams_id', $currentTeamId)
         ->where('status', 'airworthy')
         ->whereDoesntHave('kits')
         ->pluck('name', 'id');
+    // dd($batteries, $equipments);
     
     $pilots = App\Models\User::whereHas('teams', function ($query) use ($currentTeamId) {
         $query->where('team_id', $currentTeamId);
@@ -91,7 +94,7 @@ dd($test)
                     <!-- Drones Select -->
                     <div class="col-span-1 lg:col-span-1">
                         <label for="drones_id" class="block text-sm font-medium text-gray-700 dark:text-gray-300">{!! TranslationHelper::translateIfNeeded('Drones') !!}</label>
-                        <select name="drones_id" id="drones_id" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-300">
+                        <select name="drones_id" id="drones_id" class="block w-full p-2 border border-gray-300 dark:border-gray-600 rounded-md bg-gray-50 dark:bg-gray-700 text-gray-800 dark:text-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500">
                             @foreach($drones as $id => $name)
                                 <option value="{{ $id }}">{{ $name }}</option>
                             @endforeach
@@ -101,8 +104,8 @@ dd($test)
                     <!-- Flight Type Select -->
                     <div class="col-span-1 lg:col-span-1">
                         <label for="type" class="block text-sm font-medium text-gray-700 dark:text-gray-300">{!! TranslationHelper::translateIfNeeded('Flight Type') !!}</label>
-                        <select name="type" id="type" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-300">
-                            <option value="">-- None --</option>
+                        <select name="type" id="type" class="block w-full p-2 border border-gray-300 dark:border-gray-600 rounded-md bg-gray-50 dark:bg-gray-700 text-gray-800 dark:text-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                            <option value="" disabled selected>-- Select an type Flight --</option>
                             <option value="commercial-agriculture">Commercial-Agriculture</option>
                             <option value="commercial-inspection">Commercial-Inspection</option>
                             <option value="commercial-mapping/survey">Commercial-Mapping/Survey</option>
@@ -129,56 +132,81 @@ dd($test)
                     <!-- Project Select -->
                     <div class="col-span-1 lg:col-span-1">
                         <label for="projects_id" class="block text-sm font-medium text-gray-700 dark:text-gray-300">{!! TranslationHelper::translateIfNeeded('Project') !!}</label>
-                        <select name="projects_id" id="projects_id" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-300">
-                            @foreach($projects as $id => $case)
-                                <option value="{{ $id }}">{{ $case }}</option>
-                            @endforeach
+                        <select name="projects_id" id="projects_id" class="block w-full p-2 border border-gray-300 dark:border-gray-600 rounded-md bg-gray-50 dark:bg-gray-700 text-gray-800 dark:text-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                            <option value="" disabled selected>-- Select an Peoject --</option>
+                            @if($projects->count() == null )
+                            <option value="" disabled>No project available</option>
+                            @else
+                                @foreach($projects as $id => $case)
+                                    <option value="{{ $id }}">{{ $case }}</option>
+                                @endforeach
+                            @endif
                         </select>
                     </div>
         
                     <!-- Customer Name -->
                     <div class="col-span-1 lg:col-span-1">
                         <label for="customers_name" class="block text-sm font-medium text-gray-700 dark:text-gray-300">{!! TranslationHelper::translateIfNeeded('Customer Name') !!}</label>
-                        <input type="text" name="customers_name" id="customers_name" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-300" value="{{ old('customers_name', $currentTeam->getNameCustomer->name ?? '') }}" disabled>
+                        <input type="text" name="customers_name" id="customers_name" class="block w-full p-2 border border-gray-300 dark:border-gray-600 rounded-md bg-gray-50 dark:bg-gray-700 text-gray-800 dark:text-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500" value="{{ old('customers_name', $currentTeam->getNameCustomer->name ?? '') }}" disabled>
                     </div>
         
                     <!-- Location Select -->
                     <div class="col-span-1 lg:col-span-1">
                         <label for="location_id" class="block text-sm font-medium text-gray-700 dark:text-gray-300">{!! TranslationHelper::translateIfNeeded('Location') !!}</label>
-                        <select name="location_id" id="location_id" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-300">
-                            @foreach($locations as $id => $name)
-                                <option value="{{ $id }}">{{ $name }}</option>
-                            @endforeach
+                        <select name="location_id" id="location_id" class="block w-full p-2 border border-gray-300 dark:border-gray-600 rounded-md bg-gray-50 dark:bg-gray-700 text-gray-800 dark:text-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                            <option value="" disabled selected>Select an location</option>
+                            @if($locations->count() == null)
+                                <option value="" disabled>No location available</option>
+                            @else
+                                @foreach($locations as $id => $name)
+                                    <option value="{{ $id }}">{{ $name }}</option>
+                                @endforeach
+                            @endif
                         </select>
                     </div>
         
                     <!-- Battery Select -->
                     <div class="col-span-1 lg:col-span-1">
                         <label for="battreis" class="block text-sm font-medium text-gray-700 dark:text-gray-300">{!! TranslationHelper::translateIfNeeded('Battery') !!}</label>
-                        <select name="battreis[]" id="battreis" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-300">
-                            @foreach($batteries as $id => $name)
-                                <option value="{{ $id }}">{{ $name }}</option>
-                            @endforeach
+                        <select name="battreis[]" id="battreis" class="block w-full p-2 border border-gray-300 dark:border-gray-600 rounded-md bg-gray-50 dark:bg-gray-700 text-gray-800 dark:text-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                            <option value="" disabled selected>Select an Batteries</option>
+                            @if($batteries->count() == null)
+                                <option value="" disabled>No battery available</option>
+                            @else
+                                @foreach($batteries as $id => $name)
+                                    <option value="{{ $id }}">{{ $name }}</option>
+                                @endforeach
+                            @endif
                         </select>
                     </div>
         
                     <!-- Equipment Select -->
                     <div class="col-span-1 lg:col-span-1">
                         <label for="equidments" class="block text-sm font-medium text-gray-700 dark:text-gray-300">{!! TranslationHelper::translateIfNeeded('Equipment') !!}</label>
-                        <select name="equidments[]" id="equidments" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-300">
-                            @foreach($equipments as $id => $name)
-                                <option value="{{ $id }}">{{ $name }}</option>
-                            @endforeach
+                        <select name="equidments[]" id="equidments" class="block w-full p-2 border border-gray-300 dark:border-gray-600 rounded-md bg-gray-50 dark:bg-gray-700 text-gray-800 dark:text-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                            <option value="" disabled selected>Select an Equipment</option>
+                            @if($equipments->count() == null)
+                                <option value="" disabled>No equipment available</option>
+                            @else
+                                @foreach($equipments as $id => $name)
+                                    <option value="{{ $id }}">{{ $name }}</option>
+                                @endforeach
+                            @endif
                         </select>
                     </div>
         
                     <!-- Pilot Select -->
                     <div class="col-span-1 lg:col-span-1">
                         <label for="users_id" class="block text-sm font-medium text-gray-700 dark:text-gray-300">{!! TranslationHelper::translateIfNeeded('Pilot') !!}</label>
-                        <select name="users_id" id="users_id" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-300">
-                            @foreach($pilots as $id => $name)
-                                <option value="{{ $id }}">{{ $name }}</option>
-                            @endforeach
+                        <select name="users_id" id="users_id" class="block w-full p-2 border border-gray-300 dark:border-gray-600 rounded-md bg-gray-50 dark:bg-gray-700 text-gray-800 dark:text-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                            <option value="" disabled selected>Select a Pilot</option>
+                            @if($pilots->count() == null)
+                                <option value="" disabled>No pilot available</option>
+                            @else
+                                @foreach($pilots as $id => $name)
+                                    <option value="{{ $id }}">{{ $name }}</option>
+                                @endforeach
+                            @endif
                         </select>
                     </div>
         

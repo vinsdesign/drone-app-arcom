@@ -1,5 +1,8 @@
 @php
     use App\Helpers\TranslationHelper;
+    $users = App\Models\User::whereHas('teams', function ($query) {
+    $query->where('teams.id', auth()->user()->teams()->first()->id);
+ });
 @endphp
 <head>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
@@ -169,11 +172,16 @@
                     <div>
                         <label class="block text-gray-700 dark:text-gray-300">{!! TranslationHelper::translateIfNeeded('Owner')!!}</label>
                         <select id="users_iddrone" name="users_id" class="w-full mt-1 p-2 border dark:bg-gray-900 dark:border-gray-700 dark:text-gray-300 rounded-md focus:ring focus:ring-blue-500">
-                            @foreach (App\Models\User::whereHas('teams', function ($query) {
-                                    $query->where('teams.id', auth()->user()->teams()->first()->id);
-                                })->pluck('name', 'id') as $id => $name)
-                                <option value="{{ $id }}">{{ $name }}</option>
-                            @endforeach
+                            <option value="" disabled selected>{!! TranslationHelper::translateIfNeeded('Select Users')!!}</option>
+                            @if($users === null)
+                                <option value="" disabled selected>{!! TranslationHelper::translateIfNeeded('No Users Foundr')!!}</option>
+                            @else
+                                @foreach (App\Models\User::whereHas('teams', function ($query) {
+                                        $query->where('teams.id', auth()->user()->teams()->first()->id);
+                                    })->pluck('name', 'id') as $id => $name)
+                                    <option value="{{ $id }}">{{ $name }}</option>
+                                @endforeach
+                            @endif
                         </select>
                     </div>
             
@@ -193,6 +201,7 @@
                     <div>
                         <label class="block text-gray-700 dark:text-gray-300">{!! TranslationHelper::translateIfNeeded('Propulsion Version')!!}</label>
                         <select id="propulsion_vdrone" name="propulsion_vdrone" class="w-full mt-1 p-2 border dark:bg-gray-900 dark:border-gray-700 dark:text-gray-300 rounded-md focus:ring focus:ring-blue-500">
+                            <option value="" disabled selected>{!! TranslationHelper::translateIfNeeded('Select an propulsion version')!!}</option>
                             <option value="electric">Electric</option>
                             <option value="fuel">Fuel</option>
                             <option value="hydrogen">Hydrogen</option>
