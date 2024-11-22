@@ -20,16 +20,16 @@ return new class extends Migration
             $table->string('type');
             $table->string('ops');
             $table->integer('landings')->default('1');
-            $table->foreignId('customers_id')->nullable()->constrainedTo('customers')->cascadeDelete();
-            $table->foreignId('location_id')->constrainedTo('fligh_locations')->cascadeDelete()->default(null);
-            $table->foreignId('projects_id')->constrainedTo('projects')->cascadeDelete();
-            $table->foreignId('kits_id')->nullable()->constrainedTo('kits')->cascadeDelete();
-            $table->foreignId('users_id')->constrainedTo('users')->cascadeDelete();
+            $table->foreignId('customers_id')->nullable()->constrained('customers')->onDelete('set null');
+            // $table->foreignId('location_id')->references('id')->on('fligh_locations')->onDelete('set null')->default(null);
+            // $table->foreignId('projects_id')->nullable()->constrained('projects')->onDelete('set null');
+            $table->foreignId('kits_id')->nullable()->constrained('kits')->onDelete('set null');
+            $table->foreignId('users_id')->nullable()->constrained('users')->onDelete('set null');
             $table->string('vo')->nullable();
             $table->string('po')->nullable();
-            $table->string('instructor')->nullable()->constrainedTo('users')->cascadeDelete();
+            $table->string('instructor')->nullable()->references('id')->on('users')->onDelete('set null');
 
-            $table->foreignId('drones_id')->constrainedTo('drones')->cascadeDelete();
+            $table->foreignId('drones_id')->nullable()->constrained('drones')->onDelete('set null');
             $table->integer('pre_volt')->nullable();
             $table->integer('fuel_used')->nullable()->default('1');
             $table->foreignIdFor(Team::class,'teams_id')->index()->cascadeOnDelete();

@@ -796,7 +796,7 @@ class PlannedMissionResource extends Resource
                 ->icon('heroicon-s-document-check'),
                 Tables\Actions\ViewAction::make(),
                 Tables\Actions\EditAction::make(),
-
+                Tables\Actions\DeleteAction::make()
                 ])
             ])
             ->bulkActions([

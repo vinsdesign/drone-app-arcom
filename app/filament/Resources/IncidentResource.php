@@ -103,7 +103,7 @@ class IncidentResource extends Resource
                         })
                         ->searchable()
                         ->required(),
-                    Forms\Components\Select::make('project_id')
+                    Forms\Components\Select::make('projects_id')
                         // ->relationship('project','case')
                         ->label(TranslationHelper::translateIfNeeded('Projects'))
                         ->options(function (callable $get) use ($currentTeamId) {
@@ -208,9 +208,9 @@ class IncidentResource extends Resource
                 Tables\Columns\TextColumn::make('project.case')
                 ->label(TranslationHelper::translateIfNeeded('Projects'))    
                     ->numeric()
-                    ->url(fn($record) => $record->project_id?route('filament.admin.resources.projects.index', [
+                    ->url(fn($record) => $record->projects_id?route('filament.admin.resources.projects.index', [
                         'tenant' => Auth()->user()->teams()->first()->id,
-                        'record' => $record->project_id,
+                        'record' => $record->projects_id,
                     ]):null)->color(Color::Blue)
                     ->sortable(),
                 // Tables\Columns\TextColumn::make('personel_involved_id')
@@ -289,7 +289,7 @@ class IncidentResource extends Resource
                     TextEntry::make('incident_date')->label(TranslationHelper::translateIfNeeded('Incident Date')),
                     TextEntry::make('cause')->label(TranslationHelper::translateIfNeeded('Cause')),
                     TextEntry::make('status')->label(TranslationHelper::translateIfNeeded('Status')),
-                    TextEntry::make('location_id')->label(TranslationHelper::translateIfNeeded('Locations')),
+                    TextEntry::make('fligh_locations.name')->label(TranslationHelper::translateIfNeeded('Locations')),
                     TextEntry::make('drone.name')
                         ->label(TranslationHelper::translateIfNeeded('Drones'))
                         ->url(fn($record) => $record->drone_id ? route('filament.admin.resources.drones.view', [
@@ -298,11 +298,11 @@ class IncidentResource extends Resource
                         ]) : null)->color(Color::Blue),
                     TextEntry::make('project.case')
                         ->label(TranslationHelper::translateIfNeeded('Projects'))
-                        ->url(fn($record) => $record->project_id ? route('filament.admin.resources.projects.index', [
+                        ->url(fn($record) => $record->projects_id ? route('filament.admin.resources.projects.index', [
                             'tenant' => Auth()->user()->teams()->first()->id,
-                            'record' => $record->project_id,
+                            'record' => $record->projects_id,
                         ]) : null)->color(Color::Blue),
-                    TextEntry::make('personel_involved_id')->label(TranslationHelper::translateIfNeeded('Organization Personnel Involved')),
+                    TextEntry::make('users.name')->label(TranslationHelper::translateIfNeeded('Organization Personnel Involved')),
                 ])->columns(4),
             Section::make(TranslationHelper::translateIfNeeded('Incident Description'))
                 ->schema([

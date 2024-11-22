@@ -53,7 +53,9 @@
                     ->limit(5)
                     ->get();
                 $uniqId = $LastBattrei->pluck('battrei_id')->unique();
-                $battreiUsage = App\Models\Battrei::whereIn('id', $uniqId)
+                $battreiUsage = App\Models\Battrei::whereHas('teams', function ($query) use ($currentTeamId){
+                    $query->where('teams_id', $currentTeamId);
+                })->whereIn('id', $uniqId)
                     ->withCount('fligh as usage_count')
                     ->with('fligh')
                     ->get();
@@ -64,7 +66,9 @@
                     ->limit(5)
                     ->get();
                 $uniqIdEquipment = $lastEquipment->pluck('equidment_id')->unique();
-                $equipmentUsage = App\Models\Equidment::whereIn('id', $uniqIdEquipment)
+                $equipmentUsage = App\Models\Equidment::whereHas('teams', function ($query) use ($currentTeamId){
+                    $query->where('teams_id', $currentTeamId);
+                })->whereIn('id', $uniqIdEquipment)
                     ->withCount('fligh as usage_count')
                     ->with('fligh')
                     ->get();
@@ -700,7 +704,7 @@
                                     <!-- Kolom Project -->
                                     <div class="flex-1 min-w-[150px] mb-2">
                                         <p class="text-sm text-gray-800 dark:text-gray-200 font-semibold">{!! TranslationHelper::translateIfNeeded('Project:')!!}</p>
-                                        <a href="{{route('filament.admin.resources.projects.view',['tenant'=>Auth()->user()->teams()->first()->id,'record'=>$item->project->id])}}">
+                                        <a href="{{route('filament.admin.resources.projects.view',['tenant'=>Auth()->user()->teams()->first()->id,'record'=>$item->project->id ?? 0])}}">
                                             <p class="text-sm text-gray-700 dark:text-gray-400">{{ $item->project->case ??  TranslationHelper::translateIfNeeded('No Project') }}</p>
                                         </a>
                                     </div>

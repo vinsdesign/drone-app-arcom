@@ -14,7 +14,7 @@ class incident extends Model
         'cause',
         'location_id',
         'drone_id',
-        'project_id',
+        'projects_id',
         'personel_involved_id',
         'aircraft_damage',
         'other_damage',
@@ -49,7 +49,7 @@ class incident extends Model
 
     public function project()
     {
-        return $this->belongsTo(projects::class, 'project_id');
+        return $this->belongsTo(projects::class, 'projects_id');
     }
     public function teams(){
         return $this->belongsTo(Team::class);

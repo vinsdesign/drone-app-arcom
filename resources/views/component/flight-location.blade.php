@@ -21,7 +21,6 @@ $planned = App\Models\PlannedMission::where('teams_id', $teams)
 $combinedData = $flights->merge($planned);
 $count = $flights->count('id');
 $countM = $planned->count('id');
-$total = $count + $countM;
 
 ?>
 <head>
@@ -34,7 +33,7 @@ $total = $count + $countM;
 @if(request()->routeIs('filament.admin.resources.fligh-locations.view'))
 <div class="flex items-center justify-between py-4 px-6 border-b border-gray-300 bg-gray-100 dark:bg-gray-800 mb-4">
     <h2 class="text-xl font-bold text-gray-800 dark:text-gray-200">
-        {{$total}} {!! TranslationHelper::translateIfNeeded('Flights & Open Missions')!!}
+        ({{$count}}) {!! TranslationHelper::translateIfNeeded('Flights & ')!!} ({{$countM}}) {!! TranslationHelper::translateIfNeeded('Open Missions')!!}
     </h2>
 </div>
     @foreach($combinedData as $item)
@@ -82,7 +81,9 @@ $total = $count + $countM;
         
             <div class="flex-1 min-w-[180px] border-r border-gray-300 pr-2">
                 <p class="text-sm text-gray-800 dark:text-gray-200 font-semibold">{!! TranslationHelper::translateIfNeeded('Customer')!!}</p>
-                <p class="text-sm text-gray-700 dark:text-gray-400">{{$item->customers->name ?? null}}</p>
+                <a href="{{route('filament.admin.resources.customers.index',
+                ['tenant' => Auth()->user()->teams()->first()->id,
+                'record' => $item->customers->id,])}}"><p class="text-sm text-gray-700 dark:text-gray-400" style="color:rgb(0, 85, 255)">{{$item->customers->name}}</p></a>
             </div>
         
             <div class="flex-1 min-w-[180px] border-r border-gray-300 pr-4">

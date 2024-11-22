@@ -25,7 +25,7 @@ return new class extends Migration
             $table->integer('initial_Cycle_count')->nullable();
             $table->integer('life_span')->nullable();
             $table->integer('flaight_count')->nullable();
-            $table->foreignId('for_drone')->nullable()->constrainedTo('drone')->cascadeDelete();
+            $table->foreignId('for_drone')->nullable()->constrained('drones')->onDelete('set null');
             $table->date('purchase_date')->nullable();
             $table->integer('insurable_value')->nullable();
             $table->integer('wight')->nullable();
@@ -33,7 +33,7 @@ return new class extends Migration
             $table->string('hardware_version')->nullable();
             $table->boolean('is_loaner')->nullable()->default(false)->nullable();
             $table->string('description')->nullable();
-            $table->foreignId('users_id')->nullable()->constrainedTo('users')->cascadeOnDelete();
+            $table->foreignId('users_id')->nullable()->constrained('users')->onDelete('set null');
             $table->foreignIdFor(Team::class,'teams_id')->index()->cascadeOnDelete();
             $table->timestamps();
         });

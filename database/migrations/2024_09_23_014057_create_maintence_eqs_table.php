@@ -18,10 +18,10 @@ return new class extends Migration
             $table->date('date')->nullable();
             $table->string('status')->nullable();
             $table->integer('cost')->nullable();
-            $table->foreignId('currencies_id')->nullable()->constrained('currencies')->cascadeDelete();
+            $table->foreignId('currencies_id')->nullable()->constrained('currencies')->onDelete('set null');
             $table->string('notes')->nullable();
-            $table->foreignId('equidment_id')->nullable()->constrainedTo('equidment')->cascadeDelete();
-            $table->foreignId('battrei_id')->nullable()->constrainedTo('battrei')->cascadeDelete();
+            $table->foreignId('equidment_id')->nullable()->constrained('equidments')->onDelete('set null');
+            $table->foreignId('battrei_id')->nullable()->constrained('battreis')->onDelete('set null');
             $table->foreignIdFor(Team::class,'teams_id')->index()->cascadeOnDelete();
             $table->timestamps();
         });
