@@ -38,6 +38,27 @@ use TomatoPHP\FilamentSubscriptions\Filament\Pages\Billing;
 use Filament\Facades\Filament;
 use TomatoPHP\FilamentSettingsHub\Facades\FilamentSettingsHub;
 use TomatoPHP\FilamentSettingsHub\Services\Contracts\SettingHold;
+use Filament\Navigation\NavigationBuilder;
+use App\Filament\Resources\UserResource;
+use App\Filament\Resources\ProjectsResource;
+use App\Filament\Resources\BattreiResource;
+use App\Filament\Resources\DroneResource;
+use App\Filament\Resources\EquidmentResource;
+use App\Filament\Resources\FlighLocationResource;
+use App\Filament\Resources\KitsResource;
+use App\Filament\Resources\FlighResource;
+use App\Filament\Resources\PlannedMissionResource;
+use App\Filament\Resources\IncidentResource;
+use App\Filament\Resources\MaintenceResource;
+use App\Filament\Resources\MaintenanceBatteryResource;
+use App\Filament\Resources\ReportResource;
+use App\Filament\Resources\ContactResource;
+use App\Filament\Resources\TeamsListResource;
+use BezhanSalleh\FilamentShield\Resources\RoleResource;
+use TomatoPHP\FilamentSubscriptions\Filament\Resources\PlanResource;
+use TomatoPHP\FilamentSubscriptions\Filament\Resources\SubscriptionResource;
+use Filament\Pages\Dashboard;
+use App\Helpers\TranslationHelper;
 
 class AdminPanelProvider extends PanelProvider
 {
@@ -52,7 +73,6 @@ class AdminPanelProvider extends PanelProvider
             ->registration()
             // ->spa()
             ->sidebarCollapsibleOnDesktop()
-             ->collapsedSidebarWidth('9rem')
             ->favicon(asset('asset/favicon.png'))
             ->tenantRoutePrefix('team')
 
@@ -83,17 +103,77 @@ class AdminPanelProvider extends PanelProvider
                 ->myProfileComponents([MyCustomComponent::class])
             )
             //navigation Group
-            ->navigationGroups([
-                'master',
-                'Inventory',
-                'flight',
-                'Maintenance',
-                'Report',
-                'Contact',
-                'Filament Shield',
-                'Teams List',
-                'Payment',
-            ])
+            ->navigation(function (NavigationBuilder $builder): NavigationBuilder {
+                return $builder
+                    ->items([
+                        ...Dashboard::getNavigationItems(),
+                    ])
+                    ->groups([
+                    NavigationGroup::make(TranslationHelper::translateIfNeeded(''))
+                        ->items([
+                            ...CustomerResource::getNavigationItems(),
+                            ...UserResource::getNavigationItems(),
+                            ...DocumentResource::getNavigationItems(),
+                            ...ProjectsResource::getNavigationItems(),
+                        ]),
+                    NavigationGroup::make(TranslationHelper::translateIfNeeded('Inventory'))
+                        ->icon('heroicon-o-archive-box')
+                        ->collapsed()
+                        ->items([
+                            ...BattreiResource::getNavigationItems(),
+                            ...DroneResource::getNavigationItems(),
+                            ...EquidmentResource::getNavigationItems(),
+                            ...FlighLocationResource::getNavigationItems(),
+                            ...KitsResource::getNavigationItems(),
+                        ]),
+                    NavigationGroup::make(TranslationHelper::translateIfNeeded('Flight'))
+                        ->icon('heroicon-o-rocket-launch')
+                        ->collapsed()
+                        ->items([
+                            ...FlighResource::getNavigationItems(),
+                            ...PlannedMissionResource::getNavigationItems(),
+                            ...IncidentResource::getNavigationItems(),
+                        ]),
+                    NavigationGroup::make(TranslationHelper::translateIfNeeded('Maintenance'))
+                        ->icon('heroicon-o-wrench-screwdriver')
+                        ->collapsed()
+                        ->items([
+                            ...MaintenceResource::getNavigationItems(),
+                            ...MaintenanceBatteryResource::getNavigationItems(),
+                        ]),
+                    NavigationGroup::make(TranslationHelper::translateIfNeeded('Report'))
+                        ->icon('heroicon-o-document-text')
+                        ->collapsed()
+                        ->items([
+                            ...ReportResource::getNavigationItems(),
+                        ]),
+                    NavigationGroup::make(TranslationHelper::translateIfNeeded('Contact'))
+                        ->icon('heroicon-o-chat-bubble-left-right')
+                        ->collapsed()
+                        ->items([
+                            ...ContactResource::getNavigationItems(),
+                        ]),
+                    NavigationGroup::make(TranslationHelper::translateIfNeeded('Filament Shield'))
+                        ->icon('heroicon-o-shield-check')
+                        ->collapsed()
+                        ->items([
+                            ...RoleResource::getNavigationItems(),
+                        ]),
+                    NavigationGroup::make(TranslationHelper::translateIfNeeded('Teams List'))
+                        ->icon('heroicon-o-list-bullet')
+                        ->collapsed()
+                        ->items([
+                            ...TeamsListResource::getNavigationItems(),
+                        ]),
+                    NavigationGroup::make(TranslationHelper::translateIfNeeded('Payment'))
+                        ->icon('heroicon-o-credit-card')
+                        ->collapsed()
+                        ->items([
+                            ...PlanResource::getNavigationItems(),
+                            ...SubscriptionResource::getNavigationItems()
+                        ]),
+                ]);
+            })
             //end Navigation Group
             ->tenant(Team::class, ownershipRelationship: 'team')
             ->tenantRegistration(RegisterTeam::class)

@@ -35,7 +35,7 @@ class PlannedMissionResource extends Resource
     public static ?string $tenantOwnershipRelationshipName = 'teams';
     protected static ?string $tenantRelationshipName = 'PlannedMission';
     protected static ?string $navigationIcon = 'heroicon-s-clipboard-document';
-    public static ?string $navigationGroup = 'flight';
+    // public static ?string $navigationGroup = 'flight';
     public static ?int $navigationSort = 5;
 
     public static function getNavigationBadge(): ?string{

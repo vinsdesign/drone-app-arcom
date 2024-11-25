@@ -26,7 +26,7 @@ use App\Helpers\TranslationHelper;
 class KitsResource extends Resource
 {
     protected static ?string $model = Kits::class;
-    protected static ?string $navigationGroup = 'Inventory';
+    // protected static ?string $navigationGroup = 'Inventory';
     // protected static ?string $navigationLabel = 'Kit';
 
     protected static ?string $navigationIcon = 'heroicon-c-briefcase';
@@ -46,10 +46,6 @@ class KitsResource extends Resource
     {
         return TranslationHelper::translateIfNeeded('Kit');
     }
-    // public static function getNavigationGroup(): string
-    // {
-    //     return GoogleTranslate::trans('Inventory', session('locale') ?? 'en');
-    // }
 
     public static function form(Form $form): Form
     {

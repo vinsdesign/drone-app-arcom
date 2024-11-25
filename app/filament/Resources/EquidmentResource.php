@@ -36,7 +36,7 @@ class EquidmentResource extends Resource
     protected static ?string $model = Equidment::class;
     // protected static ?string $navigationLabel = 'Equipment' ;
     protected static ?string $navigationIcon = 'heroicon-m-cube';
-    protected static?string $navigationGroup = 'Inventory';
+    // protected static?string $navigationGroup = 'Inventory';
 
     // protected static?string $modelLabel = 'Equipment';
 
@@ -56,10 +56,6 @@ class EquidmentResource extends Resource
     {
         return TranslationHelper::translateIfNeeded('Equipment');
     }
-    // public static function getNavigationGroup(): string
-    // {
-    //     return GoogleTranslate::trans('Inventory', session('locale') ?? 'en');
-    // }
 
     public static function form(Form $form): Form
     {

@@ -46,7 +46,7 @@ class FlighResource extends Resource
     // protected static ?string $modelLabel = 'Flights';
     public static ?int $navigationSort = 4;
     protected static ?string $navigationIcon = 'heroicon-s-clipboard-document-list';
-    public static ?string $navigationGroup = 'flight';
+    // public static ?string $navigationGroup = 'flight';
     protected static bool $isLazy = false;
     public static function getNavigationBadge(): ?string{
         $teamID = Auth()->user()->teams()->first()->id;

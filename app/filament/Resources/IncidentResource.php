@@ -32,7 +32,7 @@ class IncidentResource extends Resource
     protected static ?string $navigationIcon = 'heroicon-m-exclamation-triangle';
     public static ?string $tenantOwnershipRelationshipName = 'teams';
     public static ?int $navigationSort = 7;
-    public static ?string $navigationGroup = 'flight';
+    // public static ?string $navigationGroup = 'flight';
     protected static bool $isLazy = false;
     
     public static function getNavigationBadge(): ?string{

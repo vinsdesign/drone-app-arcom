@@ -29,7 +29,7 @@ use App\Helpers\TranslationHelper;
 class BattreiResource extends Resource
 {
     protected static ?string $model = Battrei::class;
-    protected static ?string $navigationGroup = 'Inventory';
+    // protected static ?string $navigationGroup = 'Inventory';
     // protected static ?string $navigationLabel = 'Batteries';
     // protected static ?string $modelLabel = 'Batteries';
     protected static ?string $navigationIcon = 'heroicon-s-battery-100';
@@ -49,10 +49,6 @@ class BattreiResource extends Resource
     {
         return TranslationHelper::translateIfNeeded('Batteries');
     }
-    // public static function getNavigationGroup(): string
-    // {
-    //     return TranslationHelper::translateIfNeeded('Batteries');
-    // }
 
     public static function form(Form $form): Form
     {
