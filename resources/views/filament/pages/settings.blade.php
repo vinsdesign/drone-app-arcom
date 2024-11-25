@@ -170,7 +170,7 @@
                     
                     <ul class="list-disc pl-5 mb-6">
                         <li><a href="{{route('filament.admin.resources.manual-imports.index',[Auth()->user()->teams()->first()->id])}}" class="text-blue-600 dark:text-blue-400 hover:underline">{!! TranslationHelper::translateIfNeeded('Manual Multiple Importer') !!}</a></li>
-                        <li ><a href="#" class="text-blue-600 dark:text-blue-400 hover:underline" onclick="showContentTab(3)">{!! TranslationHelper::translateIfNeeded('Dji Cloud Importer') !!}</a></li>
+                        <li ><a href="{{route('filament.admin.resources.importers.index',[Auth()->user()->teams()->first()->id])}}" class="text-blue-600 dark:text-blue-400 hover:underline">{!! TranslationHelper::translateIfNeeded('Dji Cloud Importer') !!}</a></li>
                     </ul>
                     <h1 class="text-2xl font-semibold mb-4 text-gray-800 dark:text-gray-200">{!! TranslationHelper::translateIfNeeded('Default Value') !!}</h1>
                     <form class="space-y-4" action="{{route('default-value')}}" method="POST">
