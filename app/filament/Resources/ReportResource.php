@@ -15,17 +15,13 @@ class ReportResource extends Resource
     // protected static ?string $navigationLabel = 'Report';
     // protected static ?string $navigationGroup = 'Report';
     // protected static ?string $modelLabel = 'Report';
-    protected static ?string $navigationIcon = 'heroicon-o-document-text';
+    protected static ?string $navigationIcon = 'heroicon-s-document-text';
     protected static bool $isLazy = false;
     public static function getNavigationLabel(): string
     {
         return TranslationHelper::translateIfNeeded('Report');
     }
     public static function getModelLabel(): string
-    {
-        return TranslationHelper::translateIfNeeded('Report');
-    }
-    public static function getNavigationGroup(): string
     {
         return TranslationHelper::translateIfNeeded('Report');
     }

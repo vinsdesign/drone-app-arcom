@@ -31,7 +31,7 @@ class MaintenceResource extends Resource
     // protected static ?string $navigationLabel = 'Maintenance Drone';
     protected static ?string $tenantRelationshipName = 'maintence_drones';
     // protected static ?string $modelLabel = 'Maintenance Drone';
-    public static ?string $navigationGroup = 'Maintenance';
+    // public static ?string $navigationGroup = 'Maintenance';
 
     protected static ?string $navigationIcon = 'heroicon-s-wrench-screwdriver';
     public static ?string $tenantOwnershipRelationshipName = 'teams';

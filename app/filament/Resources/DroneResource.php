@@ -25,7 +25,7 @@ use App\Helpers\TranslationHelper;
 class DroneResource extends Resource
 {
     protected static ?string $model = Drone::class;
-    protected static ?string $navigationGroup = 'Inventory';
+    // protected static ?string $navigationGroup = 'Inventory';
     // protected static ?string $navigationLabel = 'Drone';
     protected static ?string $navigationIcon = 'heroicon-m-rocket-launch';
     public static ?string $tenantOwnershipRelationshipName = 'teams';
@@ -43,10 +43,6 @@ class DroneResource extends Resource
     {
         return TranslationHelper::translateIfNeeded('Drone');
     }
-    // public static function getNavigationGroup(): string
-    // {
-    //     return GoogleTranslate::trans('Inventory', session('locale') ?? 'en');
-    // }
 
     public static function form(Form $form): Form
     {

@@ -44,10 +44,10 @@ $countM = $planned->count('id');
                 
                 <div class="flex items-center">
                     <div class="inline-block text-white bg-gray-400 dark:bg-gray-700 dark:bg-gray-600 dark:hover:bg-gray-500 dark:text-white dark:hover:text-white text-sm font-medium py-1 px-3 border border-gray-300 rounded-md ml-2 @if(!$item->isMission) hidden @endif">
-                        Mission
+                        {!! TranslationHelper::translateIfNeeded('Mission')!!}
                     </div>
                     <div class="inline-block text-white bg-gray-400 dark:bg-gray-700 dark:bg-gray-600 dark:hover:bg-gray-500 dark:text-white dark:hover:text-white text-sm font-medium py-1 px-3 border border-gray-300 rounded-md ml-2 @if(!$item->isMission) hidden @endif">
-                         Completed
+                        {!! TranslationHelper::translateIfNeeded('Completed')!!}
                     </div>
                 </div>
                 
