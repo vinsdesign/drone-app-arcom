@@ -2,19 +2,19 @@
 
 namespace App\Filament\Pages;
 
-use App\Filament\Resources\ManualImportResource;
-use App\Filament\Resources\SettingsResource;
-use App\Livewire\HeaderWidget\HeaderManualImport;
+use App\Filament\Resources\ImporterResource;
+use App\Livewire\HeaderWidget\HeaderImport;
 use Filament\Resources\Pages\Page;
 use Filament\Notifications\Notification;
 
 
-class ManualImport extends Page 
+class ImporterPage extends Page 
 {
     protected static ?string $navigationIcon = 'heroicon-o-cog';
-    protected static string $resource = ManualImportResource::class;
-    protected static string $view = 'filament.pages.manual-import';
+    protected static string $resource = ImporterResource::class;
+    protected static string $view = 'filament.pages.dji-importer';
     
+
     public function mount()
         {
             if (session()->has('success')) {
@@ -26,7 +26,11 @@ class ManualImport extends Page
         }
         protected function getHeaderWidgets(): array{
             return[
-                HeaderManualImport::class,
+                HeaderImport::class,
             ];
+        }
+        public function getBreadcrumb(): ?string
+        {
+            return null;
         }
 }
