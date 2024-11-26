@@ -205,10 +205,10 @@
             
                 <!-- Submit Button -->
                 <div class="flex justify-end mt-4">
-                    <button id="triggerButtonB" type="button" 
+                    <button id="triggerButtonBattrei" type="button" 
                         style="font-size: 16px; background-color: #4A5568; color: white; font-weight: bold; padding: 8px 16px; border-radius: 4px; border: none; cursor: pointer;"
-                        class="px-6 py-3 bg-blue-600 text-white rounded-md hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600" onclick="createBattrei()">
-                        {!! TranslationHelper::translateIfNeeded('Submit')!!}
+                        class="button px-6 py-3 bg-blue-600 text-white rounded-md hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600" onclick="createBattrei()">
+                        <span class="button__text">{!! TranslationHelper::translateIfNeeded('Submit')!!}</span>
                     </button>
                 </div>
             </div>
@@ -233,6 +233,7 @@
 {{-- test ajax ke controller action --}}
 <script>
     function createBattrei() {
+        const $button = $('#triggerButtonBattrei');
         const nameValue = $('#namebattrei').val();
         const modelValue = $('#modelbattrei').val();
         const statusValue = $('#statusbattrei').val();
@@ -305,7 +306,7 @@
             alert('Name cannot be empty!');
             return;
         }
-
+        $button.toggleClass("button--loading");
         // Send data via AJAX
         $.ajax({
             url: '{{ route('create-battrei') }}',
@@ -344,6 +345,7 @@
             },
             error: function(xhr, status, error) {
                 console.error('error:', error);
+                $button.removeClass("button--loading");
             }
         });
     }

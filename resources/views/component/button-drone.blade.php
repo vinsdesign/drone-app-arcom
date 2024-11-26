@@ -275,10 +275,10 @@
 
                 <!-- Submit Button -->
                 <div class="flex justify-end mt-4">
-                    <button id="triggerButton" type="button" 
+                    <button id="triggerButtonDrone" type="button" 
                         style="font-size: 16px; background-color: #4A5568; color: white; font-weight: bold; padding: 8px 16px; border-radius: 4px; border: none; cursor: pointer;"
-                        class="px-6 py-3 bg-blue-600 text-white rounded-md hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600" onclick="createDrone()">
-                        {!! TranslationHelper::translateIfNeeded('Submit')!!}
+                        class="button px-6 py-3 bg-blue-600 text-white rounded-md hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600" onclick="createDrone()">
+                        <span class="button__text">{!! TranslationHelper::translateIfNeeded('Submit')!!}</span>
                     </button>
                 </div>
                 
@@ -302,6 +302,7 @@
 {{-- test ajax ke controller action --}}
 <script>
     function createDrone() {
+        const $button = $('#triggerButtonDrone');
         const nameValue = $('#namedrone').val();
         const statusValue = $('#statusdrone').val();
         const idLegalValue = $('#idlegaldrone').val();
@@ -383,7 +384,7 @@
             alert('Name cannot be empty!');
             return;
         }
-
+        $button.toggleClass("button--loading");
         // Send data via AJAX
         $.ajax({
             url: '{{ route('create-drone') }}',
@@ -425,6 +426,7 @@
             },
             error: function(xhr, status, error) {
                 console.error('error:', error);
+                $button.removeClass("button--loading");
             }
         });
     }

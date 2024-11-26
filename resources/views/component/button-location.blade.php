@@ -136,8 +136,8 @@
                 <div class="flex justify-end mt-4">
                     <button id="triggerButtonLocation" type="button" 
                         style="font-size: 16px; background-color: #4A5568; color: white; font-weight: bold; padding: 8px 16px; border-radius: 4px; border: none; cursor: pointer;"
-                        class="px-6 py-3 bg-blue-600 text-white rounded-md hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600" onclick="createLocation()">
-                        {!! TranslationHelper::translateIfNeeded('Submit')!!}
+                        class="button px-6 py-3 bg-blue-600 text-white rounded-md hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600" onclick="createLocation()">
+                        <span class="button__text">{!! TranslationHelper::translateIfNeeded('Submit')!!}</span>
                     </button>
                 </div>
             </div>
@@ -161,6 +161,7 @@
 {{-- test ajax ke controller action --}}
 <script>
  function createLocation() {
+    const $button = $('#triggerButtonLocation');
     const nameValue = $('#name').val();
     const addressValue = $('#address').val();
     const cityValue = $('#city').val();
@@ -191,6 +192,7 @@
         ) {
         alert('State cannot be empty!');
     } else {
+        $button.toggleClass("button--loading");
         $.ajax({
             url: '{{ route('create-Location') }}',
             type: 'POST',
@@ -219,6 +221,7 @@
             },
             error: function(xhr, status, error) {
                 console.error('error:', error);
+                $button.removeClass("button--loading");
             }
         });
     }

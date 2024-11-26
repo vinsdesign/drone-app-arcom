@@ -4,6 +4,8 @@ namespace App\Providers\Filament;;
 use App\Filament\Pages\Report;
 use App\Filament\Resources\CustomerResource;
 use App\Filament\Resources\DocumentResource;
+use App\Filament\Resources\ListTeamResource;
+use App\Filament\Resources\SettingsResource;
 use App\Filament\Widgets\AStatsOverview;
 use App\Filament\Widgets\FlightChart;
 use App\Filament\Widgets\FlightDurationChart;
@@ -163,7 +165,13 @@ class AdminPanelProvider extends PanelProvider
                         ->icon('heroicon-o-list-bullet')
                         ->collapsed()
                         ->items([
-                            ...TeamsListResource::getNavigationItems(),
+                            ...ListTeamResource::getNavigationItems(),
+                        ]),
+                        NavigationGroup::make(TranslationHelper::translateIfNeeded('Settings'))
+                        ->icon('heroicon-o-list-bullet')
+                        ->collapsed()
+                        ->items([
+                            ...SettingsResource::getNavigationItems(),
                         ]),
                     NavigationGroup::make(TranslationHelper::translateIfNeeded('Payment'))
                         ->icon('heroicon-o-credit-card')
