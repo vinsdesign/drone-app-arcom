@@ -12,6 +12,7 @@ use App\Http\Controllers\ContactController;
 use App\Http\Controllers\CurrencySettingController;
 use App\Livewire\DroneStatistik;
 use App\Livewire\BatteryStatistik;
+use App\Livewire\LocationStatistik;
 use App\Http\Controllers\LanguageController;
 
 Route::get('/', function () {
@@ -27,6 +28,7 @@ Route::post('/filament/report/incomeExpense/download', [Report::class, 'download
 Route::get('/drone-statistik/{drone_id}', [DroneStatistik::class, 'showDroneStatistik'])->name('drone.statistik');
 Route::get('/battery-statistik/{battery_id}', [BatteryStatistik::class, 'showBatteryStatistik'])->name('battery.statistik');
 Route::get('/equipment-statistik/{equipment_id}', [EquipmentStatistik::class, 'showEquipmentStatistik'])->name('equipment.statistik');
+Route::get('/location-statistik/{location_id}', [LocationStatistik::class, 'showLocationStatistik'])->name('location.statistik');
 
 // Route::get('admin/{tenant}/settings', [CurrencySettingController::class, 'index'])->name('settings');
 Route::get('admin/{tenant}/settings/currency-settings', [CurrencySettingController::class, 'showCurrencyForm'])->name('currency-settings');

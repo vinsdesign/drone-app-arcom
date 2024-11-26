@@ -279,7 +279,8 @@ class DroneResource extends Resource
                             '></span><span style='color: {$color};'>{$state}</span>";
                     })
                     ->html()
-                    ->searchable(),
+                    ->searchable()
+                    ->badge(),
                 Tables\Columns\TextColumn::make('flight_date')
                     
                 ->label(TranslationHelper::translateIfNeeded('Last Flight Date'))

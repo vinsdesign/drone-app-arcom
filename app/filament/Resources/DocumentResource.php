@@ -258,7 +258,8 @@ class DocumentResource extends Resource
                         'tenant' => Auth()->user()->teams()->first()->id,
                         'record' => $record->project_id,
                     ]): null)->color(Color::Blue)
-                    ->sortable(),
+                    ->sortable()
+                    ->placeholder(TranslationHelper::translateIfNeeded('No Project Selected')),
                 Tables\Columns\TextColumn::make('created_at')
                     ->label(TranslationHelper::translateIfNeeded('Created at'))
                     ->dateTime()

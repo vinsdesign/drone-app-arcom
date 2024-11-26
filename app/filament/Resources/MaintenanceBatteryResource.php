@@ -192,7 +192,8 @@ class MaintenanceBatteryResource extends Resource
                         '></span><span style='color: {$color};'>{$state}</span>";
                 })
                 ->html()
-                ->searchable(),
+                ->searchable()
+                ->badge(),
             Tables\Columns\TextColumn::make('cost')
                 ->label(TranslationHelper::translateIfNeeded('Cost'))
                 ->searchable(),

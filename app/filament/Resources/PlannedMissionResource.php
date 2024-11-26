@@ -371,6 +371,7 @@ class PlannedMissionResource extends Resource
                         }
                     })
                     ->searchable()
+                    ->preload()
                     ->columnSpanFull(),
                 ])->columnSpan(2), 
                 //grid Kits
@@ -783,7 +784,7 @@ class PlannedMissionResource extends Resource
                 })
                 ->form([
                     Forms\Components\Radio::make('status')
-                        ->label(TranslationHelper::translateIfNeeded('Pilih Status'))
+                        ->label(TranslationHelper::translateIfNeeded('Choose Status'))
                         ->options([
                             'completed' => 'Completed',
                             'cancel' => 'Cancel',

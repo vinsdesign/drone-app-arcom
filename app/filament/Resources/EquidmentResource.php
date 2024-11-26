@@ -174,8 +174,10 @@ class EquidmentResource extends Resource
                            ->label(TranslationHelper::translateIfNeeded('Hardware Version'))
                                 ->required()
                                 ->maxLength(255),
-                            Forms\Components\Checkbox::make('is_loaner')
-                           ->label(TranslationHelper::translateIfNeeded('Loaner Equipment')),
+                            Forms\Components\Toggle::make('is_loaner')
+                           ->label(TranslationHelper::translateIfNeeded('Loaner Equipment'))
+                           ->onColor('success')
+                            ->offColor('danger'),
                             Forms\Components\TextArea::make('description')
                            ->label(TranslationHelper::translateIfNeeded('Description'))
                                 ->maxLength(255),
@@ -279,7 +281,8 @@ class EquidmentResource extends Resource
                             '></span><span style='color: {$color};'>{$state}</span>";
                     })
                     ->html()
-                    ->searchable(),
+                    ->searchable()
+                    ->badge(),
                  Tables\Columns\TextColumn::make('drones.name')
                 ->label(TranslationHelper::translateIfNeeded('For Drone'))
                      ->numeric()
@@ -287,7 +290,8 @@ class EquidmentResource extends Resource
                         'tenant' => Auth()->user()->teams()->first()->id,
                         'record' => $record->for_drone,
                     ]):null)->color(Color::Blue)
-                     ->sortable(),
+                     ->sortable()
+                     ->placeholder(TranslationHelper::translateIfNeeded('No drone selected')),
                  Tables\Columns\TextColumn::make('users.name')
                  ->label(TranslationHelper::translateIfNeeded('Users'))
                     ->url(fn($record) => $record->users_id? route('filament.admin.resources.users.view', [

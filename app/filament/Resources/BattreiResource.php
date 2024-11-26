@@ -157,7 +157,8 @@ class BattreiResource extends Resource
                             ->maxLength(255),
                         Forms\Components\Toggle::make('is_loaner')
                             ->label(TranslationHelper::translateIfNeeded('Loaner Battery'))
-                            ->required(),
+                            ->onColor('success')
+                            ->offColor('danger'),
                         Forms\Components\TextInput::make('description')
                             ->label(TranslationHelper::translateIfNeeded('Description'))
                             ->required()
@@ -221,7 +222,8 @@ class BattreiResource extends Resource
                             '></span><span style='color: {$color};'>{$state}</span>";
                     })
                     ->html()
-                    ->searchable(),
+                    ->searchable()
+                    ->badge(),
                 Tables\Columns\TextColumn::make('flight_time')
                     ->label(TranslationHelper::translateIfNeeded('Flights & Flying Time'))
                     ->getStateUsing(function ($record) {
@@ -289,7 +291,8 @@ class BattreiResource extends Resource
                         'tenant' => Auth()->user()->teams()->first()->id,
                         'record' => $record->for_drone,
                     ]): null)->color(Color::Blue)
-                    ->sortable(),
+                    ->sortable()
+                    ->placeholder(TranslationHelper::translateIfNeeded('No drone selected')),
                 // Tables\Columns\TextColumn::make('purchase_date')->label('Purchase Date')
                 //     ->date()
                 //     ->sortable(),
