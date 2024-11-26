@@ -19,6 +19,50 @@
         z-index: 50;
         display: block;
     }
+    .button {
+    position: relative;
+    padding: 8px 16px;
+    border: none;
+    outline: none;
+    border-radius: 2px;
+    cursor: pointer;
+    }
+
+    .button__text {
+    color: #ffffff;
+    transition: all 0.2s;
+    }
+
+    .button--loading .button__text {
+    visibility: hidden;
+    opacity: 0;
+    }
+
+    .button--loading::after {
+    content: "";
+    position: absolute;
+    width: 16px;
+    height: 16px;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    margin: auto;
+    border: 4px solid transparent;
+    border-top-color: #ffffff;
+    border-radius: 50%;
+    animation: button-loading-spinner 1s ease infinite;
+    }
+
+    @keyframes button-loading-spinner {
+    from {
+        transform: rotate(0turn);
+    }
+
+    to {
+        transform: rotate(1turn);
+    }
+    }
 
 </style>
 {{-- <script src="https://cdn.tailwindcss.com"></script> --}}
@@ -123,10 +167,8 @@ $response =session('successfully');
 
                 <!-- Submit Button -->
                 <div class="flex justify-end mt-4">
-                    <button id="triggerButton" type="button" 
-                        style="font-size: 16px; background-color: #4A5568; color: white; font-weight: bold; padding: 8px 16px; border-radius: 4px; border: none; cursor: pointer;"
-                        class="px-6 py-3 bg-blue-600 text-white rounded-md hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600" onclick="closeModal()">
-                        {!! TranslationHelper::translateIfNeeded('Submit')!!}
+                    <button id="triggerButton" type="button" class="button" style="font-size: 16px; background-color: #4A5568; color: white; font-weight: bold; padding: 8px 16px; border-radius: 4px; border: none; cursor: pointer;">
+                        <span class="button__text">{!! TranslationHelper::translateIfNeeded('Submit')!!}</span>
                     </button>
                 </div>
                 
@@ -151,6 +193,7 @@ $response =session('successfully');
 <script>
     $(document).ready(function() {
         $('#triggerButton').click(function() {
+            const $button = $(this);
             const name = $('#name').val();
             const caseValue = $('#case').val();
             const revenuValue = $('#revenue').val();
@@ -163,6 +206,7 @@ $response =session('successfully');
             if (caseValue.trim() === '' || revenuValue.trim() === '' || customerValue.trim() === '' || currencieValue.trim() === '' || descriptionValue.trim() === '') {
                 alert('Name cannot be empty!');
             } else {
+                $button.toggleClass("button--loading");
                 $.ajax({
                     url: '{{ route('create-project') }}',
                     type: 'POST',
@@ -178,12 +222,15 @@ $response =session('successfully');
                         console.log(response);
                         // $("#success-notification-project").removeClass("hidden-notif");
                         // $("#success-notification-project").addClass("notification");
-                        setTimeout(() => {
-                            location.reload();
-                        }, 3000);
+
+                            setTimeout(() => {
+                                    location.reload();
+                            }, 3000);
+                            
                     },
                     error: function(xhr, status, error) {
                         console.error('error:', error);
+                        $button.removeClass("button--loading");
                     }
                 });
             }
@@ -206,3 +253,4 @@ $response =session('successfully');
         }
     });
 </script>
+

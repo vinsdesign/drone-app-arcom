@@ -17,6 +17,7 @@ class TeamsListResource extends Resource
     // protected static ?string $modelLabel = 'Teams List';
     protected static ?string $navigationIcon = 'heroicon-c-list-bullet';
     protected static bool $isLazy = false;
+    protected static bool $shouldRegisterNavigation = false;
 
     public static function getNavigationLabel(): string
     {

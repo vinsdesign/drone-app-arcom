@@ -204,10 +204,8 @@
             
                 <!-- Submit Button -->
                 <div class="flex justify-end mt-4">
-                    <button id="triggerButton" type="button" 
-                        style="font-size: 16px; background-color: #4A5568; color: white; font-weight: bold; padding: 8px 16px; border-radius: 4px; border: none; cursor: pointer;"
-                        class="px-6 py-3 bg-blue-600 text-white rounded-md hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600" onclick="createEquipment()">
-                        {!! TranslationHelper::translateIfNeeded('Submit')!!}
+                    <button id="triggerButtonEQ" type="button" class="button" onclick="createEquipment()" style="font-size: 16px; background-color: #4A5568; color: white; font-weight: bold; padding: 8px 16px; border-radius: 4px; border: none; cursor: pointer;">
+                        <span class="button__text">{!! TranslationHelper::translateIfNeeded('Submit')!!}</span>
                     </button>
                 </div>
             </div>            
@@ -230,6 +228,7 @@
 </script>
 <script>
     function createEquipment() {
+        const $button = $('#triggerButtonEQ');
         const nameValue = $('#nameequipment').val();
         const modelValue = $('#modelequipment').val();
         const statusValue = $('#statusequipment').val();
@@ -285,6 +284,7 @@
             alert('Name cannot be empty!');
             return;
         }
+        $button.toggleClass("button--loading");
 
         // Send data via AJAX
         $.ajax({
@@ -318,6 +318,7 @@
             },
             error: function(xhr, status, error) {
                 console.error('error:', error);
+                $button.removeClass("button--loading");
             }
         });
     }

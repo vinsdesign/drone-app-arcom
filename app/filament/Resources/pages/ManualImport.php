@@ -29,4 +29,8 @@ class ManualImport extends Page
                 HeaderManualImport::class,
             ];
         }
+        public function getBreadcrumb(): ?string
+        {
+            return null;
+        }
 }

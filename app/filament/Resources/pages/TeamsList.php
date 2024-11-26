@@ -4,6 +4,11 @@ namespace App\Filament\Pages;
 
 use App\Filament\Resources\TeamsListResource;
 use App\Models\team;
+use Filament\Support\Enums\FontWeight;
+use Filament\Tables\Columns\ImageColumn;
+use Filament\Tables\Columns\Layout\Panel;
+use Filament\Tables\Columns\Layout\Split;
+use Filament\Tables\Columns\Layout\Stack;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables;
 use Filament\Resources\Pages\Page;
@@ -62,6 +67,25 @@ class TeamsList extends Page implements Tables\Contracts\HasTable
                 ->label(' ')
                 ->icon('heroicon-o-eyes')
                 ->action(fn($record) => $this->showDetailsModal($record))
+
+            // Stack::make([
+            //     Split::make([
+            //         ImageColumn::make('avatar_url')
+            //             ->circular(),
+            //         TextColumn::make('name')
+            //             ->weight(FontWeight::Bold)
+            //             ->searchable()
+            //             ->sortable(),
+            //     ]),
+            //     Panel::make([
+            //         Stack::make([
+            //             TextColumn::make('phone')
+            //                 ->icon('heroicon-m-phone'),
+            //             TextColumn::make('email')
+            //                 ->icon('heroicon-m-envelope'),
+            //         ]),
+            //     ]),
+            // ]),
         ];        
     }
 
