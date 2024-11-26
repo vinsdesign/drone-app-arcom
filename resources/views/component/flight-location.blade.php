@@ -6,21 +6,7 @@ $flights = App\Models\Fligh::where('teams_id', $teams)
     ->where('location_id', $locations)
     ->get();
 
-$planned = App\Models\PlannedMission::where('teams_id', $teams)
-    ->where('location_id', $locations)
-    ->whereIn('status', ['completed'])
-    ->get();
-
-    $flights->each(function ($flight) {
-    $flight->isMission = false;  
-    });
-    $planned->each(function ($mission) {
-    $mission->isMission = ($mission->status == 'completed');  
-});
-
-$combinedData = $flights->merge($planned);
 $count = $flights->count('id');
-$countM = $planned->count('id');
 
 ?>
 <head>
@@ -33,29 +19,17 @@ $countM = $planned->count('id');
 @if(request()->routeIs('filament.admin.resources.fligh-locations.view'))
 <div class="flex items-center justify-between py-4 px-6 border-b border-gray-300 bg-gray-100 dark:bg-gray-800 mb-4">
     <h2 class="text-xl font-bold text-gray-800 dark:text-gray-200">
-        ({{$count}}) {!! TranslationHelper::translateIfNeeded('Flights & ')!!} ({{$countM}}) {!! TranslationHelper::translateIfNeeded('Open Missions')!!}
+        ({{$count}}) {!! TranslationHelper::translateIfNeeded('Flights')!!}
     </h2>
 </div>
-    @foreach($combinedData as $item)
+    @foreach($flights as $item)
     <div class="mb-4">
         <!-- Container utama dengan lebar lebih besar di bagian atas -->
         <div class="flex flex-wrap space-x-4 border border-gray-300 rounded-lg p-2 bg-gray-100 dark:bg-gray-800 max-w-[900px] mx-auto shadow-lg">
             <div class="flex-1 min-w-[180px] border-r border-gray-300 pr-4">
                 
-                <div class="flex items-center">
-                    <div class="inline-block text-white bg-gray-400 dark:bg-gray-700 dark:bg-gray-600 dark:hover:bg-gray-500 dark:text-white dark:hover:text-white text-sm font-medium py-1 px-3 border border-gray-300 rounded-md ml-2 @if(!$item->isMission) hidden @endif">
-                        {!! TranslationHelper::translateIfNeeded('Mission')!!}
-                    </div>
-                    <div class="inline-block text-white bg-gray-400 dark:bg-gray-700 dark:bg-gray-600 dark:hover:bg-gray-500 dark:text-white dark:hover:text-white text-sm font-medium py-1 px-3 border border-gray-300 rounded-md ml-2 @if(!$item->isMission) hidden @endif">
-                        {!! TranslationHelper::translateIfNeeded('Completed')!!}
-                    </div>
-                </div>
-                
                 <p class="text-sm text-gray-800 dark:text-gray-200 font-semibold">{!! TranslationHelper::translateIfNeeded('Name')!!}</p>
-                <a href="{{$item->isMission 
-                            ? route('filament.admin.resources.planned-missions.view', 
-                            ['tenant' => Auth()->user()->teams()->first()->id, 'record' => $item->id]) 
-                            : route('filament.admin.resources.flighs.view', 
+                <a href="{{route('filament.admin.resources.flighs.view', 
                             ['tenant' => Auth()->user()->teams()->first()->id, 'record' => $item->id]) }}">
                     <p class="text-sm text-gray-700 dark:text-gray-400" style="color:rgb(0, 85, 255)">{{$item->name ?? null}}</p>
                 </a>

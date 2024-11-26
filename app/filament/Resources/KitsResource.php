@@ -138,7 +138,8 @@ class KitsResource extends Resource
                     'tenant' => Auth()->user()->teams()->first()->id,
                     'record' => $record->users_id,
                 ]) : null)->color(Color::Blue)
-                ->sortable(),
+                ->sortable()
+                ->placeholder(TranslationHelper::translateIfNeeded('No drone selected')),
             Tables\Columns\TextColumn::make('battrei.name')
                 ->label(TranslationHelper::translateIfNeeded('Battery'))
                 ->numeric()

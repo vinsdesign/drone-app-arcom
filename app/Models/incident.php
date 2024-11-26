@@ -31,12 +31,8 @@ class incident extends Model
     protected static function booted()
     {
         static::created(function ($incident) {
-            // Ambil drone yang terkait dengan incident ini
             $drone = drone::find($incident->drone_id);
-
-            // Cek jika drone ada dan statusnya masih airworthy
             if ($drone && $drone->status === 'airworthy') {
-                // Ubah status drone menjadi maintenance
                 $drone->update(['status' => 'maintenance']);
             }
         });

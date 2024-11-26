@@ -231,7 +231,8 @@ class MaintenceResource extends Resource
                             '></span><span style='color: {$color};'>{$state}</span>";
                     })
                     ->html()
-                    ->searchable(),
+                    ->searchable()
+                    ->badge(),
             ])
             ->filters([
                 Tables\Filters\SelectFilter::make('status')

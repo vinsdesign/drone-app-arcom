@@ -216,10 +216,8 @@ class FlighLocationResource extends Resource
                     ->label(TranslationHelper::translateIfNeeded('Total Flights'))    
                         ->getStateUsing(function ($record) {
                             $totalFlights = $record->fligh()->count();
-                            $totalMission = $record->PlannedMission()->whereIn('status', ['completed'])->count();
-                            $totalAll = $totalFlights + $totalMission;
                             $TranslateText = TranslationHelper::translateIfNeeded('Flights');
-                            return "{$totalAll} {$TranslateText}";
+                            return "{$totalFlights} {$TranslateText}";
                         })
                         ->html(),
                 Tables\Columns\TextColumn::make('address')

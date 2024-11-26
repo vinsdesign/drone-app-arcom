@@ -40,11 +40,9 @@ class maintence_eq extends Model
             }
         });
     
-        // Event saat maintenance diupdate
         static::updated(function ($maintence_eq) {
             $equipment = equidment::find($maintence_eq->equidment_id);
     
-            // Cek jika maintenance sudah selesai
             if ($maintence_eq->status === 'completed' && $equipment && $equipment->status === 'maintenance') {
                 $equipment->update(['status' => 'airworthy']);
             }
@@ -53,7 +51,6 @@ class maintence_eq extends Model
         static::updated(function ($maintence_eq) {
             $battery = battrei::find($maintence_eq->battrei_id);
     
-            // Cek jika maintenance sudah selesai
             if ($maintence_eq->status === 'completed' && $battery && $battery->status === 'maintenance') {
                 $battery->update(['status' => 'airworthy']);
             }

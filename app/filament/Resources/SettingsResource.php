@@ -12,7 +12,7 @@ class SettingsResource extends Resource
     // protected static ?string $navigationLabel = 'Settings';
     // protected static ?string $navigationGroup = 'Settings';
     // protected static ?string $modelLabel = 'Settings';
-    protected static ?string $navigationIcon = 'heroicon-o-cog';
+    protected static ?string $navigationIcon = 'heroicon-c-cog';
     protected static bool $isLazy = false;
 
     public static function getNavigationLabel(): string
