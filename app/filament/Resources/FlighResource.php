@@ -11,6 +11,7 @@ use App\Models\equidment;
 use App\Models\Fligh;
 use App\Models\fligh_location;
 use App\Models\kits;
+use App\Models\User;
 use App\Models\Projects;
 use Closure;
 use Filament\Forms;
@@ -66,6 +67,17 @@ class FlighResource extends Resource
     public static function form(Form $form): Form
     {
         $currentTeamId = auth()->user()->teams()->first()->id;;
+
+        $cloneId = request()->query('clone');
+        $defaultData = [];
+
+        if ($cloneId) {
+            $record = Fligh::find($cloneId);
+            if ($record) {
+                $defaultData = $record->toArray();
+                $defaultData['name'] = $record->name . ' - CLONE';
+            }
+        }
         return $form
             ->schema([
                 Forms\Components\Section::make(TranslationHelper::translateIfNeeded('Flight Detail'))
@@ -74,7 +86,8 @@ class FlighResource extends Resource
                 Forms\Components\TextInput::make('name')
                 ->label(TranslationHelper::translateIfNeeded('Name'))    
                     ->required()
-                    ->maxLength(255),
+                    ->maxLength(255)
+                    ->default($defaultData['name'] ?? null),
                 Forms\Components\DateTimePicker::make('start_date_flight')
                 ->label(TranslationHelper::translateIfNeeded('Start Date Flight'))
                 ->afterStateUpdated(function (callable $get, callable $set) {
@@ -86,7 +99,8 @@ class FlighResource extends Resource
                         $set('duration', $duration);
                     }
                 })->reactive()
-                    ->required(),
+                    ->required()
+                    ->default($defaultData['start_date_flight'] ?? null),
                 Forms\Components\DateTimePicker::make('end_date_flight')
                 ->label(TranslationHelper::translateIfNeeded('End Date Flight'))
                 ->afterStateUpdated(function (callable $get, callable $set) {
@@ -101,9 +115,11 @@ class FlighResource extends Resource
                         $set('duration', $duration);
                     }
                 })->reactive()
-                    ->required(),
+                    ->required()
+                    ->default($defaultData['end_date_flight'] ?? null),
                 Forms\Components\Hidden::make('duration')
-                    ->reactive(),
+                    ->reactive()
+                    ->default($defaultData['duration'] ?? null),
                 Forms\Components\Select::make('type')
                 ->label(TranslationHelper::translateIfNeeded('Flight Type'))    
                     ->options([
@@ -128,7 +144,17 @@ class FlighResource extends Resource
                         'test_flight' => 'Test Flight',
                         'training_flight' => 'Training Flight',
                     ])->searchable()
-                    ->default(function (){
+                    // ->default(function (){
+                    //     $currentTeam = auth()->user()->teams()->first();
+                    //     return $currentTeam ? $currentTeam->flight_type : null;
+                    // })
+                    ->default(function () {
+                        $cloneId = request()->query('clone'); 
+                        if ($cloneId) {
+                            $clonedRecord = \App\Models\Fligh::find($cloneId); 
+                            return $clonedRecord ? $clonedRecord->type : null; 
+                        }
+                
                         $currentTeam = auth()->user()->teams()->first();
                         return $currentTeam ? $currentTeam->flight_type : null;
                     })
@@ -146,11 +172,13 @@ class FlighResource extends Resource
                         'fvp' => 'FVP',
                         'over_people' => 'Over People',
                     ])
-                    ->required(),
+                    ->required()
+                    ->default($defaultData['ops'] ?? null),
                 Forms\Components\TextInput::make('landings')
                 ->label(TranslationHelper::translateIfNeeded('Landings'))    
                     ->required()
-                    ->numeric(),
+                    ->numeric()
+                    ->default($defaultData['landings'] ?? null),
                 Forms\Components\Grid::make(1)->schema([
                     View::make('component.button-project')
                     ->extraAttributes(['class' => 'mr-6 custom-spacing']),
@@ -171,6 +199,15 @@ class FlighResource extends Resource
                         }
                     })
                     ->default(function (){
+                        $cloneId = request()->query('clone');
+                        if ($cloneId) {
+                            $clonedRecord = \App\Models\Fligh::find($cloneId); 
+                            
+                            if ($clonedRecord && $clonedRecord->projects) {
+                                return $clonedRecord->projects_id;
+                            }
+                        }
+
                         $currentTeam = auth()->user()->teams()->first();
                         return $currentTeam ? $currentTeam->id_projects : null;
                     })
@@ -193,11 +230,22 @@ class FlighResource extends Resource
                     })
                     ->label(TranslationHelper::translateIfNeeded('Location'))
                     ->searchable()
-                    ->required(),
+                    ->required()
+                    ->default(function (){
+                        $cloneId = request()->query('clone');
+                        if ($cloneId) {
+                            $clonedRecord = \App\Models\Fligh::find($cloneId); 
+                            
+                            if ($clonedRecord && $clonedRecord->fligh_location) {
+                                return $clonedRecord->location_id;
+                            }
+                        }
+                    }),
                 ])->columnSpan(2),
                 //end grid 
                 Forms\Components\Hidden::make('customers_id') 
-                    ->required(),
+                    ->required()
+                    ->default($defaultData['customers_id'] ?? null),
                 Forms\Components\TextInput::make('customers_name')
                 ->label(TranslationHelper::translateIfNeeded('Customers Name'))    
                     //->relationship('customers', 'name')
@@ -219,6 +267,14 @@ class FlighResource extends Resource
                         }
                     })
                     ->default(function (){
+                        $cloneId = request()->query('clone');
+                        if ($cloneId) {
+                            $clonedRecord = \App\Models\Fligh::find($cloneId); 
+                            
+                            if ($clonedRecord && $clonedRecord->customers) {
+                                return $clonedRecord->customers->name;
+                            }
+                        }
                         $currentTeam = auth()->user()->teams()->first();
                         return $currentTeam ? $currentTeam->id_customers  : null;
                     })
@@ -260,7 +316,45 @@ class FlighResource extends Resource
                                 });
                         })->reactive()
                         ->afterStateUpdated(fn (callable $set) => $set('instructor', null))
-                    ->required(),
+                    ->required()
+                    ->options(function () {
+                        $currentTeamId = auth()->user()->teams()->first()->id;
+                
+                        return \App\Models\User::whereHas('teams', function (Builder $query) use ($currentTeamId) {
+                                $query->where('team_id', $currentTeamId);
+                            })
+                            ->whereHas('roles', function (Builder $query) {
+                                $query->where('roles.name', 'Pilot');
+                            })
+                            ->pluck('name', 'id')
+                            ->toArray();
+
+                            if ($startDate && $endDate && $isEdit) {
+                                $query->whereDoesntHave('fligh', function ($query) use ($startDate, $endDate) {
+                                    $query->where(function ($query) use ($startDate, $endDate) {
+                                        $query->where('start_date_flight', '<=', $endDate)
+                                              ->where('end_date_flight', '>=', $startDate);
+                                    });
+                                });
+                            }
+                        
+                            // Filter berdasarkan selectedUserId jika ada
+                            if ($selectedUserId) {
+                                $query->where('id', '!=', $selectedUserId);
+                            }
+                        
+                            return $query;
+                    })
+                    ->default(function () {
+                        $cloneId = request()->query('clone');
+                        if ($cloneId) {
+                            $clonedRecord = \App\Models\Fligh::find($cloneId); 
+                
+                            if ($clonedRecord && $clonedRecord->users) {
+                                return $clonedRecord->users_id;
+                            }
+                        }
+                    }),
                 Forms\Components\Select::make('instructor')
                 ->label(TranslationHelper::translateIfNeeded('Instructor (optional)'))
                 ->relationship('instructors', 'name', function (Builder $query, callable $get) {
@@ -296,15 +390,27 @@ class FlighResource extends Resource
                     }
                 
                     return $query;
-                })->reactive(),
+                })->reactive()
+                ->default(function () {
+                    $cloneId = request()->query('clone');
+                    if ($cloneId) {
+                        $clonedRecord = \App\Models\Fligh::find($cloneId); 
+            
+                        if ($clonedRecord && $clonedRecord->instructors) {
+                            return $clonedRecord->instructors->id;
+                        }
+                    }
+                }),
                 Forms\Components\TextInput::make('vo')
                 ->label(TranslationHelper::translateIfNeeded('VO'))    
                     ->required()
-                    ->maxLength(255),
+                    ->maxLength(255)
+                    ->default($defaultData['vo'] ?? null),
                 Forms\Components\TextInput::make('po')
                 ->label(TranslationHelper::translateIfNeeded('PO'))    
                     ->required()
-                    ->maxLength(255),
+                    ->maxLength(255)
+                    ->default($defaultData['po'] ?? null),
                 ])->columns(2),
                 Forms\Components\Section::make(TranslationHelper::translateIfNeeded('Drone & Equipment'))
                     ->description('')
@@ -412,7 +518,20 @@ class FlighResource extends Resource
                     })
                     ->searchable()
                     ->preload()
-                    ->columnSpanFull(),
+                    ->columnSpanFull()
+                    ->options(function (callable $get) use ($currentTeamId) {
+                        return drone::where('teams_id', $currentTeamId)->pluck('name', 'id');
+                    })
+                    ->default(function (){
+                        $cloneId = request()->query('clone');
+                        if ($cloneId) {
+                            $clonedRecord = \App\Models\Fligh::find($cloneId); 
+                            
+                            if ($clonedRecord && $clonedRecord->drones) {
+                                return $clonedRecord->drones_id;
+                            }
+                        }
+                    }),
                     //end flight
                 ])->columnSpan(2), 
                 //grid Kits
@@ -474,6 +593,16 @@ class FlighResource extends Resource
                 })                                   
                 ->searchable()
                 ->reactive()
+                ->default(function () {
+                    $cloneId = request()->query('clone');
+                    if ($cloneId) {
+                        $clonedRecord = \App\Models\Fligh::find($cloneId); 
+            
+                        if ($clonedRecord && $clonedRecord->kits) {
+                            return $clonedRecord->kits_id;
+                        }
+                    }
+                })
                 ->afterStateUpdated(function ($state, callable $set) {
                     if ($state) {
                         $kit = kits::find($state);
@@ -529,7 +658,32 @@ class FlighResource extends Resource
                         ->helperText(function () {
                             return TranslationHelper::translateIfNeeded('Automatically filled when selecting kits');
                         })                        
-                        ->disabled(), 
+                        ->disabled()
+                        ->default(function () {
+                            $cloneId = request()->query('clone');
+                            if ($cloneId) {
+                                $clonedRecord = \App\Models\Fligh::find($cloneId);
+                    
+                                if ($clonedRecord && $clonedRecord->kits) {
+                                    $kitId = $clonedRecord->kits_id;
+                    
+                                    $batteriesId = \DB::table('battrei_kits')
+                                        ->where('kits_id', $kitId)
+                                        ->pluck('battrei_id')
+                                        ->toArray();
+                    
+                                    if (!empty($batteriesId)) {
+                                        $batteriesName = \App\Models\Battrei::whereIn('id', $batteriesId)
+                                            ->pluck('name')
+                                            ->toArray();
+                    
+                                        return implode(', ', $batteriesName);
+                                    }
+                                }
+                            }
+                    
+                            return null;
+                        }), 
                 Forms\Components\TextInput::make('camera_gimbal')
                 ->label(TranslationHelper::translateIfNeeded('Camera/Gimbal')) 
                 ->afterStateHydrated(function ($state, $component, $record) {
@@ -556,7 +710,33 @@ class FlighResource extends Resource
                         ->helperText(function () {
                             return TranslationHelper::translateIfNeeded('Automatically filled when selecting kits');
                         })                        
-                        ->disabled(), 
+                        ->disabled()
+                        ->default(function () {
+                            $cloneId = request()->query('clone');
+                            if ($cloneId) {
+                                $clonedRecord = \App\Models\Fligh::find($cloneId);
+                    
+                                if ($clonedRecord && $clonedRecord->kits) {
+                                    $kitId = $clonedRecord->kits_id;
+                    
+                                    $equipmentIds = \DB::table('equidment_kits')
+                                    ->where('kits_id', $kitId)
+                                    ->pluck('equidment_id')
+                                    ->toArray(); 
+                    
+                                    if (!empty($equipmentIds)) {
+                                        $eqName = \App\Models\Equidment::whereIn('id', $equipmentIds)
+                                            ->whereIn('type', ['camera', 'gimbal'])
+                                            ->pluck('type')
+                                            ->toArray(); 
+                    
+                                        return implode(', ', $eqName);
+                                    }
+                                }
+                            }
+                    
+                            return null;
+                        }),
                 Forms\Components\TextInput::make('others')
                 ->afterStateHydrated(function ($state, $component, $record) {
                     if ($record) {
@@ -583,7 +763,33 @@ class FlighResource extends Resource
                             return TranslationHelper::translateIfNeeded('Automatically filled when selecting kits');
                         })                        
                         ->label(TranslationHelper::translateIfNeeded('Others'))
-                        ->disabled(),
+                        ->disabled()
+                        ->default(function () {
+                            $cloneId = request()->query('clone');
+                            if ($cloneId) {
+                                $clonedRecord = \App\Models\Fligh::find($cloneId);
+                    
+                                if ($clonedRecord && $clonedRecord->kits) {
+                                    $kitId = $clonedRecord->kits_id;
+                    
+                                    $equipmentIds = \DB::table('equidment_kits')
+                                    ->where('kits_id', $kitId)
+                                    ->pluck('equidment_id')
+                                    ->toArray(); 
+                    
+                                    if (!empty($equipmentIds)) {
+                                        $eqName = \App\Models\Equidment::whereIn('id', $equipmentIds)
+                                            ->whereNotIn('type', ['camera', 'gimbal'])
+                                            ->pluck('type')
+                                            ->toArray(); 
+                    
+                                        return implode(', ', $eqName);
+                                    }
+                                }
+                            }
+                    
+                            return null;
+                        }),
                 
                 //grid battery
                 Forms\Components\Grid::make(1)->schema([
@@ -617,6 +823,16 @@ class FlighResource extends Resource
                             })
                             ->pluck('name', 'id'); 
                     })
+                    ->default(function () {
+                        $cloneId = request()->query('clone');
+                        if ($cloneId) {
+                            $clonedRecord = \App\Models\Fligh::find($cloneId);
+                            if ($clonedRecord && $clonedRecord->battreis) {
+                                return $clonedRecord->battreis->pluck('id')->toArray();
+                            }
+                        }
+                        return [];
+                    })
                     ->afterStateHydrated(function ($state, $component, $record) {
                         if ($record) {
                             $batteryIds = \DB::table('fligh_battrei')
@@ -649,7 +865,7 @@ class FlighResource extends Resource
                     //         ->pluck('name', 'id');
                     // })
   
-                ])->columnSpan(1),
+                ])->columnSpan(1),                
                 //grid equdiment
                 Forms\Components\Grid::make(1)->schema([
                     View::make('component.button-equidment'),
@@ -684,7 +900,16 @@ class FlighResource extends Resource
                             })
                             ->pluck('name', 'id');
                     })
-                  
+                    ->default(function () {
+                        $cloneId = request()->query('clone');
+                        if ($cloneId) {
+                            $clonedRecord = \App\Models\Fligh::find($cloneId);
+                            if ($clonedRecord && $clonedRecord->equidments) {
+                                return $clonedRecord->equidments->pluck('id')->toArray();
+                            }
+                        }
+                        return [];
+                    })
                     ->afterStateHydrated(function ($state, $component, $record) {
                         if ($record) {
                             $equidmentIds = \DB::table('fligh_equidment')
@@ -716,12 +941,14 @@ class FlighResource extends Resource
                 Forms\Components\TextInput::make('pre_volt')
                 ->label(TranslationHelper::translateIfNeeded('Pre Voltage'))    
                     ->numeric()    
-                    ->required(),
+                    ->required()
+                    ->default($defaultData['pre_volt'] ?? null),
                 Forms\Components\TextInput::make('fuel_used')
                 ->label(TranslationHelper::translateIfNeeded('Fuel Used'))    
                     ->numeric()    
                     ->required()
                     ->placeholder('0')
+                    ->default($defaultData['fuel_used'] ?? null)
                     ->default('1')->columnSpan(2),
                 ])->columns(3),
                 //Forms\Components\TextInput::make('wheater_id')
@@ -911,6 +1138,15 @@ class FlighResource extends Resource
                         ->icon('heroicon-s-lock-open')
                         ->hidden(fn ($record) => $record->locked_flight === null || $record->locked_flight === 'unlocked')
                         ->visible(fn ($record) => auth()->user()->hasRole(['panel_user'])),  
+                    Tables\Actions\Action::make('clone')
+                        ->label('Clone')
+                        ->icon('heroicon-s-document-duplicate')
+                        ->url(function ($record) {
+                            return route('filament.admin.resources.flighs.create', [
+                                'tenant' => Auth()->user()->teams()->first()->id,
+                                'clone' => $record->id,
+                            ]);
+                        }),
                 ])
             ])
             ->bulkActions([
