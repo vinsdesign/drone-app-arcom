@@ -22,6 +22,7 @@ use Filament\Pages;
 use Filament\Panel;
 use Filament\PanelProvider;
 use Filament\Support\Colors\Color;
+use Filament\Support\Facades\FilamentColor;
 use Filament\Widgets;
 use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
 use Illuminate\Cookie\Middleware\EncryptCookies;
@@ -74,6 +75,7 @@ class AdminPanelProvider extends PanelProvider
             ->login()
             ->registration()
             // ->spa()
+            //color
             ->sidebarCollapsibleOnDesktop()
             ->favicon(asset('asset/favicon.png'))
             ->tenantRoutePrefix('team')

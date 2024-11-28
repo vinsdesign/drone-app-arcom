@@ -5,6 +5,7 @@ use App\Filament\Pages\Settings;
 use App\Http\Controllers\buttonPopUpCreate;
 use App\Http\Controllers\createProject;
 use App\Http\Controllers\importDefaultValue;
+use App\Http\Controllers\setYear;
 use App\Livewire\EquipmentStatistik;
 use Illuminate\Support\Facades\Route;
 use Filament\Http\Livewire\Auth\Login;
@@ -57,4 +58,6 @@ Route::post('/create-location',[buttonPopUpCreate::class,'buttonLocation'])->nam
 //language change
 Route::post('/change-language', [LanguageController::class, 'changeLanguage'])->name('change.language');
 //chart js
+//year setting
+Route::post('/change-year', [setYear::class, 'changeYear'])->name('change.year');
 

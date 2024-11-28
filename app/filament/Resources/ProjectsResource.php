@@ -249,7 +249,12 @@ class ProjectsResource extends Resource
             Section::make('')
                 ->schema([
                     InfolistView::make('component.flight-project'),
-                ])
+                ]),
+            Section::make('')
+            ->schema([
+                InfolistView::make('component.tabViewResorce.project-tab'),
+            ])
+            
         ]);        
     }
 

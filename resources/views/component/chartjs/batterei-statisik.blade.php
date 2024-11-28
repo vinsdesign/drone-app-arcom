@@ -1,4 +1,6 @@
 <?php
+session_start();
+$year = session('tahun', now()->year);
     $tenant_id = Auth()->user()->teams()->first()->id;
         $battery_id = session('battery_id');
         $pivotBattrei_id = DB::table('fligh_battrei')->where('battrei_id', $battery_id)
@@ -13,11 +15,17 @@
         
         $flightsBattrei = App\Models\fligh::where('teams_id', $tenant_id)
             ->whereIn('id', $pivotBattrei_id)
-            ->whereBetween('start_date_flight', [now()->startOfYear(), now()->endOfYear()])
+                  ->whereBetween('start_date_flight', [
+                    Carbon\Carbon::createFromDate($year, 1, 1)->startOfDay(),
+                    Carbon\Carbon::createFromDate($year, 12, 31)->endOfDay()
+                ])
             ->get();
         $flightsKits = App\Models\fligh::where('teams_id', $tenant_id)
             ->whereIn('kits_id', $kitsBattrei_id)
-            ->whereBetween('start_date_flight', [now()->startOfYear(), now()->endOfYear()])
+                  ->whereBetween('start_date_flight', [
+                    Carbon\Carbon::createFromDate($year, 1, 1)->startOfDay(),
+                    Carbon\Carbon::createFromDate($year, 12, 31)->endOfDay()
+                ])
             ->get();
     
         $flights = $flightsBattrei->merge($flightsKits);
@@ -42,20 +50,88 @@
                 'totalDuration' => $formatTotalHour,
             ];
         });
+        $totalFlightsPerMonth = $data->pluck('totalFlights')->sum();
+            $totalDurationInSeconds = $flights->sum(function ($flight) {
+                list($hours, $minutes, $seconds) = explode(':', $flight->duration);
+                return ($hours * 3600) + ($minutes * 60) + $seconds;
+            });
+            
+            $totalHours = floor($totalDurationInSeconds / 3600);
+            $totalMinutes = floor(($totalDurationInSeconds % 3600) / 60);
+            $totalSeconds = $totalDurationInSeconds % 60;
+            // Format total durasi
+            $formattedTotalDuration = sprintf('%02d:%02d:%02d', $totalHours, $totalMinutes, $totalSeconds); 
             
             $chartDataFlight = json_encode($data);
 ?>
 <head>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        .button-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 16px; 
+        flex-wrap: wrap;
+    }
+        @media (max-width: 640px) {
+        .button-container {
+            flex-direction: column;
+            gap: 12px;
+        }
+    }
+    </style>
 </head>
 <x-filament-widgets::widget>
-    <div class="flex justify-center items-center">
+    <div class="flex justify-center items-center mb-2">
         <div class="rounded-lg shadow-lg p-4 w-full max-w-md sm:max-w-lg md:max-w-2xl lg:max-w-1/2 dark:bg-gray-900">
+            <p class="text-sm font-semibold text-center text-gray-800 dark:text-gray-100">Flight & Flying Times <br> {{$year}}</p>
             <canvas id="dualAxisChart"></canvas>
+            <p class="text-sm font-semibold text-center text-gray-700 dark:text-gray-100">{{ $totalFlightsPerMonth}} Flights / {{$formattedTotalDuration}} Hours in {{$year}}</p>
         </div>
     </div>
+    <div class="button-container flex justify-center items-center space-x-4">
+        <button id="button-left" type="button" class="bg-primary-500 text-white p-2 rounded-lg shadow hover:bg-primary-600 dark:bg-primary-700 dark:hover:bg-primary-800" onclick="changeYear(-1)">
+            <i class="fas fa-chevron-left"></i>
+        </button>
+        <button id="button-center" type="button" class="bg-primary-500 text-white p-2 rounded-lg shadow hover:bg-primary-600 dark:bg-primary-700 dark:hover:bg-primary-800" onclick="changeYearDefault()">
+            <p id="current-year">current-year</p>
+        </button>
+        <button id="button-right" type="button" class="bg-primary-500 text-white p-2 rounded-lg shadow hover:bg-primary-600 dark:bg-primary-700 dark:hover:bg-primary-800" onclick="changeYear(1)">
+            <i class="fas fa-chevron-right"></i>
+        </button>
+    </div>
+    
+
     
 </x-filament-widgets::widget>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    let tahun = {{ $year }};
+
+    function updateYearDisplay() {
+        $.ajax({
+            url: '{{ route('change.year') }}',
+            method: 'POST',
+            data: { tahun: tahun, _token: '{{ csrf_token() }}' },
+            success: function(response) {
+                console.log(response);
+                location.reload();
+            }
+        });
+    }
+
+    function changeYear(increment) {
+        tahun += increment;
+        updateYearDisplay();
+    }
+    function changeYearDefault() {
+        tahun = new Date().getFullYear();
+        updateYearDisplay();
+    }
+  
+</script>
 <script>
     const chartData = <?php echo $chartDataFlight; ?>;
 
