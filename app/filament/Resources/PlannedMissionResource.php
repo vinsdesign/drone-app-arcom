@@ -51,10 +51,28 @@ class PlannedMissionResource extends Resource
     {
         return TranslationHelper::translateIfNeeded('Planned Mission');
     }
+    public static function getNavigationItems(): array
+    {
+        $user = auth()->user();
+        if ($user && !$user->hasRole(['super_admin', 'panel_user'])) {
+            return [];
+        }
+        return parent::getNavigationItems();
+    }
 
     public static function form(Form $form): Form
     {
         $currentTeamId = auth()->user()->teams()->first()->id;;
+        $cloneId = request()->query('clone');
+        $defaultData = [];
+
+        if ($cloneId) {
+            $record = PlannedMission::find($cloneId);
+            if ($record) {
+                $defaultData = $record->toArray();
+                $defaultData['name'] = $record->name . ' - CLONE';
+            }
+        }
         return $form
             ->schema([
                 Forms\Components\Section::make(TranslationHelper::translateIfNeeded('Mission Details'))
@@ -64,7 +82,8 @@ class PlannedMissionResource extends Resource
                 ->label(TranslationHelper::translateIfNeeded('Mission Name'))    
                     ->required()
                     ->maxLength(255)
-                    ->columnSpanFull(),
+                    ->columnSpanFull()
+                    ->default($defaultData['name'] ?? null),
                 Forms\Components\DateTimePicker::make('start_date_flight')
                 ->label(TranslationHelper::translateIfNeeded('Start Date Flight'))
                 ->afterStateUpdated(function (callable $get, callable $set) {
@@ -76,7 +95,8 @@ class PlannedMissionResource extends Resource
                         $set('duration', $duration);
                     }
                 })->reactive()
-                    ->required(),
+                    ->required()
+                    ->default($defaultData['start_date_flight'] ?? null),
                 Forms\Components\DateTimePicker::make('end_date_flight')
                 ->label(TranslationHelper::translateIfNeeded('End Date Flight'))
                 ->afterStateUpdated(function (callable $get, callable $set) {
@@ -91,9 +111,11 @@ class PlannedMissionResource extends Resource
                         $set('duration', $duration);
                     }
                 })->reactive()
-                    ->required(),
+                    ->required()
+                    ->default($defaultData['end_date_flight'] ?? null),
                 Forms\Components\Hidden::make('duration')
-                    ->reactive(),
+                    ->reactive()
+                    ->default($defaultData['duration'] ?? null),
                 Forms\Components\Select::make('type')
                 ->label(TranslationHelper::translateIfNeeded('Flight Type'))    
                     ->options([
@@ -118,7 +140,13 @@ class PlannedMissionResource extends Resource
                         'test_flight' => 'Test Flight',
                         'training_flight' => 'Training Flight',
                     ])->searchable()
-                    ->default(function (){
+                    ->default(function () {
+                        $cloneId = request()->query('clone'); 
+                        if ($cloneId) {
+                            $clonedRecord = \App\Models\PlannedMission::find($cloneId); 
+                            return $clonedRecord ? $clonedRecord->type : null; 
+                        }
+                
                         $currentTeam = auth()->user()->teams()->first();
                         return $currentTeam ? $currentTeam->flight_type : null;
                     })
@@ -137,12 +165,20 @@ class PlannedMissionResource extends Resource
                         'over_people' => 'Over People',
                     ])
                     ->required()
-                    ->columnSpan(2),
+                    ->columnSpan(2)
+                    ->default(function () {
+                        $cloneId = request()->query('clone'); 
+                        if ($cloneId) {
+                            $clonedRecord = \App\Models\PlannedMission::find($cloneId); 
+                            return $clonedRecord ? $clonedRecord->ops : null; 
+                        }
+                    }),
                 Forms\Components\TextInput::make('landings')
                 ->label(TranslationHelper::translateIfNeeded('Landings'))    
                     ->required()
                     ->default('1')
-                    ->numeric(),
+                    ->numeric()
+                    ->default($defaultData['landings'] ?? null),
                 Forms\Components\Grid::make(1)->schema([
                     view::make('component.button-project')->extraAttributes(['class' => 'mr-6 custom-spacing']),
                     Forms\Components\Select::make('projects_id')
@@ -162,6 +198,15 @@ class PlannedMissionResource extends Resource
                         }
                     })
                     ->default(function (){
+                        $cloneId = request()->query('clone');
+                        if ($cloneId) {
+                            $clonedRecord = \App\Models\PlannedMission::find($cloneId); 
+                            
+                            if ($clonedRecord && $clonedRecord->projects) {
+                                return $clonedRecord->projects_id;
+                            }
+                        }
+
                         $currentTeam = auth()->user()->teams()->first();
                         return $currentTeam ? $currentTeam->id_projects : null;
                     })
@@ -178,11 +223,22 @@ class PlannedMissionResource extends Resource
                     })
                     ->label(TranslationHelper::translateIfNeeded('Location'))
                     ->searchable()
-                    ->required(),
+                    ->required()
+                    ->default(function (){
+                        $cloneId = request()->query('clone');
+                        if ($cloneId) {
+                            $clonedRecord = \App\Models\PlannedMission::find($cloneId); 
+                            
+                            if ($clonedRecord && $clonedRecord->fligh_location) {
+                                return $clonedRecord->location_id;
+                            }
+                        }
+                    }),
                 ])->columnSpan(2),
                 //end grid 
                 Forms\Components\Hidden::make('customers_id') 
-                    ->required(),
+                    ->required()
+                    ->default($defaultData['customers_id'] ?? null),
                 Forms\Components\TextInput::make('customers_name')
                 ->label(TranslationHelper::translateIfNeeded('Customer Name'))
                 ->afterStateHydrated(function ($state, $component, $record) {
@@ -205,6 +261,14 @@ class PlannedMissionResource extends Resource
                         return TranslationHelper::translateIfNeeded('Automatically filled when selecting projects');
                     }) 
                     ->default(function (){
+                        $cloneId = request()->query('clone');
+                        if ($cloneId) {
+                            $clonedRecord = \App\Models\PlannedMission::find($cloneId); 
+                            
+                            if ($clonedRecord && $clonedRecord->customers) {
+                                return $clonedRecord->customers->name;
+                            }
+                        }
                         $currentTeam = auth()->user()->teams()->first();
                         return $currentTeam ? $currentTeam->id_customers  : null;
                     })
@@ -244,7 +308,45 @@ class PlannedMissionResource extends Resource
                                     });
                                 });
                         })
-                    ->required(),
+                    ->required()
+                    ->options(function () {
+                        $currentTeamId = auth()->user()->teams()->first()->id;
+                
+                        return \App\Models\User::whereHas('teams', function (Builder $query) use ($currentTeamId) {
+                                $query->where('team_id', $currentTeamId);
+                            })
+                            ->whereHas('roles', function (Builder $query) {
+                                $query->where('roles.name', 'Pilot');
+                            })
+                            ->pluck('name', 'id')
+                            ->toArray();
+
+                            if ($startDate && $endDate && $isEdit) {
+                                $query->whereDoesntHave('fligh', function ($query) use ($startDate, $endDate) {
+                                    $query->where(function ($query) use ($startDate, $endDate) {
+                                        $query->where('start_date_flight', '<=', $endDate)
+                                              ->where('end_date_flight', '>=', $startDate);
+                                    });
+                                });
+                            }
+                        
+                            // Filter berdasarkan selectedUserId jika ada
+                            if ($selectedUserId) {
+                                $query->where('id', '!=', $selectedUserId);
+                            }
+                        
+                            return $query;
+                    })
+                    ->default(function () {
+                        $cloneId = request()->query('clone');
+                        if ($cloneId) {
+                            $clonedRecord = \App\Models\PlannedMission::find($cloneId); 
+                
+                            if ($clonedRecord && $clonedRecord->users) {
+                                return $clonedRecord->users_id;
+                            }
+                        }
+                    }),
                 ])->columns(2),
                 Forms\Components\Section::make(TranslationHelper::translateIfNeeded('Drone & Equipment'))
                     ->description('')
@@ -372,7 +474,20 @@ class PlannedMissionResource extends Resource
                     })
                     ->searchable()
                     ->preload()
-                    ->columnSpanFull(),
+                    ->columnSpanFull()
+                    ->options(function (callable $get) use ($currentTeamId) {
+                        return drone::where('teams_id', $currentTeamId)->pluck('name', 'id');
+                    })
+                    ->default(function (){
+                        $cloneId = request()->query('clone');
+                        if ($cloneId) {
+                            $clonedRecord = \App\Models\PlannedMission::find($cloneId); 
+                            
+                            if ($clonedRecord && $clonedRecord->drones) {
+                                return $clonedRecord->drones_id;
+                            }
+                        }
+                    }),
                 ])->columnSpan(2), 
                 //grid Kits
                 Forms\Components\Grid::make(1)->schema([
@@ -425,6 +540,17 @@ class PlannedMissionResource extends Resource
                 })                                       
                 ->searchable()
                 ->reactive()
+                ->relationship('kits', 'name')
+                ->default(function () {
+                    $cloneId = request()->query('clone');
+                    if ($cloneId) {
+                        $clonedRecord = \App\Models\PlannedMission::find($cloneId); 
+            
+                        if ($clonedRecord && $clonedRecord->kits) {
+                            return $clonedRecord->kits_id;
+                        }
+                    }
+                })
                 ->afterStateUpdated(function ($state, callable $set) {
                     if ($state) {
                         $kit = kits::find($state);
@@ -480,7 +606,32 @@ class PlannedMissionResource extends Resource
                 ->helperText(function () {
                     return TranslationHelper::translateIfNeeded('Automatically filled when selecting kits');
                 }) 
-                        ->disabled(), 
+                        ->disabled()
+                        ->default(function () {
+                            $cloneId = request()->query('clone');
+                            if ($cloneId) {
+                                $clonedRecord = \App\Models\PlannedMission::find($cloneId);
+                    
+                                if ($clonedRecord && $clonedRecord->kits) {
+                                    $kitId = $clonedRecord->kits_id;
+                    
+                                    $batteriesId = \DB::table('battrei_kits')
+                                        ->where('kits_id', $kitId)
+                                        ->pluck('battrei_id')
+                                        ->toArray();
+                    
+                                    if (!empty($batteriesId)) {
+                                        $batteriesName = \App\Models\Battrei::whereIn('id', $batteriesId)
+                                            ->pluck('name')
+                                            ->toArray();
+                    
+                                        return implode(', ', $batteriesName);
+                                    }
+                                }
+                            }
+                    
+                            return null;
+                        }), 
                 Forms\Components\TextInput::make('camera_gimbal')
                 ->label(TranslationHelper::translateIfNeeded('Camera/Gimbal'))
                 ->afterStateHydrated(function ($state, $component, $record) {
@@ -507,7 +658,33 @@ class PlannedMissionResource extends Resource
                 ->helperText(function () {
                     return TranslationHelper::translateIfNeeded('Automatically filled when selecting kits');
                 }) 
-                        ->disabled(), 
+                        ->disabled()
+                        ->default(function () {
+                            $cloneId = request()->query('clone');
+                            if ($cloneId) {
+                                $clonedRecord = \App\Models\PlannedMission::find($cloneId);
+                    
+                                if ($clonedRecord && $clonedRecord->kits) {
+                                    $kitId = $clonedRecord->kits_id;
+                    
+                                    $equipmentIds = \DB::table('equidment_kits')
+                                    ->where('kits_id', $kitId)
+                                    ->pluck('equidment_id')
+                                    ->toArray(); 
+                    
+                                    if (!empty($equipmentIds)) {
+                                        $eqName = \App\Models\Equidment::whereIn('id', $equipmentIds)
+                                            ->whereIn('type', ['camera', 'gimbal'])
+                                            ->pluck('type')
+                                            ->toArray(); 
+                    
+                                        return implode(', ', $eqName);
+                                    }
+                                }
+                            }
+                    
+                            return null;
+                        }), 
                 Forms\Components\TextInput::make('others')
                 ->afterStateHydrated(function ($state, $component, $record) {
                     if ($record) {
@@ -534,7 +711,33 @@ class PlannedMissionResource extends Resource
                     return TranslationHelper::translateIfNeeded('Automatically filled when selecting kits');
                 })  
                         ->label(TranslationHelper::translateIfNeeded('Others'))
-                        ->disabled(),
+                        ->disabled()
+                        ->default(function () {
+                            $cloneId = request()->query('clone');
+                            if ($cloneId) {
+                                $clonedRecord = \App\Models\PlannedMission::find($cloneId);
+                    
+                                if ($clonedRecord && $clonedRecord->kits) {
+                                    $kitId = $clonedRecord->kits_id;
+                    
+                                    $equipmentIds = \DB::table('equidment_kits')
+                                    ->where('kits_id', $kitId)
+                                    ->pluck('equidment_id')
+                                    ->toArray(); 
+                    
+                                    if (!empty($equipmentIds)) {
+                                        $eqName = \App\Models\Equidment::whereIn('id', $equipmentIds)
+                                            ->whereNotIn('type', ['camera', 'gimbal'])
+                                            ->pluck('type')
+                                            ->toArray(); 
+                    
+                                        return implode(', ', $eqName);
+                                    }
+                                }
+                            }
+                    
+                            return null;
+                        }),
                 
                 //grid battery
                 Forms\Components\Grid::make(1)->schema([
@@ -568,6 +771,17 @@ class PlannedMissionResource extends Resource
                         foreach ($state as $key){
                             battrei::where('id',$key)->increment('initial_Cycle_count');
                         }
+                    })
+                    ->relationship('battreis', 'name')
+                    ->default(function () {
+                        $cloneId = request()->query('clone');
+                        if ($cloneId) {
+                            $clonedRecord = \App\Models\PlannedMission::find($cloneId);
+                            if ($clonedRecord && $clonedRecord->battreis) {
+                                return $clonedRecord->battreis->pluck('id')->toArray();
+                            }
+                        }
+                        return [];
                     }),
                 ])->columnSpan(1),
 
@@ -599,7 +813,18 @@ class PlannedMissionResource extends Resource
                                 });
                             })
                             ->pluck('name', 'id');
-                    })                    
+                    })    
+                    ->relationship('equidments', 'name')      
+                    ->default(function () {
+                        $cloneId = request()->query('clone');
+                        if ($cloneId) {
+                            $clonedRecord = \App\Models\PlannedMission::find($cloneId);
+                            if ($clonedRecord && $clonedRecord->equidments) {
+                                return $clonedRecord->equidments->pluck('id')->toArray();
+                            }
+                        }
+                        return [];
+                    })          
                     ->searchable()
                     ->saveRelationshipsUsing(function ($component, $state) {
                         $component->getRecord()->equidments()->sync($state);
@@ -609,13 +834,15 @@ class PlannedMissionResource extends Resource
                 Forms\Components\TextInput::make('pre_volt')
                 ->label(TranslationHelper::translateIfNeeded('Pre Voltage'))    
                     ->numeric()    
-                    ->required(),
+                    ->required()
+                    ->default($defaultData['pre_volt'] ?? null),
                 Forms\Components\TextInput::make('fuel_used')
                 ->label(TranslationHelper::translateIfNeeded('Fuel Used'))    
                     ->numeric()    
                     ->required()
                     ->placeholder('0')
-                    ->default('1')->columnSpan(2),
+                    ->default('1')->columnSpan(2)
+                    ->default($defaultData['fuel_used'] ?? null),
                 ])->columns(3),
                 Forms\Components\Hidden::make('status')
                     ->default('planned'),
@@ -797,7 +1024,16 @@ class PlannedMissionResource extends Resource
                 ->icon('heroicon-s-document-check'),
                 Tables\Actions\ViewAction::make(),
                 Tables\Actions\EditAction::make(),
-                Tables\Actions\DeleteAction::make()
+                Tables\Actions\DeleteAction::make(),
+                Tables\Actions\Action::make('clone')
+                        ->label('Clone')
+                        ->icon('heroicon-s-document-duplicate')
+                        ->url(function ($record) {
+                            return route('filament.admin.resources.planned-missions.create', [
+                                'tenant' => Auth()->user()->teams()->first()->id,
+                                'clone' => $record->id,
+                            ]);
+                        }),
                 ])
             ])
             ->bulkActions([

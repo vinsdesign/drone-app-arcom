@@ -45,6 +45,14 @@ class CustomerResource extends Resource
     {
         return TranslationHelper::translateIfNeeded('Customers');
     }
+    public static function getNavigationItems(): array
+    {
+        $user = auth()->user();
+        if ($user && !$user->hasRole(['panel_user', 'super_admin'])) {
+            return [];
+        }
+        return parent::getNavigationItems();
+    }
 
     public static function form(Form $form): Form
 

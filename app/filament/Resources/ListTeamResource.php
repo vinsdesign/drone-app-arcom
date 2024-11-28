@@ -37,6 +37,14 @@ class ListTeamResource extends Resource
     {
         return team::withCount('customers', 'flighs', 'drones', 'battreis', 'equidments', 'fligh_location');
     }
+    public static function getNavigationItems(): array
+    {
+        $user = auth()->user();
+        if ($user && !$user->hasRole(['super_admin'])) {
+            return [];
+        }
+        return parent::getNavigationItems();
+    }
 
     public static function form(Form $form): Form
     {
@@ -50,7 +58,7 @@ class ListTeamResource extends Resource
         return $table
             ->columns([
                 ImageColumn::make('avatar_url')
-                    ->getStateUsing(fn($record) => $record->avatar_url ? $record->avatar_url : 'default-image-url.jpg')
+                    ->getStateUsing(fn($record) => $record->avatar_url ? asset('storage/' . $record->avatar_url) : 'asset/favicon.png')
                     ->circular()
                     ->size(100)
                     ->alignment('center'),
@@ -102,7 +110,7 @@ class ListTeamResource extends Resource
                     ->getStateUsing(fn($record) => $record->drones->count()),
                     TextEntry::make('battrei_count')->label(TranslationHelper::translateIfNeeded('Total Batteries'))
                     ->getStateUsing(fn($record) => $record->battreis->count()),
-                    TextEntry::make('equipment_count')->label(TranslationHelper::translateIfNeeded('Total Qquipment'))
+                    TextEntry::make('equipment_count')->label(TranslationHelper::translateIfNeeded('Total Equipment'))
                     ->getStateUsing(fn($record) => $record->equidments->count()),
                     TextEntry::make('location_count')->label(TranslationHelper::translateIfNeeded('Total Flight Locations'))
                     ->getStateUsing(fn($record) => $record->fligh_location->count()),
