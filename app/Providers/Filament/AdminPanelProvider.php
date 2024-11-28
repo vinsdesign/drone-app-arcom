@@ -22,6 +22,7 @@ use Filament\Pages;
 use Filament\Panel;
 use Filament\PanelProvider;
 use Filament\Support\Colors\Color;
+use Filament\Support\Facades\FilamentColor;
 use Filament\Widgets;
 use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
 use Illuminate\Cookie\Middleware\EncryptCookies;
@@ -55,7 +56,6 @@ use App\Filament\Resources\MaintenceResource;
 use App\Filament\Resources\MaintenanceBatteryResource;
 use App\Filament\Resources\ReportResource;
 use App\Filament\Resources\ContactResource;
-use App\Filament\Resources\SettingsResource;
 use App\Filament\Resources\TeamsListResource;
 use BezhanSalleh\FilamentShield\Resources\RoleResource;
 use TomatoPHP\FilamentSubscriptions\Filament\Resources\PlanResource;
@@ -75,6 +75,7 @@ class AdminPanelProvider extends PanelProvider
             ->login()
             ->registration()
             // ->spa()
+            //color
             ->sidebarCollapsibleOnDesktop()
             ->favicon(asset('asset/favicon.png'))
             ->tenantRoutePrefix('team')
@@ -167,12 +168,6 @@ class AdminPanelProvider extends PanelProvider
                         ->collapsed()
                         ->items([
                             ...ListTeamResource::getNavigationItems(),
-                        ]),
-                        NavigationGroup::make(TranslationHelper::translateIfNeeded('Settings'))
-                        ->icon('heroicon-o-list-bullet')
-                        ->collapsed()
-                        ->items([
-                            ...SettingsResource::getNavigationItems(),
                         ]),
                     NavigationGroup::make(TranslationHelper::translateIfNeeded('Settings'))
                         ->icon('heroicon-o-cog')

@@ -66,7 +66,6 @@ $currentTeamId = auth()->user()->teams()->first()->id;
 </style>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 <script src="https://cdn.jsdelivr.net/gh/bbbootstrap/libraries@main/choices.min.js"></script>
-<script src="https://cdn.tailwindcss.com"></script>
 </head>
 {{-- add data content --}}
     <div class="fixed active inset-0 flex justify-center z-50" style="max-height: 80%">
@@ -104,6 +103,27 @@ $currentTeamId = auth()->user()->teams()->first()->id;
                         <label class="block text-gray-700 dark:text-gray-300">{!! TranslationHelper::translateIfNeeded('Flight Type')!!}</label> 
                         <Select id="flight_type" name="flight_type" class="w-full mt-1 p-2 border rounded-md focus:ring focus:ring-blue-500 dark:bg-gray-900 dark:border-gray-700 dark:text-gray-300 bg-white border-gray-300 text-gray-900"> 
                             <option value="" disabled selected>Select an Type Flight</option>
+                            <option value="commercial-agriculture">Commercial-Agriculture</option>
+                            <option value="commercial-inspection">Commercial-Inspection</option>
+                            <option value="commercial-mapping/survey">Commercial-Mapping/Survey</option>
+                            <option value="commercial-other">Commercial-Other</option>
+                            <option value="commercial-photo/video">Commercial-Photo/Video</option>
+                            <option value="emergency">Emergency</option>
+                            <option value="hobby-entertainment">Hobby-Entertainment</option>
+                            <option value="maintenance">Maintenance</option>
+                            <option value="mapping_hr">Mapping HR</option>
+                            <option value="mapping_uhr">Mapping UHR</option>
+                            <option value="photogrammetry">Photogrammetry</option>
+                            <option value="science">Science</option>
+                            <option value="search_rescue">Search and Rescue</option>
+                            <option value="simulator">Simulator</option>
+                            <option value="situational_awareness">Situational Awareness</option>
+                            <option value="spreading">Spreading</option>
+                            <option value="surveillance/patrol">Surveillance or Patrol</option>
+                            <option value="survey">Survey</option>
+                            <option value="test_flight">Test Flight</option>
+                            <option value="training_flight">Training Flight</option>
+
                             
                         </Select>
                     </div>

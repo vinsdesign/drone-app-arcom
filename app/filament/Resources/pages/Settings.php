@@ -13,6 +13,10 @@ class Settings extends Page
     protected static ?string $navigationIcon = 'heroicon-o-cog';
     protected static string $resource = SettingsResource::class;
     protected static string $view = 'filament.pages.settings';
+    public function getBreadcrumb(): ?string
+    {
+        return null;
+    }
 
     public function getHeading(): string
     {
