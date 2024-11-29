@@ -39,7 +39,9 @@ class document extends Model
         return $this->belongsTo(Projects::class);
     }
     public function teams(){
+
         return $this->belongsToMany(Team::class, 'document_team');
+
     }
     // public function scopeShared($query){
     //     return $query->where('shared',1);

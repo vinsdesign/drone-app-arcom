@@ -5,6 +5,7 @@ use App\Filament\Pages\Settings;
 use App\Http\Controllers\buttonPopUpCreate;
 use App\Http\Controllers\createProject;
 use App\Http\Controllers\importDefaultValue;
+use App\Http\Controllers\popUpViewResource;
 use App\Http\Controllers\setYear;
 use App\Livewire\EquipmentStatistik;
 use Illuminate\Support\Facades\Route;
@@ -60,4 +61,7 @@ Route::post('/change-language', [LanguageController::class, 'changeLanguage'])->
 //chart js
 //year setting
 Route::post('/change-year', [setYear::class, 'changeYear'])->name('change.year');
+
+//popUp View Resources
+Route::post('/create-document-project',[popUpViewResource::class,'createProjectDocument'])->name('create.document.project');
 
