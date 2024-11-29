@@ -380,38 +380,71 @@ class PlannedMissionResource extends Resource
                     //         })
                     //         ->pluck('name', 'id');
                     // })
-                    ->relationship('drones', 'name', function (Builder $query, callable $get) {
-                        $currentTeamId = auth()->user()->teams()->first()->id; 
+                    ->options(function (callable $get) {
+                        // Ambil ID tim saat ini
+                        $currentTeamId = auth()->user()->teams()->first()->id;
+                        
+                        // Ambil start dan end date dari form
                         $startDate = $get('start_date_flight');
                         $endDate = $get('end_date_flight');
-                        $isEdit = $get('id') !== null; 
+                        $isEdit = $get('id') !== null; // Periksa apakah ini dalam mode edit
                         
+                        // Mulai query untuk mendapatkan drone yang sesuai
+                        $query = drone::where('teams_id', $currentTeamId)
+                            ->where('status', 'airworthy')
+                            ->where(function ($query) {
+                                $query->doesntHave('maintence_drone')
+                                      ->orWhereHas('maintence_drone', function ($query) {
+                                          $query->where('status', 'completed');
+                                      });
+                            });
+                        
+                        // Jika start_date atau end_date kosong, atau ini dalam mode edit, tanpa filter penerbangan
                         if (!$startDate || !$endDate || $isEdit) {
-                            return $query->where('teams_id', $currentTeamId)
-                                     ->where('status', 'airworthy')
-                                     ->where(function ($query) {
-                                         $query->doesntHave('maintence_drone')
-                                               ->orWhereHas('maintence_drone', function ($query) {
-                                                   $query->where('status', 'completed'); 
-                                               });
-                                     });
+                            return $query->pluck('name', 'id');
                         }
-                    
-                        return $query->where('teams_id', $currentTeamId)
-                                     ->where('status', 'airworthy')
-                                     ->where(function ($query) {
-                                         $query->doesntHave('maintence_drone')
-                                               ->orWhereHas('maintence_drone', function ($query) {
-                                                   $query->where('status', 'completed'); 
-                                               });
-                                     })
-                                     ->whereDoesntHave('fligh', function ($query) use ($startDate, $endDate) {
-                                         $query->where(function ($query) use ($startDate, $endDate) {
-                                             $query->where('start_date_flight', '<=', $endDate)
-                                                   ->where('end_date_flight', '>=', $startDate);
-                                         });
-                                     });
+                
+                        // Jika ada start_date dan end_date, pastikan drone tidak bertabrakan dengan penerbangan lain
+                        return $query->whereDoesntHave('fligh', function ($query) use ($startDate, $endDate) {
+                            $query->where(function ($query) use ($startDate, $endDate) {
+                                $query->where('start_date_flight', '<=', $endDate)
+                                      ->where('end_date_flight', '>=', $startDate);
+                            });
+                        })->pluck('name', 'id');
                     })
+                    // ->relationship('drones', 'name', function (Builder $query, callable $get) {
+                    //     $currentTeamId = auth()->user()->teams()->first()->id; 
+                    //     $startDate = $get('start_date_flight');
+                    //     $endDate = $get('end_date_flight');
+                    //     $isEdit = $get('id') !== null; 
+                        
+                    //     if (!$startDate || !$endDate || $isEdit) {
+                    //         return $query->where('teams_id', $currentTeamId)
+                    //                  ->where('status', 'airworthy')
+                    //                  ->where(function ($query) {
+                    //                      $query->doesntHave('maintence_drone')
+                    //                            ->orWhereHas('maintence_drone', function ($query) {
+                    //                                $query->where('status', 'completed'); 
+                    //                            });
+                    //                  });
+                    //     }
+                    
+                    //     return $query->where('teams_id', $currentTeamId)
+                    //                  ->where('status', 'airworthy')
+                    //                  ->where(function ($query) {
+                    //                      $query->doesntHave('maintence_drone')
+                    //                            ->orWhereHas('maintence_drone', function ($query) {
+                    //                                $query->where('status', 'completed'); 
+                    //                            });
+                    //                  })
+                    //                  ->whereDoesntHave('fligh', function ($query) use ($startDate, $endDate) {
+                    //                      $query->where(function ($query) use ($startDate, $endDate) {
+                    //                          $query->where('start_date_flight', '<=', $endDate)
+                    //                                ->where('end_date_flight', '>=', $startDate);
+                    //                      });
+                    //                  });
+                    // })
+                    ->relationship('drones', 'name')
                     ->saveRelationshipsUsing(function ($state, callable $get) {
                         $start = $get('start_date_flight');
                         $end = $get('end_date_flight');
@@ -475,9 +508,6 @@ class PlannedMissionResource extends Resource
                     ->searchable()
                     ->preload()
                     ->columnSpanFull()
-                    ->options(function (callable $get) use ($currentTeamId) {
-                        return drone::where('teams_id', $currentTeamId)->pluck('name', 'id');
-                    })
                     ->default(function (){
                         $cloneId = request()->query('clone');
                         if ($cloneId) {
