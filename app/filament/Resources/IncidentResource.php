@@ -23,6 +23,7 @@ use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Filament\Support\Colors\Color;
 use Filament\Tables\Actions\Action;
 use App\Helpers\TranslationHelper;
+use Filament\Notifications\Notification;
 
 class IncidentResource extends Resource
 {
@@ -269,7 +270,82 @@ class IncidentResource extends Resource
                 Tables\Actions\ActionGroup::make([
                     Tables\Actions\ViewAction::make(),
                     Tables\Actions\EditAction::make(),
-                    Tables\Actions\DeleteAction::make()
+                    Tables\Actions\DeleteAction::make(),
+                    Tables\Actions\Action::make('add')
+                        ->label(TranslationHelper::translateIfNeeded('Add Doc'))
+                        ->icon('heroicon-s-document-plus')
+                        ->modalHeading('Add Document')
+                        ->modalButton('Save')
+                        ->form([
+                            Forms\Components\TextInput::make('name')
+                                ->label(TranslationHelper::translateIfNeeded('Name'))
+                                ->required()
+                                ->maxLength(255),
+                                
+                            Forms\Components\DatePicker::make('expired_date')
+                                ->label(TranslationHelper::translateIfNeeded('Expiration Date'))
+                                ->required(),
+                                
+                            Forms\Components\TextArea::make('description')
+                                ->label(TranslationHelper::translateIfNeeded('Notes'))
+                                ->maxLength(255)
+                                ->columnSpan(2),
+                                
+                            Forms\Components\TextInput::make('refnumber')
+                                ->label(TranslationHelper::translateIfNeeded('Reference Number'))
+                                ->required()
+                                ->maxLength(255),
+                                
+                            Forms\Components\Select::make('type')
+                                ->label(TranslationHelper::translateIfNeeded('Type'))
+                                ->options([
+                                    'Regulatory_Certificate' => 'Regulatory Certificate',
+                                    'Registration' => 'Registration #',
+                                    'Insurance_Certificate' => 'Insurance Certificate',
+                                    'Checklist' => 'Checklist',
+                                    'Manual' => 'Manual',
+                                    'Other_Certification' => 'Other Certification',
+                                    'Safety_Instruction' => 'Safety Instruction',
+                                    'Other' => 'Other',
+                                ])
+                                ->required(),
+                                
+                            Forms\Components\FileUpload::make('doc')
+                                ->label(TranslationHelper::translateIfNeeded('Upload File'))
+                                ->acceptedFileTypes(['application/pdf']),
+                                
+                            Forms\Components\TextInput::make('external link')
+                                ->label(TranslationHelper::translateIfNeeded('Or External Link'))
+                                ->maxLength(255),
+                                
+                            Forms\Components\Hidden::make('users_id')
+                                ->default(auth()->id()),
+    
+                            Forms\Components\Hidden::make('teams_id')
+                                ->default(auth()->user()->teams()->first()->id ?? null),
+                        ])
+                        ->action(function (array $data) {
+                           $document = \App\Models\Document::create([
+                                'name' => $data['name'],
+                                'expired_date' => $data['expired_date'],
+                                'description' => $data['description'] ?? null,
+                                'refnumber' => $data['refnumber'],
+                                'type' => $data['type'],
+                                'doc' => $data['doc'] ?? null,
+                                'external link' => $data['external link'] ?? null,
+                                'scope' => 'Incident',
+                                'users_id' => $data['users_id'],
+                                'teams_id' => $data['teams_id'],
+                            ]);
+                            if($document){
+                                $document->teams()->attach($data['teams_id']);
+                            }
+                            Notification::make()
+                            ->title(TranslationHelper::translateIfNeeded('Added Success'))
+                            ->body(TranslationHelper::translateIfNeeded("Document added successfully with scope Incident!"))
+                            ->success()
+                            ->send();
+                        })
                 ])
   
             ])

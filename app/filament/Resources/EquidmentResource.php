@@ -60,6 +60,16 @@ class EquidmentResource extends Resource
     public static function form(Form $form): Form
     {
         $currentTeamId = auth()->user()->teams()->first()->id;
+        $cloneId = request()->query('clone');
+        $defaultData = [];
+
+        if ($cloneId) {
+            $record = Equidment::find($cloneId);
+            if ($record) {
+                $defaultData = $record->toArray();
+                $defaultData['name'] = $record->name . ' - CLONE';
+            }
+        }
         return $form
             ->schema([
 
@@ -72,11 +82,13 @@ class EquidmentResource extends Resource
                             Forms\Components\TextInput::make('name')
                            ->label(TranslationHelper::translateIfNeeded('Name'))
                                 ->required()
-                                ->maxLength(255),
+                                ->maxLength(255)
+                                ->default($defaultData['name'] ?? null),
                             Forms\Components\TextInput::make('model')
                            ->label(TranslationHelper::translateIfNeeded('Model'))
                                 ->required()
-                                ->maxLength(255),
+                                ->maxLength(255)
+                                ->default($defaultData['model'] ?? null),
                             Forms\Components\select::make('status')
                            ->label(TranslationHelper::translateIfNeeded('Status'))
                                 ->options([
@@ -84,17 +96,20 @@ class EquidmentResource extends Resource
                                     'maintenance' => 'Maintenance',
                                     'retired' => 'Retired',
                                 ])
-                                ->required(),
+                                ->required()
+                                ->default($defaultData['status'] ?? null),
                             Forms\Components\Select::make('inventory_asset')
                            ->label(TranslationHelper::translateIfNeeded('Inventory / Asset'))
                                 ->options([
                                     'asset'=> 'Assets',
                                     'inventory'=> 'Inventory',
                                 ])
-                                ->required(),
+                                ->required()
+                                ->default($defaultData['inventory_asset'] ?? null),
                             Forms\Components\TextInput::make('serial')
                            ->label(TranslationHelper::translateIfNeeded('Serial'))
-                                ->required()->columnSpan(2),
+                                ->required()->columnSpan(2)
+                                ->default($defaultData['serial'] ?? null),
                             Forms\Components\select::make('type')
                            ->label(TranslationHelper::translateIfNeeded('Type'))
                                 ->options([
@@ -130,7 +145,8 @@ class EquidmentResource extends Resource
                                     'tripod' => 'Tripod',
                                     'video_transmitter' => 'Video Transmitter'
                                 ])->searchable()
-                                ->required()->columnSpan(2),
+                                ->required()->columnSpan(2)
+                                ->default($defaultData['type'] ?? null),
                             Forms\Components\Select::make('drones_id')
                            ->label(TranslationHelper::translateIfNeeded('For Drone (Optional)'))
                                 // ->relationship('drones', 'name', function (Builder $query){
@@ -141,6 +157,7 @@ class EquidmentResource extends Resource
                                 ->options(function (callable $get) use ($currentTeamId) {
                                     return drone::where('teams_id', $currentTeamId)->pluck('name', 'id');
                                 })
+                                ->default($defaultData['drones_id'] ?? null)
                         ])->columns(4),
                         Tabs\Tab::make(TranslationHelper::translateIfNeeded('Extra Information'))
                         ->schema([
@@ -154,33 +171,41 @@ class EquidmentResource extends Resource
                                     return User::whereHas('teams', function (Builder $query) use ($currentTeamId) {
                                         $query->where('team_user.team_id', $currentTeamId); 
                                     })->pluck('name', 'id'); 
-                                }),
+                                })
+                                ->default($defaultData['users_id'] ?? null),
                             Forms\Components\DatePicker::make('purchase_date')
                            ->label(TranslationHelper::translateIfNeeded('Purchase Date'))
-                                ->required(),
+                                ->required()
+                                ->default($defaultData['purchase_date'] ?? null),
                             Forms\Components\TextInput::make('insurable_value')
                            ->label(TranslationHelper::translateIfNeeded('Insurable Value'))
                                 ->required()
-                                ->numeric(),
+                                ->numeric()
+                                ->default($defaultData['insurable_value'] ?? null),
                             Forms\Components\TextInput::make('weight')
                            ->label(TranslationHelper::translateIfNeeded('Weight'))
                                 ->required()
-                                ->numeric(),
+                                ->numeric()
+                                ->default($defaultData['weight'] ?? null),
                             Forms\Components\TextInput::make('firmware_v')
                            ->label(TranslationHelper::translateIfNeeded('Firmware Version'))
                                 ->required()
-                                ->maxLength(255),
+                                ->maxLength(255)
+                                ->default($defaultData['firmware_v'] ?? null),
                             Forms\Components\TextInput::make('hardware_v')
                            ->label(TranslationHelper::translateIfNeeded('Hardware Version'))
                                 ->required()
-                                ->maxLength(255),
+                                ->maxLength(255)
+                                ->default($defaultData['hardware_v'] ?? null),
                             Forms\Components\Toggle::make('is_loaner')
                            ->label(TranslationHelper::translateIfNeeded('Loaner Equipment'))
                            ->onColor('success')
-                            ->offColor('danger'),
+                            ->offColor('danger')
+                            ->default($defaultData['is_loaner'] ?? null),
                             Forms\Components\TextArea::make('description')
                            ->label(TranslationHelper::translateIfNeeded('Description'))
-                                ->maxLength(255),
+                                ->maxLength(255)
+                                ->default($defaultData['description'] ?? null),
                             ])->columns(3),
                     ])->columnSpanFull(),
 
@@ -347,6 +372,91 @@ class EquidmentResource extends Resource
                         ->success()
                         ->send();
                     })->icon('heroicon-m-share'),
+                Tables\Actions\Action::make('add')
+                    ->label(TranslationHelper::translateIfNeeded('Add Doc'))
+                    ->icon('heroicon-s-document-plus')
+                    ->modalHeading('Add Document')
+                    ->modalButton('Save')
+                    ->form([
+                        Forms\Components\TextInput::make('name')
+                            ->label(TranslationHelper::translateIfNeeded('Name'))
+                            ->required()
+                            ->maxLength(255),
+                            
+                        Forms\Components\DatePicker::make('expired_date')
+                            ->label(TranslationHelper::translateIfNeeded('Expiration Date'))
+                            ->required(),
+                            
+                        Forms\Components\TextArea::make('description')
+                            ->label(TranslationHelper::translateIfNeeded('Notes'))
+                            ->maxLength(255)
+                            ->columnSpan(2),
+                            
+                        Forms\Components\TextInput::make('refnumber')
+                            ->label(TranslationHelper::translateIfNeeded('Reference Number'))
+                            ->required()
+                            ->maxLength(255),
+                            
+                        Forms\Components\Select::make('type')
+                            ->label(TranslationHelper::translateIfNeeded('Type'))
+                            ->options([
+                                'Regulatory_Certificate' => 'Regulatory Certificate',
+                                'Registration' => 'Registration #',
+                                'Insurance_Certificate' => 'Insurance Certificate',
+                                'Checklist' => 'Checklist',
+                                'Manual' => 'Manual',
+                                'Other_Certification' => 'Other Certification',
+                                'Safety_Instruction' => 'Safety Instruction',
+                                'Other' => 'Other',
+                            ])
+                            ->required(),
+                            
+                        Forms\Components\FileUpload::make('doc')
+                            ->label(TranslationHelper::translateIfNeeded('Upload File'))
+                            ->acceptedFileTypes(['application/pdf']),
+                            
+                        Forms\Components\TextInput::make('external link')
+                            ->label(TranslationHelper::translateIfNeeded('Or External Link'))
+                            ->maxLength(255),
+                            
+                        Forms\Components\Hidden::make('users_id')
+                            ->default(auth()->id()),
+
+                        Forms\Components\Hidden::make('teams_id')
+                            ->default(auth()->user()->teams()->first()->id ?? null),
+                    ])
+                    ->action(function (array $data) {
+                        $document = \App\Models\Document::create([
+                            'name' => $data['name'],
+                            'expired_date' => $data['expired_date'],
+                            'description' => $data['description'] ?? null,
+                            'refnumber' => $data['refnumber'],
+                            'type' => $data['type'],
+                            'doc' => $data['doc'] ?? null,
+                            'external link' => $data['external link'] ?? null,
+                            'scope' => 'Equipments/Battery',
+                            'users_id' => $data['users_id'],
+                            'teams_id' => $data['teams_id'],
+                        ]);
+                        if($document){
+                            $document->teams()->attach($data['teams_id']);
+                        }
+
+                        Notification::make()
+                        ->title(TranslationHelper::translateIfNeeded('Added Success'))
+                        ->body(TranslationHelper::translateIfNeeded("Document added successfully with scope Equipments/Battery!"))
+                        ->success()
+                        ->send();
+                    }),
+                    Tables\Actions\Action::make('clone')
+                        ->label('Clone')
+                        ->icon('heroicon-s-document-duplicate')
+                        ->url(function ($record) {
+                            return route('filament.admin.resources.equidments.create', [
+                                'tenant' => Auth()->user()->teams()->first()->id,
+                                'clone' => $record->id,
+                            ]);
+                        }),
                 ])
                 
             ])

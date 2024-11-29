@@ -105,7 +105,7 @@ class DocumentResource extends Resource
                         'Pilot' => 'Pilot',
                         'Project' => 'Project',
                         'Drones' => 'Drones',
-                        'Equidments/Battry' => 'Equidments/Battry',
+                        'Equipments/Battery' => 'Equipments/Battery',
                         'Incident' => 'Incident',
                     ])
                     ->columnSpan(2),
@@ -280,7 +280,7 @@ class DocumentResource extends Resource
                     'Pilot' => 'Pilot',
                     'Project' => 'Project',
                     'Drones' => 'Drones',
-                    'Equidments/Battry' => 'Equidments/Battry',
+                    'Equipments/Battery' => 'Equipments/Battery',
                     'Incident' => 'Incident',
                 ])
                 ->label(TranslationHelper::translateIfNeeded('Filter by Scope')),

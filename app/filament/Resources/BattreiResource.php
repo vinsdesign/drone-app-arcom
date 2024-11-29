@@ -53,6 +53,16 @@ class BattreiResource extends Resource
     public static function form(Form $form): Form
     {
         $currentTeamId = auth()->user()->teams()->first()->id;
+        $cloneId = request()->query('clone');
+        $defaultData = [];
+
+        if ($cloneId) {
+            $record = Battrei::find($cloneId);
+            if ($record) {
+                $defaultData = $record->toArray();
+                $defaultData['name'] = $record->name . ' - CLONE';
+            }
+        }
         return $form
             ->schema([
                 Tabs::make('Tabs')
@@ -64,11 +74,13 @@ class BattreiResource extends Resource
                         Forms\Components\TextInput::make('name')
                             ->label(TranslationHelper::translateIfNeeded('Name'))
                             ->required()
-                            ->maxLength(255),
+                            ->maxLength(255)
+                            ->default($defaultData['name'] ?? null),
                         Forms\Components\TextInput::make('model')
                             ->label(TranslationHelper::translateIfNeeded('Model'))
                             ->required()
-                            ->maxLength(255),
+                            ->maxLength(255)
+                            ->default($defaultData['model'] ?? null),
                         Forms\Components\Select::make('status')
                             ->label(TranslationHelper::translateIfNeeded('Status'))
                             ->options([
@@ -76,51 +88,62 @@ class BattreiResource extends Resource
                                 'maintenance' => 'Maintenance',
                                 'retired' => 'Retired'
                             ])
-                            ->required(),
+                            ->required()
+                            ->default($defaultData['status'] ?? null),
                         Forms\Components\Select::make('asset_inventory')
                             ->label(TranslationHelper::translateIfNeeded('Inventory/Asset'))
                             ->options([
                                 'asset' => 'Asset',
                                 'inventory' => 'Inventory',
                             ])
-                            ->required(),
+                            ->required()
+                            ->default($defaultData['asset_inventory'] ?? null),
                         Forms\Components\TextInput::make('serial_P')
                             ->label(TranslationHelper::translateIfNeeded('Serial #(Printed)'))
-                            ->required()->columnSpan(2),
+                            ->required()->columnSpan(2)
+                            ->default($defaultData['serial_P'] ?? null),
                         Forms\Components\TextInput::make('serial_I')
                             ->label(TranslationHelper::translateIfNeeded('Serial #(Internal)'))
-                            ->required()->columnSpan(2),
+                            ->required()->columnSpan(2)
+                            ->default($defaultData['serial_I'] ?? null),
                         Forms\Components\BelongsToSelect::make('for_drone')
                             ->label(TranslationHelper::translateIfNeeded('For Drone (Optional)'))
                             ->searchable()
                             ->options(function (callable $get) use ($currentTeamId) {
                                 return drone::where('teams_id', $currentTeamId)->pluck('name', 'id');
                             })
+                            ->default($defaultData['for_drone'] ?? null)
                             ->columnSpanFull(),
                         Forms\Components\TextInput::make('cellCount')
                             ->label(TranslationHelper::translateIfNeeded('Cell Count'))
                             ->required()
-                            ->numeric(),
+                            ->numeric()
+                            ->default($defaultData['cellCount'] ?? null),
                         Forms\Components\TextInput::make('nominal_voltage')
                             ->label(TranslationHelper::translateIfNeeded('Nominal Voltage (V)'))
                             ->required()
-                            ->numeric(),
+                            ->numeric()
+                            ->default($defaultData['nominal_voltage'] ?? null),
                         Forms\Components\TextInput::make('capacity')
                             ->label(TranslationHelper::translateIfNeeded('Capacity (mAh)'))
                             ->required()
-                            ->numeric(),
+                            ->numeric()
+                            ->default($defaultData['capacity'] ?? null),
                         Forms\Components\TextInput::make('initial_Cycle_count')
                             ->label(TranslationHelper::translateIfNeeded('Initial Cycle Count'))
                             ->required()
-                            ->numeric(),
+                            ->numeric()
+                            ->default($defaultData['initial_Cycle_count'] ?? null),
                         Forms\Components\TextInput::make('life_span')
                             ->label(TranslationHelper::translateIfNeeded('Life Span'))
                             ->required()
-                            ->numeric(),
+                            ->numeric()
+                            ->default($defaultData['life_span'] ?? null),
                         Forms\Components\TextInput::make('flaight_count')
                             ->label(TranslationHelper::translateIfNeeded('Flight Count'))
                             ->required()
-                            ->numeric()->columnSpan(1),
+                            ->numeric()->columnSpan(1)
+                            ->default($defaultData['flaight_count'] ?? null),
                         ])->columns(4),
                         //end wizard 1
                     Tabs\Tab::make(TranslationHelper::translateIfNeeded('Extra Information'))
@@ -135,34 +158,42 @@ class BattreiResource extends Resource
                                     $query->where('team_user.team_id', $currentTeamId); 
                                 })->pluck('name', 'id'); 
                             }) 
+                            ->default($defaultData['users_id'] ?? null)
                             ->required(),
                         Forms\Components\DatePicker::make('purchase_date')
                             ->label(TranslationHelper::translateIfNeeded('Purchase Date'))
-                            ->required(),
+                            ->required()
+                            ->default($defaultData['purchase_date'] ?? null),
                         Forms\Components\TextInput::make('insurable_value')
                             ->label(TranslationHelper::translateIfNeeded('Insurable Value'))
                             ->required()
-                            ->numeric(),
+                            ->numeric()
+                            ->default($defaultData['insurable_value'] ?? null),
                         Forms\Components\TextInput::make('wight')
                             ->label(TranslationHelper::translateIfNeeded('Weight'))
                             ->required()
-                            ->numeric(),
+                            ->numeric()
+                            ->default($defaultData['wight'] ?? null),
                         Forms\Components\TextInput::make('firmware_version')
                             ->label(TranslationHelper::translateIfNeeded('Firmware Version'))
                             ->required()
-                            ->maxLength(255),
+                            ->maxLength(255)
+                            ->default($defaultData['firmware_version'] ?? null),
                         Forms\Components\TextInput::make('hardware_version')
                             ->label(TranslationHelper::translateIfNeeded('Hardware Version'))
                             ->required()
-                            ->maxLength(255),
+                            ->maxLength(255)
+                            ->default($defaultData['hardware_version'] ?? null),
                         Forms\Components\Toggle::make('is_loaner')
                             ->label(TranslationHelper::translateIfNeeded('Loaner Battery'))
                             ->onColor('success')
-                            ->offColor('danger'),
+                            ->offColor('danger')
+                            ->default($defaultData['is_loaner'] ?? null),
                         Forms\Components\TextInput::make('description')
                             ->label(TranslationHelper::translateIfNeeded('Description'))
                             ->required()
-                            ->maxLength(255)->columnSpanFull(),
+                            ->maxLength(255)->columnSpanFull()
+                            ->default($defaultData['description'] ?? null),
                         ])->columns(3),
                     ])->columnSpanFull(),
             ]);
@@ -370,6 +401,90 @@ class BattreiResource extends Resource
                             ->success()
                             ->send();
                         })->icon('heroicon-m-share'),
+                    Tables\Actions\Action::make('add')
+                        ->label(TranslationHelper::translateIfNeeded('Add Doc'))
+                        ->icon('heroicon-s-document-plus')
+                        ->modalHeading('Add Document')
+                        ->modalButton('Save')
+                        ->form([
+                            Forms\Components\TextInput::make('name')
+                                ->label(TranslationHelper::translateIfNeeded('Name'))
+                                ->required()
+                                ->maxLength(255),
+                                
+                            Forms\Components\DatePicker::make('expired_date')
+                                ->label(TranslationHelper::translateIfNeeded('Expiration Date'))
+                                ->required(),
+                                
+                            Forms\Components\TextArea::make('description')
+                                ->label(TranslationHelper::translateIfNeeded('Notes'))
+                                ->maxLength(255)
+                                ->columnSpan(2),
+                                
+                            Forms\Components\TextInput::make('refnumber')
+                                ->label(TranslationHelper::translateIfNeeded('Reference Number'))
+                                ->required()
+                                ->maxLength(255),
+                                
+                            Forms\Components\Select::make('type')
+                                ->label(TranslationHelper::translateIfNeeded('Type'))
+                                ->options([
+                                    'Regulatory_Certificate' => 'Regulatory Certificate',
+                                    'Registration' => 'Registration #',
+                                    'Insurance_Certificate' => 'Insurance Certificate',
+                                    'Checklist' => 'Checklist',
+                                    'Manual' => 'Manual',
+                                    'Other_Certification' => 'Other Certification',
+                                    'Safety_Instruction' => 'Safety Instruction',
+                                    'Other' => 'Other',
+                                ])
+                                ->required(),
+                                
+                            Forms\Components\FileUpload::make('doc')
+                                ->label(TranslationHelper::translateIfNeeded('Upload File'))
+                                ->acceptedFileTypes(['application/pdf']),
+                                
+                            Forms\Components\TextInput::make('external link')
+                                ->label(TranslationHelper::translateIfNeeded('Or External Link'))
+                                ->maxLength(255),
+                                
+                            Forms\Components\Hidden::make('users_id')
+                                ->default(auth()->id()),
+    
+                            Forms\Components\Hidden::make('teams_id')
+                                ->default(auth()->user()->teams()->first()->id ?? null),
+                        ])
+                        ->action(function (array $data) {
+                            $document = \App\Models\Document::create([
+                                'name' => $data['name'],
+                                'expired_date' => $data['expired_date'],
+                                'description' => $data['description'] ?? null,
+                                'refnumber' => $data['refnumber'],
+                                'type' => $data['type'],
+                                'doc' => $data['doc'] ?? null,
+                                'external link' => $data['external link'] ?? null,
+                                'scope' => 'Equipments/Battery',
+                                'users_id' => $data['users_id'],
+                                'teams_id' => $data['teams_id'],
+                            ]);
+                            if($document){
+                                $document->teams()->attach($data['teams_id']);
+                            }
+                            Notification::make()
+                            ->title(TranslationHelper::translateIfNeeded('Added Success'))
+                            ->body(TranslationHelper::translateIfNeeded("Document added successfully with scope Equipments/Battery!"))
+                            ->success()
+                            ->send();
+                        }),
+                        Tables\Actions\Action::make('clone')
+                        ->label('Clone')
+                        ->icon('heroicon-s-document-duplicate')
+                        ->url(function ($record) {
+                            return route('filament.admin.resources.battreis.create', [
+                                'tenant' => Auth()->user()->teams()->first()->id,
+                                'clone' => $record->id,
+                            ]);
+                        }),
                 ])
                 
             ])
