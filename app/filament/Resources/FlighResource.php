@@ -231,16 +231,7 @@ class FlighResource extends Resource
                     ->label(TranslationHelper::translateIfNeeded('Location'))
                     ->searchable()
                     ->required()
-                    ->default(function (){
-                        $cloneId = request()->query('clone');
-                        if ($cloneId) {
-                            $clonedRecord = \App\Models\Fligh::find($cloneId); 
-                            
-                            if ($clonedRecord && $clonedRecord->fligh_location) {
-                                return $clonedRecord->location_id;
-                            }
-                        }
-                    }),
+                    ->default($defaultData['location_id'] ?? null),
                 ])->columnSpan(2),
                 //end grid 
                 Forms\Components\Hidden::make('customers_id') 
@@ -338,7 +329,6 @@ class FlighResource extends Resource
                                 });
                             }
                         
-                            // Filter berdasarkan selectedUserId jika ada
                             if ($selectedUserId) {
                                 $query->where('id', '!=', $selectedUserId);
                             }
@@ -364,7 +354,6 @@ class FlighResource extends Resource
                     $selectedUserId = $get('users_id');
                     $isEdit = $get('id') !== null;
                     
-                    // Tambahkan pengecekan nilai untuk debugging
                     dump($startDate, $endDate, $selectedUserId);
                 
                     $query->whereHas('teams', function (Builder $query) use ($currentTeamId) {
@@ -374,7 +363,6 @@ class FlighResource extends Resource
                         $query->where('roles.name', 'Pilot');
                     });
                 
-                    // Filter berdasarkan tanggal jika ada startDate dan endDate
                     if ($startDate && $endDate && $isEdit) {
                         $query->whereDoesntHave('fligh', function ($query) use ($startDate, $endDate) {
                             $query->where(function ($query) use ($startDate, $endDate) {
@@ -384,7 +372,6 @@ class FlighResource extends Resource
                         });
                     }
                 
-                    // Filter berdasarkan selectedUserId jika ada
                     if ($selectedUserId) {
                         $query->where('id', '!=', $selectedUserId);
                     }
@@ -424,38 +411,39 @@ class FlighResource extends Resource
                     // })    
                     ->required()
                     ->label(TranslationHelper::translateIfNeeded('Drones'))
-                    ->relationship('drones', 'name', function (Builder $query, callable $get) {
-                        $currentTeamId = auth()->user()->teams()->first()->id; 
-                        $startDate = $get('start_date_flight');
-                        $endDate = $get('end_date_flight');
-                        $isEdit = $get('id') !== null; 
+                    // ->relationship('drones', 'name', function (Builder $query, callable $get) {
+                    //     $currentTeamId = auth()->user()->teams()->first()->id; 
+                    //     $startDate = $get('start_date_flight');
+                    //     $endDate = $get('end_date_flight');
+                    //     $isEdit = $get('id') !== null; 
                         
-                        if (!$startDate || !$endDate || $isEdit) {
-                            return $query->where('teams_id', $currentTeamId)
-                                     ->where('status', 'airworthy')
-                                     ->where(function ($query) {
-                                         $query->doesntHave('maintence_drone')
-                                               ->orWhereHas('maintence_drone', function ($query) {
-                                                   $query->where('status', 'completed'); 
-                                               });
-                                     });
-                        }
+                    //     if (!$startDate || !$endDate || $isEdit) {
+                    //         return $query->where('teams_id', $currentTeamId)
+                    //                  ->where('status', 'airworthy')
+                    //                  ->where(function ($query) {
+                    //                      $query->doesntHave('maintence_drone')
+                    //                            ->orWhereHas('maintence_drone', function ($query) {
+                    //                                $query->where('status', 'completed'); 
+                    //                            });
+                    //                  });
+                    //     }
                     
-                        return $query->where('teams_id', $currentTeamId)
-                                     ->where('status', 'airworthy')
-                                     ->where(function ($query) {
-                                         $query->doesntHave('maintence_drone')
-                                               ->orWhereHas('maintence_drone', function ($query) {
-                                                   $query->where('status', 'completed'); 
-                                               });
-                                     })
-                                     ->whereDoesntHave('fligh', function ($query) use ($startDate, $endDate) {
-                                         $query->where(function ($query) use ($startDate, $endDate) {
-                                             $query->where('start_date_flight', '<=', $endDate)
-                                                   ->where('end_date_flight', '>=', $startDate);
-                                         });
-                                     });
-                    })
+                    //     return $query->where('teams_id', $currentTeamId)
+                    //                  ->where('status', 'airworthy')
+                    //                  ->where(function ($query) {
+                    //                      $query->doesntHave('maintence_drone')
+                    //                            ->orWhereHas('maintence_drone', function ($query) {
+                    //                                $query->where('status', 'completed'); 
+                    //                            });
+                    //                  })
+                    //                  ->whereDoesntHave('fligh', function ($query) use ($startDate, $endDate) {
+                    //                      $query->where(function ($query) use ($startDate, $endDate) {
+                    //                          $query->where('start_date_flight', '<=', $endDate)
+                    //                                ->where('end_date_flight', '>=', $startDate);
+                    //                      });
+                    //                  });
+                    // })
+                    ->relationship('drones', 'name')
                     ->saveRelationshipsUsing(function ($state, callable $get) {
                         $start = $get('start_date_flight');
                         $end = $get('end_date_flight');
@@ -519,8 +507,32 @@ class FlighResource extends Resource
                     ->searchable()
                     ->preload()
                     ->columnSpanFull()
-                    ->options(function (callable $get) use ($currentTeamId) {
-                        return drone::where('teams_id', $currentTeamId)->pluck('name', 'id');
+                    ->options(function (callable $get) {
+                        $currentTeamId = auth()->user()->teams()->first()->id;
+                        
+                        $startDate = $get('start_date_flight');
+                        $endDate = $get('end_date_flight');
+                        $isEdit = $get('id') !== null;
+                        
+                        $query = drone::where('teams_id', $currentTeamId)
+                            ->where('status', 'airworthy')
+                            ->where(function ($query) {
+                                $query->doesntHave('maintence_drone')
+                                      ->orWhereHas('maintence_drone', function ($query) {
+                                          $query->where('status', 'completed');
+                                      });
+                            });
+                        
+                        if (!$startDate || !$endDate || $isEdit) {
+                            return $query->pluck('name', 'id');
+                        }
+                
+                        return $query->whereDoesntHave('fligh', function ($query) use ($startDate, $endDate) {
+                            $query->where(function ($query) use ($startDate, $endDate) {
+                                $query->where('start_date_flight', '<=', $endDate)
+                                      ->where('end_date_flight', '>=', $startDate);
+                            });
+                        })->pluck('name', 'id');
                     })
                     ->default(function (){
                         $cloneId = request()->query('clone');

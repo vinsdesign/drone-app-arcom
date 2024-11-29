@@ -46,6 +46,16 @@ class DroneResource extends Resource
 
     public static function form(Form $form): Form
     {
+        $cloneId = request()->query('clone');
+        $defaultData = [];
+
+        if ($cloneId) {
+            $record = Drone::find($cloneId);
+            if ($record) {
+                $defaultData = $record->toArray();
+                $defaultData['name'] = $record->name . ' - CLONE';
+            }
+        }
         return $form
             ->schema([
                 Forms\Components\Wizard::make([
@@ -56,11 +66,13 @@ class DroneResource extends Resource
                         Forms\Components\TextInput::make('name')
                         ->label(TranslationHelper::translateIfNeeded('Name'))
                             ->required()
-                            ->maxLength(255)->columnSpan(1),
+                            ->maxLength(255)->columnSpan(1)
+                            ->default($defaultData['name'] ?? null),
                         Forms\Components\TextInput::make('idlegal')
                         ->label(TranslationHelper::translateIfNeeded('Legal ID'))
                             ->required()
-                            ->maxLength(255)->columnSpan(2),
+                            ->maxLength(255)->columnSpan(2)
+                            ->default($defaultData['idlegal'] ?? null),
                         Forms\Components\select::make('status')
                         ->label(TranslationHelper::translateIfNeeded('Status'))  
                             ->options([
@@ -69,15 +81,18 @@ class DroneResource extends Resource
                                'retired' => 'Retired',
                             ])
                             ->required()
-                            ->columnSpanFull(),
+                            ->columnSpanFull()
+                            ->default($defaultData['status'] ?? null),
                         Forms\Components\TextInput::make('brand')
                         ->label(TranslationHelper::translateIfNeeded('Brand'))
                             ->required()
-                            ->maxLength(255),
+                            ->maxLength(255)
+                            ->default($defaultData['brand'] ?? null),
                         Forms\Components\TextInput::make('model')
                         ->label(TranslationHelper::translateIfNeeded('Model'))
                             ->required()
-                            ->maxLength(255),
+                            ->maxLength(255)
+                            ->default($defaultData['model'] ?? null),
                         Forms\Components\Select::make('type')
                         ->label(TranslationHelper::translateIfNeeded('Type')) 
                         ->options([
@@ -95,7 +110,8 @@ class DroneResource extends Resource
                             'rover' => 'Rover',
                             'rpa' => 'RPA',
                             'Submersible' => 'Submersible',
-                        ])->searchable()->required(),
+                        ])->searchable()->required()
+                        ->default($defaultData['type'] ?? null),
                     ])->columns(3),
                     //and wizard 1
                     Forms\Components\Wizard\Step::make(TranslationHelper::translateIfNeeded('Drone Details'))
@@ -124,18 +140,21 @@ class DroneResource extends Resource
                             'x8_coaxial' => 'X8 Coaxial',
                             'x6_coaxial' => 'X6 Coaxial',
                         ])
-                        ->required()->searchable(),
+                        ->required()->searchable()
+                        ->default($defaultData['geometry'] ?? null),
                         Forms\Components\TextInput::make('color')
                         ->label(TranslationHelper::translateIfNeeded('Color'))
                             ->required()
-                            ->maxLength(255),
+                            ->maxLength(255)
+                            ->default($defaultData['color'] ?? null),
                         Forms\Components\Select::make('inventory_asset')
                         ->label(TranslationHelper::translateIfNeeded('Inventory/Asset'))
                             ->options([
                                 'asset'=> 'Assets',
                                 'inventory'=> 'Inventory',
                             ])
-                            ->required(),
+                            ->required()
+                            ->default($defaultData['inventory_asset'] ?? null),
                         Forms\Components\Select::make('users_id')
                         ->label(TranslationHelper::translateIfNeeded('Owner'))
                             // ->relationship('users','name', function (Builder $query){
@@ -151,15 +170,18 @@ class DroneResource extends Resource
                             }) 
                             ->searchable()
                             ->required()
-                            ->columnSpanFull(),
+                            ->columnSpanFull()
+                            ->default($defaultData['users_id'] ?? null),
                         Forms\Components\TextInput::make('firmware_v')
                         ->label(TranslationHelper::translateIfNeeded('Firmware Version'))
                             ->required()
-                            ->maxLength(255),
+                            ->maxLength(255)
+                            ->default($defaultData['firmware_v'] ?? null),
                         Forms\Components\TextInput::make('hardware_v')
                         ->label(TranslationHelper::translateIfNeeded('Hardware Version'))
                             ->required()
-                            ->maxLength(255),
+                            ->maxLength(255)
+                            ->default($defaultData['hardware_v'] ?? null),
                         Forms\Components\Select::make('propulsion_v')
                         ->label(TranslationHelper::translateIfNeeded('Propulsion Version'))
                             ->options([
@@ -169,7 +191,8 @@ class DroneResource extends Resource
                                 'hybrid' => 'Hybrid',
                                 'turbine' => 'Turbine',
                             ])
-                            ->required(),
+                            ->required()
+                            ->default($defaultData['propulsion_v'] ?? null),
                         //max_Flight_Distance
                         Forms\Components\TextInput::make('max_flight_time')
                         ->label(TranslationHelper::translateIfNeeded('Max Flight Time'))
@@ -177,11 +200,13 @@ class DroneResource extends Resource
                         ->extraAttributes([
                             'oninput' => "this.value = this.value.replace(/[^0-9:]/g, '').replace(/^([0-9]{2})([0-9]{2})/, '$1:$2:');", 
                             'placeholder' => 'HH:mm:ss'
-                        ])->default('00:00:00'),
+                        ])->default('00:00:00')
+                        ->default($defaultData['max_flight_time'] ?? null),
                         //initial_Flight
                         Forms\Components\TextInput::make('initial_flight')
                         ->label(TranslationHelper::translateIfNeeded('Initial Flight'))
-                        ->numeric(),
+                        ->numeric()
+                        ->default($defaultData['initial_flight'] ?? null),
                         //initial FLight Time
                         Forms\Components\TextInput::make('initial_flight_time')
                         ->label(TranslationHelper::translateIfNeeded('Initial Flight Time'))
@@ -190,11 +215,13 @@ class DroneResource extends Resource
                             'oninput' => "this.value = this.value.replace(/[^0-9:]/g, '').replace(/^([0-9]{2})([0-9]{2})/, '$1:$2:');", 
                             'placeholder' => 'HH:mm:ss'
                             
-                        ])->default('00:00:00'),
+                        ])->default('00:00:00')
+                        ->default($defaultData['initial_flight_time'] ?? null),
                         Forms\Components\Textarea::make('description')
                         ->label(TranslationHelper::translateIfNeeded('Description'))
                             ->required()
-                            ->maxLength(255)->columnSpanFull(),
+                            ->maxLength(255)->columnSpanFull()
+                            ->default($defaultData['description'] ?? null),
 
                     ])->columns(3),
                     //and wizard 2
@@ -202,30 +229,37 @@ class DroneResource extends Resource
                     ->schema([
                         Forms\Components\TextInput::make('serial_p')
                         ->label(TranslationHelper::translateIfNeeded('Serial Printed'))
-                            ->required(),
+                            ->required()
+                            ->default($defaultData['serial_p'] ?? null),
                         Forms\Components\TextInput::make('serial_i')
                         ->label(TranslationHelper::translateIfNeeded('Serial Internal'))
-                            ->required(),
+                            ->required()
+                            ->default($defaultData['serial_i'] ?? null),
                         Forms\Components\TextInput::make('flight_c')
                         ->label(TranslationHelper::translateIfNeeded('Flight Controller'))
                             ->required()
-                            ->maxLength(255),
+                            ->maxLength(255)
+                            ->default($defaultData['flight_c'] ?? null),
                         Forms\Components\TextInput::make('remote_c')
                         ->label(TranslationHelper::translateIfNeeded('Remote Controller'))
                             ->required()
-                            ->maxLength(255),
+                            ->maxLength(255)
+                            ->default($defaultData['remote_c'] ?? null),
                             Forms\Components\TextInput::make('remote_cc')
                             ->label(TranslationHelper::translateIfNeeded('Remote Controller2'))
                             ->required()
-                            ->maxLength(255)->columnSpan(2),
+                            ->maxLength(255)->columnSpan(2)
+                            ->default($defaultData['remote_cc'] ?? null),
                         Forms\Components\TextInput::make('remote')
                         ->label(TranslationHelper::translateIfNeeded('Remote ID'))
                             ->required()
-                            ->maxLength(255),
+                            ->maxLength(255)
+                            ->default($defaultData['remote'] ?? null),
                         Forms\Components\TextInput::make('conn_card')
                         ->label(TranslationHelper::translateIfNeeded('Connection Card'))
                             ->required()
-                            ->maxLength(255)->columnSpan(2),
+                            ->maxLength(255)->columnSpan(2)
+                            ->default($defaultData['conn_card'] ?? null),
                     ])->columns(3),
                     //and wizard 3
                 ])->columnSpanFull(),
@@ -413,6 +447,91 @@ class DroneResource extends Resource
                         ->success()
                         ->send();
                     })->icon('heroicon-m-share'),
+                Tables\Actions\Action::make('add')
+                    ->label(TranslationHelper::translateIfNeeded('Add Doc'))
+                    ->icon('heroicon-s-document-plus')
+                    ->modalHeading('Add Document')
+                    ->modalButton('Save')
+                    ->form([
+                        Forms\Components\TextInput::make('name')
+                            ->label(TranslationHelper::translateIfNeeded('Name'))
+                            ->required()
+                            ->maxLength(255),
+                            
+                        Forms\Components\DatePicker::make('expired_date')
+                            ->label(TranslationHelper::translateIfNeeded('Expiration Date'))
+                            ->required(),
+                            
+                        Forms\Components\TextArea::make('description')
+                            ->label(TranslationHelper::translateIfNeeded('Notes'))
+                            ->maxLength(255)
+                            ->columnSpan(2),
+                            
+                        Forms\Components\TextInput::make('refnumber')
+                            ->label(TranslationHelper::translateIfNeeded('Reference Number'))
+                            ->required()
+                            ->maxLength(255),
+                            
+                        Forms\Components\Select::make('type')
+                            ->label(TranslationHelper::translateIfNeeded('Type'))
+                            ->options([
+                                'Regulatory_Certificate' => 'Regulatory Certificate',
+                                'Registration' => 'Registration #',
+                                'Insurance_Certificate' => 'Insurance Certificate',
+                                'Checklist' => 'Checklist',
+                                'Manual' => 'Manual',
+                                'Other_Certification' => 'Other Certification',
+                                'Safety_Instruction' => 'Safety Instruction',
+                                'Other' => 'Other',
+                            ])
+                            ->required(),
+                            
+                        Forms\Components\FileUpload::make('doc')
+                            ->label(TranslationHelper::translateIfNeeded('Upload File'))
+                            ->acceptedFileTypes(['application/pdf']),
+                            
+                        Forms\Components\TextInput::make('external link')
+                            ->label(TranslationHelper::translateIfNeeded('Or External Link'))
+                            ->maxLength(255),
+                            
+                        Forms\Components\Hidden::make('users_id')
+                            ->default(auth()->id()),
+
+                        Forms\Components\Hidden::make('teams_id')
+                            ->default(auth()->user()->teams()->first()->id ?? null),
+                    ])
+                    ->action(function (array $data) {
+                        $document = \App\Models\Document::create([
+                            'name' => $data['name'],
+                            'expired_date' => $data['expired_date'],
+                            'description' => $data['description'] ?? null,
+                            'refnumber' => $data['refnumber'],
+                            'type' => $data['type'],
+                            'doc' => $data['doc'] ?? null,
+                            'external link' => $data['external link'] ?? null,
+                            'scope' => 'Drones',
+                            'users_id' => $data['users_id'],
+                            'teams_id' => $data['teams_id'],
+                        ]);
+                        if($document){
+                            $document->teams()->attach($data['teams_id']);
+                        }
+
+                        Notification::make()
+                        ->title(TranslationHelper::translateIfNeeded('Added Success'))
+                        ->body(TranslationHelper::translateIfNeeded("Document added successfully with scope Drone!"))
+                        ->success()
+                        ->send();
+                    }),
+                    Tables\Actions\Action::make('clone')
+                        ->label('Clone')
+                        ->icon('heroicon-s-document-duplicate')
+                        ->url(function ($record) {
+                            return route('filament.admin.resources.drones.create', [
+                                'tenant' => Auth()->user()->teams()->first()->id,
+                                'clone' => $record->id,
+                            ]);
+                        }),
                 ])
 
             ])
