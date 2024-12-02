@@ -119,13 +119,13 @@
         </div>
         @endif
         <!-- Menu 3 -->
-        <div class="main-button bg-white dark:bg-gray-800 shadow dark:shadow-lg rounded-lg p-4 text-center hover:shadow-lg dark:hover:shadow-xl transition-shadow" onclick="showContent(2)">
+        {{-- <div class="main-button bg-white dark:bg-gray-800 shadow dark:shadow-lg rounded-lg p-4 text-center hover:shadow-lg dark:hover:shadow-xl transition-shadow" onclick="showContent(2)">
             <div class="text-yellow-500 dark:text-yellow-400 mb-2">
                 <x-heroicon-c-language class="w-8 h-8 mx-auto" />
             </div>
             <h2 class="text-lg font-semibold text-gray-800 dark:text-gray-200">{!! TranslationHelper::translateIfNeeded('Language') !!}</h2>
             <p class="text-gray-600 dark:text-gray-400 mt-1">{!! TranslationHelper::translateIfNeeded('Manage your Language') !!}</p>
-        </div>
+        </div> --}}
     </div>
     
     {{-- End Main Menu --}}
