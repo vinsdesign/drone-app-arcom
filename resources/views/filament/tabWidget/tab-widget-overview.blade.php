@@ -654,6 +654,7 @@
                         @endif
                         @if($incidentCount > 0)
                             @foreach($incident as $item)
+
                                 <div class="flex flex-wrap space-x-4 border border-gray-300 rounded-lg p-4 bg-gray-100 dark:bg-gray-800 max-w-[800px] mx-auto mb-4 shadow-lg">
                                     
                                     <!-- Kolom Cause dan Status -->
@@ -710,6 +711,7 @@
                                     </div>
                             
                                 </div>
+                                
                             @endforeach
                         @endif
                     </div>

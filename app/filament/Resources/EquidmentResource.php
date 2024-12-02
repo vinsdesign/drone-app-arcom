@@ -30,6 +30,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Carbon\Carbon;
 use App\Helpers\TranslationHelper;
+use Filament\Infolists\Components\View as InfolistView;
 
 class EquidmentResource extends Resource
 {
@@ -504,7 +505,11 @@ class EquidmentResource extends Resource
                     TextEntry::make('hardware_v')->label(TranslationHelper::translateIfNeeded('Hardware Version')),
                     IconEntry::make('is_loaner')->boolean()->label(TranslationHelper::translateIfNeeded('Loaner Equipment')),
                     TextEntry::make('description')->label(TranslationHelper::translateIfNeeded('Description')),
-                ])->columns(4)
+                ])->columns(4),
+            Section::make('')
+                ->schema([
+                    InfolistView::make('component.tabViewResorce.equipment-tab')
+                ])
         ]);        
     }
 

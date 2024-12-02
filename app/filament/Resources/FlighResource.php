@@ -34,6 +34,7 @@ use Carbon\Carbon;
 use Filament\Facades\Filament;
 use Filament\Forms\Components\Button;
 use Filament\Forms\Components\View;
+use Filament\Infolists\Components\View as InfolistView;
 use App\Helpers\TranslationHelper;
 
 
@@ -1223,7 +1224,12 @@ class FlighResource extends Resource
                         ]) : null)->color(Color::Blue),
                     TextEntry::make('pre_volt')->label(TranslationHelper::translateIfNeeded('Pre-Voltage')),
                     TextEntry::make('fuel_used')->label(TranslationHelper::translateIfNeeded('Fuel Used')),
-                ])->columns(4)
+                ])->columns(4),
+            Section::make('')
+                ->schema([
+                    InfolistView::make('component.tabViewResorce.flight-tab')
+                ])
+
         ]);        
     }
 

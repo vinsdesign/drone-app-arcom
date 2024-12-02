@@ -21,6 +21,7 @@ use Filament\Infolists\Components\TextEntry;
 use Filament\Infolists\Components\Section;
 use Carbon\Carbon;
 use App\Helpers\TranslationHelper;
+use Filament\Infolists\Components\View as InfolistView;
 
 class DroneResource extends Resource
 {
@@ -587,6 +588,10 @@ class DroneResource extends Resource
                     TextEntry::make('remote')->label(TranslationHelper::translateIfNeeded('Remote ID')),
                     TextEntry::make('conn_card')->label(TranslationHelper::translateIfNeeded('Connection Card')),
                 ])->columns(4),
+            Section::make('')
+                ->schema([
+                    InfolistView::make('component.tabViewResorce.drone-tab')
+                ])
         ]);        
     }
 

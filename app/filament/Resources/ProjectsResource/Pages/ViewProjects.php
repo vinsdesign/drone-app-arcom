@@ -15,4 +15,8 @@ class ViewProjects extends ViewRecord
             Actions\EditAction::make(),
         ];
     }
+    public function getBreadcrumbs(): array
+{
+    return [];
+}
 }

@@ -2,13 +2,9 @@
     use App\Helpers\TranslationHelper;
     //project Document
     $id = $getRecord()->id;
-    $documentProjects = App\Models\Document::Where('projects_id', $id)->get();
-
+    $documentProjects = App\Models\Document::Where('users_id', $id)->get();
     //FlightIncident
-    $flighIncident = App\Models\Incident::Where('projects_id',$id)->get();
-
-    //flighLocation
-    $flighLocation = App\Models\Fligh_location::Where('projects_id',$id)->get();
+    $Incident = App\Models\Incident::Where('personel_involved_id',$id)->get();
 
 ?>
 
@@ -68,18 +64,15 @@
         <div class="flex flex-wrap items-center justify-between border border-gray-300 rounded-lg p-2 bg-black dark:bg-gray-900">
           
             <div class="flex items-center">
-                <p class="text-xl font-bold text-white">{!! TranslationHelper::translateIfNeeded('Other Project Resources') !!}</p>
+                <p class="text-xl font-bold text-white">{!! TranslationHelper::translateIfNeeded('Attachments') !!}</p>
             </div>
         
             <div class="flex flex-wrap gap-2">
                 <button id="tab0" class="tab-button active text-white bg-gray-800 hover:bg-gray-700 px-4 py-2 rounded text-sm sm:text-base w-full sm:w-auto">
-                    {!! TranslationHelper::translateIfNeeded('Project Document') !!}
+                    {!! TranslationHelper::translateIfNeeded('Users Document') !!}
                 </button>
                 <button id="tab1" class="tab-button text-white bg-gray-800 hover:bg-gray-700 px-4 py-2 rounded text-sm sm:text-base w-full sm:w-auto">
-                    {!! TranslationHelper::translateIfNeeded('Flight Incident') !!}
-                </button>
-                <button id="tab2" class="tab-button text-white bg-gray-800 hover:bg-gray-700 px-4 py-2 rounded text-sm sm:text-base w-full sm:w-auto">
-                    {!! TranslationHelper::translateIfNeeded('Flight Location') !!}
+                    {!! TranslationHelper::translateIfNeeded('Incident') !!}
                 </button>
             </div>
         </div>
@@ -88,7 +81,7 @@
         <!-- Tab content -->
         <div class="content">
 
-            {{-- content Documment Project --}}
+            {{-- content Documment User --}}
             <div id="content0" class="tab-content active">
     
                 <!-- Modal -->
@@ -103,7 +96,7 @@
 
                         <!-- Judul Modal -->
                         <h2 class="text-center text-lg font-semibold text-gray-900 dark:text-white">
-                            {!! TranslationHelper::translateIfNeeded('Upload Project Document')!!}
+                            {!! TranslationHelper::translateIfNeeded('Add Equipment Document')!!}
                         </h2>
                         <hr class="border-t border-gray-300 dark:border-gray-600 w-24 mx-auto">
 
@@ -111,7 +104,7 @@
                         <form id="documentForm" enctype="multipart/form-data">
                             @csrf
                             <input id="owner" type="hidden" name="teams_id" value="{{ auth()->user()->first()->id }}">
-                            <input id="project" type="hidden" name="recordID" value="{{ $id }}">
+                            <input id="relation" type="hidden" name="recordID" value="{{ $id }}">
                         
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                                 <!-- Name Input -->
@@ -131,12 +124,33 @@
                                     <label class="block text-gray-700 dark:text-gray-300">{!! TranslationHelper::translateIfNeeded('Ref / Certificate #') !!}</label>
                                     <input id="refnumber" type="text" name="refnumber" class="w-full mt-1 p-2 border dark:bg-gray-900 dark:border-gray-700 dark:text-gray-300 rounded-md focus:ring focus:ring-blue-500">
                                 </div>
-                        
-                                <!-- External Link -->
+
+                                <!-- Type -->
                                 <div>
-                                    <label class="block text-gray-700 dark:text-gray-300">{!! TranslationHelper::translateIfNeeded('External Link') !!}</label>
-                                    <input id="externalLink" type="text" name="externalLink" class="w-full mt-1 p-2 border dark:bg-gray-900 dark:border-gray-700 dark:text-gray-300 rounded-md focus:ring focus:ring-blue-500">
+                                    <label class="block text-gray-700 dark:text-gray-300">{!! TranslationHelper::translateIfNeeded('Ref / Certificate #') !!}</label>
+                                    <select id="type" type="text" name="type" class="w-full mt-1 p-2 border dark:bg-gray-900 dark:border-gray-700 dark:text-gray-300 rounded-md focus:ring focus:ring-blue-500">
+                                        <option value="" disabled selected >{!! TranslationHelper::translateIfNeeded('Select an type') !!}</option>
+                                        <option value="Pilot License">Pilot License</option>
+                                        <option value="UAV Training Course">UAV Training Course</option>
+                                        <option value="Remote Pilot Certificate">Remote Pilot Certificate</option>
+                                        <option value="Currency Certificate">Currency Certificate</option>
+                                        <option value="Medical Certificate">Medical Certificate</option>
+                                        <option value="Insurance Certificate">Insurance Certificate</option>
+                                        <option value="Registration #">Registration #</option>
+                                        <option value="Regulatory Certificate">Regulatory Certificate</option>
+                                        <option value="Checklist">Checklist</option>
+                                        <option value="Manual">Manual</option>
+                                        <option value="Other Certificate">Other Certificate</option>
+                                        <option value="Site Assessment">Site Assessment</option>
+                                        <option value="Safety Instruction">Safety Instruction</option>
+                                        <option value="Other">Other</option>
+                                    </select>
                                 </div>
+                            </div>
+                            <!-- External Link -->
+                            <div>
+                                <label class="block text-gray-700 dark:text-gray-300">{!! TranslationHelper::translateIfNeeded('External Link') !!}</label>
+                                <input id="externalLink" type="text" name="externalLink" class="w-full mt-1 p-2 border dark:bg-gray-900 dark:border-gray-700 dark:text-gray-300 rounded-md focus:ring focus:ring-blue-500">
                             </div>
                         
                             <!-- Document -->
@@ -168,7 +182,7 @@
                     <div class="mt-4 flex justify-end mb-4">
                         <button type="button" onclick="openModal()" class="px-4 py-2 bg-gray-700 text-white font-semibold rounded-lg 
                     hover:bg-gray-600 dark:hover:bg-gray-400 focus:outline-none focus:ring-2 
-                    focus:ring-gray-500 dark:focus:ring-gray-300">{!! TranslationHelper::translateIfNeeded('Upload Project Document')!!}</button>
+                    focus:ring-gray-500 dark:focus:ring-gray-300">{!! TranslationHelper::translateIfNeeded('Upload Document')!!}</button>
                     </div>
                 
                     @if($documentProjects->count() > 0)
@@ -239,103 +253,76 @@
 
             </div>
 
-            {{-- Content Flight Incident --}}
+            {{-- Content Incident --}}
             <div id="content1" class="tab-content">
 
                 {{-- tabel --}}
                 <div class="mb-2">
                 
-                    @if($flighIncident->count() > 0)
-                        @foreach($flighIncident as $item)
+                    @if($Incident->count() > 0)
+                        @foreach($Incident as $item)
 
-                            <div class="flex flex-wrap space-x-4 border border-gray-300 rounded-lg bg-gray-100 dark:bg-gray-800 mx-auto mb-none shadow-lg p-4">
-                                
-                                <!-- column Name -->
-                                <div class="flex-1 min-w-[150px] mb-2 border-r border-gray-300 pr-2 overflow-hidden">
-                                    <p class="text-l text-gray-800 dark:text-gray-200 font-semibold truncate">{!! TranslationHelper::translateIfNeeded('Date : ')!!}<span class="text-sm text-gray-500 dark:text-gray-150 font-semibold truncate">{{$item->incident_date}}</span></p>
-                                    <p class="text-sm text-gray-500 dark:text-gray-150 font-semibold truncate">{!! TranslationHelper::translateIfNeeded('cause : ')!!}{{$item->cause}}</p>
+                            <div class="flex flex-wrap space-x-4 border border-gray-300 rounded-lg p-4 bg-gray-100 dark:bg-gray-800 max-w-[800px] mx-auto shadow-lg">
+                                        
+                                <!-- Kolom Cause dan Status -->
+                                <div class="flex-1 min-w-[150px] mb-2 border-r border-gray-300 pr-2">
+                                    <p class="text-sm text-gray-800 dark:text-gray-200 font-semibold">{!! TranslationHelper::translateIfNeeded('Cause:')!!}</p>
+                                    <div class="flex items-center justify-between">
+                                        <div>
+                                            <a href="{{route('filament.admin.resources.incidents.edit',['tenant'=>Auth()->user()->teams()->first()->id,'record'=>$item->id])}}">
+                                                <p class="text-sm text-gray-700 dark:text-gray-400">{{ $item->cause }}</p>
+                                            </a>
+                                            <p class="text-xs text-gray-500 dark:text-gray-300">{!! TranslationHelper::translateIfNeeded('Date:')!!} {{ $item->incident_date }}</p>
+                                        </div>
+                                        <span class="px-2 py-1 rounded text-white text-xs {{ $item->status == 0 ? 'bg-green-500' : 'bg-red-500' }}">
+                                            @if($item->status == 0)
+                                                Closed
+                                            @else
+                                                Under Review
+                                            @endif
+                                        </span>
+                                    </div>
                                 </div>
                         
-                                <!-- Column Location-->
+                                <!-- Kolom Drone Name -->
                                 <div class="flex-1 min-w-[150px] mb-2 border-r border-gray-300 pr-2">
-                                    <p class="text-l text-gray-800 dark:text-gray-200 font-semibold">{!! TranslationHelper::translateIfNeeded('Location :')!!}</p>
-                                    <p class="text-sm text-gray-500 dark:text-gray-150 font-semibold truncate">{{$item->fligh_locations->name}}</p></p>
+                                    <p class="text-sm text-gray-800 dark:text-gray-200 font-semibold">{!! TranslationHelper::translateIfNeeded('Drone:')!!}</p>
+                                    <a href="{{route('drone.statistik', ['drone_id' => $item->drone->id ?? 0])}}">
+                                        <p class="text-sm text-gray-700 dark:text-gray-400">{{ $item->drone->name ??  TranslationHelper::translateIfNeeded('No Drone') }}</p>
+                                    </a>
+                                    <p class="text-sm text-gray-700 dark:text-gray-400">{{ $item->drone->brand ??  TranslationHelper::translateIfNeeded('No Drone') }} / {{$item->drone->model}}</p>
                                 </div>
-
-                                <!-- Column Drone-->
+                        
+                                <!-- Kolom Personnel Involved -->
                                 <div class="flex-1 min-w-[150px] mb-2 border-r border-gray-300 pr-2">
-                                    <p class="text-l text-gray-800 dark:text-gray-200 font-semibold">{!! TranslationHelper::translateIfNeeded('Drone : ')!!}</p>
-                                    
-                                    <p class="text-sm text-gray-500 dark:text-gray-150 font-semibold truncate">
-                                        {{$item->drone->name}}
-                                    </p>
+                                    <p class="text-sm text-gray-800 dark:text-gray-200 font-semibold">{!! TranslationHelper::translateIfNeeded('Personnel Involved:')!!}</p>
+                                    <a href="{{route('filament.admin.resources.users.view',['tenant'=>Auth()->user()->teams()->first()->id, 'record'=> $item->users->id ?? 0])}}">
+                                        <p class="text-sm text-gray-700 dark:text-gray-400">{{ $item->users->name ??  TranslationHelper::translateIfNeeded('No Personnel') }}</p>
+                                    </a>
                                 </div>
-
-                                <!-- Column Modified-->
+                        
+                                <!-- Kolom Location -->
                                 <div class="flex-1 min-w-[150px] mb-2 border-r border-gray-300 pr-2">
-                                    <p class="text-l text-gray-800 dark:text-gray-200 font-semibold">{!! TranslationHelper::translateIfNeeded('Pilot : ')!!}</p>
-                                    
-                                    <p class="text-sm text-gray-500 dark:text-gray-150 font-semibold truncate">
-                                        {{$item->users->name}}
-                                    </p>
+                                    <p class="text-sm text-gray-800 dark:text-gray-200 font-semibold">{!! TranslationHelper::translateIfNeeded('Location:')!!}</p>
+                                    <a href="{{route('filament.admin.resources.fligh-locations.edit',['tenant' =>Auth()->user()->teams()->first()->id,'record'=>$item->fligh_locations->id ?? 0])}}">
+                                        <p class="text-sm text-gray-700 dark:text-gray-400">{{ $item->fligh_locations->name ??  TranslationHelper::translateIfNeeded('No Location') }}</p>
+                                    </a>
                                 </div>
-                                <div class="flex justify-end items-center mb-2 min-w-[150px] border-gray-300 pr-2">
-                                    <a href="{{route('filament.admin.resources.incidents.edit',['tenant' => Auth()->user()->teams()->first()->id, 'record' => $item->id])}}" class="px-4 py-2 bg-gray-700 text-white font-semibold rounded-lg 
-                                        hover:bg-gray-600 dark:hover:bg-gray-400 focus:outline-none focus:ring-2 
-                                        focus:ring-gray-500 dark:focus:ring-gray-300">
-                                         {!! TranslationHelper::translateIfNeeded('Edit') !!}
-                                     </a>
+                        
+                                <!-- Kolom Project -->
+                                <div class="flex-1 min-w-[150px] mb-2">
+                                    <p class="text-sm text-gray-800 dark:text-gray-200 font-semibold">{!! TranslationHelper::translateIfNeeded('Project:')!!}</p>
+                                    <a href="{{route('filament.admin.resources.projects.view',['tenant'=>Auth()->user()->teams()->first()->id,'record'=>$item->project->id ?? 0])}}">
+                                        <p class="text-sm text-gray-700 dark:text-gray-400">{{ $item->project->case ??  TranslationHelper::translateIfNeeded('No Project') }}</p>
+                                    </a>
                                 </div>
+                        
                             </div>
                             <div class="px-2 mb-4">
                                 <div class="flex items-center justify-between py-4 px-6 border-t border-gray-400 bg-gray-300 dark:bg-gray-700  shadow-lg">
                                     <div class="flex-1 min-w-[180px]">
                                         <p class="text-sm text-gray-700 dark:text-gray-400"><strong>{!! TranslationHelper::translateIfNeeded('Notes:')!!} </strong>{{$item->description}}</p>
                                     </div>
-                                </div>
-                            </div>
-
-                        @endforeach
-                    @else
-                        <p class="text-center text-gray-600 dark:text-gray-300 mt-4">No Data Found</p>
-                    @endif
-
-                </div>
-                {{-- end tabel --}} 
-
-            </div>
-
-            {{-- Content Flight Location --}}
-            <div id="content2" class="tab-content">
-
-                {{-- tabel --}}
-                <div class="mb-2">
-
-                    @if($flighLocation->count() > 0)
-                        @foreach($flighLocation as $item)
-
-                            <div class="flex flex-wrap space-x-4 border border-gray-300 rounded-lg bg-gray-100 dark:bg-gray-800 mx-auto mb-4 shadow-lg p-4">
-                                
-                                <!-- column Name -->
-                                <div class="flex-1 min-w-[150px] mb-2 border-r border-gray-300 pr-2 overflow-hidden">
-                                    <p class="text-l text-gray-800 dark:text-gray-200 font-semibold truncate">{!! TranslationHelper::translateIfNeeded('Name : ')!!}</p>
-                                    <p class="text-sm text-gray-500 dark:text-gray-150 font-semibold truncate">{{$item->name}}</p>
-                                    <p class="text-sm text-gray-500 dark:text-gray-150 font-semibold truncate">{{$item->latitude}} / {{$item->longitude}}</p>
-                                </div>
-                        
-                                <!-- Column Location-->
-                                <div class="flex-1 min-w-[150px] mb-2 border-r border-gray-300 pr-2">
-                                    <p class="text-l text-gray-800 dark:text-gray-200 font-semibold">{!! TranslationHelper::translateIfNeeded('Address :')!!}</p>
-                                    <p class="text-sm text-gray-500 dark:text-gray-150 font-semibold truncate">{{$item->address}} {{$item->city}} {{$item->country}}</p></p>
-                                </div>
-
-                                <!-- Column Drone-->
-                                <div class="flex-1 min-w-[150px] mb-2 border-r border-gray-300 pr-2">
-                                    <p class="text-l text-gray-800 dark:text-gray-200 font-semibold">{!! TranslationHelper::translateIfNeeded('Notes : ')!!}</p>
-                                    
-                                    <p class="text-sm text-gray-500 dark:text-gray-150 font-semibold truncate">
-                                        {{$item->description}}
-                                    </p>
                                 </div>
                             </div>
 
@@ -393,10 +380,11 @@ $(document).ready(function() {
         formData.append('notes', $('#description').val());
         formData.append('dock', $('#dock')[0].files[0]); // File input
         formData.append('owner', $('#owner').val());
-        formData.append('project', $('#project').val());
+        formData.append('relation', $('#relation').val());
+        formData.append('type', $('#type').val());
 
         $.ajax({
-            url: '{{ route('create.document.project') }}',
+            url: '{{ route('create.document.personnel') }}',
             type: 'POST',
             data: formData,
             contentType: false,
