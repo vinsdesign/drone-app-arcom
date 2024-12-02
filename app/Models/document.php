@@ -23,7 +23,10 @@ class document extends Model
         'teams_id',
         'status_visible',
         'shared',
-        'locked'
+        'locked',
+        'battrei_id',
+        'drone_id',
+        'equidment_id'
     ];
 
     public function users()
@@ -40,7 +43,7 @@ class document extends Model
     }
     public function teams(){
 
-        return $this->belongsToMany(Team::class, 'document_team');
+        return $this->belongsToMany(Team::class, 'document_team','team_id','document_id');
 
     }
     // public function scopeShared($query){

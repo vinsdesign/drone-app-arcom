@@ -244,6 +244,10 @@ class UserResource extends Resource
                  Section::make('')
                     ->schema([
                         InfolistView::make('component.flight-personnel')
+                    ]),
+                    Section::make('')
+                    ->schema([
+                        InfolistView::make('component.tabViewResorce.personnel-tab')
                     ])
                 ]);
      

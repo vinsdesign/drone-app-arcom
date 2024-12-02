@@ -24,6 +24,7 @@ use Filament\Infolists\Components\TextEntry;
 use Filament\Infolists\Components\Section;
 use Carbon\Carbon;
 use App\Helpers\TranslationHelper;
+use Filament\Infolists\Components\View as InfolistView;
 
 
 class BattreiResource extends Resource
@@ -501,34 +502,34 @@ public static function infolist(Infolist $infolist): Infolist
     
     ->schema([
         Section::make(TranslationHelper::translateIfNeeded('Overview'))
-    ->schema([
-        TextEntry::make('name')->label(TranslationHelper::translateIfNeeded('Name')),
-        TextEntry::make('model')->label(TranslationHelper::translateIfNeeded('Model')),
-        TextEntry::make('status')->label(TranslationHelper::translateIfNeeded('Status'))
-            ->color(fn ($record) => match ($record->status) {
-                'airworthy' => Color::Green,
-                'maintenance' => Color::Red,
-                'retired' => Color::Zinc,
-            }),
-        TextEntry::make('asset_inventory')->label(TranslationHelper::translateIfNeeded('Asset Inventory')),
-        TextEntry::make('serial_P')->label(TranslationHelper::translateIfNeeded('Serial Printed')),
-        TextEntry::make('serial_I')->label(TranslationHelper::translateIfNeeded('Serial Internal')),
-        TextEntry::make('cellCount')->label(TranslationHelper::translateIfNeeded('Cell Count')),
-        TextEntry::make('nominal_voltage')->label(TranslationHelper::translateIfNeeded('Voltage')),
-        TextEntry::make('capacity')->label(TranslationHelper::translateIfNeeded('Capacity')),
-        TextEntry::make('initial_Cycle_count')->label(TranslationHelper::translateIfNeeded('Initial Cycles Count')),
-        TextEntry::make('life_span')->label(TranslationHelper::translateIfNeeded('Life Span')),
-        TextEntry::make('flaight_count')->label(TranslationHelper::translateIfNeeded('Flight Count')),
-        TextEntry::make('drone.name')->label(TranslationHelper::translateIfNeeded('For Drone (Optional)'))
-            ->url(fn($record) => $record->for_drone ? route('filament.admin.resources.drones.view', [
-                'tenant' => auth()->user()->teams()->first()->id,
-                'record' => $record->for_drone,
-            ]) : null)
-            ->color(Color::Blue),
-    ])->columns(5),
+            ->schema([
+                TextEntry::make('name')->label(TranslationHelper::translateIfNeeded('Name')),
+                TextEntry::make('model')->label(TranslationHelper::translateIfNeeded('Model')),
+                TextEntry::make('status')->label(TranslationHelper::translateIfNeeded('Status'))
+                    ->color(fn ($record) => match ($record->status) {
+                        'airworthy' => Color::Green,
+                        'maintenance' => Color::Red,
+                        'retired' => Color::Zinc,
+                    }),
+                TextEntry::make('asset_inventory')->label(TranslationHelper::translateIfNeeded('Asset Inventory')),
+                TextEntry::make('serial_P')->label(TranslationHelper::translateIfNeeded('Serial Printed')),
+                TextEntry::make('serial_I')->label(TranslationHelper::translateIfNeeded('Serial Internal')),
+                TextEntry::make('cellCount')->label(TranslationHelper::translateIfNeeded('Cell Count')),
+                TextEntry::make('nominal_voltage')->label(TranslationHelper::translateIfNeeded('Voltage')),
+                TextEntry::make('capacity')->label(TranslationHelper::translateIfNeeded('Capacity')),
+                TextEntry::make('initial_Cycle_count')->label(TranslationHelper::translateIfNeeded('Initial Cycles Count')),
+                TextEntry::make('life_span')->label(TranslationHelper::translateIfNeeded('Life Span')),
+                TextEntry::make('flaight_count')->label(TranslationHelper::translateIfNeeded('Flight Count')),
+                TextEntry::make('drone.name')->label(TranslationHelper::translateIfNeeded('For Drone (Optional)'))
+                    ->url(fn($record) => $record->for_drone ? route('filament.admin.resources.drones.view', [
+                        'tenant' => auth()->user()->teams()->first()->id,
+                        'record' => $record->for_drone,
+                    ]) : null)
+                    ->color(Color::Blue),
+            ])->columns(5),
 
-Section::make(TranslationHelper::translateIfNeeded('Extra Information'))
-    ->schema([
+        Section::make(TranslationHelper::translateIfNeeded('Extra Information'))
+            ->schema([
         TextEntry::make('users.name')->label(TranslationHelper::translateIfNeeded('Owner'))
             ->url(fn($record) => $record->for_drone ? route('filament.admin.resources.users.index', [
                 'tenant' => auth()->user()->teams()->first()->id,
@@ -542,8 +543,12 @@ Section::make(TranslationHelper::translateIfNeeded('Extra Information'))
         TextEntry::make('hardware_version')->label(TranslationHelper::translateIfNeeded('Hardware Version')),
         IconEntry::make('is_loaner')->boolean()->label(TranslationHelper::translateIfNeeded('Loaner Battery')),
         TextEntry::make('description')->label(TranslationHelper::translateIfNeeded('Description')),
-    ])->columns(4)
-                ]);
+            ])->columns(4),
+        Section::make('')
+            ->schema([
+                InfolistView::make('component.tabViewResorce.battrei-tab')
+            ])
+    ]);
 }
     public static function getRelations(): array
     {
