@@ -243,30 +243,29 @@ class IncidentResource extends Resource
                 ->label(TranslationHelper::translateIfNeeded('Create at'))
             ])
             ->actions([
-                // Action::make('viewFlight')
-                // ->label('View Flight')
-                // ->url(function ($record) {
-                //     $flight = fligh::where('projects_id', $record->project_id)
-                //         ->where('location_id', $record->location_id)
-                //         ->where('drones_id', $record->drone_id)
-                //         ->orderBy('start_date_flight', 'desc')
-                //         ->first();
+                Action::make('viewFlight')
+                ->label(TranslationHelper::translateIfNeeded('View Flight'))
+                ->url(function ($record) {
+                    $flight = fligh::whereDate('start_date_flight', $record->incident_date)
+                        ->where('projects_id', $record->project_id)
+                        ->where('location_id', $record->location_id)
+                        ->where('drones_id', $record->drone_id)
+                        ->first();
 
-                //     if (!$flight) {
-                //             $flight = fligh::where('drones_id', $record->drone_id)
-                //                 ->orderBy('start_date_flight', 'desc')
-                //                 ->first();
-                //         }
+                    if (!$flight) {
+                            $flight = fligh::whereDate('start_date_flight', $record->incident_date)
+                            ->where('drones_id', $record->drone_id)
+                            ->first();
+                        }
 
-                //     return $flight
-                //         ? route('filament.admin.resources.flighs.view', [
-                //             'tenant' => auth()->user()->teams()->first()->id,
-                //             'record' => $flight->id,
-                //         ])
-                //         : null; 
-                // })
-                // ->button()
-                // ->requiresConfirmation(),
+                    return $flight
+                        ? route('filament.admin.resources.flighs.view', [
+                            'tenant' => auth()->user()->teams()->first()->id,
+                            'record' => $flight->id,
+                        ])
+                        : null;
+                })
+                ->button(),
                 Tables\Actions\ActionGroup::make([
                     Tables\Actions\ViewAction::make(),
                     Tables\Actions\EditAction::make(),
@@ -274,7 +273,7 @@ class IncidentResource extends Resource
                     Tables\Actions\Action::make('add')
                         ->label(TranslationHelper::translateIfNeeded('Add Doc'))
                         ->icon('heroicon-s-document-plus')
-                        ->modalHeading('Add Document')
+                        ->modalHeading('Upload Incident Document')
                         ->modalButton('Save')
                         ->form([
                             Forms\Components\TextInput::make('name')

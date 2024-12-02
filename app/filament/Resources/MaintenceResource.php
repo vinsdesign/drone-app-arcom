@@ -55,6 +55,16 @@ class MaintenceResource extends Resource
     public static function form(Form $form): Form
     {
         $currentTeamId = auth()->user()->teams()->first()->id;
+        $cloneId = request()->query('clone');
+        $defaultData = [];
+
+        if ($cloneId) {
+            $record = Maintence_drone::find($cloneId);
+            if ($record) {
+                $defaultData = $record->toArray();
+                $defaultData['name'] = $record->name . ' - CLONE';
+            }
+        }
         return $form
             ->schema([
                 Forms\Components\Wizard::make([
@@ -64,7 +74,8 @@ class MaintenceResource extends Resource
                         ->default(auth()->user()->teams()->first()->id ?? null),
                         Forms\Components\TextInput::make('name')
                         ->label(TranslationHelper::translateIfNeeded('Maintenance Description'))    
-                            ->maxLength(255),
+                            ->maxLength(255)
+                            ->default($defaultData['name'] ?? null),
                         Forms\Components\Select::make('drone_id')
                             // ->relationship('drone','name', function (Builder $query){
                             //     $currentTeamId = auth()->user()->teams()->first()->id;
@@ -75,17 +86,20 @@ class MaintenceResource extends Resource
                             })
                             ->label(TranslationHelper::translateIfNeeded('Drone'))
                             ->searchable()
-                            ->columnSpan(1),
+                            ->columnSpan(1)
+                            ->default($defaultData['drone_id'] ?? null),
                         Forms\Components\DatePicker::make('date')
                         ->label(TranslationHelper::translateIfNeeded('Maintenance Date'))      
-                            ->columnSpan(1),
+                            ->columnSpan(1)
+                            ->default($defaultData['date'] ?? null),
                         Forms\Components\Select::make('status')
                         ->label(TranslationHelper::translateIfNeeded('Status'))    
                             ->options([
                                 'schedule'=> 'Schedule',
                                 'in_progress'=> 'In Progress',
                                 'completed'=> 'Completed',
-                            ]),
+                            ])
+                            ->default($defaultData['status'] ?? null),
                             // ->reactive()
                             // ->afterStateUpdated(function (callable $set, callable $get) {
                             //     if ($get('status') === 'complete'){
@@ -96,19 +110,33 @@ class MaintenceResource extends Resource
                             //     }
                             // }),
                         Forms\Components\TextInput::make('cost')
-                        ->label(TranslationHelper::translateIfNeeded('Expense Cost')),   
+                        ->label(TranslationHelper::translateIfNeeded('Expense Cost'))
+                        ->default($defaultData['cost'] ?? null),   
                         Forms\Components\Select::make('currencies_id')
                         ->options(currencie::all()->mapWithKeys(function ($currency) {
                             return [$currency->id => "{$currency->name} - {$currency->iso}"];}))
                             ->searchable()
                             ->label(TranslationHelper::translateIfNeeded('Currency'))
+                            // ->default(function (){
+                            //     $currentTeam = auth()->user()->teams()->first();
+                            //     return $currentTeam ? $currentTeam->currencies_id : null;
+                            // })
                             ->default(function (){
+                                $cloneId = request()->query('clone');
+                                if ($cloneId) {
+                                    $clonedRecord = \App\Models\Maintence_drone::find($cloneId); 
+                                    
+                                    if ($clonedRecord && $clonedRecord->currencies) {
+                                        return $clonedRecord->currencies_id;
+                                    }
+                                }
                                 $currentTeam = auth()->user()->teams()->first();
-                                return $currentTeam ? $currentTeam->currencies_id : null;
+                                return $currentTeam ? $currentTeam->currencies_id  : null;
                             }),
                         Forms\Components\TextArea::make('notes')
                         ->label(TranslationHelper::translateIfNeeded('Notes'))    
-                            ->columnSpanFull(),
+                            ->columnSpanFull()
+                            ->default($defaultData['notes'] ?? null),
                     ])->columns(3),
                     //and wizard 1
                     Forms\Components\Wizard\Step::make(TranslationHelper::translateIfNeeded('Add Task (Optional)'))
@@ -119,28 +147,35 @@ class MaintenceResource extends Resource
                                 'part 1'=> 'Part 1',
                                 'part 2'=> 'Part 2',
                                 'part 3'=> 'Part 3',
-                            ]),
+                            ])
+                            ->default($defaultData['part'] ?? null),
                         Forms\Components\TextInput::make('part_name')
                         ->label(TranslationHelper::translateIfNeeded('Part Name'))    
-                            ->maxLength(255),
+                            ->maxLength(255)
+                            ->default($defaultData['part_name'] ?? null),
                         Forms\Components\Select::make('status_part')
                         ->label(TranslationHelper::translateIfNeeded('Status Part'))    
                             ->options([
                                 'partial'=> 'Partial',
                                 'open'=> 'Open',
                                 'done'=> 'Done',
-                            ]),
+                            ])
+                            ->default($defaultData['status_part'] ?? null),
                         Forms\Components\TextInput::make('technician')
                         ->label(TranslationHelper::translateIfNeeded('Technician'))    
-                            ->maxLength(255),
+                            ->maxLength(255)
+                            ->default($defaultData['technician'] ?? null),
                         Forms\Components\TextInput::make('new_part_serial')
                         ->label(TranslationHelper::translateIfNeeded('New Part Serial #'))    
-                            ->maxLength(255),
+                            ->maxLength(255)
+                            ->default($defaultData['new_part_serial'] ?? null),
                         Forms\Components\Checkbox::make('replaced')
-                        ->label(TranslationHelper::translateIfNeeded('Replaced')),
+                        ->label(TranslationHelper::translateIfNeeded('Replaced'))
+                        ->default($defaultData['replaced'] ?? null),
                         Forms\Components\Textarea::make('description_part')
                         ->label(TranslationHelper::translateIfNeeded('Description'))    
-                            ->maxLength(255)->columnSpanFull(),
+                            ->maxLength(255)->columnSpanFull()
+                            ->default($defaultData['description_part'] ?? null),
                     ])->columns(2),
                     //and wizard 2
                 ])->columnSpanFull(),
@@ -248,6 +283,12 @@ class MaintenceResource extends Resource
                     $query->where('status', '!=', 'completed')
                           ->whereDate('date', '<', Carbon::now());
                 }),
+                Tables\Filters\SelectFilter::make('drone_id')
+                ->label(TranslationHelper::translateIfNeeded('Filter by Drone'))
+                ->options(
+                    Drone::pluck('name', 'id')->toArray()
+                )
+                ->searchable(),
             ])
             ->actions([
                 Tables\Actions\Action::make('resolve')
@@ -269,7 +310,16 @@ class MaintenceResource extends Resource
                     Tables\Actions\ActionGroup::make([
                         Tables\Actions\ViewAction::make(),
                         Tables\Actions\EditAction::make(),
-                        Tables\Actions\DeleteAction::make()
+                        Tables\Actions\DeleteAction::make(),
+                        Tables\Actions\Action::make('clone')
+                        ->label('Clone')
+                        ->icon('heroicon-s-document-duplicate')
+                        ->url(function ($record) {
+                            return route('filament.admin.resources.maintences.create', [
+                                'tenant' => Auth()->user()->teams()->first()->id,
+                                'clone' => $record->id,
+                            ]);
+                        }),
                     ]),
             ])
             ->bulkActions([

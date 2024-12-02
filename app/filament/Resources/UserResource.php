@@ -24,6 +24,7 @@ use Carbon\Carbon;
 use Stichoza\GoogleTranslate\GoogleTranslate;
 use Filament\Infolists\Components\View as InfolistView;
 use App\Helpers\TranslationHelper;
+use Filament\Notifications\Notification;
 class UserResource extends Resource
 {
     protected static ?string $model = User::class;
@@ -214,6 +215,81 @@ class UserResource extends Resource
                     })->label(TranslationHelper::translateIfNeeded('View'))->icon('heroicon-s-eye'),
                     Tables\Actions\EditAction::make(),
                     Tables\Actions\DeleteAction::make(),
+                    Tables\Actions\Action::make('add')
+                    ->label(TranslationHelper::translateIfNeeded('Add Doc/Registration'))
+                    ->icon('heroicon-s-document-plus')
+                    ->modalHeading('Add User Document/Registration')
+                    ->modalButton('Save')
+                    ->visible(fn ($record) => $record->id === Auth()->user()->teams()->first()->id)
+                    ->form([
+                        Forms\Components\TextInput::make('name')
+                            ->label(TranslationHelper::translateIfNeeded('Name'))
+                            ->required()
+                            ->maxLength(255),
+                            
+                        Forms\Components\DatePicker::make('expired_date')
+                            ->label(TranslationHelper::translateIfNeeded('Expiration Date'))
+                            ->required(),
+                            
+                        Forms\Components\TextArea::make('description')
+                            ->label(TranslationHelper::translateIfNeeded('Notes'))
+                            ->maxLength(255)
+                            ->columnSpan(2),
+                            
+                        Forms\Components\TextInput::make('refnumber')
+                            ->label(TranslationHelper::translateIfNeeded('Ref/Certificate #'))
+                            ->required()
+                            ->maxLength(255),
+                            
+                        Forms\Components\Select::make('type')
+                            ->label(TranslationHelper::translateIfNeeded('Type'))
+                            ->options([
+                                'Registration' => 'Registration #',
+                                'Medical_Certificate' => 'Medical Certificate',
+                                'Pilot_License' => 'Pilot License',
+                                'Remote_Pilot_Certificate' => 'Remote Pilot Certificate',
+                                'Currency_Certificate' => 'Currency Certificate',
+                                'Other' => 'Other',
+                            ])
+                            ->required(),
+                            
+                        Forms\Components\FileUpload::make('doc')
+                            ->label(TranslationHelper::translateIfNeeded('Upload File'))
+                            ->acceptedFileTypes(['application/pdf']),
+                            
+                        Forms\Components\TextInput::make('external link')
+                            ->label(TranslationHelper::translateIfNeeded('Or External Link'))
+                            ->maxLength(255),
+                            
+                        Forms\Components\Hidden::make('users_id')
+                            ->default(auth()->id()),
+
+                        Forms\Components\Hidden::make('teams_id')
+                            ->default(auth()->user()->teams()->first()->id ?? null),
+                    ])
+                    ->action(function (array $data) {
+                        $document = \App\Models\Document::create([
+                            'name' => $data['name'],
+                            'expired_date' => $data['expired_date'],
+                            'description' => $data['description'] ?? null,
+                            'refnumber' => $data['refnumber'],
+                            'type' => $data['type'],
+                            'doc' => $data['doc'] ?? null,
+                            'external link' => $data['external link'] ?? null,
+                            'scope' => 'Pilot',
+                            'users_id' => $data['users_id'],
+                            'teams_id' => $data['teams_id'],
+                        ]);
+                        if($document){
+                            $document->teams()->attach($data['teams_id']);
+                        }
+
+                        Notification::make()
+                        ->title(TranslationHelper::translateIfNeeded('Added Success'))
+                        ->body(TranslationHelper::translateIfNeeded("Document added successfully"))
+                        ->success()
+                        ->send();
+                    }),
                 ])
 
             ])

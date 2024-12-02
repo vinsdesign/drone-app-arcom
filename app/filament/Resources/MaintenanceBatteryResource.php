@@ -54,6 +54,16 @@ class MaintenanceBatteryResource extends Resource
     public static function form(Form $form): Form
     {
         $currentTeamId = auth()->user()->teams()->first()->id;
+        $cloneId = request()->query('clone');
+        $defaultData = [];
+
+        if ($cloneId) {
+            $record = maintence_eq::find($cloneId);
+            if ($record) {
+                $defaultData = $record->toArray();
+                $defaultData['name'] = $record->name . ' - CLONE';
+            }
+        }
         return $form
             ->schema([
                 Forms\Components\Section::make(TranslationHelper::translateIfNeeded('Maintenance Equipment/Battery Overview'))
@@ -62,50 +72,70 @@ class MaintenanceBatteryResource extends Resource
                         ->default(auth()->user()->teams()->first()->id ?? null),
                         Forms\Components\TextInput::make('name')
                         ->label(TranslationHelper::translateIfNeeded('Maintenance Description'))    
-                            ->maxLength(255),
+                            ->maxLength(255)
+                            ->default($defaultData['name'] ?? null),
                         Forms\Components\Select::make('equidment_id')
                         ->label(TranslationHelper::translateIfNeeded('Equipment'))    
                             ->options(function (callable $get) use ($currentTeamId) {
                                 return equidment::where('teams_id', $currentTeamId)->pluck('name', 'id');
                             })
                             ->searchable()
-                            ->columnSpan(1),
+                            ->columnSpan(1)
+                            ->default($defaultData['equidment_id'] ?? null),
                             Forms\Components\Select::make('battrei_id')
                             ->label(TranslationHelper::translateIfNeeded('Battery'))
                             ->options(function (callable $get) use ($currentTeamId) {
                                 return battrei::where('teams_id', $currentTeamId)->pluck('name', 'id');
                             })
                             ->searchable()
-                            ->columnSpan(1),
+                            ->columnSpan(1)
+                            ->default($defaultData['battrei_id'] ?? null),
                         Forms\Components\DatePicker::make('date')
                         ->label(TranslationHelper::translateIfNeeded('Maintenance Date'))      
-                            ->columnSpan(1),
+                            ->columnSpan(1)
+                            ->default($defaultData['date'] ?? null),
                         Forms\Components\Select::make('status')
                         ->label(TranslationHelper::translateIfNeeded('Status'))    
                             ->options([
                                 'schedule'=> 'Schedule',
                                 'in_progress'=> 'In Progress',
                                 'completed'=> 'Completed',
-                            ]),
+                            ])
+                            ->default($defaultData['status'] ?? null),
                         Forms\Components\TextInput::make('cost')
-                        ->label(TranslationHelper::translateIfNeeded('Expense Cost')),   
+                        ->label(TranslationHelper::translateIfNeeded('Expense Cost'))
+                        ->default($defaultData['cost'] ?? null),   
                         Forms\Components\Select::make('currencies_id')
                         ->options(currencie::all()->mapWithKeys(function ($currency) {
                             return [$currency->id => "{$currency->name} - {$currency->iso}"];}))
                             ->searchable()
                             ->label(TranslationHelper::translateIfNeeded('Currency'))
+                            // ->default(function (){
+                            //     $currentTeam = auth()->user()->teams()->first();
+                            //     return $currentTeam ? $currentTeam->currencies_id : null;
+                            // }),
                             ->default(function (){
+                                $cloneId = request()->query('clone');
+                                if ($cloneId) {
+                                    $clonedRecord = \App\Models\maintence_eq::find($cloneId); 
+                                    
+                                    if ($clonedRecord && $clonedRecord->currencies) {
+                                        return $clonedRecord->currencies_id;
+                                    }
+                                }
                                 $currentTeam = auth()->user()->teams()->first();
-                                return $currentTeam ? $currentTeam->currencies_id : null;
+                                return $currentTeam ? $currentTeam->currencies_id  : null;
                             }),
                         Forms\Components\TextInput::make('technician')
                         ->label(TranslationHelper::translateIfNeeded('Technician'))    
                             ->maxLength(255)
-                            ->columnSpan(2),
+                            ->columnSpan(2)
+                            ->default($defaultData['technician'] ?? null),
 
                         Forms\Components\TextArea::make('notes')
                         ->label(TranslationHelper::translateIfNeeded('Notes'))    
-                            ->columnSpanFull(),
+                            ->columnSpanFull()
+                            ->default($defaultData['notes'] ?? null),
                 ])->columns(3),
             ]);
     }
@@ -219,6 +249,18 @@ class MaintenanceBatteryResource extends Resource
                     $query->where('status', '!=', 'completed')
                           ->whereDate('date', '<', Carbon::now());
                 }),
+                Tables\Filters\SelectFilter::make('battrei_id')
+                ->label(TranslationHelper::translateIfNeeded('Filter by Battery'))
+                ->options(
+                    battrei::pluck('name', 'id')->toArray()
+                )
+                ->searchable(),
+                Tables\Filters\SelectFilter::make('equidment_id')
+                ->label(TranslationHelper::translateIfNeeded('Filter by Equipment'))
+                ->options(
+                    equidment::pluck('name', 'id')->toArray()
+                )
+                ->searchable(),
             ])
             ->actions([
                 Tables\Actions\Action::make('resolve')
@@ -240,7 +282,16 @@ class MaintenanceBatteryResource extends Resource
                     Tables\Actions\ActionGroup::make([
                         Tables\Actions\ViewAction::make(),
                         Tables\Actions\EditAction::make(),
-                        Tables\Actions\DeleteAction::make()
+                        Tables\Actions\DeleteAction::make(),
+                        Tables\Actions\Action::make('clone')
+                        ->label('Clone')
+                        ->icon('heroicon-s-document-duplicate')
+                        ->url(function ($record) {
+                            return route('filament.admin.resources.maintenance-batteries.create', [
+                                'tenant' => Auth()->user()->teams()->first()->id,
+                                'clone' => $record->id,
+                            ]);
+                        }),
                     ]),
             ])
             ->bulkActions([

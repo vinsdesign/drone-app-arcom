@@ -228,7 +228,8 @@ class DocumentResource extends Resource
                         return "<a href='{$url}' target='_blank' style='padding:5px 10px; background-color:#ff8303; color:white; border-radius:5px;' rel='noopener noreferrer'>{$translatedText}</a>";
 
                     })
-                    ->html(),
+                    ->html()
+                    ->placeholder(TranslationHelper::translateIfNeeded('No Link Uploaded')),
                 // Tables\Columns\TextColumn::make('description')
                 // ->label('Description')
                 //     ->searchable(),
@@ -241,7 +242,8 @@ class DocumentResource extends Resource
                             return "<a href='/storage/{$state}' target='_blank' rel='noopener noreferrer' style='padding:5px 10px; background-color:#ff8303; color:white; border-radius:5px;'>{$translatedText}</a>";
                         })
                         ->html()
-                        ->searchable(),
+                        ->searchable()
+                        ->placeholder(TranslationHelper::translateIfNeeded('No Document Uploaded')),
                 
                 // Tables\Columns\TextColumn::make('customers.name')
                 // ->label('Customer')
@@ -291,6 +293,11 @@ class DocumentResource extends Resource
                     'archived' => 'Archived',
                 ])
                 ->default('current'),
+                Tables\Filters\Filter::make('Locked')
+                ->label(TranslationHelper::translateIfNeeded('Only Locked Document'))
+                ->query(function ($query) {
+                    $query->where('locked', '=', 'locked');
+                }),
             ])
             ->actions([
                 Tables\Actions\ActionGroup::make([

@@ -450,7 +450,7 @@ class DroneResource extends Resource
                 Tables\Actions\Action::make('add')
                     ->label(TranslationHelper::translateIfNeeded('Add Doc'))
                     ->icon('heroicon-s-document-plus')
-                    ->modalHeading('Add Document')
+                    ->modalHeading('Upload Drone Document')
                     ->modalButton('Save')
                     ->form([
                         Forms\Components\TextInput::make('name')

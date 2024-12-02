@@ -216,7 +216,7 @@ class ProjectsResource extends Resource
                     Tables\Actions\Action::make('add')
                         ->label(TranslationHelper::translateIfNeeded('Add Doc'))
                         ->icon('heroicon-s-document-plus')
-                        ->modalHeading('Add Document')
+                        ->modalHeading('Upload Project Document')
                         ->modalButton('Save')
                         ->form([
                             Forms\Components\TextInput::make('name')
