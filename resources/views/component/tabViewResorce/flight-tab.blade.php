@@ -2,13 +2,40 @@
     use App\Helpers\TranslationHelper;
     //project Document
     $id = $getRecord()->id;
+    session_start();
+    $media_id = session('idRecord');
+    // dd($media_id);
+    //media data
+    $media =  App\Models\media_fligh::Where('fligh_id',$id)->where('id',$media_id)->first();
     $projectID = $getRecord()->projects_id;
-    // $droneID = $getRecord()->drones_id;
-    // $locationID = $getRecord()->location_id;
-    $documentProjects = App\Models\Document::Where('projects_id', $projectID)->get();
+  
+    //document Project
+    if (Auth()->user()->roles()->pluck('name')->contains('super_admin') || (Auth()->user()->roles()->pluck('name')->contains('panel_user'))) {
+        $queryDocument = App\Models\Document::query()->where('projects_id', $projectID)->get();
+    }else{
+        $queryDocument = App\Models\Document::query()
+        ->where('projects_id', $projectID)
+        ->where(function ($query) {
+            $query->where('shared', 1)
+                ->orWhere('users_id', auth()->id());
+        })->get();
+    }
+    
+    $documentProjects =  $queryDocument;
 
     //flight Document
-    $documentFlight = App\Models\Document::Where('scope','Flight')->get();
+    if (Auth()->user()->roles()->pluck('name')->contains('super_admin') || (Auth()->user()->roles()->pluck('name')->contains('panel_user'))) {
+        $queryDocumentFlight = App\Models\Document::query()->where('scope','Flight')->get();
+    }else{
+        $queryDocumentFlight = App\Models\Document::query()
+        ->where('scope','Flight')
+        ->where(function ($query) {
+            $query->where('shared', 1)
+                ->orWhere('users_id', auth()->id());
+        })->get();
+    }
+
+    $documentFlight = $queryDocumentFlight;
 
     //FlightIncident
     $incidents = DB::table('incidents')
@@ -27,6 +54,7 @@
 
     //fligh media
     $flighmedia = App\Models\media_fligh::Where('fligh_id',$id)->get();
+    // dd($flighmedia);
 
 
 
@@ -480,10 +508,10 @@
 
             </div>
 
-            {{-- Content Flight Location --}}
+            {{-- Content Flight Media --}}
             <div id="content3" class="tab-content">
 
-                <!-- Modal -->
+                <!-- Modal  create-->
                 <div class="fixed active-modal media-create inset-0 flex justify-center z-50" style="max-height: 80%">
                     <div class="relative space-y-6 bg-white dark:bg-gray-800 p-6 rounded-lg shadow-lg max-w-4xl w-full max-h-[80%] overflow-y-auto mx-4 md:mx-auto">
                         <!-- Tombol Close -->
@@ -548,6 +576,82 @@
                     </div>
                 </div>
 
+                <!-- Modal  Edit-->
+            @if($media != null)
+                <div class="fixed active-modal media-edit inset-0 flex justify-center z-50" style="max-height: 80%">
+                    <div class="relative space-y-6 bg-white dark:bg-gray-800 p-6 rounded-lg shadow-lg max-w-4xl w-full max-h-[80%] overflow-y-auto mx-4 md:mx-auto">
+                        <!-- Tombol Close -->
+                        <button type="button"
+                            class="absolute top-4 right-4 text-gray-500 hover:text-gray-700 dark:text-gray-300 dark:hover:text-gray-500 text-2xl font-bold p-2"
+                            onclick="closeModalMediaEdit()">
+                                &times;
+                        </button>
+
+                        <!-- Judul Modal -->
+                        <h2 class="text-center text-lg font-semibold text-gray-900 dark:text-white">
+                            {!! TranslationHelper::translateIfNeeded('Edit Media Overview')!!}
+                        </h2>
+                        <hr class="border-t border-gray-300 dark:border-gray-600 w-24 mx-auto">
+
+                        <!-- Form -->
+                        <form id="documentFormEdit" enctype="multipart/form-data">
+                            @csrf
+                            <input id="idMediaEdit" type="hidden" name="IdMediaEdit" value="{{$media->id}}">
+                            <input id="ownerMediaEdit" type="hidden" name="teams_id" value="{{$media->owner_id}}">
+                            <input id="mediaFlightIDEdit" type="hidden" name="mediaFlightID" value="{{ $media->fligh_id}}">
+                        
+                            <!-- Name Input -->
+                            <div>
+                                <label class="block text-gray-700 dark:text-gray-300">{!! TranslationHelper::translateIfNeeded('Media Title') !!}</label>
+                                <input id="nameMediaEdit" type="text" name="nameMedia" maxlength="255" 
+                                value="{{$media->title}}"
+                                class="w-full mt-1 p-2 border dark:bg-gray-900 dark:border-gray-700 dark:text-gray-300 rounded-md focus:ring focus:ring-blue-500">
+                            </div>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        
+                                <!-- Url-->
+                                <div>
+                                    <label class="block text-gray-700 dark:text-gray-300">{!! TranslationHelper::translateIfNeeded('Media URL') !!}</label>
+                                    <input id="urlMediaEdit" type="text" name="urlMedia" 
+                                    value="{{$media->url}}"
+                                    class="w-full mt-1 p-2 border dark:bg-gray-900 dark:border-gray-700 dark:text-gray-300 rounded-md focus:ring focus:ring-blue-500">
+                                </div>
+                        
+                                <!-- Type -->
+                                <div>
+                                    <label class="block text-gray-700 dark:text-gray-300">{!! TranslationHelper::translateIfNeeded('Type Url') !!}</label>
+                                    <select id="mediaTypeEdit" type="text" name="mediaType" class="w-full mt-1 p-2 border dark:bg-gray-900 dark:border-gray-700 dark:text-gray-300 rounded-md focus:ring focus:ring-blue-500">
+                                        @if($media->type != null)
+                                            <option value="{{$media->type}}" selected >-- {{$media->type}} Url --</option>
+                                        @endif
+                                        <option disabled value="">Select an Type Url</option>
+                                        <option value="picture">Picture URL</option>
+                                        <option value="video">Video URL</option>
+                                        <option value="other">Other URL</option>
+                                    </select>
+                                </div>
+    
+                            </div>
+                        
+                            <!-- Notes -->
+                            <div>
+                                <label class="block text-gray-700 dark:text-gray-300">{!! TranslationHelper::translateIfNeeded('Notes') !!}</label>
+                                <textarea id="descriptionMediaEdit" name="descriptionMedia" maxlength="255"
+                                class="w-full mt-1 p-2 border dark:bg-gray-900 dark:border-gray-700 dark:text-gray-300 rounded-md focus:ring focus:ring-blue-500">{{ $media->description ?? '' }}</textarea>
+                            </div>
+                        
+                            <!-- Submit Button -->
+                            <div class="flex justify-end mt-4">
+                                <button id="triggerButtonMediaEdit" type="button" class="button" style="font-size: 16px; background-color: #4A5568; color: white; font-weight: bold; padding: 8px 16px; border-radius: 4px; border: none; cursor: pointer;">
+                                    <span class="button__text">{!! TranslationHelper::translateIfNeeded('Edit') !!}</span>
+                                </button>
+                            </div>
+                        </form>
+                        
+                    </div>
+                </div>
+            @endif
+
 
              {{-- tabel --}}
              <div class="mb-2">
@@ -577,12 +681,25 @@
                             </div>
 
                             <!-- Column Modified-->
+                            <div class="flex justify-end items-center mb-2 min-w-[150px] border-gray-300 pr-2">   
+                                <button 
+                                    id="ViewButton-{{ $item->id }}" 
+                                    type="button" 
+                                    class="px-4 py-2 bg-gray-700 text-white font-semibold rounded-lg 
+                                        hover:bg-gray-600 dark:hover:bg--400 focus:outline-none focus:ring-2 
+                                        focus:ring-gray-500 dark:focus:ring-gray-300"
+                                    onclick="window.open('{{$item->url}}', '_blank')"
+                                >
+                                    {!! TranslationHelper::translateIfNeeded('View') !!}
+                                </button>
+                            </div>
                             <div class="flex justify-end items-center mb-2 min-w-[150px] border-gray-300 pr-2">
-                                <a href="{{route('filament.admin.resources.documents.edit',['tenant' => Auth()->user()->teams()->first()->id, 'record' => $item->id])}}" class="px-4 py-2 bg-gray-700 text-white font-semibold rounded-lg 
-                                    hover:bg-gray-600 dark:hover:bg-gray-400 focus:outline-none focus:ring-2 
-                                    focus:ring-gray-500 dark:focus:ring-gray-300">
-                                    {!! TranslationHelper::translateIfNeeded('Edit') !!}
-                                </a>
+
+                                <button id="valueButton-{{ $item->id }}" type="button" class="px-4 py-2 bg-gray-700 text-white font-semibold rounded-lg 
+                                hover:bg-gray-600 dark:hover:bg-gray-400 focus:outline-none focus:ring-2 
+                                focus:ring-gray-500 dark:focus:ring-gray-300" value="{{$item->id}}" onclick="openModalMediaEdit({{ $item->id }})">
+                                {!! TranslationHelper::translateIfNeeded('Edit') !!}
+                                </button>
                             </div>
                     
                         
@@ -600,6 +717,7 @@
         </div>
     </div>
 </div>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
 <script>
     function closeModal() {
@@ -621,7 +739,7 @@
         contents.classList.remove('active-modal');     
     }
 
-    //media
+    //media create
     function closeModalMedia() {
         const contents = document.querySelector('.media-create');
         contents.classList.add('active-modal');
@@ -630,6 +748,58 @@
         const contents = document.querySelector('.media-create');
         contents.classList.remove('active-modal');     
     }
+
+        //media Edit
+    function closeModalMediaEdit() {
+        const contents = document.querySelector('.media-edit');
+
+        contents.classList.add('active-modal');
+    }
+    function openModalMediaEdit(itemId) {
+        const contents = document.querySelector('.media-edit');
+        
+        
+        const buttonValue = itemId;
+        console.log(buttonValue);
+            $.ajax({
+            url: '{{ route("edit.media.flight") }}',
+            type: 'POST',
+            data: {
+                button_value: buttonValue,
+                _token: '{{ csrf_token() }}'
+            },
+            success: function(response) {
+                console.log('Data diterima: ', response);
+                localStorage.setItem('modalStatus', 'close');
+                location.reload(); 
+            },
+            error: function(xhr, status, error) {
+                console.error('Error: ', error);
+            }
+        });
+
+    }
+    //untuk edit media ketika di klik edit
+    document.addEventListener('DOMContentLoaded', function () {
+    const modalStatus = localStorage.getItem('modalStatus');
+    console.log(modalStatus);
+
+        if (modalStatus === 'close') {
+            const contents = document.querySelector('.media-edit');
+            document.getElementById('tab3')?.classList.add('active');
+            document.getElementById('content3')?.classList.add('active');
+            document.getElementById('content0')?.classList.remove('active');
+            document.getElementById('tab0')?.classList.remove('active');
+
+            if (contents) {
+                contents.classList.remove('active-modal');
+            }
+
+            // Hapus status setelah diterapkan
+            localStorage.removeItem('modalStatus');
+        }
+    });
+//end media
 </script>
 
 <script>
@@ -647,11 +817,44 @@
         });
     });
 </script>
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
 <script>
 
+    //media flight Edit
+    $(document).ready(function() {
+        $('#triggerButtonMediaEdit').click(function() {
+            const formDataMediaEdit = new FormData();
+            formDataMediaEdit.append('_token', '{{ csrf_token() }}'); // CSRF token
+            formDataMediaEdit.append('id', $('#idMediaEdit').val());
+            formDataMediaEdit.append('name', $('#nameMediaEdit').val());
+            formDataMediaEdit.append('url', $('#urlMediaEdit').val());
+            formDataMediaEdit.append('type', $('#mediaTypeEdit').val());
+            formDataMediaEdit.append('notes', $('#descriptionMediaEdit').val());
+            formDataMediaEdit.append('owner', $('#ownerMediaEdit').val());
+            formDataMediaEdit.append('flight', $('#mediaFlightIDEdit').val());
+
+            for (let pair of formDataMediaEdit.entries()) {
+                console.log(pair[0] + ': ' + pair[1]);
+            }
+            $.ajax({
+                url: '{{ route('create.media.flight.record') }}',
+                type: 'POST',
+                data: formDataMediaEdit,
+                contentType: false,
+                processData: false,
+                success: function(response) {
+                    console.log(response);
+                    location.reload();
+                },
+                error: function(xhr, status, error) {
+                    console.error('Error:', error);
+                }
+            });
+        });
+    });
+
 //media flight Create
-$(document).ready(function() {
+    $(document).ready(function() {
         $('#triggerButtonMedia').click(function() {
             const formDataMedia = new FormData();
             formDataMedia.append('_token', '{{ csrf_token() }}'); // CSRF token

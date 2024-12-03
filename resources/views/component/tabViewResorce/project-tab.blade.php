@@ -2,7 +2,20 @@
     use App\Helpers\TranslationHelper;
     //project Document
     $id = $getRecord()->id;
-    $documentProjects = App\Models\Document::Where('projects_id', $id)->get();
+ 
+    if (Auth()->user()->roles()->pluck('name')->contains('super_admin') || (Auth()->user()->roles()->pluck('name')->contains('panel_user'))) {
+        $queryDocument = App\Models\Document::query()->where('projects_id', $id)->get();
+    }else{
+        $queryDocument = App\Models\Document::query()
+        ->where('projects_id', $id)
+        ->where(function ($query) {
+            $query->where('shared', 1)
+                ->orWhere('users_id', auth()->id());
+        })->get();
+    }
+
+
+    $documentProjects = $queryDocument;
 
     //FlightIncident
     $flighIncident = App\Models\Incident::Where('projects_id',$id)->get();

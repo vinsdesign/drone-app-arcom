@@ -74,6 +74,7 @@ class AdminPanelProvider extends PanelProvider
             ->path('admin')
             ->login()
             ->registration()
+            ->breadcrumbs(false)
             // ->spa()
             //color
             ->sidebarCollapsibleOnDesktop()

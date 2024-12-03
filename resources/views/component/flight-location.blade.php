@@ -36,10 +36,10 @@ $count = $flights->count('id');
 
                 <div class="flex justify-between items-center">
                     <p class="text-sm text-gray-700 dark:text-gray-400 border-r pr-4">
-                        {{$item->duration ?? null}}
+                        {{$item->start_date_flight ?? null}}
                     </p>
                     <p class="text-sm text-gray-700 dark:text-gray-400">
-                        {{$item->start_date_flight ?? null}}
+                        {{$item->duration ?? null}}
                     </p>
                 </div>
                 <p class="text-sm text-gray-700 dark:text-gray-400">{!! TranslationHelper::translateIfNeeded('Pilot:')!!} {{$item->users->name ?? null}}</p>

@@ -43,6 +43,10 @@ class EquidmentResource extends Resource
 
     public static ?string $tenantOwnershipRelationshipName = 'teams';
     protected static bool $isLazy = false;
+    public static function breadcrumb($breadcrumb): bool
+    {
+        return false; 
+    }
 
     public static function getNavigationBadge(): ?string{
         $teamID = Auth()->user()->teams()->first()->id;
