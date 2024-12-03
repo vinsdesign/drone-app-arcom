@@ -266,7 +266,7 @@ class ProjectsResource extends Resource
                             Forms\Components\Hidden::make('teams_id')
                                 ->default(auth()->user()->teams()->first()->id ?? null),
                         ])
-                        ->action(function (array $data) {
+                        ->action(function (array $data, Projects $record) {
                             $document = \App\Models\Document::create([
                                 'name' => $data['name'],
                                 'expired_date' => $data['expired_date'],
@@ -278,6 +278,7 @@ class ProjectsResource extends Resource
                                 'scope' => 'Project',
                                 'users_id' => $data['users_id'],
                                 'teams_id' => $data['teams_id'],
+                                'projects_id' => $record->id,
                             ]);
                             if($document){
                                 $document->teams()->attach($data['teams_id']);

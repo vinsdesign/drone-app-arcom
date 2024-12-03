@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Builder;
 
 class battrei extends Model
 {
@@ -59,5 +60,22 @@ class battrei extends Model
     public function maintence_eq()
     {
         return $this->hasMany(maintence_eq::class);
+    }
+
+    //edit query untuk action shared un-shared
+    public function scopeAccessibleBy(Builder $query, $user)
+    {
+        if ($user->roles()->pluck('name')->contains('super_admin') || $user->roles()->pluck('name')->contains('panel_user')) {
+            return $query;
+        }
+
+        $userId = $user->id;
+
+        return $query->where(function ($query) use ($userId) {
+            $query->where('users_id', $userId);
+        })
+        ->orWhere(function ($query) use ($userId) {
+            $query->where('users_id', '!=', $userId)->where('shared', 1);
+        });
     }
 }

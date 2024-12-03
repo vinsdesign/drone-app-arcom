@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Builder;
 
 class equidment extends Model
 {
@@ -56,5 +57,22 @@ class equidment extends Model
     }
     public function PlannedMission(){
         return $this->belongsToMany(PlannedMission::class, 'planned_equipment', 'equidment_id', 'planned_id');
+    }
+
+    //edit query untuk action shared un-shared
+    public function scopeAccessibleBy(Builder $query, $user)
+    {
+        if ($user->roles()->pluck('name')->contains('super_admin') || $user->roles()->pluck('name')->contains('panel_user')) {
+            return $query;
+        }
+
+        $userId = $user->id;
+
+        return $query->where(function ($query) use ($userId) {
+            $query->where('users_id', $userId);
+        })
+        ->orWhere(function ($query) use ($userId) {
+            $query->where('users_id', '!=', $userId)->where('shared', 1);
+        });
     }
 }

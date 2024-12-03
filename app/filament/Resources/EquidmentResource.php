@@ -220,21 +220,25 @@ class EquidmentResource extends Resource
     {
         return $table
             //edit query untuk action shared un-shared
-            ->modifyQueryUsing(function (Builder $query) {
-                $userId = auth()->user()->id;
+            // ->modifyQueryUsing(function (Builder $query) {
+            //     $userId = auth()->user()->id;
 
-                if (Auth()->user()->roles()->pluck('name')->contains('super_admin') || (Auth()->user()->roles()->pluck('name')->contains('panel_user'))) {
-                    return $query;
-                }else{
-                    $query->where(function ($query) use ($userId) {
-                        $query->where('users_id', $userId);
-                    })
-                    ->orWhere(function ($query) use ($userId) {
-                        $query->where('users_id', '!=', $userId)->where('shared', 1);
-                    });
-                    return $query;
-                }
-            })
+            //     if (Auth()->user()->roles()->pluck('name')->contains('super_admin') || (Auth()->user()->roles()->pluck('name')->contains('panel_user'))) {
+            //         return $query;
+            //     }else{
+            //         $query->where(function ($query) use ($userId) {
+            //             $query->where('users_id', $userId);
+            //         })
+            //         ->orWhere(function ($query) use ($userId) {
+            //             $query->where('users_id', '!=', $userId)->where('shared', 1);
+            //         });
+            //         return $query;
+            //     }
+            // })
+            ->modifyQueryUsing(function (Builder $query) {
+                $user = auth()->user();
+                return $query->accessibleBy($user);
+            }) 
             ->columns([
                 Tables\Columns\TextColumn::make('name')
                ->label(TranslationHelper::translateIfNeeded('Name'))
@@ -378,7 +382,8 @@ class EquidmentResource extends Resource
                     ->icon('heroicon-s-document-plus')
                     ->modalHeading('Upload Equipment Document')
                     ->modalButton('Save')
-                    ->form([
+                    ->form(function ($record) {
+                        return[
                         Forms\Components\TextInput::make('name')
                             ->label(TranslationHelper::translateIfNeeded('Name'))
                             ->required()
@@ -425,7 +430,9 @@ class EquidmentResource extends Resource
 
                         Forms\Components\Hidden::make('teams_id')
                             ->default(auth()->user()->teams()->first()->id ?? null),
-                    ])
+                        Forms\Components\Hidden::make('equidment_id')
+                            ->default($record->id),
+                            ];})
                     ->action(function (array $data) {
                         $document = \App\Models\Document::create([
                             'name' => $data['name'],
@@ -438,6 +445,7 @@ class EquidmentResource extends Resource
                             'scope' => 'Equipments/Battery',
                             'users_id' => $data['users_id'],
                             'teams_id' => $data['teams_id'],
+                            'equidment_id' => $data['equidment_id']
                         ]);
                         if($document){
                             $document->teams()->attach($data['teams_id']);
