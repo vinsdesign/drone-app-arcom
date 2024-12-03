@@ -3,7 +3,18 @@
     //project Document
     $id = $getRecord()->id;
     $teams = Auth()->user()->teams()->first()->id;
-    $documentDrone = App\Models\Document::Where('drone_id', $id)->get();
+
+    if (Auth()->user()->roles()->pluck('name')->contains('super_admin') || (Auth()->user()->roles()->pluck('name')->contains('panel_user'))) {
+        $queryDocument = App\Models\Document::query()->where('drone_id', $id)->get();
+    }else{
+        $queryDocument = App\Models\Document::query()
+        ->where('drone_id', $id)
+        ->where(function ($query) {
+            $query->where('shared', 1)
+                ->orWhere('users_id', auth()->id());
+        })->get();
+    }
+    $documentDrone = $queryDocument;
 
     //FlightIncident
     $flighIncident = App\Models\Incident::Where('drone_id',$id)->get();
@@ -115,10 +126,11 @@
                                     </a>
                                     <div class="flex justify-between items-center">
                                         <p class="text-sm text-gray-700 dark:text-gray-400 border-r pr-4">
-                                            {{$item->duration ?? null}}
+                                            
+                                            {{$item->start_date_flight ?? null}}
                                         </p>
                                         <p class="text-sm text-gray-700 dark:text-gray-400">
-                                            {{$item->start_date_flight ?? null}}
+                                            {{$item->duration ?? null}}
                                         </p>
                                     </div>
                                     <p class="text-sm text-gray-700 dark:text-gray-400">{!! TranslationHelper::translateIfNeeded('Pilot:')!!} {{$item->users->name ?? null}}</p>
@@ -438,7 +450,7 @@
                                         $daysOverdueDiff = $now->diffInDays($item->date, false);
                                     @endphp
 
-                                        @if($daysOverdueDiff < 0) 
+                                        @if($daysOverdueDiff < 0 && $item->status != 'completed') 
                                         @php
                                             $daysOverdueDiff = abs(intval($daysOverdueDiff));
                                         @endphp

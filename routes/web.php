@@ -70,3 +70,5 @@ Route::post('/create-document-equipment',[popUpViewResource::class,'createEquipm
 Route::post('/create-document-battrei',[popUpViewResource::class,'createEquipmentBattrei'])->name('create.battrei.equipment');
 Route::post('/create-document-drone',[popUpViewResource::class,'createDroneDocument'])->name('create.document.drone');
 Route::post('/create-document-personnel',[popUpViewResource::class,'createPersonnelDocument'])->name('create.document.personnel');
+Route::post('/edit-media-flight',[popUpViewResource::class,'buttonValues'])->name('edit.media.flight');
+Route::post('/create-media-flight-record',[popUpViewResource::class,'createMediaFlightRecord'])->name('create.media.flight.record');

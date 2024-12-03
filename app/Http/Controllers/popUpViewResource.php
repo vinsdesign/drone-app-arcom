@@ -10,6 +10,34 @@ use Illuminate\Support\Facades\Storage;
 
 class popUpViewResource extends Controller
 {
+        //Edit Media Flight
+        public function createMediaFlightRecord(Request $request){
+            $id = $request->input('id');
+            $name = $request->input('name');
+            $url = $request->input('url');
+            $type = $request->input('type');
+            $description = $request->input('notes');
+            $owner = $request->input('owner');
+            $flight = $request->input('flight');
+    
+    
+            $sql = media_fligh::where('id', $id)->update([
+                'title' => $name,
+                'description' => $description,
+                'type' => $type,
+                'url' => $url,
+                'owner_id' => $owner,
+                'fligh_id' => $flight,
+            ]);
+            if($sql){
+            
+                session()->flash('successfully', 'Data berhasil ditambahkan!');
+                return response()->json(['success' => 'Create successfully',
+                'name' => $name]);      
+            }else{
+                return response()->json(['error' => 'Error To Create.']);
+            }
+        }
 
     //Create Media Flight
     public function createMediaFlight(Request $request){
@@ -309,5 +337,12 @@ class popUpViewResource extends Controller
     
     
         }
+
+    public function buttonValues(Request $request)
+    {
+        // Menyimpan data dalam session
+        $request->session()->put('idRecord', $request->input('button_value'));
+        return response()->json(['message' => 'Data diterima', 'button_value' => $request->input('button_value')]);
+    }
 
 }
