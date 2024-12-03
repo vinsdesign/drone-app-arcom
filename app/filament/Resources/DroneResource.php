@@ -275,20 +275,24 @@ class DroneResource extends Resource
         $currentTeamId = auth()->user()->teams()->first()->id;
         return $table
         //edit query untuk action shared un-shared
+            // ->modifyQueryUsing(function (Builder $query) {
+            //     $userId = auth()->user()->id;
+            //     if (Auth()->user()->roles()->pluck('name')->contains('super_admin') || (Auth()->user()->roles()->pluck('name')->contains('panel_user'))) {
+            //         return $query;
+            //     }else{
+            //         $query->where(function ($query) use ($userId) {
+            //             $query->where('users_id', $userId);
+            //         })
+            //         ->orWhere(function ($query) use ($userId) {
+            //             $query->where('users_id', '!=', $userId)->where('shared', 1);
+            //         });
+            //         return $query;
+            //     }
+            // })
             ->modifyQueryUsing(function (Builder $query) {
-                $userId = auth()->user()->id;
-                if (Auth()->user()->roles()->pluck('name')->contains('super_admin') || (Auth()->user()->roles()->pluck('name')->contains('panel_user'))) {
-                    return $query;
-                }else{
-                    $query->where(function ($query) use ($userId) {
-                        $query->where('users_id', $userId);
-                    })
-                    ->orWhere(function ($query) use ($userId) {
-                        $query->where('users_id', '!=', $userId)->where('shared', 1);
-                    });
-                    return $query;
-                }
-            })
+                $user = auth()->user();
+                return $query->accessibleBy($user);
+            }) 
             ->columns([
                 Tables\Columns\TextColumn::make('name')
                 ->label(TranslationHelper::translateIfNeeded('Drone Name'))
@@ -453,7 +457,8 @@ class DroneResource extends Resource
                     ->icon('heroicon-s-document-plus')
                     ->modalHeading('Upload Drone Document')
                     ->modalButton('Save')
-                    ->form([
+                    ->form(function ($record) {
+                        return[
                         Forms\Components\TextInput::make('name')
                             ->label(TranslationHelper::translateIfNeeded('Name'))
                             ->required()
@@ -500,7 +505,10 @@ class DroneResource extends Resource
 
                         Forms\Components\Hidden::make('teams_id')
                             ->default(auth()->user()->teams()->first()->id ?? null),
-                    ])
+                        Forms\Components\Hidden::make('drone_id')
+                            ->default($record->id),
+                        ];})
+                    
                     ->action(function (array $data) {
                         $document = \App\Models\Document::create([
                             'name' => $data['name'],
@@ -513,6 +521,7 @@ class DroneResource extends Resource
                             'scope' => 'Drones',
                             'users_id' => $data['users_id'],
                             'teams_id' => $data['teams_id'],
+                            'drone_id' => $data['drone_id']
                         ]);
                         if($document){
                             $document->teams()->attach($data['teams_id']);

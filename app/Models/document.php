@@ -43,8 +43,20 @@ class document extends Model
     }
     public function teams(){
 
-        return $this->belongsToMany(Team::class, 'document_team','team_id','document_id');
+        return $this->belongsToMany(Team::class, 'document_team','document_id', 'team_id');
 
+    }
+    public function drone()
+    {
+        return $this->belongsTo(drone::class, 'drone_id');
+    }
+    public function battrei()
+    {
+        return $this->belongsTo(battrei::class, 'battrei_id');
+    }
+    public function equidment()
+    {
+        return $this->belongsTo(equidment::class, 'equidment_id');
     }
     // public function scopeShared($query){
     //     return $query->where('shared',1);
