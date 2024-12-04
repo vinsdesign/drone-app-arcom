@@ -973,7 +973,17 @@ class FlighResource extends Resource
             ]);
     }
 
-        
+    //filter untuk individual flight
+    public static function getEloquentQuery(): Builder
+    {
+        $query = parent::getEloquentQuery();
+
+        if (request()->get('tableFilters[individual][isActive]') === true) {
+            $query->where('users_id', auth()->id());
+        }
+
+        return $query;
+    }  
 
 
     public static function table(Table $table): Table
@@ -1089,7 +1099,12 @@ class FlighResource extends Resource
                             $query->where('roles.name', 'Pilot');
                         });
                     })
-          ->label(TranslationHelper::translateIfNeeded('Filter by Pilot')),
+
+                    ->label(TranslationHelper::translateIfNeeded('Filter by Pilot')),
+                Tables\Filters\Filter::make('individual')
+                    ->query(function (Builder $query) {
+                            $query->where('users_id', auth()->id());
+                    })
             ])
             ->actions([
                 Tables\Actions\ActionGroup::make([
@@ -1168,6 +1183,9 @@ class FlighResource extends Resource
                     Tables\Actions\DeleteBulkAction::make(),
                 ]),
             ]);
+            $table->pagination(function ($query) {
+                return $query->appends(request()->query());
+            });
     }
 
     public static function infolist(Infolist $infolist): Infolist

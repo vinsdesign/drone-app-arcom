@@ -14,7 +14,7 @@ class TranslationHelper
             return $text;
         }
         $cacheKey = "translation_{$locale}_" . md5($text);
-        return Cache::remember($cacheKey, 1440, function () use ($text, $locale) {
+        return Cache::remember($cacheKey, 43200, function () use ($text, $locale) {
             return GoogleTranslate::trans($text, $locale);
         });
     }
