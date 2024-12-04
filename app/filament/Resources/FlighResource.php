@@ -21,6 +21,7 @@ use Filament\Forms\Form;
 use Filament\Notifications\Notification;
 use Filament\Resources\Resource;
 use Filament\Tables;
+use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
 use Filament\Infolists\Infolist;
 use Filament\Infolists\Components\Section;
@@ -1088,7 +1089,7 @@ class FlighResource extends Resource
                             $query->where('roles.name', 'Pilot');
                         });
                     })
-                    ->label(TranslationHelper::translateIfNeeded('Filter by Pilot'))
+          ->label(TranslationHelper::translateIfNeeded('Filter by Pilot')),
             ])
             ->actions([
                 Tables\Actions\ActionGroup::make([
