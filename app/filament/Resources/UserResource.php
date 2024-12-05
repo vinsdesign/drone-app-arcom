@@ -59,11 +59,11 @@ class UserResource extends Resource
                 Forms\Components\Section::make(TranslationHelper::translateIfNeeded('Personnel'))
                 ->schema([
                     Forms\Components\TextInput::make('name')
-                    ->label(TranslationHelper::translateIfNeeded('name'))    
+                    ->label(TranslationHelper::translateIfNeeded('Name'))    
                         ->required()
                         ->maxLength(255),
                     Forms\Components\TextInput::make('email')
-                    ->label(TranslationHelper::translateIfNeeded('email'))    
+                    ->label(TranslationHelper::translateIfNeeded('Email'))    
                         ->email()
                         ->required()
                         ->rules(function ($get) {
@@ -76,12 +76,12 @@ class UserResource extends Resource
                         })
                         ->maxLength(255)->columnSpan(2),
                     Forms\Components\TextInput::make('password')
-                    ->label(TranslationHelper::translateIfNeeded('password'))    
+                    ->label(TranslationHelper::translateIfNeeded('Password'))    
                         ->password()
                         ->required()
                         ->maxLength(255),
                     Forms\Components\TextInput::make('phone')
-                    ->label(TranslationHelper::translateIfNeeded('phone'))    
+                    ->label(TranslationHelper::translateIfNeeded('Phone'))    
                         ->tel()
                         ->rules(function ($get) {
                             return [
@@ -119,7 +119,7 @@ class UserResource extends Resource
                         ->default(auth()->user()->teams()->first()->id ?? null),
                     //role
                     Forms\Components\Select::make('roles')
-                    ->label(TranslationHelper::translateIfNeeded('roles'))    
+                    ->label(TranslationHelper::translateIfNeeded('Roles'))    
                         ->relationship('roles', 'name')
                         ->multiple()
                         ->preload()
@@ -129,7 +129,7 @@ class UserResource extends Resource
                             : DB::table('roles')->pluck('name', 'id'))
                         ->searchable(),
                         Forms\Components\TextArea::make('address')
-                        ->label(TranslationHelper::translateIfNeeded('address'))
+                        ->label(TranslationHelper::translateIfNeeded('Address'))
                         ->helperText(TranslationHelper::translateIfNeeded('Your Specific Address'))
                         ->columnSpanFull()
                         
@@ -164,7 +164,7 @@ class UserResource extends Resource
                 //     ->searchable(),
                 // Tables\Columns\ImageColumn::make('image'),
                 Tables\Columns\TextColumn::make('roles.name')
-                ->label(TranslationHelper::translateIfNeeded('roles'))    
+                ->label(TranslationHelper::translateIfNeeded('Roles'))    
                     ->searchable(),
                 Tables\Columns\TextColumn::make('last_flight')
                 ->label(TranslationHelper::translateIfNeeded('Last Flight'))    
@@ -308,14 +308,14 @@ class UserResource extends Resource
         ->schema([
             Section::make(TranslationHelper::translateIfNeeded('Personel Overview'))
                 ->schema([
-                    TextEntry::make('name')->label(TranslationHelper::translateIfNeeded('name')),
-                    TextEntry::make('email')->label(TranslationHelper::translateIfNeeded('email')),
-                    TextEntry::make('phone')->label(TranslationHelper::translateIfNeeded('phone')),
-                    TextEntry::make('countries.name')->label(TranslationHelper::translateIfNeeded('countries')),
-                    TextEntry::make('cities.name')->label(TranslationHelper::translateIfNeeded('cities')),
-                    TextEntry::make('sertif')->label(TranslationHelper::translateIfNeeded('certificate')),
-                    TextEntry::make('roles.name')->label(TranslationHelper::translateIfNeeded('roles')),
-                    TextEntry::make('address')->label(TranslationHelper::translateIfNeeded('address')),
+                    TextEntry::make('name')->label(TranslationHelper::translateIfNeeded('Name')),
+                    TextEntry::make('email')->label(TranslationHelper::translateIfNeeded('Email')),
+                    TextEntry::make('phone')->label(TranslationHelper::translateIfNeeded('Phone')),
+                    TextEntry::make('countries.name')->label(TranslationHelper::translateIfNeeded('Countries')),
+                    TextEntry::make('cities.name')->label(TranslationHelper::translateIfNeeded('Cities')),
+                    TextEntry::make('sertif')->label(TranslationHelper::translateIfNeeded('Certificate')),
+                    TextEntry::make('roles.name')->label(TranslationHelper::translateIfNeeded('Roles')),
+                    TextEntry::make('address')->label(TranslationHelper::translateIfNeeded('Address')),
                 ])->columns(2),
                  Section::make('')
                     ->schema([

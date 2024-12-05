@@ -36,7 +36,7 @@ class DocumentResource extends Resource
 
     public static function getNavigationBadge(): ?string{
         $teamID = Auth()->user()->teams()->first()->id;
-        return static::getModel()::Where('teams_id',$teamID)->count();
+        return static::getModel()::Where('teams_id',$teamID)->where('status_visible', '!=', 'archived')->count();
     }
 
     public static function getNavigationLabel(): string
@@ -129,7 +129,9 @@ class DocumentResource extends Resource
                     // })
                     ->searchable()
                     ->options(function (callable $get) use ($currentTeamId) {
-                        return projects::where('teams_id', $currentTeamId)->pluck('case', 'id');
+                        return projects::where('teams_id', $currentTeamId)
+                        ->where('status_visible', '!=', 'archived')
+                        ->pluck('case', 'id');
                     })
                     ->columnSpanFull(),
                 Forms\Components\FileUpload::make('doc')

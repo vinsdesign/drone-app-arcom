@@ -11,10 +11,11 @@
   
     //document Project
     if (Auth()->user()->roles()->pluck('name')->contains('super_admin') || (Auth()->user()->roles()->pluck('name')->contains('panel_user'))) {
-        $queryDocument = App\Models\Document::query()->where('projects_id', $projectID)->get();
+        $queryDocument = App\Models\Document::query()->where('projects_id', $projectID)->where('status_visible', '!=', 'archived')->get();
     }else{
         $queryDocument = App\Models\Document::query()
         ->where('projects_id', $projectID)
+        ->where('status_visible', '!=', 'archived')
         ->where(function ($query) {
             $query->where('shared', 1)
                 ->orWhere('users_id', auth()->id());
@@ -25,10 +26,11 @@
 
     //flight Document
     if (Auth()->user()->roles()->pluck('name')->contains('super_admin') || (Auth()->user()->roles()->pluck('name')->contains('panel_user'))) {
-        $queryDocumentFlight = App\Models\Document::query()->where('scope','Flight')->get();
+        $queryDocumentFlight = App\Models\Document::query()->where('scope','Flight')->where('status_visible', '!=', 'archived')->get();
     }else{
         $queryDocumentFlight = App\Models\Document::query()
         ->where('scope','Flight')
+        ->where('status_visible', '!=', 'archived')
         ->where(function ($query) {
             $query->where('shared', 1)
                 ->orWhere('users_id', auth()->id());

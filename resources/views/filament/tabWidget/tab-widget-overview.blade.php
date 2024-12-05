@@ -32,7 +32,7 @@
 
             //document
             $document = App\Models\document::whereHas('teams', function ($query) use ($currentTeamId){
-            $query->where('teams.id', $currentTeamId);
+            $query->where('teams.id', $currentTeamId)->where('status_visible', '!=', 'archived');
             })->orderBy('created_at', 'desc')
             ->limit(20)
             ->get();
