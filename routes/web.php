@@ -67,7 +67,7 @@ Route::post('/create-document-project',[popUpViewResource::class,'createProjectD
 Route::post('/create-document-flight',[popUpViewResource::class,'createFlightDocument'])->name('create.document.flight');
 Route::post('/create-media-flight',[popUpViewResource::class,'createMediaFlight'])->name('create.media.flight');
 Route::post('/create-document-equipment',[popUpViewResource::class,'createEquipmentDocument'])->name('create.document.equipment');
-Route::post('/create-document-battrei',[popUpViewResource::class,'createEquipmentBattrei'])->name('create.battrei.equipment');
+Route::post('/create-document-battrei',[popUpViewResource::class,'createBattreiDocument'])->name('create.document.battrei');
 Route::post('/create-document-drone',[popUpViewResource::class,'createDroneDocument'])->name('create.document.drone');
 Route::post('/create-document-personnel',[popUpViewResource::class,'createPersonnelDocument'])->name('create.document.personnel');
 Route::post('/edit-media-flight',[popUpViewResource::class,'buttonValues'])->name('edit.media.flight');

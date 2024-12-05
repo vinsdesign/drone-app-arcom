@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "59a9a4bedab979cb960969d0925a9fc0",
+    "content-hash": "ebfa51b5af64ed7a8b46f65a5e705762",
     "packages": [
         {
             "name": "anourvalar/eloquent-serialize",
@@ -1434,16 +1434,16 @@
         },
         {
             "name": "dotswan/filament-map-picker",
-            "version": "v1.4.0",
+            "version": "v1.6.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/dotswan/filament-map-picker.git",
-                "reference": "34a2c8b4b7b6cdd046d78712478575aced4ecd15"
+                "reference": "285158a99a09f3dc92c87fdf1bf5231e4396575a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/dotswan/filament-map-picker/zipball/34a2c8b4b7b6cdd046d78712478575aced4ecd15",
-                "reference": "34a2c8b4b7b6cdd046d78712478575aced4ecd15",
+                "url": "https://api.github.com/repos/dotswan/filament-map-picker/zipball/285158a99a09f3dc92c87fdf1bf5231e4396575a",
+                "reference": "285158a99a09f3dc92c87fdf1bf5231e4396575a",
                 "shasum": ""
             },
             "require": {
@@ -1467,12 +1467,12 @@
             "type": "library",
             "extra": {
                 "laravel": {
-                    "providers": [
-                        "Dotswan\\MapPicker\\MapPickerServiceProvider"
-                    ],
                     "aliases": {
                         "MapPicker": "Dotswan\\MapPicker\\Facades\\MapPicker"
-                    }
+                    },
+                    "providers": [
+                        "Dotswan\\MapPicker\\MapPickerServiceProvider"
+                    ]
                 }
             },
             "autoload": {
@@ -1507,7 +1507,7 @@
                 "issues": "https://github.com/dotswan/filament-map-picker/issues",
                 "source": "https://github.com/dotswan/filament-map-picker"
             },
-            "time": "2024-10-07T06:53:32+00:00"
+            "time": "2024-11-29T14:21:04+00:00"
         },
         {
             "name": "dragonmantank/cron-expression",

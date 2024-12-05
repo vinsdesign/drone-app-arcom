@@ -215,7 +215,7 @@
 
                         <!-- Judul Modal -->
                         <h2 class="text-center text-lg font-semibold text-gray-900 dark:text-white">
-                            {!! TranslationHelper::translateIfNeeded('Add Equipment Document')!!}
+                            {!! TranslationHelper::translateIfNeeded('Add Battrei Document')!!}
                         </h2>
                         <hr class="border-t border-gray-300 dark:border-gray-600 w-24 mx-auto">
 
@@ -489,9 +489,10 @@ $(document).ready(function() {
         formData.append('dock', $('#dock')[0].files[0]); // File input
         formData.append('owner', $('#owner').val());
         formData.append('relation', $('#relation').val());
+        console.log(formData);
 
         $.ajax({
-            url: '{{ route('create.battrei.equipment') }}',
+            url: '{{ route('create.document.battrei') }}',
             type: 'POST',
             data: formData,
             contentType: false,

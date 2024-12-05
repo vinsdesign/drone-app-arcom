@@ -408,22 +408,21 @@ $(document).ready(function() {
         formData.append('dock', $('#dock')[0].files[0]); // File input
         formData.append('owner', $('#owner').val());
         formData.append('project', $('#project').val());
-
-        // $.ajax({
-        //     url: '{{ route('create.document.project') }}',
-        //     type: 'POST',
-        //     data: formData,
-        //     contentType: false,
-        //     processData: false,
-        //     success: function(response) {
-        //         console.log(response);
-        //         location.reload();
-        //     },
-        //     error: function(xhr, status, error) {
-        //         console.error('Error:', error);
-        //     }
-        // });
-        console.log(formData);
+ 
+        $.ajax({
+            url: '{{ route('create.document.project') }}',
+            type: 'POST',
+            data: formData,
+            contentType: false,
+            processData: false,
+            success: function(response) {
+                console.log(response);
+                location.reload();
+            },
+            error: function(xhr, status, error) {
+                console.error('Error:', error);
+            }
+        });
     });
 });
 

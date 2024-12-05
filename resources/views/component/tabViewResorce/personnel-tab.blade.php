@@ -109,7 +109,7 @@
 
                         <!-- Judul Modal -->
                         <h2 class="text-center text-lg font-semibold text-gray-900 dark:text-white">
-                            {!! TranslationHelper::translateIfNeeded('Add Equipment Document')!!}
+                            {!! TranslationHelper::translateIfNeeded('Add Document')!!}
                         </h2>
                         <hr class="border-t border-gray-300 dark:border-gray-600 w-24 mx-auto">
 
