@@ -35,7 +35,7 @@ class ProjectsResource extends Resource
 
     public static function getNavigationBadge(): ?string{
         $teamID = Auth()->user()->teams()->first()->id;
-        return static::getModel()::Where('teams_id',$teamID)->count();
+        return static::getModel()::Where('teams_id',$teamID)->where('status_visible', '!=', 'archived')->count();
     }
 
     public static function getNavigationLabel(): string
@@ -77,6 +77,7 @@ class ProjectsResource extends Resource
                         Forms\Components\Select::make('customers_id')
                         ->label(TranslationHelper::translateIfNeeded('Customer'))
                             ->options(customer::where('teams_id', auth()->user()->teams()->first()->id)
+                            ->where('status_visible', '!=', 'archived')
                             ->pluck('name', 'id')
                             )->searchable()
                             ->placeholder(TranslationHelper::translateIfNeeded('Select an Customer'))
@@ -156,6 +157,15 @@ class ProjectsResource extends Resource
                     'archived' => 'Archived',
                 ])
                 ->default('current'),
+                Tables\Filters\SelectFilter::make('customers_id')
+                ->options(function () {
+                    $currentTeamId = auth()->user()->teams()->first()->id;
+                    return \App\Models\customer::where('teams_id', $currentTeamId)
+                        ->pluck('name', 'id')
+                        ->toArray();
+                })
+                ->label(TranslationHelper::translateIfNeeded('Filter by Customers'))
+                ->searchable(),
             ])
             ->actions([
                 Tables\Actions\ActionGroup::make([

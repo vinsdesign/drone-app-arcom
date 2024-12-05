@@ -1,7 +1,7 @@
 @php
     use App\Helpers\TranslationHelper;
     $user = Auth()->user()->Teams()->first()->id;
-    $sumCustomer = App\Models\customer::Where('teams_id',$user)->count('name');
+    $sumCustomer = App\Models\customer::Where('teams_id',$user)->where('status_visible', '!=', 'archived')->count('name');
 @endphp
 <x-filament-widgets::widget>
 

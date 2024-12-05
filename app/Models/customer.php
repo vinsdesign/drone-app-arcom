@@ -15,7 +15,8 @@ class customer extends Model
         'email',
         'address',
         'description',
-        'teams_id'
+        'teams_id',
+        'status_visible'
     ];
    public function teams(){
     return $this->belongsTo(Team::class);

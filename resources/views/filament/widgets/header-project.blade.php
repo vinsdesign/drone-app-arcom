@@ -1,7 +1,7 @@
 @php
     use App\Helpers\TranslationHelper;
     $user = Auth()->user()->teams()->first()->id;
-    $project = App\models\Projects::Where('teams_id',$user)->count('case')
+    $project = App\models\Projects::Where('teams_id',$user)->where('status_visible', '!=', 'archived')->count('case')
 @endphp
 <x-filament-widgets::widget>
     <x-filament::section>

@@ -2,7 +2,7 @@
     use App\Helpers\TranslationHelper;
 
     $user = Auth()->user()->Teams()->first()->id;
-    $sumDocument= App\Models\document::Where('teams_id',$user)->count('name');
+    $sumDocument= App\Models\document::Where('teams_id',$user)->where('status_visible', '!=', 'archived')->count('name');
     $flight = App\Models\document::Where('teams_id',$user)->where('scope','flight')->count('name');
     $organization= App\Models\document::Where('teams_id',$user)->where('scope','organizaton')->count('name');
     $pilot= App\Models\document::Where('teams_id', $user)->where('scope','pilot')->count('name');

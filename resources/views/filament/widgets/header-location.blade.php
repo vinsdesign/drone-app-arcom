@@ -1,7 +1,7 @@
 @php
     use App\Helpers\TranslationHelper;
     $user = Auth()->user()->Teams()->first()->id;
-    $sumLocation = App\Models\fligh_location::Where('teams_id',$user)->count('name');
+    $sumLocation = App\Models\fligh_location::Where('teams_id',$user)->where('status_visible', '!=', 'archived')->count('name');
 @endphp
 <x-filament-widgets::widget>
 
