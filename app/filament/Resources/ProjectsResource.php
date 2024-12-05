@@ -9,6 +9,7 @@ use App\Models\customer;
 use App\Models\Projects;
 use Filament\Forms;
 use Filament\Forms\Form;
+use Filament\Infolists\Components\Group;
 use Filament\Infolists\Components\Section;
 use Filament\Infolists\Components\View as InfolistView;
 use Filament\Notifications\Notification;
@@ -305,23 +306,29 @@ class ProjectsResource extends Resource
         ->schema([
             Section::make('')
                 ->schema([
-                    TextEntry::make('case')->label(TranslationHelper::translateIfNeeded('Case')),
-                    TextEntry::make('flight_date')->label(TranslationHelper::translateIfNeeded('Last Flight Date'))
-                        ->getStateUsing(function ($record) {
-                            $lastFlight = $record->flighs()->orderBy('start_date_flight', 'desc')->first();
-                            $totalFlights = $record->flighs()->count();
-                            $lastFlightDate = optional($lastFlight)->start_date_flight ? $lastFlight->start_date_flight : '';
-                            return "({$totalFlights}) Flights {$lastFlightDate}";
-                        }),
-                    TextEntry::make('revenue')->label(TranslationHelper::translateIfNeeded('Revenue')),
-                    TextEntry::make('currencies.iso')->label(TranslationHelper::translateIfNeeded('Currency')),
-                    TextEntry::make('customers.name')->label(TranslationHelper::translateIfNeeded('Customers'))
-                        ->url(fn($record) => $record->customers_id ? route('filament.admin.resources.customers.index', [
-                            'tenant' => Auth()->user()->teams()->first()->id,
-                            'record' => $record->customers_id,
-                        ]) : null)->color(Color::Blue),
-                    TextEntry::make('description')->label(TranslationHelper::translateIfNeeded('Description')),
-                ])->columns(2),
+                    Group::make([
+                        TextEntry::make('case')->label(TranslationHelper::translateIfNeeded('Case')),
+                        TextEntry::make('flight_date')->label(TranslationHelper::translateIfNeeded('Last Flight Date'))
+                            ->getStateUsing(function ($record) {
+                                $lastFlight = $record->flighs()->orderBy('start_date_flight', 'desc')->first();
+                                $totalFlights = $record->flighs()->count();
+                                $lastFlightDate = optional($lastFlight)->start_date_flight ? $lastFlight->start_date_flight : '';
+                                return "({$totalFlights}) Flights {$lastFlightDate}";
+                            }),
+                        TextEntry::make('revenue')->label(TranslationHelper::translateIfNeeded('Revenue')),
+                        TextEntry::make('currencies.iso')->label(TranslationHelper::translateIfNeeded('Currency')),
+                        TextEntry::make('customers.name')->label(TranslationHelper::translateIfNeeded('Customers'))
+                            ->url(fn($record) => $record->customers_id ? route('filament.admin.resources.customers.index', [
+                                'tenant' => Auth()->user()->teams()->first()->id,
+                                'record' => $record->customers_id,
+                            ]) : null)->color(Color::Blue),
+                        TextEntry::make('description')->label(TranslationHelper::translateIfNeeded('Description')),
+                    ]),
+                    Group::make([
+                        InfolistView::make('component.location.maps-view-project'),
+                    ])->columnSpan(2)
+                    
+                ])->columns(3),
             Section::make('')
                 ->schema([
                     InfolistView::make('component.flight-project'),
@@ -329,6 +336,7 @@ class ProjectsResource extends Resource
             Section::make('')
             ->schema([
                 InfolistView::make('component.tabViewResorce.project-tab'),
+
             ])
             
         ]);        

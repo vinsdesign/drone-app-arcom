@@ -9,6 +9,7 @@ use App\Models\fligh_location;
 use App\Models\Projects;
 use Filament\Forms;
 use Filament\Forms\Form;
+use Filament\Infolists\Components\Group;
 use Filament\Notifications\Notification;
 use Filament\Resources\Resource;
 use Filament\Tables;
@@ -22,6 +23,7 @@ use Filament\Infolists\Infolist;
 use Filament\Infolists\Components\Section;
 use Filament\Infolists\Components\TextEntry;
 use Filament\Infolists\Components\View as InfolistView;
+use Filament\Forms\Components\Section as FormSection;
 
 class FlighLocationResource extends Resource
 {
@@ -138,14 +140,60 @@ class FlighLocationResource extends Resource
                         ->label(TranslationHelper::translateIfNeeded('State')),
                         Forms\Components\TextInput::make('country')
                         ->label(TranslationHelper::translateIfNeeded('Country')),
-                        Forms\Components\TextInput::make('latitude')
-                        ->label(TranslationHelper::translateIfNeeded('Latitude'))->numeric(),
-                        Forms\Components\TextInput::make('longitude')
-                        ->label(TranslationHelper::translateIfNeeded('Longitude'))->numeric(),
-                        Forms\Components\TextInput::make('altitude')
-                        ->label(TranslationHelper::translateIfNeeded('Altitude'))
-                        ->numeric()
-                        ->columnSpan('1'),
+
+                        //map picker
+                        FormSection::make()
+                        ->description('')
+                        ->schema([
+                            //maps
+                            Map::make('locationMaps')
+                                ->label('Maps')
+                                ->columnSpanFull()
+                                ->defaultLocation(latitude: -8.592113191530379 , longitude: 115.27542114257814)
+                                ->afterStateHydrated(function ($state, $record, callable $set) {
+                                    if ($record) {
+                                        $set('locationMaps', [
+                                            'lat' => $record->latitude,
+                                            'lng' => $record->longitude,
+                                        ]);
+                                    }
+                                })
+                                ->afterStateUpdated(function ($state, callable $set): void {
+                                    $set('latitude',  $state['lat']);
+                                    $set('longitude', $state['lng']);
+                                    // $set('geojson',   json_encode($state['geojson']));
+                                })
+                                // ->afterStateHydrated(function ($state, $record, $set): void {
+                                //     if ($record) {
+                                //         $set('location', [
+                                //             'lat'     => $record->latitude,
+                                //             'lng'     => $record->longitude,
+                                //             // 'geojson' => $record->description ? json_decode(strip_tags($record->description), true) : null,
+                                //         ]);
+                                //     }
+                                // })
+                                ->extraStyles([
+                                    'min-height: 50vh',
+                                    'border-radius: 20px'
+                                ])
+                                ->liveLocation(true, true, 5000)
+                                ->showMarker()
+                                ->showFullscreenControl()
+                                ->showZoomControl()
+                                ->draggable()
+                                ->rangeSelectField('altitude'),
+
+                            Forms\Components\TextInput::make('latitude')
+                            ->label(TranslationHelper::translateIfNeeded('Latitude'))->numeric(),
+                            Forms\Components\TextInput::make('longitude')
+                            ->label(TranslationHelper::translateIfNeeded('Longitude'))->numeric(),
+                            Forms\Components\TextInput::make('altitude')
+                            ->label(TranslationHelper::translateIfNeeded('Altitude'))
+                            ->numeric()
+                            ->columnSpan('1'),
+                        ])
+
+
                         // Map::make('location')
                         // ->liveLocation(true, true, 5000)
                         // ->showMarker()
@@ -331,11 +379,16 @@ class FlighLocationResource extends Resource
         ->schema([
             Section::make(TranslationHelper::translateIfNeeded('Locations Overview'))
             ->schema([
-                TextEntry::make('name')->label(TranslationHelper::translateIfNeeded('Location Name')),
-                TextEntry::make('projects.case')->label(TranslationHelper::translateIfNeeded('Project Case')),
-                TextEntry::make('customers.name')->label(TranslationHelper::translateIfNeeded('Customers Name')),
-                TextEntry::make('description')->label(TranslationHelper::translateIfNeeded('Description'))
-            ])->columns(2),
+                Group::make([
+                    TextEntry::make('name')->label(TranslationHelper::translateIfNeeded('Location Name')),
+                    TextEntry::make('projects.case')->label(TranslationHelper::translateIfNeeded('Project Case')),
+                    TextEntry::make('customers.name')->label(TranslationHelper::translateIfNeeded('Customers Name')),
+                    TextEntry::make('description')->label(TranslationHelper::translateIfNeeded('Description'))
+                ]),
+                Group::make([
+                    InfolistView::make('component.location.maps-view-location'),
+                ])->columnSpan(2)
+            ])->columns(3),
             Section::make(TranslationHelper::translateIfNeeded('Locations Address'))
             ->schema([
                 TextEntry::make('address')->label(TranslationHelper::translateIfNeeded('Address')),

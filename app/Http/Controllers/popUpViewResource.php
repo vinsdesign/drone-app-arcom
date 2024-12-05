@@ -111,7 +111,7 @@ class popUpViewResource extends Controller
 
     }
 
-    //project document
+    //project document done
     public function createProjectDocument(Request $request){
         $id = Auth()->user()->teams()->first()->id;
         $name = $request->input('name');
@@ -156,7 +156,7 @@ class popUpViewResource extends Controller
 
     }
 
-    //equipment document
+    //equipment document done
     public function createEquipmentDocument(Request $request){
         $id = Auth()->user()->teams()->first()->id;
         $name = $request->input('name');
@@ -165,7 +165,7 @@ class popUpViewResource extends Controller
         $link = $request->input('link');
         $description = $request->input('notes');
         $owner = $request->input('owner');
-        $project = $request->input('relation');
+        $eq = $request->input('relation');
 
         //untuk file ke path
 
@@ -183,7 +183,7 @@ class popUpViewResource extends Controller
             'description'=> $description,
             'doc'=>$uniqueFileName,
             'users_id'=>$owner,
-            'projects_id' =>$project,
+            'equidment_id' =>$eq,
             'teams_id'=>$id,
         ]);
 
@@ -201,7 +201,7 @@ class popUpViewResource extends Controller
 
     }
 
-    // battrei DOcument
+    // battrei DOcument done
     public function createBattreiDocument(Request $request){
         $id = Auth()->user()->teams()->first()->id;
         $name = $request->input('name');
@@ -210,7 +210,7 @@ class popUpViewResource extends Controller
         $link = $request->input('link');
         $description = $request->input('notes');
         $owner = $request->input('owner');
-        $project = $request->input('relation');
+        $battrei = $request->input('relation');
 
         //untuk file ke path
 
@@ -228,7 +228,7 @@ class popUpViewResource extends Controller
             'description'=> $description,
             'doc'=>$uniqueFileName,
             'users_id'=>$owner,
-            'projects_id' =>$project,
+            'battrei_id' =>$battrei,
             'teams_id'=>$id,
         ]);
 
@@ -246,7 +246,7 @@ class popUpViewResource extends Controller
 
     }
 
-    //Document drone
+    //Document drone done
     public function createDroneDocument(Request $request){
         $id = Auth()->user()->teams()->first()->id;
         $name = $request->input('name');
@@ -255,7 +255,7 @@ class popUpViewResource extends Controller
         $link = $request->input('link');
         $description = $request->input('notes');
         $owner = $request->input('owner');
-        $project = $request->input('relation');
+        $drone = $request->input('relation');
 
         //untuk file ke path
 
@@ -273,7 +273,7 @@ class popUpViewResource extends Controller
             'description'=> $description,
             'doc'=>$uniqueFileName,
             'users_id'=>$owner,
-            'projects_id' =>$project,
+            'drone_id' =>$drone,
             'teams_id'=>$id,
         ]);
 
@@ -291,52 +291,50 @@ class popUpViewResource extends Controller
 
     }
 
-        //Document drone
-        public function createPersonnelDocument(Request $request){
-            $id = Auth()->user()->teams()->first()->id;
-            $name = $request->input('name');
-            $expired = $request->input('expired');
-            $refNumber = $request->input('refNumber');
-            $link = $request->input('link');
-            $description = $request->input('notes');
-            $owner = $request->input('owner');
-            $project = $request->input('relation');
-            $type = $request->input('type');
-    
-            //untuk file ke path
-    
-            $file = $request->file('dock');
-            $uniqueFileName = Str::uuid() . '-' . $file->getClientOriginalName();
-    
-            //upload ke database
-    
-            $sql = document::create([
-                'name' => $name,
-                'refnumber'=>$refNumber,
-                'expired_date'=>$expired,
-                'scope'=> 'Equipment',
-                'external link' =>$link,
-                'description'=> $description,
-                'doc'=>$uniqueFileName,
-                'users_id'=>$owner,
-                'projects_id' =>$project,
-                'type'=>$type,
-                'teams_id'=>$id,
-            ]);
-    
-            if($sql){
-            
-                Storage::disk('public')->putFileAs('/', $file, $uniqueFileName);
-                $sql->teams()->attach($id);
-                session()->flash('successfully', 'Data berhasil ditambahkan!');
-                return response()->json(['success' => 'Create successfully',
-                'name' => $uniqueFileName]);      
-            }else{
-                return response()->json(['error' => 'Error To Create.']);
-            }
-    
-    
+    //Document personel
+    public function createPersonnelDocument(Request $request){
+        $id = Auth()->user()->teams()->first()->id;
+        $name = $request->input('name');
+        $expired = $request->input('expired');
+        $refNumber = $request->input('refNumber');
+        $link = $request->input('link');
+        $description = $request->input('notes');
+        $owner = $request->input('owner');
+        $type = $request->input('type');
+
+        //untuk file ke path
+
+        $file = $request->file('dock');
+        $uniqueFileName = Str::uuid() . '-' . $file->getClientOriginalName();
+
+        //upload ke database
+
+        $sql = document::create([
+            'name' => $name,
+            'refnumber'=>$refNumber,
+            'expired_date'=>$expired,
+            'scope'=> 'Equipment',
+            'external link' =>$link,
+            'description'=> $description,
+            'doc'=>$uniqueFileName,
+            'users_id'=>$owner,
+            'type'=>$type,
+            'teams_id'=>$id,
+        ]);
+
+        if($sql){
+        
+            Storage::disk('public')->putFileAs('/', $file, $uniqueFileName);
+            $sql->teams()->attach($id);
+            session()->flash('successfully', 'Data berhasil ditambahkan!');
+            return response()->json(['success' => 'Create successfully',
+            'name' => $uniqueFileName]);      
+        }else{
+            return response()->json(['error' => 'Error To Create.']);
         }
+
+
+    }
 
     public function buttonValues(Request $request)
     {

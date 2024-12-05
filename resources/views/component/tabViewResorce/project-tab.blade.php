@@ -407,7 +407,7 @@ $(document).ready(function() {
         formData.append('dock', $('#dock')[0].files[0]); // File input
         formData.append('owner', $('#owner').val());
         formData.append('project', $('#project').val());
-
+ 
         $.ajax({
             url: '{{ route('create.document.project') }}',
             type: 'POST',
