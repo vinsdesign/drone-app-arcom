@@ -4,10 +4,11 @@
     $id = $getRecord()->id;
 
     if (Auth()->user()->roles()->pluck('name')->contains('super_admin') || (Auth()->user()->roles()->pluck('name')->contains('panel_user'))) {
-        $queryUsers = App\Models\Document::query()->where('users_id', $id)->get();
+        $queryUsers = App\Models\Document::query()->where('users_id', $id)->where('status_visible', '!=', 'archived')->get();
     }else{
         $queryUsers = App\Models\Document::query()
         ->where('users_id', $id)
+        ->where('status_visible', '!=', 'archived')
         ->where(function ($query) {
             $query->where('shared', 1)
                 ->orWhere('users_id', auth()->id());

@@ -20,6 +20,7 @@ use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Illuminate\Validation\Rule;
 use Illuminate\Support\HtmlString;
 use App\Helpers\TranslationHelper;
+use Filament\Notifications\Notification;
 
 class CustomerResource extends Resource
 {
@@ -34,7 +35,7 @@ class CustomerResource extends Resource
 
     public static function getNavigationBadge(): ?string{
         $teamID = Auth()->user()->teams()->first()->id;
-        return static::getModel()::Where('teams_id',$teamID)->count();
+        return static::getModel()::Where('teams_id',$teamID)->where('status_visible', '!=', 'archived')->count();
     }
 
     public static function getNavigationLabel(): string
@@ -63,11 +64,11 @@ class CustomerResource extends Resource
             Forms\Components\Section::make(TranslationHelper::translateIfNeeded('Customers'))
                 ->schema([
                     Forms\Components\TextInput::make('name')
-                    ->label(TranslationHelper::translateIfNeeded('name'))
+                    ->label(TranslationHelper::translateIfNeeded('Name'))
                     ->required()
                     ->maxLength(255),
                 Forms\Components\TextInput::make('phone')
-                ->label(TranslationHelper::translateIfNeeded('phone'))
+                ->label(TranslationHelper::translateIfNeeded('Phone'))
                     ->tel()
                     ->required()
                     ->rules(function ($get) {
@@ -79,7 +80,7 @@ class CustomerResource extends Resource
                         ];
                     }),
                 Forms\Components\TextInput::make('email')
-                ->label(TranslationHelper::translateIfNeeded('email'))
+                ->label(TranslationHelper::translateIfNeeded('Email'))
                     ->email()
                     ->required()
                     ->rules(function ($get) {
@@ -92,12 +93,12 @@ class CustomerResource extends Resource
                     })
                     ->maxLength(255),
                 Forms\Components\TextInput::make('address')
-                ->label(TranslationHelper::translateIfNeeded('address'))
+                ->label(TranslationHelper::translateIfNeeded('Address'))
                     ->required()
                     ->maxLength(255),
     
                 Forms\Components\Textarea::make('description')
-                ->label(TranslationHelper::translateIfNeeded('description'))
+                ->label(TranslationHelper::translateIfNeeded('Description'))
                     ->maxLength(255)->columnSpanFull(),
                 Forms\Components\Hidden::make('teams_id')
                 ->default(auth()->user()->teams()->first()->id ?? null),
@@ -152,11 +153,39 @@ class CustomerResource extends Resource
                         //     ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
-                //
+                Tables\Filters\SelectFilter::make('status_visible')
+                    ->label('')
+                    ->options([
+                        'current' => 'Current',
+                        'archived' => 'Archived',
+                    ])
+                    ->default('current'),
             ])
             ->actions([
+                Tables\Actions\ActionGroup::make([
                     Tables\Actions\ViewAction::make(),
                     Tables\Actions\EditAction::make(),
+                    Tables\Actions\Action::make('Archive')->label(TranslationHelper::translateIfNeeded('Archive'))
+                        ->hidden(fn ($record) => $record->status_visible == 'archived')
+                                ->action(function ($record) {
+                                $record->update(['status_visible' => 'archived']);
+                                Notification::make()
+                                ->title('Status Updated')
+                                ->body("Status successfully changed.")
+                                ->success()
+                                ->send();
+                            })->icon('heroicon-s-archive-box-arrow-down'),
+                    Tables\Actions\Action::make('Un-Archive')->label(TranslationHelper::translateIfNeeded(' Un-Archive'))
+                        ->hidden(fn ($record) => $record->status_visible == 'current')
+                                ->action(function ($record) {
+                                $record->update(['status_visible' => 'current']);
+                                    Notification::make()
+                                    ->title('Status Updated')
+                                    ->body("Status successfully changed.")
+                                    ->success()
+                                    ->send();
+                            })->icon('heroicon-s-archive-box'),
+                ])
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
@@ -176,16 +205,16 @@ class CustomerResource extends Resource
             ->label(TranslationHelper::translateIfNeeded('Customer Overview'))
             ->schema([
                 TextEntry::make('name')
-                ->label(TranslationHelper::translateIfNeeded('name')),
+                ->label(TranslationHelper::translateIfNeeded('Name')),
                 TextEntry::make('phone')
-                ->label(TranslationHelper::translateIfNeeded('phone')),
+                ->label(TranslationHelper::translateIfNeeded('Phone')),
                 TextEntry::make('email')
-                ->label(TranslationHelper::translateIfNeeded('email')),
+                ->label(TranslationHelper::translateIfNeeded('Email')),
                 TextEntry::make('address')
-                ->label(TranslationHelper::translateIfNeeded('address')),
+                ->label(TranslationHelper::translateIfNeeded('Address')),
                 TextEntry::make('description')
-                ->label(TranslationHelper::translateIfNeeded('description')),
-            ])
+                ->label(TranslationHelper::translateIfNeeded('Description')),
+            ])->columns(2)
 
         ]);
     }

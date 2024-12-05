@@ -190,9 +190,8 @@ class BattreiResource extends Resource
                             ->onColor('success')
                             ->offColor('danger')
                             ->default($defaultData['is_loaner'] ?? null),
-                        Forms\Components\TextInput::make('description')
+                        Forms\Components\TextArea::make('description')
                             ->label(TranslationHelper::translateIfNeeded('Description'))
-                            ->required()
                             ->maxLength(255)->columnSpanFull()
                             ->default($defaultData['description'] ?? null),
                         ])->columns(3),

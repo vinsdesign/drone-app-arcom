@@ -211,6 +211,7 @@ class PlannedMissionResource extends Resource
                         return $currentTeam ? $currentTeam->id_projects : null;
                     })
                     ->options(Projects::where('teams_id', auth()->user()->teams()->first()->id)
+                            ->where('status_visible', '!=', 'archived')
                             ->pluck('case', 'id')
                             )->searchable(),
                 ])->columnSpan(1),
@@ -219,7 +220,9 @@ class PlannedMissionResource extends Resource
                     view::make('component.button-location'),
                     Forms\Components\Select::make('location_id')
                     ->options(function (callable $get) use ($currentTeamId) {
-                        return fligh_location::where('teams_id', $currentTeamId)->pluck('name', 'id');
+                        return fligh_location::where('teams_id', $currentTeamId)
+                        ->where('status_visible', '!=', 'archived')
+                        ->pluck('name', 'id');
                     })
                     ->label(TranslationHelper::translateIfNeeded('Location'))
                     ->searchable()
@@ -966,6 +969,50 @@ class PlannedMissionResource extends Resource
                 ->toggleable(isToggledHiddenByDefault: true),
         ])        
             ->filters([
+                Tables\Filters\Filter::make('start_date_flight')
+                    ->form([
+                        Forms\Components\Grid::make(2)
+                            ->schema([
+                        Forms\Components\DatePicker::make('from')->label(TranslationHelper::translateIfNeeded('Flight Date From')),
+                        Forms\Components\DatePicker::make('until')->label(TranslationHelper::translateIfNeeded('Until')),
+                            ]),
+                    ])
+                    ->query(function (Builder $query, array $data){
+                        $query->when($data['from'], fn ($q) => $q->whereDate('start_date_flight', '>=', $data['from']));
+                        $query->when($data['until'], fn ($q) => $q->whereDate('start_date_flight', '<=', $data['until']));
+                    }),
+                Tables\Filters\SelectFilter::make('projects_id')
+                    ->options(function () {
+                        $currentTeamId = auth()->user()->teams()->first()->id;
+                        return \App\Models\Projects::where('teams_id', $currentTeamId)
+                            ->pluck('case', 'id')
+                            ->toArray();
+                    })    
+                    ->searchable()
+                    ->label(TranslationHelper::translateIfNeeded('Filter by Project')),
+                Tables\Filters\SelectFilter::make('drones_id')
+                    ->options(function () {
+                        $currentTeamId = auth()->user()->teams()->first()->id;
+                        return \App\Models\drone::where('teams_id', $currentTeamId)
+                            ->pluck('name', 'id')
+                            ->toArray();
+                    })    
+                    ->searchable()
+                    ->label(TranslationHelper::translateIfNeeded('Filter by Drones')),
+                Tables\Filters\SelectFilter::make('users_id')
+                    ->options(function () {
+                        $currentTeamId = auth()->user()->teams()->first()->id;
+                        return \App\Models\User::whereHas('teams', function (Builder $query) use ($currentTeamId) {
+                                $query->where('team_id', $currentTeamId);
+                            })
+                            ->whereHas('roles', function (Builder $query) {
+                                $query->where('roles.name', 'Pilot');
+                            })
+                            ->pluck('name', 'id')
+                            ->toArray();
+                    })
+                    ->searchable()
+                    ->label(TranslationHelper::translateIfNeeded('Filter by Pilot')),
                 Tables\Filters\SelectFilter::make('status')
                     ->options([
                         'append' => 'Append',

@@ -39,7 +39,7 @@ class FlighLocationResource extends Resource
 
     public static function getNavigationBadge(): ?string{
         $teamID = Auth()->user()->teams()->first()->id;
-        return static::getModel()::Where('teams_id',$teamID)->count();
+        return static::getModel()::Where('teams_id',$teamID)->where('status_visible', '!=', 'archived')->count();
     }
 
     public static function getNavigationLabel(): string
@@ -72,7 +72,9 @@ class FlighLocationResource extends Resource
                         //     $query->where('teams_id', $currentTeamId);
                         // }),  
                         ->options(function (callable $get) use ($currentTeamId) {
-                            return projects::where('teams_id', $currentTeamId)->pluck('case', 'id');
+                            return projects::where('teams_id', $currentTeamId)
+                            ->where('status_visible', '!=', 'archived')
+                            ->pluck('case', 'id');
                         })
                         ->afterStateUpdated(function ($state, callable $set) {
                             if ($state) {

@@ -214,6 +214,7 @@ class FlighResource extends Resource
                         return $currentTeam ? $currentTeam->id_projects : null;
                     })
                     ->options(Projects::where('teams_id', auth()->user()->teams()->first()->id)
+                            ->where('status_visible', '!=', 'archived')
                             ->pluck('case', 'id')
                             )->searchable(),
                 ])->columnSpan(1),
@@ -228,7 +229,9 @@ class FlighResource extends Resource
                     //     });
                     // })
                     ->options(function (callable $get) use ($currentTeamId) {
-                        return fligh_location::where('teams_id', $currentTeamId)->pluck('name', 'id');
+                        return fligh_location::where('teams_id', $currentTeamId)
+                        ->where('status_visible', '!=', 'archived')
+                        ->pluck('name', 'id');
                     })
                     ->label(TranslationHelper::translateIfNeeded('Location'))
                     ->searchable()

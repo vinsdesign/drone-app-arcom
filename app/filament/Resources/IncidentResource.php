@@ -90,7 +90,9 @@ class IncidentResource extends Resource
                     Forms\Components\Select::make('location_id')
                         // ->relationship('fligh_locations', 'name')
                         ->options(function (callable $get) use ($currentTeamId) {
-                            return fligh_location::where('teams_id', $currentTeamId)->pluck('name', 'id');
+                            return fligh_location::where('teams_id', $currentTeamId)
+                            ->where('status_visible', '!=', 'archived')
+                            ->pluck('name', 'id');
                         })
                         ->searchable()
                         ->label(TranslationHelper::translateIfNeeded('Flight Locations'))
@@ -108,7 +110,9 @@ class IncidentResource extends Resource
                         // ->relationship('project','case')
                         ->label(TranslationHelper::translateIfNeeded('Projects'))
                         ->options(function (callable $get) use ($currentTeamId) {
-                            return Projects::where('teams_id', $currentTeamId)->pluck('case', 'id');
+                            return Projects::where('teams_id', $currentTeamId)
+                            ->where('status_visible', '!=', 'archived')
+                            ->pluck('case', 'id');
                         })
                         ->searchable()
                         ->required(),

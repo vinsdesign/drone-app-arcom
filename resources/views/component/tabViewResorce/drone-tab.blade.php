@@ -5,10 +5,11 @@
     $teams = Auth()->user()->teams()->first()->id;
 
     if (Auth()->user()->roles()->pluck('name')->contains('super_admin') || (Auth()->user()->roles()->pluck('name')->contains('panel_user'))) {
-        $queryDocument = App\Models\Document::query()->where('drone_id', $id)->get();
+        $queryDocument = App\Models\Document::query()->where('drone_id', $id)->where('status_visible', '!=', 'archived')->get();
     }else{
         $queryDocument = App\Models\Document::query()
         ->where('drone_id', $id)
+        ->where('status_visible', '!=', 'archived')
         ->where(function ($query) {
             $query->where('shared', 1)
                 ->orWhere('users_id', auth()->id());
