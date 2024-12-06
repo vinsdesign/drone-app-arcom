@@ -120,7 +120,33 @@
                             {!! TranslationHelper::translateIfNeeded('Upload Project Document')!!}
                         </h2>
                         <hr class="border-t border-gray-300 dark:border-gray-600 w-24 mx-auto">
-
+                    
+                        {{-- error massages --}}
+                        <div id="bodyErrorMassages" style="display: none;" class="rounded-md bg-red-50 p-4 shadow dark:bg-red-800" role="alert">
+                            <div class="flex items-start">
+                                <div class="flex-shrink-0">
+                                    <!-- Icon Error -->
+                                    <svg class="h-5 w-5 text-red-400 dark:text-red-200" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 5.636a9 9 0 11-12.728 0m1.414-1.414a9 9 0 0110.899 0m-5.7 5.8a2.25 2.25 0 10-3.18-3.181m0 0a2.25 2.25 0 013.18 3.181m-3.18-3.181L12 12m0 0l3.18-3.18" />
+                                    </svg>
+                                </div>
+                                <div class="ml-3 text-sm">
+                                    <p class="font-medium text-red-800 dark:text-red-200">
+                                        {!! TranslationHelper::translateIfNeeded('Error: ') !!}
+                                        <span id="errorMassages"></span>
+                                    </p>
+                                </div>
+                                <div class="ml-auto pl-3">
+                                    <button type="button" onclick="closeMessages()" class="inline-flex rounded-md bg-red-50 text-red-800 hover:text-red-600 focus:outline-none focus:ring-2 focus:ring-red-400 focus:ring-offset-2 dark:bg-red-800 dark:text-red-200"
+                                        data-bs-dismiss="alert" aria-label="Close">
+                                        <svg class="h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                                        </svg>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+            
                         <!-- Form -->
                         <form id="documentForm" enctype="multipart/form-data">
                             @csrf
@@ -376,6 +402,10 @@
         const contents = document.querySelector('.fixed');
         contents.classList.remove('active-modal');     
     }
+    //messages close
+    function closeMessages() {
+        document.getElementById('bodyErrorMassages').style.display = 'none';
+    }
 </script>
 
 <script>
@@ -399,30 +429,79 @@
 $(document).ready(function() {
     $('#triggerButton').click(function() {
         const formData = new FormData();
-        formData.append('_token', '{{ csrf_token() }}'); // CSRF token
+        formData.append('_token', '{{ csrf_token() }}');
         formData.append('name', $('#name').val());
         formData.append('expired', $('#expiredDate').val());
         formData.append('refNumber', $('#refnumber').val());
         formData.append('link', $('#externalLink').val());
         formData.append('notes', $('#description').val());
-        formData.append('dock', $('#dock')[0].files[0]); // File input
+        formData.append('dock', $('#dock')[0].files[0]);
         formData.append('owner', $('#owner').val());
         formData.append('project', $('#project').val());
- 
-        $.ajax({
-            url: '{{ route('create.document.project') }}',
-            type: 'POST',
-            data: formData,
-            contentType: false,
-            processData: false,
-            success: function(response) {
-                console.log(response);
-                location.reload();
-            },
-            error: function(xhr, status, error) {
-                console.error('Error:', error);
-            }
-        });
+
+        let name = $('#name').val().trim() || null;
+        let expired = $('#expiredDate').val().trim() || null;
+        let refNumber = $('#refnumber').val().trim() || null;
+        let dock = $('#dock').val().trim() || null;
+        let link = $('#externalLink').val().trim() || null;
+
+        if(name == null){
+            document.getElementById('bodyErrorMassages').style.display = 'block';
+            document.getElementById('errorMassages').textContent = 'Name cannot be null';
+            setTimeout(() => {
+                document.getElementById('bodyErrorMassages').style.display = 'none';
+            }, 5000);
+            document.getElementById('bodyErrorMassages').scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'start'
+                });
+        }else if(refNumber == null){
+            document.getElementById('bodyErrorMassages').style.display = 'block';
+            document.getElementById('errorMassages').textContent = 'Ref number  cannot be null';
+            setTimeout(() => {
+                document.getElementById('bodyErrorMassages').style.display = 'none';
+            }, 5000);
+            document.getElementById('bodyErrorMassages').scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'start'
+                });
+        }else if(expired == null){
+            document.getElementById('bodyErrorMassages').style.display = 'block';
+            document.getElementById('errorMassages').textContent = 'Expired date cannot be null';
+            setTimeout(() => {
+                document.getElementById('bodyErrorMassages').style.display = 'none';
+            }, 5000);
+            document.getElementById('bodyErrorMassages').scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'start'
+                });
+        }else if(dock == null && link == null){
+            document.getElementById('bodyErrorMassages').style.display = 'block';
+            document.getElementById('errorMassages').textContent = 'Please enter a link or your document';
+            setTimeout(() => {
+                document.getElementById('bodyErrorMassages').style.display = 'none';
+            }, 5000);
+            document.getElementById('bodyErrorMassages').scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'start'
+                });
+        }
+        else{
+            $.ajax({
+                url: '{{ route('create.document.project') }}',
+                type: 'POST',
+                data: formData,
+                contentType: false,
+                processData: false,
+                success: function(response) {
+                    console.log(response);
+                    location.reload();
+                },
+                error: function(xhr, status, error) {
+                    console.error('Error:', error);
+                }
+            });
+        }
     });
 });
 

@@ -41,7 +41,31 @@
                 {!! TranslationHelper::translateIfNeeded('Create Battery')!!}
             </h2>
             <hr class="border-t border-gray-300 dark:border-gray-600 w-24 mx-auto">
-
+            {{-- error massages --}}
+            <div id="bodyErrorMassagesBattery" style="display: none;" class="rounded-md bg-red-50 p-4 shadow dark:bg-red-800" role="alert">
+                <div class="flex items-start">
+                    <div class="flex-shrink-0">
+                        <!-- Icon Error -->
+                        <svg class="h-5 w-5 text-red-400 dark:text-red-200" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 5.636a9 9 0 11-12.728 0m1.414-1.414a9 9 0 0110.899 0m-5.7 5.8a2.25 2.25 0 10-3.18-3.181m0 0a2.25 2.25 0 013.18 3.181m-3.18-3.181L12 12m0 0l3.18-3.18" />
+                        </svg>
+                    </div>
+                    <div class="ml-3 text-sm">
+                        <p class="font-medium text-red-800 dark:text-red-200">
+                            {!! TranslationHelper::translateIfNeeded('Error: ') !!}
+                            <span id="errorMassagesBattery"></span>
+                        </p>
+                    </div>
+                    <div class="ml-auto pl-3">
+                        <button type="button" onclick="closeMessagesBattery()" class="inline-flex rounded-md bg-red-50 text-red-800 hover:text-red-600 focus:outline-none focus:ring-2 focus:ring-red-400 focus:ring-offset-2 dark:bg-red-800 dark:text-red-200"
+                            data-bs-dismiss="alert" aria-label="Close">
+                            <svg class="h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+            </div>
             <!-- Form --> 
             <div>
                 @csrf
@@ -229,6 +253,10 @@
         const contents = document.querySelector('.battrei');
         contents.classList.remove('active');     
     }
+    //messages close
+    function closeMessagesBattery() {
+        document.getElementById('bodyErrorMassagesBattery').style.display = 'none';
+    }
 </script>
 {{-- test ajax ke controller action --}}
 <script>
@@ -256,98 +284,63 @@
         const descriptionValue = $('#descriptionbattrei').val();
         const userIdValue = $('#users_idbattrei').val();
 
-        // Log for debugging
-        console.log({
-            name: nameValue,
-            model: modelValue,
-            status: statusValue,
-            asset_inventory: assetInventoryValue,
-            serial_P: serialPValue,
-            serial_I: serialIValue,
-            cellCount: cellCountValue,
-            nominal_voltage: nominalVoltageValue,
-            capacity: capacityValue,
-            initial_Cycle_count: initialCycleCountValue,
-            life_span: lifeSpanValue,
-            flight_count: flightCountValue,
-            for_drone: forDroneValue,
-            purchase_date: purchaseDateValue,
-            insurable_value: insurableValueValue,
-            weight: weightValue,
-            firmware_version: firmwareVersionValue,
-            hardware_version: hardwareVersionValue,
-            is_loaner: isLoanerValue,
-            description: descriptionValue,
-            users_id: userIdValue
-        });
 
         // // Validate empty fields
-        if (
-                nameValue.trim() === '' ||
-                modelValue.trim() === '' ||
-                statusValue.trim() === '' ||
-                assetInventoryValue.trim() === '' ||
-                serialPValue.trim() === '' ||
-                serialIValue.trim() === '' ||
-                cellCountValue.trim() === '' ||
-                nominalVoltageValue.trim() === '' ||
-                capacityValue.trim() === '' ||
-                initialCycleCountValue.trim() === '' ||
-                lifeSpanValue.trim() === '' ||
-                flightCountValue.trim() === '' ||
-                purchaseDateValue.trim() === '' ||
-                insurableValueValue.trim() === '' ||
-                weightValue.trim() === '' ||
-                firmwareVersionValue.trim() === '' ||
-                hardwareVersionValue.trim() === '' ||
-                isLoanerValue.trim() === '' ||
-                userIdValue.trim() === ''
-            ) {
-            alert('Name cannot be empty!');
-            return;
+        if (nameValue.trim() === '') {
+            document.getElementById('bodyErrorMassagesBattery').style.display = 'block';
+            document.getElementById('errorMassagesBattery').textContent = 'Name cannot be null';
+            document.getElementById('bodyErrorMassagesBattery').scrollIntoView({
+                behavior: 'smooth',
+                block: 'start'
+            });
+            setTimeout(() => {
+                document.getElementById('bodyErrorMassagesBattery').style.display = 'none';
+            }, 5000);
+        }else{
+            $button.toggleClass("button--loading");
+            // Send data via AJAX
+            $.ajax({
+                url: '{{ route('create-battrei') }}',
+                type: 'POST',
+                data: {
+                    _token: '{{ csrf_token() }}', // Laravel CSRF token
+                    name: nameValue,
+                    model: modelValue,
+                    status: statusValue,
+                    asset_inventory: assetInventoryValue,
+                    serial_P: serialPValue,
+                    serial_I: serialIValue,
+                    cellCountValue: cellCountValue,
+                    nominal_voltage: nominalVoltageValue,
+                    capacity: capacityValue,
+                    initial_Cycle_count: initialCycleCountValue,
+                    life_span: lifeSpanValue,
+                    flight_count: flightCountValue,
+                    for_drone: forDroneValue,
+                    purchase_date: purchaseDateValue,
+                    insurable_value: insurableValueValue,
+                    weight: weightValue,
+                    firmware_version: firmwareVersionValue,
+                    hardware_version: hardwareVersionValue,
+                    is_loaner: isLoanerValue,
+                    description: descriptionValue,
+                    users_id: userIdValue,
+                },
+                success: function(response) {
+                    console.log(response);
+                    $("#success-notification-battrei").removeClass("hidden-notif")
+                    $("#success-notification-battrei").addClass("notification")
+                    setTimeout(() => {
+                        location.reload();
+                    }, 3000);
+                },
+                error: function(xhr, status, error) {
+                    console.error('error:', error);
+                    $button.removeClass("button--loading");
+                }
+            });
         }
-        $button.toggleClass("button--loading");
-        // Send data via AJAX
-        $.ajax({
-            url: '{{ route('create-battrei') }}',
-            type: 'POST',
-            data: {
-                _token: '{{ csrf_token() }}', // Laravel CSRF token
-                name: nameValue,
-                model: modelValue,
-                status: statusValue,
-                asset_inventory: assetInventoryValue,
-                serial_P: serialPValue,
-                serial_I: serialIValue,
-                cellCountValue: cellCountValue,
-                nominal_voltage: nominalVoltageValue,
-                capacity: capacityValue,
-                initial_Cycle_count: initialCycleCountValue,
-                life_span: lifeSpanValue,
-                flight_count: flightCountValue,
-                for_drone: forDroneValue,
-                purchase_date: purchaseDateValue,
-                insurable_value: insurableValueValue,
-                weight: weightValue,
-                firmware_version: firmwareVersionValue,
-                hardware_version: hardwareVersionValue,
-                is_loaner: isLoanerValue,
-                description: descriptionValue,
-                users_id: userIdValue,
-            },
-            success: function(response) {
-                console.log(response);
-                $("#success-notification-battrei").removeClass("hidden-notif")
-                $("#success-notification-battrei").addClass("notification")
-                setTimeout(() => {
-                    location.reload();
-                }, 3000);
-            },
-            error: function(xhr, status, error) {
-                console.error('error:', error);
-                $button.removeClass("button--loading");
-            }
-        });
+
     }
 </script>
 <script>

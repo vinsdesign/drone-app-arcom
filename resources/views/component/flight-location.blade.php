@@ -4,9 +4,13 @@ $teams = Auth()->user()->teams()->first()->id;
 $locations = session('location_id');
 $flights = App\Models\Fligh::where('teams_id', $teams)
     ->where('location_id', $locations)
-    ->get();
+    ->paginate(5);
 
-$count = $flights->count('id');
+$flightCount = App\Models\Fligh::where('teams_id', $teams)
+->where('location_id', $locations)
+->get();
+
+$count = $flightCount->count('id');
 
 ?>
 <head>
@@ -102,6 +106,9 @@ $count = $flights->count('id');
         </div>
     </div>
     @endforeach
+    <div class="mt-4">
+        {{ $flights->links() }}
+    </div>
 
 @endif
 {{-- pindah ke view location --}}

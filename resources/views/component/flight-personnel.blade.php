@@ -2,8 +2,9 @@
 use App\Helpers\TranslationHelper;
 $teams = Auth()->user()->teams()->first()->id;
 $personnel = session('personnel_id');
-$flights = App\Models\Fligh::where('teams_id', $teams)->where('users_id',$personnel)->get();
-$count = $flights->count('id');
+$flights = App\Models\Fligh::where('teams_id', $teams)->where('users_id',$personnel)->paginate(5);
+$flightCount = App\Models\Fligh::where('teams_id', $teams)->where('users_id',$personnel)->get();
+$count = $flightCount->count('id');
 ?>
 <head>
 <style>
@@ -100,6 +101,10 @@ $count = $flights->count('id');
         </div>
     </div>
     @endforeach
+    <div class="mt-4">
+        {{ $flights->links() }}
+    </div>
+
 @endif
 {{-- pindah ke view project --}}
 @php

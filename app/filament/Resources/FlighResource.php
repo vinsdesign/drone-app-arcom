@@ -395,12 +395,10 @@ class FlighResource extends Resource
                 }),
                 Forms\Components\TextInput::make('vo')
                 ->label(TranslationHelper::translateIfNeeded('VO'))    
-                    ->required()
                     ->maxLength(255)
                     ->default($defaultData['vo'] ?? null),
                 Forms\Components\TextInput::make('po')
                 ->label(TranslationHelper::translateIfNeeded('PO'))    
-                    ->required()
                     ->maxLength(255)
                     ->default($defaultData['po'] ?? null),
                 ])->columns(2),
@@ -1032,7 +1030,7 @@ class FlighResource extends Resource
             Tables\Columns\TextColumn::make('projects.case')
                 ->label(TranslationHelper::translateIfNeeded('Projects Case'))
                 ->numeric()
-                ->url(fn($record) => $record->projects_id ? route('filament.admin.resources.projects.index', [
+                ->url(fn($record) => $record->projects_id ? route('filament.admin.resources.projects.view', [
                     'tenant' => Auth()->user()->teams()->first()->id,
                     'record' => $record->projects_id,
                 ]) : null)

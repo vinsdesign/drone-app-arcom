@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('documents', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->string('type');
+            $table->string('type')->nullable();
             $table->string('refnumber')->nullable();
             $table->date('expired_date');
             $table->string('scope');
