@@ -348,6 +348,11 @@ class BattreiResource extends Resource
                 Tables\Columns\TextColumn::make('users.name')
                     ->label(TranslationHelper::translateIfNeeded('Owners'))
                     ->numeric()
+                    ->url(fn($record) => $record->for_drone ? route('filament.admin.resources.users.view', [
+                        'tenant' => auth()->user()->teams()->first()->id,
+                        'record' => $record->users_id,
+                    ]) : null)
+                    ->color(Color::Blue)
                     ->sortable(),
                 Tables\Columns\TextColumn::make('created_at')
                     ->label(TranslationHelper::translateIfNeeded('Created at'))
@@ -535,7 +540,7 @@ public static function infolist(Infolist $infolist): Infolist
         Section::make(TranslationHelper::translateIfNeeded('Extra Information'))
             ->schema([
         TextEntry::make('users.name')->label(TranslationHelper::translateIfNeeded('Owner'))
-            ->url(fn($record) => $record->for_drone ? route('filament.admin.resources.users.index', [
+            ->url(fn($record) => $record->for_drone ? route('filament.admin.resources.users.view', [
                 'tenant' => auth()->user()->teams()->first()->id,
                 'record' => $record->users_id,
             ]) : null)

@@ -55,7 +55,7 @@ $count = $flights->count('id');
         
             <div class="flex-1 min-w-[180px] border-r border-gray-300 pr-2">
                 <p class="text-sm text-gray-800 dark:text-gray-200 font-semibold">{!! TranslationHelper::translateIfNeeded('Customer')!!}</p>
-                <a href="{{route('filament.admin.resources.customers.index',
+                <a href="{{route('filament.admin.resources.customers.view',
                 ['tenant' => Auth()->user()->teams()->first()->id,
                 'record' => $item->customers->id,])}}"><p class="text-sm text-gray-700 dark:text-gray-400" style="color:rgb(0, 85, 255)">{{$item->customers->name}}</p></a>
             </div>

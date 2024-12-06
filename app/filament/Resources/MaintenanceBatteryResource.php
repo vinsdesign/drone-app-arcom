@@ -149,7 +149,7 @@ class MaintenanceBatteryResource extends Resource
                 ->searchable(),
             Tables\Columns\TextColumn::make('equidment.name')
                 ->label(TranslationHelper::translateIfNeeded('Equipment'))
-                ->url(fn($record) => $record->equidment_id ? route('filament.admin.resources.equidments.index', [
+                ->url(fn($record) => $record->equidment_id ? route('filament.admin.resources.equidments.view', [
                     'tenant' => Auth()->user()->teams()->first()->id,
                     'record' => $record->equidment_id,
                 ]) : null)
@@ -157,7 +157,7 @@ class MaintenanceBatteryResource extends Resource
                 ->searchable(),
             Tables\Columns\TextColumn::make('battrei.name')
                 ->label(TranslationHelper::translateIfNeeded('Battery'))
-                ->url(fn($record) => $record->battrei_id ? route('filament.admin.resources.battreis.index', [
+                ->url(fn($record) => $record->battrei_id ? route('filament.admin.resources.battreis.view', [
                     'tenant' => Auth()->user()->teams()->first()->id,
                     'record' => $record->battrei_id,
                 ]) : null)
@@ -309,14 +309,14 @@ class MaintenanceBatteryResource extends Resource
                 ->label(TranslationHelper::translateIfNeeded('Name')),
             TextEntry::make('equidment.name')
                 ->label(TranslationHelper::translateIfNeeded('Equipment'))
-                ->url(fn($record) => $record->equidment_id ? route('filament.admin.resources.equidments.index', [
+                ->url(fn($record) => $record->equidment_id ? route('filament.admin.resources.equidments.view', [
                     'tenant' => Auth()->user()->teams()->first()->id,
                     'record' => $record->equidment_id,
                 ]) : null)
                 ->color(Color::Blue),
             TextEntry::make('battrei.name')
                 ->label(TranslationHelper::translateIfNeeded('Battery'))
-                ->url(fn($record) => $record->battrei_id ? route('filament.admin.resources.battreis.index', [
+                ->url(fn($record) => $record->battrei_id ? route('filament.admin.resources.battreis.view', [
                     'tenant' => Auth()->user()->teams()->first()->id,
                     'record' => $record->battrei_id,
                 ]) : null)

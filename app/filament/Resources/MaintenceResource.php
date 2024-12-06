@@ -192,7 +192,7 @@ class MaintenceResource extends Resource
                     ->searchable(),
                 Tables\Columns\TextColumn::make('drone.name')
                 ->label(TranslationHelper::translateIfNeeded('Drone'))
-                ->url(fn($record) =>$record->drone_id? route('filament.admin.resources.drones.index', [
+                ->url(fn($record) =>$record->drone_id? route('filament.admin.resources.drones.view', [
                     'tenant' => Auth()->user()->teams()->first()->id,
                     'record' => $record->drone_id,
                 ]):null)->color(Color::Blue)

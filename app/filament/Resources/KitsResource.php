@@ -81,6 +81,7 @@ class KitsResource extends Resource
                 Forms\Components\Select::make('Batteries')
                 ->label(TranslationHelper::translateIfNeeded('Batteries'))
                     ->multiple()
+                    ->relationship('battrei', 'name')
                     ->options(
                         battrei::where('teams_id', auth()->user()->teams()->first()->id)
                         ->whereDoesntHave('kits', function ($query){
@@ -98,6 +99,7 @@ class KitsResource extends Resource
                 Forms\Components\Select::make('Equipments')
                 ->label(TranslationHelper::translateIfNeeded('Equipments'))
                     ->multiple()
+                    ->relationship('equidment', 'name')
                     ->options(
                         equidment::where('teams_id', auth()->user()->teams()->first()->id)
                             ->whereDoesntHave('kits', function ($query){
@@ -134,27 +136,46 @@ class KitsResource extends Resource
             Tables\Columns\TextColumn::make('drone.name')
                 ->label(TranslationHelper::translateIfNeeded('Blocked To Drone'))
                 ->numeric()
-                ->url(fn($record) => $record->users_id ? route('filament.admin.resources.drones.view', [
+                ->url(fn($record) => $record->drone_id ? route('filament.admin.resources.drones.view', [
                     'tenant' => Auth()->user()->teams()->first()->id,
-                    'record' => $record->users_id,
+                    'record' => $record->drone_id,
                 ]) : null)->color(Color::Blue)
                 ->sortable()
                 ->placeholder(TranslationHelper::translateIfNeeded('No drone selected')),
             Tables\Columns\TextColumn::make('battrei.name')
                 ->label(TranslationHelper::translateIfNeeded('Battery'))
                 ->numeric()
-                ->url(fn($record) => $record->users_id ? route('filament.admin.resources.battreis.view', [
-                    'tenant' => Auth()->user()->teams()->first()->id,
-                    'record' => $record->users_id,
-                ]) : null)->color(Color::Blue)
+                // ->url(fn($record) => $record->battrei->first() ? route('filament.admin.resources.battreis.view', [
+                //     'tenant' => Auth()->user()->teams()->first()->id,
+                //     'record' => $record->battrei->first()->id,
+                // ]) : null)->color(Color::Blue)
+                ->formatStateUsing(function ($record) {
+                    return $record->battrei->map(function ($battrei) {
+                        return "<a href='" . route('filament.admin.resources.battreis.view', [
+                            'tenant' => auth()->user()->teams()->first()->id,
+                            'record' => $battrei->id,
+                        ]) . "' style='color: #3b82f6; text-decoration: underline; font-size: 0.875rem;'>{$battrei->name}</a>";
+                    })->implode(', ');
+                })
+                ->html()
                 ->sortable(),
             Tables\Columns\TextColumn::make('equidment.name')
                 ->label(TranslationHelper::translateIfNeeded('Equipment'))
                 ->numeric()
-                ->url(fn($record) => $record->users_id ? route('filament.admin.resources.equidments.view', [
-                    'tenant' => Auth()->user()->teams()->first()->id,
-                    'record' => $record->users_id,
-                ]) : null)->color(Color::Blue)
+                // ->url(fn($record) => $record->equidment->first() ? route('filament.admin.resources.equidments.view', [
+                //     'tenant' => Auth()->user()->teams()->first()->id,
+                //     'record' => $record->equidment->first()->id,
+                // ]) : null)
+                // ->color(Color::Blue)
+                ->formatStateUsing(function ($record) {
+                    return $record->equidment->map(function ($equidment) {
+                        return "<a href='" . route('filament.admin.resources.equidments.view', [
+                            'tenant' => auth()->user()->teams()->first()->id,
+                            'record' => $equidment->id,
+                        ]) . "' style='color: #3b82f6; text-decoration: underline; font-size: 0.875rem;'>{$equidment->name}</a>";
+                    })->implode(', ');
+                })
+                ->html()
                 ->sortable(),
             Tables\Columns\TextColumn::make('created_at')
                 ->label(TranslationHelper::translateIfNeeded('Created at'))

@@ -213,7 +213,7 @@ class IncidentResource extends Resource
                 Tables\Columns\TextColumn::make('project.case')
                 ->label(TranslationHelper::translateIfNeeded('Projects'))    
                     ->numeric()
-                    ->url(fn($record) => $record->projects_id?route('filament.admin.resources.projects.index', [
+                    ->url(fn($record) => $record->projects_id?route('filament.admin.resources.projects.view', [
                         'tenant' => Auth()->user()->teams()->first()->id,
                         'record' => $record->projects_id,
                     ]):null)->color(Color::Blue)
@@ -369,7 +369,11 @@ class IncidentResource extends Resource
                     TextEntry::make('incident_date')->label(TranslationHelper::translateIfNeeded('Incident Date')),
                     TextEntry::make('cause')->label(TranslationHelper::translateIfNeeded('Cause')),
                     TextEntry::make('status')->label(TranslationHelper::translateIfNeeded('Status')),
-                    TextEntry::make('fligh_locations.name')->label(TranslationHelper::translateIfNeeded('Locations')),
+                    TextEntry::make('fligh_locations.name')->label(TranslationHelper::translateIfNeeded('Locations'))
+                        ->url(fn($record) => $record->location_id? route('filament.admin.resources.fligh-locations.view', [
+                            'tenant' => Auth()->user()->teams()->first()->id,
+                            'record' => $record->location_id,
+                        ]) : null)->color(Color::Blue),
                     TextEntry::make('drone.name')
                         ->label(TranslationHelper::translateIfNeeded('Drones'))
                         ->url(fn($record) => $record->drone_id ? route('filament.admin.resources.drones.view', [
@@ -378,7 +382,7 @@ class IncidentResource extends Resource
                         ]) : null)->color(Color::Blue),
                     TextEntry::make('project.case')
                         ->label(TranslationHelper::translateIfNeeded('Projects'))
-                        ->url(fn($record) => $record->projects_id ? route('filament.admin.resources.projects.index', [
+                        ->url(fn($record) => $record->projects_id ? route('filament.admin.resources.projects.view', [
                             'tenant' => Auth()->user()->teams()->first()->id,
                             'record' => $record->projects_id,
                         ]) : null)->color(Color::Blue),
