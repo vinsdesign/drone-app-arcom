@@ -1032,7 +1032,7 @@ class FlighResource extends Resource
             Tables\Columns\TextColumn::make('projects.case')
                 ->label(TranslationHelper::translateIfNeeded('Projects Case'))
                 ->numeric()
-                ->url(fn($record) => $record->projects_id ? route('filament.admin.resources.projects.index', [
+                ->url(fn($record) => $record->projects_id ? route('filament.admin.resources.projects.view', [
                     'tenant' => Auth()->user()->teams()->first()->id,
                     'record' => $record->projects_id,
                 ]) : null)
@@ -1041,7 +1041,7 @@ class FlighResource extends Resource
             Tables\Columns\TextColumn::make('projects.customers.name')
                 ->label(TranslationHelper::translateIfNeeded('Customers Name'))
                 ->numeric()
-                ->url(fn($record) => $record->customers_id ? route('filament.admin.resources.customers.index', [
+                ->url(fn($record) => $record->customers_id ? route('filament.admin.resources.customers.view', [
                     'tenant' => Auth()->user()->teams()->first()->id,
                     'record' => $record->customers_id,
                 ]) : null)
@@ -1205,12 +1205,12 @@ class FlighResource extends Resource
                     TextEntry::make('landings')->label(TranslationHelper::translateIfNeeded('Landings')),
                     TextEntry::make('fligh_location.name')->label(TranslationHelper::translateIfNeeded('Location')),
                     TextEntry::make('customers.name')->label(TranslationHelper::translateIfNeeded('Customer'))
-                        ->url(fn($record) => $record->customers_id ? route('filament.admin.resources.customers.index', [
+                        ->url(fn($record) => $record->customers_id ? route('filament.admin.resources.customers.view', [
                             'tenant' => Auth()->user()->teams()->first()->id,
                             'record' => $record->customers_id,
                         ]) : null)->color(Color::Blue),
                     TextEntry::make('projects.case')->label(TranslationHelper::translateIfNeeded('Project'))
-                        ->url(fn($record) => $record->projects_id ? route('filament.admin.resources.projects.index', [
+                        ->url(fn($record) => $record->projects_id ? route('filament.admin.resources.projects.view', [
                             'tenant' => Auth()->user()->teams()->first()->id,
                             'record' => $record->projects_id,
                         ]) : null)->color(Color::Blue),

@@ -134,7 +134,7 @@ class ProjectsResource extends Resource
                 Tables\Columns\TextColumn::make('customers.name')
                 ->label(TranslationHelper::translateIfNeeded('Customers'))    
                     ->numeric()
-                    ->url(fn($record) => $record->customers_id ? route('filament.admin.resources.customers.index', [
+                    ->url(fn($record) => $record->customers_id ? route('filament.admin.resources.customers.view', [
                         'tenant' => Auth()->user()->teams()->first()->id,
                         'record' => $record->customers_id,
                     ]):null)->color(Color::Blue)
@@ -328,7 +328,7 @@ class ProjectsResource extends Resource
                         TextEntry::make('revenue')->label(TranslationHelper::translateIfNeeded('Revenue')),
                         TextEntry::make('currencies.iso')->label(TranslationHelper::translateIfNeeded('Currency')),
                         TextEntry::make('customers.name')->label(TranslationHelper::translateIfNeeded('Customers'))
-                            ->url(fn($record) => $record->customers_id ? route('filament.admin.resources.customers.index', [
+                            ->url(fn($record) => $record->customers_id ? route('filament.admin.resources.customers.view', [
                                 'tenant' => Auth()->user()->teams()->first()->id,
                                 'record' => $record->customers_id,
                             ]) : null)->color(Color::Blue),

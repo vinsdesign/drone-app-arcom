@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cookie;
 
 class LanguageController extends Controller
 {
@@ -13,7 +14,8 @@ class LanguageController extends Controller
 
         $locale = $request->input('language');
         session(['locale' => $locale]);
-        session(['locale_timestamp' => now()->timestamp]);
+        // session(['locale_timestamp' => now()->timestamp]);
+        cookie()->queue('locale', $locale, 43200);
         return redirect()->back();
     }
 

@@ -119,13 +119,13 @@
         </div>
         @endif
         <!-- Menu 3 -->
-        {{-- <div class="main-button bg-white dark:bg-gray-800 shadow dark:shadow-lg rounded-lg p-4 text-center hover:shadow-lg dark:hover:shadow-xl transition-shadow" onclick="showContent(2)">
+        <div class="main-button bg-white dark:bg-gray-800 shadow dark:shadow-lg rounded-lg p-4 text-center hover:shadow-lg dark:hover:shadow-xl transition-shadow" onclick="showContent(2)">
             <div class="text-yellow-500 dark:text-yellow-400 mb-2">
                 <x-heroicon-c-language class="w-8 h-8 mx-auto" />
             </div>
             <h2 class="text-lg font-semibold text-gray-800 dark:text-gray-200">{!! TranslationHelper::translateIfNeeded('Language') !!}</h2>
             <p class="text-gray-600 dark:text-gray-400 mt-1">{!! TranslationHelper::translateIfNeeded('Manage your Language') !!}</p>
-        </div> --}}
+        </div>
     </div>
     
     {{-- End Main Menu --}}
@@ -346,12 +346,12 @@
             <div class="mb-4">
                 <label for="language" class="block text-sm font-medium text-gray-700 dark:text-gray-400">{!! TranslationHelper::translateIfNeeded('Choose your language:') !!}</label>
                 <select name="language" id="language" required class="mt-1 block w-full p-2 border border-gray-300 dark:border-gray-600 rounded-md bg-gray-50 dark:bg-gray-700 text-gray-800 dark:text-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500">
-                    <option value="en" {{ session('locale') == 'en' ? 'selected' : '' }}>English</option>
-                    <option value="es" {{ session('locale') == 'es' ? 'selected' : '' }}>Spanish</option>
-                    <option value="fr" {{ session('locale') == 'fr' ? 'selected' : '' }}>French</option>
-                    <option value="id" {{ session('locale') == 'id' ? 'selected' : '' }}>Indonesian</option>
-                    <option value="ko" {{ session('locale') == 'ko' ? 'selected' : '' }}>Korean</option>
-                    <option value="ja" {{ session('locale') == 'ja' ? 'selected' : '' }}>Japan</option>
+                    <option value="en" {{ request()->cookie('locale') == 'en' ? 'selected' : '' }}>English</option>
+                    <option value="es" {{ request()->cookie('locale') == 'es' ? 'selected' : '' }}>Spanish</option>
+                    <option value="fr" {{ request()->cookie('locale') == 'fr' ? 'selected' : '' }}>French</option>
+                    <option value="id" {{ request()->cookie('locale') == 'id' ? 'selected' : '' }}>Indonesian</option>
+                    <option value="ko" {{ request()->cookie('locale') == 'ko' ? 'selected' : '' }}>Korean</option>
+                    <option value="ja" {{ request()->cookie('locale') == 'ja' ? 'selected' : '' }}>Japan</option>
                 </select>
             </div>
             
@@ -363,9 +363,9 @@
         </form>
     </div>
 </div>
-<script>
+{{-- <script>
     document.getElementById('maincontent2').style.display = 'none';
-</script>
+</script> --}}
 
 
 

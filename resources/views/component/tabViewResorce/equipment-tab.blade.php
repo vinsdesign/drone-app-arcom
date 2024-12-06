@@ -145,7 +145,7 @@
                             
                                 <div class="flex-1 min-w-[180px] border-r border-gray-300 pr-4">
                                     <p class="text-sm text-gray-800 dark:text-gray-200 font-semibold">{!! TranslationHelper::translateIfNeeded('Location')!!}</p>
-                                    <a href="{{route('filament.admin.resources.flighs.view',
+                                    <a href="{{route('filament.admin.resources.fligh-locations.view',
                                             ['tenant' => Auth()->user()->teams()->first()->id,
                                             'record' => $item->fligh_location->id,])}}">
                                             <p class="text-sm text-gray-700 dark:text-gray-400" style="color:rgb(0, 85, 255)">{{$item->fligh_location->name ?? null}}</p>

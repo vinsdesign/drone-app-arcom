@@ -320,9 +320,9 @@ class EquidmentResource extends Resource
                  Tables\Columns\TextColumn::make('drones.name')
                 ->label(TranslationHelper::translateIfNeeded('For Drone'))
                      ->numeric()
-                     ->url(fn($record) =>$record->for_drone? route('filament.admin.resources.drones.view', [
+                     ->url(fn($record) =>$record->drones_id? route('filament.admin.resources.drones.view', [
                         'tenant' => Auth()->user()->teams()->first()->id,
-                        'record' => $record->for_drone,
+                        'record' => $record->drones_id,
                     ]):null)->color(Color::Blue)
                      ->sortable()
                      ->placeholder(TranslationHelper::translateIfNeeded('No drone selected')),
@@ -498,9 +498,9 @@ class EquidmentResource extends Resource
                     TextEntry::make('serial')->label(TranslationHelper::translateIfNeeded('Serial')),
                     TextEntry::make('type')->label(TranslationHelper::translateIfNeeded('Type')),
                     TextEntry::make('drones.name')->label(TranslationHelper::translateIfNeeded('Drones'))
-                        ->url(fn($record) => $record->for_drone ? route('filament.admin.resources.drones.view', [
+                        ->url(fn($record) => $record->drones_id ? route('filament.admin.resources.drones.view', [
                             'tenant' => Auth()->user()->teams()->first()->id,
-                            'record' => $record->for_drone,
+                            'record' => $record->drones_id,
                         ]) : null)->color(Color::Blue),
                 ])->columns(4),
             Section::make(TranslationHelper::translateIfNeeded('Extra Information'))

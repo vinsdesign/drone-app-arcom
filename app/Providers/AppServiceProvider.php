@@ -45,7 +45,7 @@ class AppServiceProvider extends ServiceProvider
         LanguageSwitch::configureUsing(function (LanguageSwitch $switch) {
             $switch
                 ->locales(['ar','en','fr', 'id', 'ko', 'ja', 'es'])
-                ->visible(outsidePanels: true)
+                ->visible(false)
                 ->outsidePanelPlacement(Placement::TopRight)
                 ->displayLocale('en')
                 ->renderHook('panels::global-search.before');
