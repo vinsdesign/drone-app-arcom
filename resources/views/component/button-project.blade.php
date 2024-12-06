@@ -63,7 +63,74 @@
         transform: rotate(1turn);
     }
     }
-
+    /* warna filament bg*/
+    .bg-red-50 {
+        background-color: rgb(254, 242, 242);
+    }
+    .bg-red-100 {
+        background-color: rgb(254, 226, 226);
+    }
+    .bg-red-200 {
+        background-color: rgb(254, 202, 202);
+    }
+    .bg-red-300 {
+        background-color: rgb(252, 165, 165);
+    }
+    .bg-red-400 {
+        background-color: rgb(248, 113, 113);
+    }
+    .bg-red-500 {
+        background-color: rgb(239, 68, 68);
+    }
+    .bg-red-600 {
+        background-color: rgb(220, 38, 38);
+    }
+    .bg-red-700 {
+        background-color: rgb(185, 28, 28);
+    }
+    .bg-red-800 {
+        background-color: rgb(153, 27, 27);
+    }
+    .bg-red-900 {
+        background-color: rgb(127, 29, 29);
+    }
+    .bg-red-950 {
+        background-color: rgb(69, 10, 10);
+    }
+    /* Text color red */
+    .text-red-50 {
+        color: rgb(254, 242, 242);
+    }
+    .text-red-100 {
+        color: rgb(254, 226, 226);
+    }
+    .text-red-200 {
+        color: rgb(254, 202, 202);
+    }
+    .text-red-300 {
+        color: rgb(252, 165, 165);
+    }
+    .text-red-400 {
+        color: rgb(248, 113, 113);
+    }
+    .text-red-500 {
+        color: rgb(239, 68, 68);
+    }
+    .text-red-600 {
+        color: rgb(220, 38, 38);
+    }
+    .text-red-700 {
+        color: rgb(185, 28, 28);
+    }
+    .text-red-800 {
+        color: rgb(153, 27, 27);
+    }
+    .text-red-900 {
+        color: rgb(127, 29, 29);
+    }
+    .text-red-950 {
+        color: rgb(69, 10, 10);
+    }
 </style>
 {{-- <script src="https://cdn.tailwindcss.com"></script> --}}
 
@@ -105,6 +172,31 @@ $response =session('successfully');
             </h2>
             <hr class="border-t border-gray-300 dark:border-gray-600 w-24 mx-auto">
 
+            {{-- error massages --}}
+            <div id="bodyErrorMassagesProject" style="display: none;" class="rounded-md bg-red-50 p-4 shadow dark:bg-red-800" role="alert">
+                <div class="flex items-start">
+                    <div class="flex-shrink-0">
+                        <!-- Icon Error -->
+                        <svg class="h-5 w-5 text-red-400 dark:text-red-200" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 5.636a9 9 0 11-12.728 0m1.414-1.414a9 9 0 0110.899 0m-5.7 5.8a2.25 2.25 0 10-3.18-3.181m0 0a2.25 2.25 0 013.18 3.181m-3.18-3.181L12 12m0 0l3.18-3.18" />
+                        </svg>
+                    </div>
+                    <div class="ml-3 text-sm">
+                        <p class="font-medium text-red-800 dark:text-red-200">
+                            {!! TranslationHelper::translateIfNeeded('Error: ') !!}
+                            <span id="errorMassagesProject"></span>
+                        </p>
+                    </div>
+                    <div class="ml-auto pl-3">
+                        <button type="button" onclick="closeMessagesProject()" class="inline-flex rounded-md bg-red-50 text-red-800 hover:text-red-600 focus:outline-none focus:ring-2 focus:ring-red-400 focus:ring-offset-2 dark:bg-red-800 dark:text-red-200"
+                            data-bs-dismiss="alert" aria-label="Close">
+                            <svg class="h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+            </div>
             <!-- Form -->
             <div>
                 @csrf
@@ -188,6 +280,10 @@ $response =session('successfully');
         const contents = document.querySelector('.fixed');
         contents.classList.remove('active');     
     }
+    //messages close
+    function closeMessagesProject() {
+        document.getElementById('bodyErrorMassagesProject').style.display = 'none';
+    }
 </script>
 {{-- test ajax ke controller action --}}
 <script>
@@ -203,9 +299,48 @@ $response =session('successfully');
 
             console.log(name, caseValue, revenuValue, customerValue, currencieValue, descriptionValue);
             // Validasi input kosong
-            if (caseValue.trim() === '' || revenuValue.trim() === '' || customerValue.trim() === '' || currencieValue.trim() === '' || descriptionValue.trim() === '') {
-                alert('Name cannot be empty!');
-            } else {
+            if (caseValue.trim() === '') {
+                document.getElementById('bodyErrorMassagesProject').style.display = 'block';
+                document.getElementById('errorMassagesProject').textContent = 'Name cannot be null';
+                setTimeout(() => {
+                    document.getElementById('bodyErrorMassagesProject').style.display = 'none';
+                }, 5000);
+                document.getElementById('bodyErrorMassagesProject').scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'start'
+                });
+            }else if(revenuValue.trim() !== '') {
+                document.getElementById('bodyErrorMassagesProject').style.display = 'block';
+                document.getElementById('errorMassagesProject').textContent = 'Revenue cannot be null';
+                setTimeout(() => {
+                    document.getElementById('bodyErrorMassagesProject').style.display = 'none';
+                }, 5000);
+                document.getElementById('bodyErrorMassagesProject').scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'start'
+                });
+            } else if(customerValue.trim() == ''){
+                document.getElementById('bodyErrorMassagesProject').style.display = 'block';
+                document.getElementById('errorMassagesProject').textContent = 'Customer cannot be null';
+                setTimeout(() => {
+                    document.getElementById('bodyErrorMassagesProject').style.display = 'none';
+                }, 5000);
+                document.getElementById('bodyErrorMassagesProject').scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'start'
+                });
+            }else if (currencieValue.trim() = ''){
+                document.getElementById('bodyErrorMassagesProject').style.display = 'block';
+                document.getElementById('errorMassagesProject').textContent = 'Currencie cannot be null';
+                setTimeout(() => {
+                    document.getElementById('bodyErrorMassagesProject').style.display = 'none';
+                }, 5000);
+                document.getElementById('bodyErrorMassagesProject').scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'start'
+                });
+            } 
+            else {
                 $button.toggleClass("button--loading");
                 $.ajax({
                     url: '{{ route('create-project') }}',

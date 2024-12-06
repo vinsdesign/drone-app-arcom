@@ -38,7 +38,31 @@
                 {!! TranslationHelper::translateIfNeeded('Create Drone')!!}
             </h2>
             <hr class="border-t border-gray-300 dark:border-gray-600 w-24 mx-auto">
-
+            {{-- error massages --}}
+            <div id="bodyErrorMassagesDrone" style="display: none;" class="rounded-md bg-red-50 p-4 shadow dark:bg-red-800" role="alert">
+                <div class="flex items-start">
+                    <div class="flex-shrink-0">
+                        <!-- Icon Error -->
+                        <svg class="h-5 w-5 text-red-400 dark:text-red-200" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 5.636a9 9 0 11-12.728 0m1.414-1.414a9 9 0 0110.899 0m-5.7 5.8a2.25 2.25 0 10-3.18-3.181m0 0a2.25 2.25 0 013.18 3.181m-3.18-3.181L12 12m0 0l3.18-3.18" />
+                        </svg>
+                    </div>
+                    <div class="ml-3 text-sm">
+                        <p class="font-medium text-red-800 dark:text-red-200">
+                            {!! TranslationHelper::translateIfNeeded('Error: ') !!}
+                            <span id="errorMassagesDrone"></span>
+                        </p>
+                    </div>
+                    <div class="ml-auto pl-3">
+                        <button type="button" onclick="closeMessagesDrone()" class="inline-flex rounded-md bg-red-50 text-red-800 hover:text-red-600 focus:outline-none focus:ring-2 focus:ring-red-400 focus:ring-offset-2 dark:bg-red-800 dark:text-red-200"
+                            data-bs-dismiss="alert" aria-label="Close">
+                            <svg class="h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+            </div>
             <!-- Form -->
             <div>
                 @csrf
@@ -298,6 +322,10 @@
         const contents = document.querySelector('.drone');
         contents.classList.remove('active');     
     }
+        //messages close
+    function closeMessagesDrone() {
+        document.getElementById('bodyErrorMassagesDrone').style.display = 'none';
+    }
 </script>
 {{-- test ajax ke controller action --}}
 <script>
@@ -328,107 +356,75 @@
         const initialFlightTimeValue = $('#initial_flight_timedrone').val();
         const maxFlightTimeValue = $('#max_flight_timedrone').val();
 
-        // Log for debugging
-        console.log({
-            name: nameValue,
-            status: statusValue,
-            idlegal: idLegalValue,
-            brand: brandValue,
-            model: modelValue,
-            type: typeValue,
-            serial_p: serialPValue,
-            serial_i: serialIValue,
-            flight_c: flightCValue,
-            remote_c: remoteCValue,
-            remote_cc: remoteCCValue,
-            geometry: geometryValue,
-            inventory_asset: inventoryAssetValue,
-            description: descriptionValue,
-            users_id: usersIdValue,
-            firmware_v: firmwareVValue,
-            hardware_v: hardwareVValue,
-            propulsion_v: propulsionVValue,
-            color: colorValue,
-            remote: remoteValue,
-            conn_card: connCardValue,
-            initial_flight: initialFlightValue,
-            initial_flight_time: initialFlightTimeValue,
-            max_flight_time: maxFlightTimeValue
-        });
 
         // Validate empty fields
-        if (
-                nameValue.trim() === '' ||
-                statusValue.trim() === '' ||
-                idLegalValue.trim() === '' ||
-                brandValue.trim() === '' ||
-                modelValue.trim() === '' ||
-                typeValue.trim() === '' ||
-                serialPValue.trim() === '' ||
-                serialIValue.trim() === '' ||
-                flightCValue.trim() === '' ||
-                remoteCValue.trim() === '' ||
-                geometryValue.trim() === '' ||
-                inventoryAssetValue.trim() === '' ||
-                usersIdValue.trim() === '' ||
-                firmwareVValue.trim() === '' ||
-                hardwareVValue.trim() === '' ||
-                propulsionVValue.trim() === '' ||
-                colorValue.trim() === '' ||
-                remoteValue.trim() === '' ||
-                connCardValue.trim() === '' ||
-                initialFlightValue.trim() === '' ||
-                initialFlightTimeValue.trim() === '' ||
-                maxFlightTimeValue.trim() === ''
-            ) {
-            alert('Name cannot be empty!');
-            return;
+        if (nameValue.trim() === '') {
+            document.getElementById('bodyErrorMassagesDrone').style.display = 'block';
+            document.getElementById('errorMassagesDrone').textContent = 'Name cannot be null';
+                document.getElementById('bodyErrorMassagesDrone').scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'start'
+                });
+            setTimeout(() => {
+                document.getElementById('bodyErrorMassagesDrone').style.display = 'none';
+            }, 5000);
+        }else if (statusValue.trim() === ''){
+            document.getElementById('bodyErrorMassagesDrone').style.display = 'block';
+            document.getElementById('errorMassagesDrone').textContent = 'Status cannot be null';
+                document.getElementById('bodyErrorMassagesDrone').scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'start'
+                });
+            setTimeout(() => {
+                document.getElementById('bodyErrorMassagesDrone').style.display = 'none';
+            }, 5000);
+        }else{
+            $button.toggleClass("button--loading");
+            // Send data via AJAX
+            $.ajax({
+                url: '{{ route('create-drone') }}',
+                type: 'POST',
+                data: {
+                    _token: '{{ csrf_token() }}', // Laravel CSRF token
+                    name: nameValue,
+                    status: statusValue,
+                    idlegal: idLegalValue,
+                    brand: brandValue,
+                    model: modelValue,
+                    type: typeValue,
+                    serial_p: serialPValue,
+                    serial_i: serialIValue,
+                    flight_c: flightCValue,
+                    remote_c: remoteCValue,
+                    remote_cc: remoteCCValue,
+                    geometry: geometryValue,
+                    inventory_asset: inventoryAssetValue,
+                    description: descriptionValue,
+                    users_id: usersIdValue,
+                    firmware_v: firmwareVValue,
+                    hardware_v: hardwareVValue,
+                    propulsion_v: propulsionVValue,
+                    color: colorValue,
+                    remote: remoteValue,
+                    conn_card: connCardValue,
+                    initial_flight: initialFlightValue,
+                    initial_flight_time: initialFlightTimeValue,
+                    max_flight_time: maxFlightTimeValue,
+                },
+                success: function(response) {
+                    console.log(response);
+                    $("#success-notification-drone").removeClass("hidden-notif")
+                    $("#success-notification-drone").addClass("notification")
+                    setTimeout(() => {
+                        location.reload();
+                    }, 3000);
+                },
+                error: function(xhr, status, error) {
+                    console.error('error:', error);
+                    $button.removeClass("button--loading");
+                }
+            });
         }
-        $button.toggleClass("button--loading");
-        // Send data via AJAX
-        $.ajax({
-            url: '{{ route('create-drone') }}',
-            type: 'POST',
-            data: {
-                _token: '{{ csrf_token() }}', // Laravel CSRF token
-                name: nameValue,
-                status: statusValue,
-                idlegal: idLegalValue,
-                brand: brandValue,
-                model: modelValue,
-                type: typeValue,
-                serial_p: serialPValue,
-                serial_i: serialIValue,
-                flight_c: flightCValue,
-                remote_c: remoteCValue,
-                remote_cc: remoteCCValue,
-                geometry: geometryValue,
-                inventory_asset: inventoryAssetValue,
-                description: descriptionValue,
-                users_id: usersIdValue,
-                firmware_v: firmwareVValue,
-                hardware_v: hardwareVValue,
-                propulsion_v: propulsionVValue,
-                color: colorValue,
-                remote: remoteValue,
-                conn_card: connCardValue,
-                initial_flight: initialFlightValue,
-                initial_flight_time: initialFlightTimeValue,
-                max_flight_time: maxFlightTimeValue,
-            },
-            success: function(response) {
-                console.log(response);
-                $("#success-notification-drone").removeClass("hidden-notif")
-                $("#success-notification-drone").addClass("notification")
-                setTimeout(() => {
-                    location.reload();
-                }, 3000);
-            },
-            error: function(xhr, status, error) {
-                console.error('error:', error);
-                $button.removeClass("button--loading");
-            }
-        });
     }
 </script>
 <script>

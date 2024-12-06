@@ -395,12 +395,10 @@ class FlighResource extends Resource
                 }),
                 Forms\Components\TextInput::make('vo')
                 ->label(TranslationHelper::translateIfNeeded('VO'))    
-                    ->required()
                     ->maxLength(255)
                     ->default($defaultData['vo'] ?? null),
                 Forms\Components\TextInput::make('po')
                 ->label(TranslationHelper::translateIfNeeded('PO'))    
-                    ->required()
                     ->maxLength(255)
                     ->default($defaultData['po'] ?? null),
                 ])->columns(2),

@@ -160,7 +160,31 @@
                             {!! TranslationHelper::translateIfNeeded('Upload Flight Document')!!}
                         </h2>
                         <hr class="border-t border-gray-300 dark:border-gray-600 w-24 mx-auto">
-
+                        {{-- error massages --}}
+                        <div id="bodyErrorMassagesDflight" style="display: none;" class="rounded-md bg-red-50 p-4 shadow dark:bg-red-800" role="alert">
+                            <div class="flex items-start">
+                                <div class="flex-shrink-0">
+                                    <!-- Icon Error -->
+                                    <svg class="h-5 w-5 text-red-400 dark:text-red-200" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 5.636a9 9 0 11-12.728 0m1.414-1.414a9 9 0 0110.899 0m-5.7 5.8a2.25 2.25 0 10-3.18-3.181m0 0a2.25 2.25 0 013.18 3.181m-3.18-3.181L12 12m0 0l3.18-3.18" />
+                                    </svg>
+                                </div>
+                                <div class="ml-3 text-sm">
+                                    <p class="font-medium text-red-800 dark:text-red-200">
+                                        {!! TranslationHelper::translateIfNeeded('Error: ') !!}
+                                        <span id="errorMassagesDflight"></span>
+                                    </p>
+                                </div>
+                                <div class="ml-auto pl-3">
+                                    <button type="button" onclick="closeMessages()" class="inline-flex rounded-md bg-red-50 text-red-800 hover:text-red-600 focus:outline-none focus:ring-2 focus:ring-red-400 focus:ring-offset-2 dark:bg-red-800 dark:text-red-200"
+                                        data-bs-dismiss="alert" aria-label="Close">
+                                        <svg class="h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                                        </svg>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
                         <!-- Form -->
                         <form id="documentFormFlight" enctype="multipart/form-data">
                             @csrf
@@ -311,7 +335,31 @@
                             {!! TranslationHelper::translateIfNeeded('Upload Project Document')!!}
                         </h2>
                         <hr class="border-t border-gray-300 dark:border-gray-600 w-24 mx-auto">
-
+                        {{-- error massages --}}
+                        <div id="bodyErrorMassagesDproject" style="display: none;" class="rounded-md bg-red-50 p-4 shadow dark:bg-red-800" role="alert">
+                            <div class="flex items-start">
+                                <div class="flex-shrink-0">
+                                    <!-- Icon Error -->
+                                    <svg class="h-5 w-5 text-red-400 dark:text-red-200" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 5.636a9 9 0 11-12.728 0m1.414-1.414a9 9 0 0110.899 0m-5.7 5.8a2.25 2.25 0 10-3.18-3.181m0 0a2.25 2.25 0 013.18 3.181m-3.18-3.181L12 12m0 0l3.18-3.18" />
+                                    </svg>
+                                </div>
+                                <div class="ml-3 text-sm">
+                                    <p class="font-medium text-red-800 dark:text-red-200">
+                                        {!! TranslationHelper::translateIfNeeded('Error: ') !!}
+                                        <span id="errorMassagesDproject"></span>
+                                    </p>
+                                </div>
+                                <div class="ml-auto pl-3">
+                                    <button type="button" onclick="closeMessages()" class="inline-flex rounded-md bg-red-50 text-red-800 hover:text-red-600 focus:outline-none focus:ring-2 focus:ring-red-400 focus:ring-offset-2 dark:bg-red-800 dark:text-red-200"
+                                        data-bs-dismiss="alert" aria-label="Close">
+                                        <svg class="h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                                        </svg>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
                         <!-- Form -->
                         <form id="documentForm" enctype="multipart/form-data">
                             @csrf
@@ -528,7 +576,31 @@
                             {!! TranslationHelper::translateIfNeeded('Media Overview')!!}
                         </h2>
                         <hr class="border-t border-gray-300 dark:border-gray-600 w-24 mx-auto">
-
+                        {{-- error massages --}}
+                        <div id="bodyErrorMassagesMCreate" style="display: none;" class="rounded-md bg-red-50 p-4 shadow dark:bg-red-800" role="alert">
+                            <div class="flex items-start">
+                                <div class="flex-shrink-0">
+                                    <!-- Icon Error -->
+                                    <svg class="h-5 w-5 text-red-400 dark:text-red-200" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 5.636a9 9 0 11-12.728 0m1.414-1.414a9 9 0 0110.899 0m-5.7 5.8a2.25 2.25 0 10-3.18-3.181m0 0a2.25 2.25 0 013.18 3.181m-3.18-3.181L12 12m0 0l3.18-3.18" />
+                                    </svg>
+                                </div>
+                                <div class="ml-3 text-sm">
+                                    <p class="font-medium text-red-800 dark:text-red-200">
+                                        {!! TranslationHelper::translateIfNeeded('Error: ') !!}
+                                        <span id="errorMassagesMCreate"></span>
+                                    </p>
+                                </div>
+                                <div class="ml-auto pl-3">
+                                    <button type="button" onclick="closeMessages()" class="inline-flex rounded-md bg-red-50 text-red-800 hover:text-red-600 focus:outline-none focus:ring-2 focus:ring-red-400 focus:ring-offset-2 dark:bg-red-800 dark:text-red-200"
+                                        data-bs-dismiss="alert" aria-label="Close">
+                                        <svg class="h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                                        </svg>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
                         <!-- Form -->
                         <form id="documentForm" enctype="multipart/form-data">
                             @csrf
@@ -594,7 +666,31 @@
                             {!! TranslationHelper::translateIfNeeded('Edit Media Overview')!!}
                         </h2>
                         <hr class="border-t border-gray-300 dark:border-gray-600 w-24 mx-auto">
-
+                        {{-- error massages --}}
+                        <div id="bodyErrorMassagesMEdit" style="display: none;" class="rounded-md bg-red-50 p-4 shadow dark:bg-red-800" role="alert">
+                            <div class="flex items-start">
+                                <div class="flex-shrink-0">
+                                    <!-- Icon Error -->
+                                    <svg class="h-5 w-5 text-red-400 dark:text-red-200" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 5.636a9 9 0 11-12.728 0m1.414-1.414a9 9 0 0110.899 0m-5.7 5.8a2.25 2.25 0 10-3.18-3.181m0 0a2.25 2.25 0 013.18 3.181m-3.18-3.181L12 12m0 0l3.18-3.18" />
+                                    </svg>
+                                </div>
+                                <div class="ml-3 text-sm">
+                                    <p class="font-medium text-red-800 dark:text-red-200">
+                                        {!! TranslationHelper::translateIfNeeded('Error: ') !!}
+                                        <span id="errorMassagesMEdit"></span>
+                                    </p>
+                                </div>
+                                <div class="ml-auto pl-3">
+                                    <button type="button" onclick="closeMessages()" class="inline-flex rounded-md bg-red-50 text-red-800 hover:text-red-600 focus:outline-none focus:ring-2 focus:ring-red-400 focus:ring-offset-2 dark:bg-red-800 dark:text-red-200"
+                                        data-bs-dismiss="alert" aria-label="Close">
+                                        <svg class="h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                                        </svg>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
                         <!-- Form -->
                         <form id="documentFormEdit" enctype="multipart/form-data">
                             @csrf
@@ -802,6 +898,23 @@
         }
     });
 //end media
+
+    //messages close document flight
+    function closeMessagesDflight() {
+        document.getElementById('bodyErrorMassagesDflight').style.display = 'none';
+    }
+    //messages close document Project
+    function closeMessagesDproject() {
+        document.getElementById('bodyErrorMassagesDproject').style.display = 'none';
+    }
+    //messages close Media create
+        function closeMessagesMCreate() {
+        document.getElementById('bodyErrorMassagesMCreate').style.display = 'none';
+    }
+    //messages close Media edit
+        function closeMessagesMEdite() {
+        document.getElementById('bodyErrorMassagesMEdit').style.display = 'none';
+    }
 </script>
 
 <script>
@@ -835,27 +948,62 @@
             formDataMediaEdit.append('owner', $('#ownerMediaEdit').val());
             formDataMediaEdit.append('flight', $('#mediaFlightIDEdit').val());
 
-            for (let pair of formDataMediaEdit.entries()) {
-                console.log(pair[0] + ': ' + pair[1]);
+            let name = $('#nameMediaEdit').val().trim() || null;
+            let url = $('#urlMediaEdit').val().trim() || null;
+            let type = $('#mediaTypeEdit').val();
+
+            if(name == null){
+                document.getElementById('bodyErrorMassagesMEdit').style.display = 'block';
+                document.getElementById('errorMassagesMEdit').textContent = 'Name cannot be null';
+                setTimeout(() => {
+                    document.getElementById('bodyErrorMassagesMEdit').style.display = 'none';
+                }, 5000);
+                document.getElementById('bodyErrorMassagesMEdit').scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'start'
+                });
+            }else if(url == null){
+                document.getElementById('bodyErrorMassagesMEdit').style.display = 'block';
+                document.getElementById('errorMassagesMEdit').textContent = 'Url cannot be null';
+                setTimeout(() => {
+                    document.getElementById('bodyErrorMassagesMEdit').style.display = 'none';
+                }, 5000);
+                document.getElementById('bodyErrorMassagesMEdit').scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'start'
+                });
+            }else if(type == null){
+                document.getElementById('bodyErrorMassagesMEdit').style.display = 'block';
+                document.getElementById('errorMassagesMEdit').textContent = 'Type cannot be null';
+                setTimeout(() => {
+                    document.getElementById('bodyErrorMassagesMEdit').style.display = 'none';
+                }, 5000);
+                document.getElementById('bodyErrorMassagesMEdit').scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'start'
+                });
             }
-            $.ajax({
-                url: '{{ route('create.media.flight.record') }}',
-                type: 'POST',
-                data: formDataMediaEdit,
-                contentType: false,
-                processData: false,
-                success: function(response) {
-                    console.log(response);
-                    location.reload();
-                },
-                error: function(xhr, status, error) {
-                    console.error('Error:', error);
-                }
-            });
+            else{
+
+                $.ajax({
+                    url: '{{ route('create.media.flight.record') }}',
+                    type: 'POST',
+                    data: formDataMediaEdit,
+                    contentType: false,
+                    processData: false,
+                    success: function(response) {
+                        console.log(response);
+                        location.reload();
+                    },
+                    error: function(xhr, status, error) {
+                        console.error('Error:', error);
+                    }
+                });
+            }
         });
     });
 
-//media flight Create
+    //media flight Create
     $(document).ready(function() {
         $('#triggerButtonMedia').click(function() {
             const formDataMedia = new FormData();
@@ -867,23 +1015,58 @@
             formDataMedia.append('owner', $('#ownerMedia').val());
             formDataMedia.append('flight', $('#mediaFlightID').val());
 
-            for (let pair of formDataMedia.entries()) {
-                console.log(pair[0] + ': ' + pair[1]);
+            let name = $('#nameMedia').val().trim() || null;
+            let url = $('#urlMedia').val().trim() || null;
+            let type = $('#mediaType').val();
+            console.log(type);
+            if(name == null){
+                document.getElementById('bodyErrorMassagesMCreate').style.display = 'block';
+                document.getElementById('errorMassagesMCreate').textContent = 'Name cannot be null';
+                setTimeout(() => {
+                    document.getElementById('bodyErrorMassagesMCreate').style.display = 'none';
+                }, 5000);
+                document.getElementById('bodyErrorMassagesMCreate').scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'start'
+                });
+            }else if(url == null){
+                document.getElementById('bodyErrorMassagesMCreate').style.display = 'block';
+                document.getElementById('errorMassagesMCreate').textContent = 'Url cannot be null';
+                setTimeout(() => {
+                    document.getElementById('bodyErrorMassagesMCreate').style.display = 'none';
+                }, 5000);
+                document.getElementById('bodyErrorMassagesMCreate').scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'start'
+                });
+            }else if(type == null){
+                document.getElementById('bodyErrorMassagesMCreate').style.display = 'block';
+                document.getElementById('errorMassagesMCreate').textContent = 'Type cannot be null';
+                setTimeout(() => {
+                    document.getElementById('bodyErrorMassagesMCreate').style.display = 'none';
+                }, 5000);
+                document.getElementById('bodyErrorMassagesMCreate').scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'start'
+                });
             }
-            $.ajax({
-                url: '{{ route('create.media.flight') }}',
-                type: 'POST',
-                data: formDataMedia,
-                contentType: false,
-                processData: false,
-                success: function(response) {
-                    console.log(response);
-                    location.reload();
-                },
-                error: function(xhr, status, error) {
-                    console.error('Error:', error);
-                }
-            });
+            else{
+
+                $.ajax({
+                    url: '{{ route('create.media.flight') }}',
+                    type: 'POST',
+                    data: formDataMedia,
+                    contentType: false,
+                    processData: false,
+                    success: function(response) {
+                        console.log(response);
+                        location.reload();
+                    },
+                    error: function(xhr, status, error) {
+                        console.error('Error:', error);
+                    }
+                });
+            }
         });
     });
 
@@ -901,25 +1084,70 @@
             formDataFlight.append('owner', $('#ownerFlight').val());
             formDataFlight.append('flight', $('#flight').val());
 
-            for (let pair of formDataFlight.entries()) {
-                console.log(pair[0] + ': ' + pair[1]);
+            let name = $('#nameFlight').val().trim() || null;
+            let expired = $('#expiredDateFlight').val().trim() || null;
+            let refNumber = $('#refnumberFlight').val().trim() || null;
+            let dock = $('#dockFlight').val().trim() || null;
+            let link = $('#externalLinkFlight').val().trim() || null;
+
+            if(name == null){
+                document.getElementById('bodyErrorMassagesDflight').style.display = 'block';
+                document.getElementById('errorMassagesDflight').textContent = 'Name cannot be null';
+                setTimeout(() => {
+                    document.getElementById('bodyErrorMassagesDflight').style.display = 'none';
+                }, 5000);
+                document.getElementById('bodyErrorMassagesDflight').scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'start'
+                });
+            }else if(refNumber == null){
+                document.getElementById('bodyErrorMassagesDflight').style.display = 'block';
+                document.getElementById('errorMassagesDflight').textContent = 'Ref number  cannot be null';
+                setTimeout(() => {
+                    document.getElementById('bodyErrorMassagesDflight').style.display = 'none';
+                }, 5000);
+                document.getElementById('bodyErrorMassagesDflight').scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'start'
+                });
+            }else if(expired == null){
+                document.getElementById('bodyErrorMassagesDflight').style.display = 'block';
+                document.getElementById('errorMassagesDflight').textContent = 'Expired date cannot be null';
+                setTimeout(() => {
+                    document.getElementById('bodyErrorMassagesDflight').style.display = 'none';
+                }, 5000);
+                document.getElementById('bodyErrorMassagesDflight').scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'start'
+                });
+            }else if(dock == null && link == null){
+                document.getElementById('bodyErrorMassagesDflight').style.display = 'block';
+                document.getElementById('errorMassagesDflight').textContent = 'Please enter a link or your document';
+                setTimeout(() => {
+                    document.getElementById('bodyErrorMassagesDflight').style.display = 'none';
+                }, 5000);
+                document.getElementById('bodyErrorMassagesDflight').scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'start'
+                });
             }
+            else{
 
-
-            $.ajax({
-                url: '{{ route('create.document.flight') }}',
-                type: 'POST',
-                data: formDataFlight,
-                contentType: false,
-                processData: false,
-                success: function(response) {
-                    console.log(response);
-                    location.reload();
-                },
-                error: function(xhr, status, error) {
-                    console.error('Error:', error);
-                }
-            });
+                $.ajax({
+                    url: '{{ route('create.document.flight') }}',
+                    type: 'POST',
+                    data: formDataFlight,
+                    contentType: false,
+                    processData: false,
+                    success: function(response) {
+                        console.log(response);
+                        location.reload();
+                    },
+                    error: function(xhr, status, error) {
+                        console.error('Error:', error);
+                    }
+                });
+            }
         });
     });
 
@@ -937,20 +1165,70 @@
             formData.append('owner', $('#owner').val());
             formData.append('project', $('#project').val());
 
-            $.ajax({
-                url: '{{ route('create.document.project') }}',
-                type: 'POST',
-                data: formData,
-                contentType: false,
-                processData: false,
-                success: function(response) {
-                    console.log(response);
-                    location.reload();
-                },
-                error: function(xhr, status, error) {
-                    console.error('Error:', error);
-                }
-            });
+            let name = $('#name').val().trim() || null;
+            let expired = $('#expiredDate').val().trim() || null;
+            let refNumber = $('#refnumber').val().trim() || null;
+            let dock = $('#dock').val().trim() || null;
+            let link = $('#externalLink').val().trim() || null;
+
+            if(name == null){
+                document.getElementById('bodyErrorMassagesDproject').style.display = 'block';
+                document.getElementById('errorMassagesDproject').textContent = 'Name cannot be null';
+                setTimeout(() => {
+                    document.getElementById('bodyErrorMassagesDproject').style.display = 'none';
+                }, 5000);
+                document.getElementById('bodyErrorMassagesDproject').scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'start'
+                });
+            }else if(refNumber == null){
+                document.getElementById('bodyErrorMassagesDproject').style.display = 'block';
+                document.getElementById('errorMassagesDproject').textContent = 'Ref number  cannot be null';
+                setTimeout(() => {
+                    document.getElementById('bodyErrorMassagesDproject').style.display = 'none';
+                }, 5000);
+                document.getElementById('bodyErrorMassagesDproject').scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'start'
+                });
+            }else if(expired == null){
+                document.getElementById('bodyErrorMassagesDproject').style.display = 'block';
+                document.getElementById('errorMassagesDproject').textContent = 'Expired date cannot be null';
+                setTimeout(() => {
+                    document.getElementById('bodyErrorMassagesDproject').style.display = 'none';
+                }, 5000);
+                document.getElementById('bodyErrorMassagesDproject').scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'start'
+                });
+            }else if(dock == null && link == null){
+                document.getElementById('bodyErrorMassagesDproject').style.display = 'block';
+                document.getElementById('errorMassagesDproject').textContent = 'Please enter a link or your document';
+                setTimeout(() => {
+                    document.getElementById('bodyErrorMassagesDproject').style.display = 'none';
+                }, 5000);
+                document.getElementById('bodyErrorMassagesDproject').scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'start'
+                });
+            }
+            else{
+
+                $.ajax({
+                    url: '{{ route('create.document.project') }}',
+                    type: 'POST',
+                    data: formData,
+                    contentType: false,
+                    processData: false,
+                    success: function(response) {
+                        console.log(response);
+                        location.reload();
+                    },
+                    error: function(xhr, status, error) {
+                        console.error('Error:', error);
+                    }
+                });
+            }
         });
     });
 
