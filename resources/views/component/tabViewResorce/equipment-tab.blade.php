@@ -25,7 +25,14 @@
     ->whereHas('equidments', function ($query) use ($id) {
         $query->where('equidment_id', $id);
     })
+    ->paginate(10);
+    $flightsCount = App\Models\Fligh::where('teams_id', $teams)
+    ->whereHas('equidments', function ($query) use ($id) {
+        $query->where('equidment_id', $id);
+    })
     ->get();
+    $count = $flightsCount->count('id');
+
 
 ?>
 
@@ -92,7 +99,7 @@
         
             <div class="flex flex-wrap gap-2">
                 <button id="tab0" class="tab-button active text-white bg-gray-800 hover:bg-gray-700 px-4 py-2 rounded text-sm sm:text-base w-full sm:w-auto">
-                    {!! TranslationHelper::translateIfNeeded('Flight') !!} ({{$flights->count()}})
+                    {!! TranslationHelper::translateIfNeeded('Flight') !!} ({{$count}})
                 </button>
                 <button id="tab1" class="tab-button text-white bg-gray-800 hover:bg-gray-700 px-4 py-2 rounded text-sm sm:text-base w-full sm:w-auto">
                     {!! TranslationHelper::translateIfNeeded('Equipment Document') !!}
@@ -192,6 +199,9 @@
                             </div>
                         </div>
                     @endforeach
+                    <div class="mt-4">
+                        {{ $flights->links() }}
+                    </div>
                 @else
                     <p class="text-center text-gray-600 dark:text-gray-300 mt-4">No Data Found</p>
                 @endif

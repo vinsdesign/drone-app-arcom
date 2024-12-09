@@ -215,11 +215,33 @@ class KitsResource extends Resource
                 ->boolean()
                 ->label(TranslationHelper::translateIfNeeded('Enabled')),
             TextEntry::make('drone.name')
-                ->label(TranslationHelper::translateIfNeeded('Blocked To Drone')),
+                ->label(TranslationHelper::translateIfNeeded('Blocked To Drone'))
+                ->url(fn($record) => $record->drone_id ? route('filament.admin.resources.drones.view', [
+                    'tenant' => Auth()->user()->teams()->first()->id,
+                    'record' => $record->drone_id,
+                ]) : null)->color(Color::Blue),
             TextEntry::make('battrei.name')
-                ->label(TranslationHelper::translateIfNeeded('Battery')),
+                ->label(TranslationHelper::translateIfNeeded('Battery'))
+                ->formatStateUsing(function ($record) {
+                    return $record->battrei->map(function ($battrei) {
+                        return "<a href='" . route('filament.admin.resources.battreis.view', [
+                            'tenant' => auth()->user()->teams()->first()->id,
+                            'record' => $battrei->id,
+                        ]) . "' style='color: #3b82f6; text-decoration: underline; font-size: 0.875rem;'>{$battrei->name}</a>";
+                    })->implode(', ');
+                })
+                ->html(),
             TextEntry::make('equidment.name')
-                ->label(TranslationHelper::translateIfNeeded('Equipment')),
+                ->label(TranslationHelper::translateIfNeeded('Equipment'))
+                ->formatStateUsing(function ($record) {
+                    return $record->equidment->map(function ($equidment) {
+                        return "<a href='" . route('filament.admin.resources.equidments.view', [
+                            'tenant' => auth()->user()->teams()->first()->id,
+                            'record' => $equidment->id,
+                        ]) . "' style='color: #3b82f6; text-decoration: underline; font-size: 0.875rem;'>{$equidment->name}</a>";
+                    })->implode(', ');
+                })
+                ->html()
         ]);        
     }
 

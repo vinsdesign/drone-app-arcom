@@ -1026,6 +1026,11 @@ class FlighResource extends Resource
             Tables\Columns\TextColumn::make('fligh_location.name')
                 ->label(TranslationHelper::translateIfNeeded('Flight Location'))
                 ->numeric()
+                ->url(fn($record) => $record->location_id ? route('filament.admin.resources.fligh-locations.view', [
+                    'tenant' => Auth()->user()->teams()->first()->id,
+                    'record' => $record->location_id,
+                ]) : null)
+                ->color(Color::Blue)
                 ->sortable(),
             Tables\Columns\TextColumn::make('projects.case')
                 ->label(TranslationHelper::translateIfNeeded('Projects Case'))
@@ -1115,7 +1120,6 @@ class FlighResource extends Resource
                     Tables\Actions\DeleteAction::make(),
                     //Shared action
                     Tables\Actions\Action::make('Shared')->label(TranslationHelper::translateIfNeeded('Shared'))
-
                     ->hidden(fn ($record) => 
                     ($record->shared == 1) ||
                     !(Auth()->user()->roles()->pluck('name')->contains('super_admin') || (Auth()->user()->roles()->pluck('name')->contains('panel_user'))) && 
@@ -1184,9 +1188,6 @@ class FlighResource extends Resource
                     Tables\Actions\DeleteBulkAction::make(),
                 ]),
             ]);
-            $table->pagination(function ($query) {
-                return $query->appends(request()->query());
-            });
     }
 
     public static function infolist(Infolist $infolist): Infolist
@@ -1201,7 +1202,12 @@ class FlighResource extends Resource
                     TextEntry::make('type')->label(TranslationHelper::translateIfNeeded('Type')),
                     TextEntry::make('ops')->label(TranslationHelper::translateIfNeeded('Ops')),
                     TextEntry::make('landings')->label(TranslationHelper::translateIfNeeded('Landings')),
-                    TextEntry::make('fligh_location.name')->label(TranslationHelper::translateIfNeeded('Location')),
+                    TextEntry::make('fligh_location.name')->label(TranslationHelper::translateIfNeeded('Location'))
+                        ->url(fn($record) => $record->location_id ? route('filament.admin.resources.fligh-locations.view', [
+                            'tenant' => Auth()->user()->teams()->first()->id,
+                            'record' => $record->location_id,
+                        ]) : null)
+                        ->color(Color::Blue),
                     TextEntry::make('customers.name')->label(TranslationHelper::translateIfNeeded('Customer'))
                         ->url(fn($record) => $record->customers_id ? route('filament.admin.resources.customers.view', [
                             'tenant' => Auth()->user()->teams()->first()->id,
@@ -1228,20 +1234,30 @@ class FlighResource extends Resource
                 ->schema([
                     TextEntry::make('kits.name')->label(TranslationHelper::translateIfNeeded('Kits')),
                     TextEntry::make('drones.name')->label(TranslationHelper::translateIfNeeded('Drone'))
-                        ->url(fn($record) => $record->users_id ? route('filament.admin.resources.drones.view', [
+                        ->url(fn($record) => $record->drones_id ? route('filament.admin.resources.drones.view', [
                             'tenant' => Auth()->user()->teams()->first()->id,
-                            'record' => $record->users_id,
+                            'record' => $record->drones_id,
                         ]) : null)->color(Color::Blue),
                     TextEntry::make('battreis.name')->label(TranslationHelper::translateIfNeeded('Battery'))
-                        ->url(fn($record) => $record->users_id ? route('filament.admin.resources.battreis.view', [
-                            'tenant' => Auth()->user()->teams()->first()->id,
-                            'record' => $record->users_id,
-                        ]) : null)->color(Color::Blue),
+                        ->formatStateUsing(function ($record) {
+                            return $record->battreis->map(function ($battreis) {
+                                return "<a href='" . route('filament.admin.resources.battreis.view', [
+                                    'tenant' => auth()->user()->teams()->first()->id,
+                                    'record' => $battreis->id,
+                                ]) . "' style='color: #3b82f6; text-decoration: underline; font-size: 0.875rem;'>{$battreis->name}</a>";
+                            })->implode(', ');
+                        })
+                        ->html(),
                     TextEntry::make('equidments.name')->label(TranslationHelper::translateIfNeeded('Equipment'))
-                        ->url(fn($record) => $record->users_id ? route('filament.admin.resources.equidments.view', [
-                            'tenant' => Auth()->user()->teams()->first()->id,
-                            'record' => $record->users_id,
-                        ]) : null)->color(Color::Blue),
+                        ->formatStateUsing(function ($record) {
+                            return $record->equidments->map(function ($equidments) {
+                                return "<a href='" . route('filament.admin.resources.equidments.view', [
+                                    'tenant' => auth()->user()->teams()->first()->id,
+                                    'record' => $equidments->id,
+                                ]) . "' style='color: #3b82f6; text-decoration: underline; font-size: 0.875rem;'>{$equidments->name}</a>";
+                            })->implode(', ');
+                        })
+                        ->html(),
                     TextEntry::make('pre_volt')->label(TranslationHelper::translateIfNeeded('Pre-Voltage')),
                     TextEntry::make('fuel_used')->label(TranslationHelper::translateIfNeeded('Fuel Used')),
                 ])->columns(4),

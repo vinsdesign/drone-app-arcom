@@ -540,7 +540,7 @@ public static function infolist(Infolist $infolist): Infolist
         Section::make(TranslationHelper::translateIfNeeded('Extra Information'))
             ->schema([
         TextEntry::make('users.name')->label(TranslationHelper::translateIfNeeded('Owner'))
-            ->url(fn($record) => $record->for_drone ? route('filament.admin.resources.users.view', [
+            ->url(fn($record) => $record->users_id ? route('filament.admin.resources.users.view', [
                 'tenant' => auth()->user()->teams()->first()->id,
                 'record' => $record->users_id,
             ]) : null)

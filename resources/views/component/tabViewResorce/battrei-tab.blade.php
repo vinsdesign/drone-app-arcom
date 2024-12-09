@@ -23,7 +23,13 @@
     ->whereHas('battreis', function ($query) use ($id) {
         $query->where('battrei_id', $id);
     })
+    ->paginate(10);
+    $flightCount = App\Models\Fligh::where('teams_id', $teams)
+    ->whereHas('battreis', function ($query) use ($id) {
+        $query->where('battrei_id', $id);
+    })
     ->get();
+    $count = $flightCount->count('id');
 
 ?>
 
@@ -91,7 +97,7 @@
         
             <div class="flex flex-wrap gap-2">
                 <button id="tab0" class="tab-button active text-white bg-gray-800 hover:bg-gray-700 px-4 py-2 rounded text-sm sm:text-base w-full sm:w-auto">
-                    {!! TranslationHelper::translateIfNeeded('Flight') !!} ({{$flights->count()}})
+                    {!! TranslationHelper::translateIfNeeded('Flight') !!} ({{$count}})
                 </button>
                 <button id="tab1" class="tab-button text-white bg-gray-800 hover:bg-gray-700 px-4 py-2 rounded text-sm sm:text-base w-full sm:w-auto">
                     {!! TranslationHelper::translateIfNeeded('Battereis Document') !!}
@@ -146,7 +152,7 @@
                             
                                 <div class="flex-1 min-w-[180px] border-r border-gray-300 pr-4">
                                     <p class="text-sm text-gray-800 dark:text-gray-200 font-semibold">{!! TranslationHelper::translateIfNeeded('Location')!!}</p>
-                                    <a href="{{route('filament.admin.resources.flighs.view',
+                                    <a href="{{route('filament.admin.resources.fligh-locations.view',
                                             ['tenant' => Auth()->user()->teams()->first()->id,
                                             'record' => $item->fligh_location->id,])}}">
                                             <p class="text-sm text-gray-700 dark:text-gray-400" style="color:rgb(0, 85, 255)">{{$item->fligh_location->name ?? null}}</p>
@@ -193,6 +199,9 @@
                             </div>
                         </div>
                     @endforeach
+                    <div class="mt-4">
+                        {{ $flights->links() }}
+                    </div>
                 @else
                     <p class="text-center text-gray-600 dark:text-gray-300 mt-4">No Data Found</p>
                 @endif
