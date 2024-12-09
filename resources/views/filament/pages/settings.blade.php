@@ -277,17 +277,18 @@
             </div>
         </div>
     </div>
+ 
     {{--Currency Setting--}}
     <div id="maincontent1" class="main-content flex justify-center bg-gray-50 dark:bg-gray-900 ">
         <div class="max-w-lg w-full p-6 rounded-lg shadow-md border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800">
             <h1 class="text-2xl font-bold mb-4 text-gray-800 dark:text-gray-200">{!! TranslationHelper::translateIfNeeded('Currency Settings') !!}</h1>
-    
+           
             <form action="{{route('currency-store')}}" method="POST">
                 @csrf
                 
                 <div class="mb-4">
                     
-                    <label for="currency" class="block text-sm font-medium text-gray-700 dark:text-gray-400">{!! TranslationHelper::translateIfNeeded('Choose your currency:') !!}</label>
+                    <label for="currency" class="block text-sm font-medium text-gray-700 dark:text-gray-400">{!! TranslationHelper::translateIfNeeded('Choose your ssacurrency:') !!}</label>
                     <div class="relative">
                         <input 
                             type="text" 

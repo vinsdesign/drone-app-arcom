@@ -3,7 +3,7 @@ use App\Helpers\TranslationHelper;
 $teams = Auth()->user()->teams()->first()->id;
 $projects = session('project_id');
 $flights = App\Models\Fligh::where('teams_id', $teams)->where('projects_id',$projects)->paginate(5);
-$flightCount = App\Models\Fligh::where('teams_id', $teams)->where('projects_id',$projects)->get;
+$flightCount = App\Models\Fligh::where('teams_id', $teams)->where('projects_id',$projects)->get();
 $count = $flightCount->count('id');
 ?>
 <head>
