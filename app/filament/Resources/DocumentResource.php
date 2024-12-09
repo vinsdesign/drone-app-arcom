@@ -255,12 +255,12 @@ class DocumentResource extends Resource
                 //         'record' => $record->customer_id,
                 //     ]): null)->color(Color::Blue)
                 //     ->sortable(),
-                Tables\Columns\TextColumn::make('project.case')
+                Tables\Columns\TextColumn::make('projects.case')
                     ->label(TranslationHelper::translateIfNeeded('Project'))   
                     ->numeric()
-                    ->url(fn($record) => $record->project_id ?  route('filament.admin.resources.projects.index', [
+                    ->url(fn($record) => $record->projects_id ?  route('filament.admin.resources.projects.view', [
                         'tenant' => Auth()->user()->teams()->first()->id,
-                        'record' => $record->project_id,
+                        'record' => $record->projects_id,
                     ]): null)->color(Color::Blue)
                     ->sortable()
                     ->placeholder(TranslationHelper::translateIfNeeded('No Project Selected')),
@@ -441,15 +441,15 @@ class DocumentResource extends Resource
                     ->label(TranslationHelper::translateIfNeeded('Description')),
                 TextEntry::make('customers.name')
                     ->label(TranslationHelper::translateIfNeeded('Customers'))
-                    ->url(fn($record) => $record->customer_id ? route('filament.admin.resources.customers.index', [
+                    ->url(fn($record) => $record->customers_id ? route('filament.admin.resources.customers.view', [
                         'tenant' => Auth()->user()->teams()->first()->id,
-                        'record' => $record->customer_id,
+                        'record' => $record->customers_id,
                     ]): null)->color(Color::Blue),
-                TextEntry::make('project.case')
+                TextEntry::make('projects.case')
                     ->label(TranslationHelper::translateIfNeeded('Projects'))
-                    ->url(fn($record) => $record->project_id ?  route('filament.admin.resources.projects.index', [
+                    ->url(fn($record) => $record->projects_id ?  route('filament.admin.resources.projects.view', [
                         'tenant' => Auth()->user()->teams()->first()->id,
-                        'record' => $record->project_id,
+                        'record' => $record->projects_id,
                     ]): null)->color(Color::Blue),
             ])->columns(3)
 

@@ -324,7 +324,12 @@ class MaintenanceBatteryResource extends Resource
             TextEntry::make('date')
                 ->label(TranslationHelper::translateIfNeeded('Date')),
             TextEntry::make('status')
-                ->label(TranslationHelper::translateIfNeeded('Status')),
+                ->label(TranslationHelper::translateIfNeeded('Status'))
+                ->color(fn ($record) => match ($record->status) {
+                    'completed' => Color::Green,
+                    'schedule' => Color::Red,
+                    'in_progress' => Color::Zinc
+                }),
             TextEntry::make('cost')
                 ->label(TranslationHelper::translateIfNeeded('Cost')),
             TextEntry::make('currencies.iso')

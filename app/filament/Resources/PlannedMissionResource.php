@@ -798,6 +798,7 @@ class PlannedMissionResource extends Resource
                             ->pluck('name', 'id'); 
                     })   
                     ->multiple()
+                    ->preload()
                     ->searchable()
                     ->saveRelationshipsUsing(function ($component, $state) {
                         $component->getRecord()->battreis()->sync($state);
@@ -824,6 +825,7 @@ class PlannedMissionResource extends Resource
                 Forms\Components\Select::make('equidments')
                 ->label(TranslationHelper::translateIfNeeded('Equipment'))    
                     ->multiple()
+                    ->preload()
                     ->options(function (callable $get) use ($currentTeamId) { 
                         $startDate = $get('start_date_flight');
                         $endDate = $get('end_date_flight');
@@ -1167,20 +1169,30 @@ class PlannedMissionResource extends Resource
                 ->schema([
                     TextEntry::make('kits.name')->label(TranslationHelper::translateIfNeeded('Kits')),
                     TextEntry::make('drones.name')->label(TranslationHelper::translateIfNeeded('Drone'))
-                        ->url(fn($record) => $record->users_id ? route('filament.admin.resources.drones.view', [
+                        ->url(fn($record) => $record->drones_id ? route('filament.admin.resources.drones.view', [
                             'tenant' => Auth()->user()->teams()->first()->id,
-                            'record' => $record->users_id,
+                            'record' => $record->drones_id,
                         ]) : null)->color(Color::Blue),
                     TextEntry::make('battreis.name')->label(TranslationHelper::translateIfNeeded('Battery'))
-                        ->url(fn($record) => $record->users_id ? route('filament.admin.resources.battreis.view', [
-                            'tenant' => Auth()->user()->teams()->first()->id,
-                            'record' => $record->users_id,
-                        ]) : null)->color(Color::Blue),
+                        ->formatStateUsing(function ($record) {
+                            return $record->battreis->map(function ($battreis) {
+                                return "<a href='" . route('filament.admin.resources.battreis.view', [
+                                    'tenant' => auth()->user()->teams()->first()->id,
+                                    'record' => $battreis->id,
+                                ]) . "' style='color: #3b82f6; text-decoration: underline; font-size: 0.875rem;'>{$battreis->name}</a>";
+                            })->implode(', ');
+                        })
+                        ->html(),
                     TextEntry::make('equidments.name')->label(TranslationHelper::translateIfNeeded('Equipment'))
-                        ->url(fn($record) => $record->users_id ? route('filament.admin.resources.equidments.view', [
-                            'tenant' => Auth()->user()->teams()->first()->id,
-                            'record' => $record->users_id,
-                        ]) : null)->color(Color::Blue),
+                        ->formatStateUsing(function ($record) {
+                            return $record->equidments->map(function ($equidments) {
+                                return "<a href='" . route('filament.admin.resources.equidments.view', [
+                                    'tenant' => auth()->user()->teams()->first()->id,
+                                    'record' => $equidments->id,
+                                ]) . "' style='color: #3b82f6; text-decoration: underline; font-size: 0.875rem;'>{$equidments->name}</a>";
+                            })->implode(', ');
+                        })
+                        ->html(),
                     TextEntry::make('pre_volt')->label(TranslationHelper::translateIfNeeded('Pre-Voltage')),
                     TextEntry::make('fuel_used')->label(TranslationHelper::translateIfNeeded('Fuel Used')),
                     TextEntry::make('status')->label(TranslationHelper::translateIfNeeded('Status'))
