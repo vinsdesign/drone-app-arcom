@@ -51,4 +51,8 @@ class fligh_location extends Model
         return $this->hasMany(Incident::class);
 
     }
+    public function flights()
+    {
+        return $this->hasMany(fligh::class, 'location_id');
+    }
 }

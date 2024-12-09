@@ -65,7 +65,6 @@
             <!-- Form -->
             <div>
                 @csrf
-            
                 <!-- Name Input -->
                 <div>
                     <label class="block text-gray-700 dark:text-gray-300">{!! TranslationHelper::translateIfNeeded('Name')!!}</label>
@@ -169,7 +168,6 @@
         </div>
     </div>
 </div>
-
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 {{-- close and open pop-up --}}
 <script>
