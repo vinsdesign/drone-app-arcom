@@ -88,17 +88,6 @@ class FlighLocationResource extends Resource
                         })
                         ->reactive()
                         ->searchable(),  
-                        // Forms\Components\Select::make('customers_id')
-                        // // ->relationship('customers','name', function (Builder $query){
-                        // //     $currentTeamId = auth()->user()->teams()->first()->id;
-                        // //     $query->where('teams_id', $currentTeamId);
-                        // // })  
-                        // ->options(function (callable $get) use ($currentTeamId) {
-                        //     return customer::where('teams_id', $currentTeamId)->pluck('name', 'id');
-                        // })  
-                        // ->label(TranslationHelper::translateIfNeeded('Customers'))
-                        // ->searchable()
-                        // ->columnSpanFull(),
                         Forms\Components\Hidden::make('customers_id') 
                             ->required(),
                         Forms\Components\TextInput::make('customers_name')
@@ -138,8 +127,6 @@ class FlighLocationResource extends Resource
                         Forms\Components\TextInput::make('pos_code')
                         ->label(TranslationHelper::translateIfNeeded('Postal Code'))
                         ->numeric(),
-                        Forms\Components\TextInput::make('state')
-                        ->label(TranslationHelper::translateIfNeeded('State')),
                         Forms\Components\TextInput::make('country')
                         ->label(TranslationHelper::translateIfNeeded('Country')),
 

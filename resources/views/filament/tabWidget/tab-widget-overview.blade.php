@@ -7,6 +7,7 @@
             })
             ->whereNotIn('status', ['completed'])
             ->whereRaw('DATE(date) < ?', [Carbon\Carbon::now()->format('Y-m-d')])
+            ->limit(10)
             ->get();
 
 
@@ -14,6 +15,7 @@
             $query->where('id', $currentTeamId);
             })->whereNotIn('status', ['completed'])
             ->whereRaw('DATE(date) < ?', [Carbon\Carbon::now()->format('Y-m-d')])
+            ->limit(10)
             ->get();
 
             //end maintenance
@@ -21,7 +23,7 @@
             //flight
             $flight = App\Models\fligh::Where('teams_id',$currentTeamId)->orderBy('created_at', 'desc')
             ->limit(20)
-            ->get();
+            ->paginate(10);
             //end flight
             //inventory
             $inventory = App\Models\fligh::Where('teams_id',$currentTeamId)
@@ -35,7 +37,7 @@
             $query->where('teams.id', $currentTeamId)->where('status_visible', '!=', 'archived');
             })->orderBy('created_at', 'desc')
             ->limit(20)
-            ->get();
+            ->paginate(10);
             //end document
             //incident
             $incident = App\Models\incident::whereHas('teams', function ($query) use ($currentTeamId){
@@ -264,6 +266,10 @@
 
                                 </div>
                             @endforeach
+                            <div class="mt-4">
+                                {{$flight->links()}}
+                            </div>
+                            
                         @endif
                         {{-- end tabel --}}
                 </div>
@@ -635,6 +641,10 @@
                             
                                 </div>
                             @endforeach
+                            <div class="mt-4">
+                                {{$document->links()}}
+                            </div>
+                            
                         @endif
                         </div>
                     {{-- end tabel --}}  
