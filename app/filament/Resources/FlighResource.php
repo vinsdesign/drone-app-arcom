@@ -1087,14 +1087,18 @@ class FlighResource extends Resource
                     ->relationship('projects', 'case', function (Builder $query){
                         $currentTeamId = auth()->user()->teams()->first()->id;;
                         $query->where('teams_id', $currentTeamId);
-                    })    
-                    ->label(TranslationHelper::translateIfNeeded('Filter by Project')),
+                    }) 
+                    ->preload()
+                    ->label(TranslationHelper::translateIfNeeded('Filter by Project'))
+                    ->searchable(),
                 Tables\Filters\SelectFilter::make('drones_id')
                     ->relationship('drones', 'name', function (Builder $query){
                         $currentTeamId = auth()->user()->teams()->first()->id;;
                         $query->where('teams_id', $currentTeamId);
-                    })    
-                    ->label(TranslationHelper::translateIfNeeded('Filter by Drones')),
+                    })
+                    ->preload()
+                    ->label(TranslationHelper::translateIfNeeded('Filter by Drones'))
+                    ->searchable(),
                 Tables\Filters\SelectFilter::make('users_id')
                     ->relationship('users', 'name', function (Builder $query) {
                         $currentTeamId = auth()->user()->teams()->first()->id;
@@ -1105,8 +1109,18 @@ class FlighResource extends Resource
                             $query->where('roles.name', 'Pilot');
                         });
                     })
-
+                    ->preload()
+                    ->searchable()
                     ->label(TranslationHelper::translateIfNeeded('Filter by Pilot')),
+                Tables\Filters\SelectFilter::make('customers_id')
+                    ->options(function () {
+                        $currentTeamId = auth()->user()->teams()->first()->id;
+                        return \App\Models\customer::where('teams_id', $currentTeamId)
+                            ->pluck('name', 'id')
+                            ->toArray();
+                    })
+                    ->label(TranslationHelper::translateIfNeeded('Filter by Customers'))
+                    ->searchable(),
                 Tables\Filters\Filter::make('individual')
                     ->query(function (Builder $query) {
                             $query->where('users_id', auth()->id());
