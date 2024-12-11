@@ -309,7 +309,7 @@ $response =session('successfully');
                     behavior: 'smooth',
                     block: 'start'
                 });
-            }else if(revenuValue.trim() !== '') {
+            }else if(revenuValue.trim() == '') {
                 document.getElementById('bodyErrorMassagesProject').style.display = 'block';
                 document.getElementById('errorMassagesProject').textContent = 'Revenue cannot be null';
                 setTimeout(() => {
@@ -329,7 +329,7 @@ $response =session('successfully');
                     behavior: 'smooth',
                     block: 'start'
                 });
-            }else if (currencieValue.trim() = ''){
+            }else if (currencieValue.trim() == ''){
                 document.getElementById('bodyErrorMassagesProject').style.display = 'block';
                 document.getElementById('errorMassagesProject').textContent = 'Currencie cannot be null';
                 setTimeout(() => {

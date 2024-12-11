@@ -1019,6 +1019,15 @@ class PlannedMissionResource extends Resource
                     })
                     ->searchable()
                     ->label(TranslationHelper::translateIfNeeded('Filter by Pilot')),
+                Tables\Filters\SelectFilter::make('customers_id')
+                    ->options(function () {
+                        $currentTeamId = auth()->user()->teams()->first()->id;
+                        return \App\Models\customer::where('teams_id', $currentTeamId)
+                            ->pluck('name', 'id')
+                            ->toArray();
+                    })
+                    ->label(TranslationHelper::translateIfNeeded('Filter by Customers'))
+                    ->searchable(),
                 Tables\Filters\SelectFilter::make('status')
                     ->options([
                         'append' => 'Append',

@@ -243,8 +243,20 @@ class IncidentResource extends Resource
                     true => 'Under Review',
                 ])
                 ->label(TranslationHelper::translateIfNeeded('Status')),
-                Tables\Filters\SelectFilter::make('create_at') 
-                ->label(TranslationHelper::translateIfNeeded('Create at'))
+                Tables\Filters\Filter::make('date')
+                    ->form([
+                        Forms\Components\Grid::make(2)
+                        ->schema([
+                        Forms\Components\DatePicker::make('from')
+                            ->label(TranslationHelper::translateIfNeeded('Incident From')),
+                        Forms\Components\DatePicker::make('until')
+                            ->label(TranslationHelper::translateIfNeeded('Incident Until')),
+                        ]),
+                    ])
+                    ->query(function (Builder $query, array $data) {
+                        $query->when($data['from'], fn ($q) => $q->whereDate('incident_date', '>=', $data['from']));
+                        $query->when($data['until'], fn ($q) => $q->whereDate('incident_date', '<=', $data['until']));
+                    }),
             ])
             ->actions([
                 Action::make('viewFlight')
