@@ -511,12 +511,16 @@ class EquidmentResource extends Resource
                             'record' => $record->users_id,
                         ]) : null)->color(Color::Blue),
                     TextEntry::make('purchase_date')->label(TranslationHelper::translateIfNeeded('Purchase Date'))->date('Y-m-d'),
-                    TextEntry::make('insurable_value')->label(TranslationHelper::translateIfNeeded('Insurable Value')),
-                    TextEntry::make('weight')->label(TranslationHelper::translateIfNeeded('Weight')),
+                    TextEntry::make('insurable_value')->label(TranslationHelper::translateIfNeeded('Insurable Value'))
+                        ->getStateUsing(fn($record) => $record->insurable_value . ' ' .
+                    Auth()->user()->teams()->first()->currencie->iso ?? null),
+                    TextEntry::make('weight')->label(TranslationHelper::translateIfNeeded('Weight'))
+                        ->getStateUsing(fn($record) => $record->weight . ' cm'),
                     TextEntry::make('firmware_v')->label(TranslationHelper::translateIfNeeded('Firmware Version')),
                     TextEntry::make('hardware_v')->label(TranslationHelper::translateIfNeeded('Hardware Version')),
                     IconEntry::make('is_loaner')->boolean()->label(TranslationHelper::translateIfNeeded('Loaner Equipment')),
                     TextEntry::make('description')->label(TranslationHelper::translateIfNeeded('Description')),
+                    InfolistView::make('component.include-kits-Eq')->columnSpanFull(),
                 ])->columns(4),
             Section::make('')
                 ->schema([

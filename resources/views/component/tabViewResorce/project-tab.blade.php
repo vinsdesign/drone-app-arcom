@@ -219,7 +219,9 @@
                                 <!-- column Name -->
                                 <div class="flex-1 min-w-[150px] mb-2 border-r border-gray-300 pr-2 overflow-hidden">
                                     <p class="text-l text-gray-800 dark:text-gray-200 font-semibold truncate">{!! TranslationHelper::translateIfNeeded('Name : ')!!}</p>
-                                    <p class="text-sm text-gray-500 dark:text-gray-150 font-semibold truncate">{{$item->name}}</p>
+                                    <a href="/storage/{{ $item->doc }}" target="_blank" rel="noopener noreferrer">
+                                        <p class="text-sm text-gray-500 dark:text-gray-150 font-semibold truncate">{{$item->name}}</p>
+                                    </a> 
                                 </div>
                         
                                 <!-- Column Number Ref-->
@@ -293,7 +295,9 @@
                                 <!-- column Name -->
                                 <div class="flex-1 min-w-[150px] mb-2 border-r border-gray-300 pr-2 overflow-hidden">
                                     <p class="text-l text-gray-800 dark:text-gray-200 font-semibold truncate">{!! TranslationHelper::translateIfNeeded('Date : ')!!}<span class="text-sm text-gray-500 dark:text-gray-150 font-semibold truncate">{{$item->incident_date}}</span></p>
-                                    <p class="text-sm text-gray-500 dark:text-gray-150 font-semibold truncate">{!! TranslationHelper::translateIfNeeded('cause : ')!!}{{$item->cause}}</p>
+                                    <a href="{{route('filament.admin.resources.incidents.edit',['tenant' => Auth()->user()->teams()->first()->id, 'record'=>$item->id])}}">
+                                        <p class="text-sm text-gray-500 dark:text-gray-150 font-semibold truncate">{!! TranslationHelper::translateIfNeeded('cause : ')!!}{{$item->cause}}</p>
+                                    </a>
                                 </div>
                         
                                 <!-- Column Location-->
@@ -359,7 +363,9 @@
                                 <!-- column Name -->
                                 <div class="flex-1 min-w-[150px] mb-2 border-r border-gray-300 pr-2 overflow-hidden">
                                     <p class="text-l text-gray-800 dark:text-gray-200 font-semibold truncate">{!! TranslationHelper::translateIfNeeded('Name : ')!!}</p>
-                                    <p class="text-sm text-gray-500 dark:text-gray-150 font-semibold truncate">{{$item->name}}</p>
+                                    <a href="{{route('filament.admin.resources.fligh-locations.view',['tenant'=>Auth()->user()->teams()->first()->id,'record'=>$item->id])}}">
+                                        <p class="text-sm text-gray-500 dark:text-gray-150 font-semibold truncate">{{$item->name}}</p>
+                                    </a>  
                                     <p class="text-sm text-gray-500 dark:text-gray-150 font-semibold truncate">{{$item->latitude}} / {{$item->longitude}}</p>
                                 </div>
                         

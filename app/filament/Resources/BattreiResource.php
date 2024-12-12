@@ -524,11 +524,16 @@ public static function infolist(Infolist $infolist): Infolist
                 TextEntry::make('serial_P')->label(TranslationHelper::translateIfNeeded('Serial Printed')),
                 TextEntry::make('serial_I')->label(TranslationHelper::translateIfNeeded('Serial Internal')),
                 TextEntry::make('cellCount')->label(TranslationHelper::translateIfNeeded('Cell Count')),
-                TextEntry::make('nominal_voltage')->label(TranslationHelper::translateIfNeeded('Voltage')),
-                TextEntry::make('capacity')->label(TranslationHelper::translateIfNeeded('Capacity')),
-                TextEntry::make('initial_Cycle_count')->label(TranslationHelper::translateIfNeeded('Initial Cycles Count')),
-                TextEntry::make('life_span')->label(TranslationHelper::translateIfNeeded('Life Span')),
-                TextEntry::make('flaight_count')->label(TranslationHelper::translateIfNeeded('Flight Count')),
+                TextEntry::make('nominal_voltage')->label(TranslationHelper::translateIfNeeded('Voltage'))
+                    ->getStateUsing(fn($record) => $record->nominal_voltage . ' V'),
+                TextEntry::make('capacity')->label(TranslationHelper::translateIfNeeded('Capacity'))
+                    ->getStateUsing(fn($record) => $record->capacity . ' mAh'),
+                TextEntry::make('initial_Cycle_count')->label(TranslationHelper::translateIfNeeded('Initial Cycles Count'))
+                    ->getStateUsing(fn($record) => $record->initial_Cycle_count . ' Cycles'),
+                TextEntry::make('life_span')->label(TranslationHelper::translateIfNeeded('Life Span'))
+                ->getStateUsing(fn($record) => $record->life_span . ' Cycles'),
+                TextEntry::make('flaight_count')->label(TranslationHelper::translateIfNeeded('Flight Count'))
+                    ->getStateUsing(fn($record) => $record->flaight_count . ' Flights'),
                 TextEntry::make('drone.name')->label(TranslationHelper::translateIfNeeded('For Drone (Optional)'))
                     ->url(fn($record) => $record->for_drone ? route('filament.admin.resources.drones.view', [
                         'tenant' => auth()->user()->teams()->first()->id,
@@ -546,12 +551,16 @@ public static function infolist(Infolist $infolist): Infolist
             ]) : null)
             ->color(Color::Blue),
         TextEntry::make('purchase_date')->label(TranslationHelper::translateIfNeeded('Purchase Date')),
-        TextEntry::make('insurable_value')->label(TranslationHelper::translateIfNeeded('Insurable Value')),
-        TextEntry::make('wight')->label(TranslationHelper::translateIfNeeded('Weight')),
+        TextEntry::make('insurable_value')->label(TranslationHelper::translateIfNeeded('Insurable Value'))
+        ->getStateUsing(fn($record) => $record->insurable_value . ' ' .
+        Auth()->user()->teams()->first()->currencie->iso ?? null),
+        TextEntry::make('wight')->label(TranslationHelper::translateIfNeeded('Weight'))
+            ->getStateUsing(fn($record) => $record->wight . ' cm'),
         TextEntry::make('firmware_version')->label(TranslationHelper::translateIfNeeded('Firmware Version')),
         TextEntry::make('hardware_version')->label(TranslationHelper::translateIfNeeded('Hardware Version')),
         IconEntry::make('is_loaner')->boolean()->label(TranslationHelper::translateIfNeeded('Loaner Battery')),
         TextEntry::make('description')->label(TranslationHelper::translateIfNeeded('Description')),
+        InfolistView::make('component.include-kits')->columnSpanFull(),
             ])->columns(4),
         Section::make('')
             ->schema([
