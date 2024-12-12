@@ -14,6 +14,7 @@ use BezhanSalleh\FilamentLanguageSwitch\Enums\Placement;
 use TomatoPHP\FilamentSubscriptions\Filament\Resources\PlanResource;
 use TomatoPHP\FilamentSubscriptions\Filament\Resources\SubscriptionResource;
 use Filament\Support\Colors\Color;
+use Illuminate\Support\Facades\Request;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -45,11 +46,12 @@ class AppServiceProvider extends ServiceProvider
         //end test untuk merubah nama aplikasi (khusus untuk Super admin
 
         LanguageSwitch::configureUsing(function (LanguageSwitch $switch) {
+            $locale = session('locale', Request::cookie('locale', 'en'));
             $switch
                 ->locales(['ar','en','fr', 'id', 'ko', 'ja', 'es'])
                 ->visible(false)
                 ->outsidePanelPlacement(Placement::TopRight)
-                ->displayLocale('en')
+                ->displayLocale($locale)
                 ->renderHook('panels::global-search.before');
         });
     }

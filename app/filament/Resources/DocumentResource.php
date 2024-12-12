@@ -206,16 +206,44 @@ class DocumentResource extends Resource
                     ->label(TranslationHelper::translateIfNeeded('Expired Date'))   
                     ->date('Y-m-d')
                     ->sortable()
-                    ->formatStateUsing(function ($state) {
-                        $translatedText = (TranslationHelper::translateIfNeeded('Expired'));
-                        $expiredDate = Carbon::parse($state);
-                        $now = Carbon::now();
+                    // ->formatStateUsing(function ($state) {
+                    //     $translatedText = (TranslationHelper::translateIfNeeded('Expired'));
+                    //     $expiredDate = Carbon::parse($state);
+                    //     $now = Carbon::now();
     
-                        if ($expiredDate->isPast()) {
-                            return "<span style='color: red; font-weight: bold;'>{$translatedText}: {$expiredDate->format('Y-m-d')}</span>";
-                        } else {
-                            return $expiredDate->format('Y-m-d');
+                    //     if ($expiredDate->isPast()) {
+                    //         return "<span style='color: red; font-weight: bold;'>{$translatedText}: {$expiredDate->format('Y-m-d')}</span>";
+                    //     } else {
+                    //         return $expiredDate->format('Y-m-d');
+                    //     }
+                    // })
+                    ->formatStateUsing(function ($state, $record) {
+                        $daysOverdue = Carbon::parse($state);
+                        $now = Carbon::now();
+                        $formatDate = $daysOverdue->format('Y-m-d');
+            
+                        if ($record->status !== 'completed') {
+                            $daysOverdueDiff = $now->diffInDays($daysOverdue, false);
+            
+                            if ($daysOverdueDiff < 0){
+                                $daysOverdueDiff = abs(intval($daysOverdueDiff));
+
+                                $overdueLabel = TranslationHelper::translateIfNeeded('Expired ');
+                                $daysLabel = TranslationHelper::translateIfNeeded(' days ago');
+
+                                return "<div>{$formatDate}<br><span style='
+                                    display: inline-block;
+                                    background-color: red; 
+                                    color: white; 
+                                    padding: 3px 6px;
+                                    border-radius: 5px;
+                                    font-weight: bold;
+                                '>
+                                    {$overdueLabel} {$daysOverdueDiff} {$daysLabel}
+                                </span></div>";
+                            }
                         }
+                        return $formatDate;
                     })
                     ->html(),
                 // Tables\Columns\TextColumn::make('scope')
