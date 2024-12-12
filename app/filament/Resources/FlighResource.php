@@ -869,7 +869,7 @@ class FlighResource extends Resource
                         foreach ($state as $key){
                             battrei::where('id',$key)->increment('initial_Cycle_count');
                         }
-                    }),
+                    })->preload(),
                     // ->options(function (callable $get) use ($currentTeamId) {
                     //     $flightDate = $get('flight_date'); // Ambil tanggal flight
                 
@@ -944,14 +944,12 @@ class FlighResource extends Resource
                     ->searchable()
                     ->saveRelationshipsUsing(function ($component, $state) {
                         $component->getRecord()->equidments()->sync($state);
-                    }),
+                    })->preload(),
                   ])->columnSpan(2),
 
                             // ->whereDoesntHave('fligh', function ($query) use ($flightDate) {
                             //     $query->whereDate('date_flight', $flightDate); // Pastikan equipment tidak digunakan di tanggal flight yang sama
-                            // })
-
-                
+                            // })               
                 
                 Forms\Components\TextInput::make('pre_volt')
                 ->label(TranslationHelper::translateIfNeeded('Pre Voltage'))    
@@ -1272,7 +1270,8 @@ class FlighResource extends Resource
                             })->implode(', ');
                         })
                         ->html(),
-                    TextEntry::make('pre_volt')->label(TranslationHelper::translateIfNeeded('Pre-Voltage')),
+                    TextEntry::make('pre_volt')->label(TranslationHelper::translateIfNeeded('Pre-Voltage'))
+                    ->getStateUsing(fn($record) => $record->pre_volt . ' V'),
                     TextEntry::make('fuel_used')->label(TranslationHelper::translateIfNeeded('Fuel Used')),
                 ])->columns(4),
             Section::make('')

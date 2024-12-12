@@ -2,9 +2,9 @@
     use App\Helpers\TranslationHelper;
     //project Document
     $id = $getRecord()->id;
-
     if (Auth()->user()->roles()->pluck('name')->contains('super_admin') || (Auth()->user()->roles()->pluck('name')->contains('panel_user'))) {
         $queryUsers = App\Models\Document::query()->where('users_id', $id)->where('status_visible', '!=', 'archived')->get();
+       
     }else{
         $queryUsers = App\Models\Document::query()
         ->where('users_id', $id)
@@ -108,9 +108,11 @@
                         </button>
 
                         <!-- Judul Modal -->
+                    
                         <h2 class="text-center text-lg font-semibold text-gray-900 dark:text-white">
                             {!! TranslationHelper::translateIfNeeded('Add Document')!!}
                         </h2>
+                   
                         <hr class="border-t border-gray-300 dark:border-gray-600 w-24 mx-auto">
 
                         {{-- error massages --}}
@@ -217,12 +219,13 @@
 
                 {{-- tabel --}}
                 <div class="mb-2">
-                    
-                    <div class="mt-4 flex justify-end mb-4">
-                        <button type="button" onclick="openModal()" class="px-4 py-2 bg-gray-700 text-white font-semibold rounded-lg 
-                    hover:bg-gray-600 dark:hover:bg-gray-400 focus:outline-none focus:ring-2 
-                    focus:ring-gray-500 dark:focus:ring-gray-300">{!! TranslationHelper::translateIfNeeded('Upload Document')!!}</button>
-                    </div>
+                    @if($id == Auth()->user()->first()->id)
+                        <div class="mt-4 flex justify-end mb-4">
+                            <button type="button" onclick="openModal()" class="px-4 py-2 bg-gray-700 text-white font-semibold rounded-lg 
+                        hover:bg-gray-600 dark:hover:bg-gray-400 focus:outline-none focus:ring-2 
+                        focus:ring-gray-500 dark:focus:ring-gray-300">{!! TranslationHelper::translateIfNeeded('Upload Document')!!}</button>
+                        </div>
+                    @endif
                 
                     @if($documentProjects->count() > 0)
                         @foreach($documentProjects as $item)
@@ -232,7 +235,9 @@
                                 <!-- column Name -->
                                 <div class="flex-1 min-w-[150px] mb-2 border-r border-gray-300 pr-2 overflow-hidden">
                                     <p class="text-l text-gray-800 dark:text-gray-200 font-semibold truncate">{!! TranslationHelper::translateIfNeeded('Name : ')!!}</p>
-                                    <p class="text-sm text-gray-500 dark:text-gray-150 font-semibold truncate">{{$item->name}}</p>
+                                    <a href="/storage/{{ $item->doc }}" target="_blank" rel="noopener noreferrer">
+                                        <p class="text-sm text-gray-500 dark:text-gray-150 font-semibold truncate">{{$item->name}}</p>
+                                    </a> 
                                 </div>
                         
                                 <!-- Column Number Ref-->

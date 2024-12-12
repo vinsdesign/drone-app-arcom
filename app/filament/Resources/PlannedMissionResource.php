@@ -13,6 +13,7 @@ use App\Models\kits;
 use App\Models\PlannedMission;
 use App\Models\Projects;
 use Filament\Forms;
+use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
@@ -217,7 +218,9 @@ class PlannedMissionResource extends Resource
                 ])->columnSpan(1),
                 //grid location
                 Forms\Components\Grid::make(1)->schema([
-                    view::make('component.button-location'),
+                    TextInput::make('map_location_form')
+                        ->view('component.button-location')
+                        ->extraAttributes(['wire:model' => 'location']),
                     Forms\Components\Select::make('location_id')
                     ->options(function (callable $get) use ($currentTeamId) {
                         return fligh_location::where('teams_id', $currentTeamId)
