@@ -284,12 +284,12 @@
                                     
                                     @elseif ($daysRemaining === 0) 
                                         <p class="text-sm text-gray-500 dark:text-gray-150 font-semibold truncate">
-                                            {!! TranslationHelper::translateIfNeeded('Hari ini adalah hari terakhir sebelum expired.')!!}
+                                            {!! TranslationHelper::translateIfNeeded('Last Day Before Expiration.')!!}
                                         </p>
                                     
                                     @else
                                         <p class="text-sm text-gray-500 dark:text-gray-150 font-semibold truncate">
-                                            {!! TranslationHelper::translateIfNeeded('Tanggal expired telah lewat ')!!}{{$daysRemaining}}{!! TranslationHelper::translateIfNeeded(' hari yang lalu')!!}
+                                            {!! TranslationHelper::translateIfNeeded('The expiration date has passed ')!!}{{$daysRemaining}}{!! TranslationHelper::translateIfNeeded(' days')!!}
                                         </p>
                                     @endif
                                     
