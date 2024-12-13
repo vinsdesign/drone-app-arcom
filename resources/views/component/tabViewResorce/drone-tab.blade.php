@@ -360,7 +360,7 @@
                                     
                                     @else
                                         <p class="text-sm text-gray-500 dark:text-gray-150 font-semibold truncate">
-                                            {!! TranslationHelper::translateIfNeeded('The expiration date has passed ')!!}{{$daysRemaining}}{!! TranslationHelper::translateIfNeeded(' days')!!}
+                                            {!! TranslationHelper::translateIfNeeded('The expiration date has passed ')!!}{{abs($daysRemaining)}}{!! TranslationHelper::translateIfNeeded(' days')!!}
                                         </p>
                                     @endif
                                     
@@ -477,7 +477,7 @@
                         
                             <div class="flex-1 min-w-[150px] mb-2 border-r border-gray-300 pr-2">
                                 <p class="text-sm text-gray-800 dark:text-gray-200 font-semibold">{!! TranslationHelper::translateIfNeeded('Next Scheduled:')!!} <span class="text-sm text-gray-700 dark:text-gray-400">{{$item->date?? null}}</span></p>
-                                <p class="text-sm text-gray-700 dark:text-gray-400">
+                                <p class="py-2 text-sm text-gray-700 dark:text-gray-400">
                                     @php
                                         $now = Carbon\Carbon::now();
                                         $formatDate = \Carbon\Carbon::parse($item->date)->format('Y-m-d');
