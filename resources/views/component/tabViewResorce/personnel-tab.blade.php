@@ -269,7 +269,7 @@
                                     
                                     @else
                                         <p class="text-sm text-gray-500 dark:text-gray-150 font-semibold truncate">
-                                            {!! TranslationHelper::translateIfNeeded('The expiration date has passed ')!!}{{$daysRemaining}}{!! TranslationHelper::translateIfNeeded(' days')!!}
+                                            {!! TranslationHelper::translateIfNeeded('The expiration date has passed ')!!}{{abs($daysRemaining)}}{!! TranslationHelper::translateIfNeeded(' days')!!}
                                         </p>
                                     @endif
                                     
