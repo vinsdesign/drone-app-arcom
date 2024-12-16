@@ -219,7 +219,7 @@
 
                 {{-- tabel --}}
                 <div class="mb-2">
-                    @if($id == Auth()->user()->first()->id)
+                    @if($id == Auth()->user()->id)
                         <div class="mt-4 flex justify-end mb-4">
                             <button type="button" onclick="openModal()" class="px-4 py-2 bg-gray-700 text-white font-semibold rounded-lg 
                         hover:bg-gray-600 dark:hover:bg-gray-400 focus:outline-none focus:ring-2 

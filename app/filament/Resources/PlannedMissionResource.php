@@ -238,7 +238,7 @@ class PlannedMissionResource extends Resource
                                     TextInput::make('name')
                                         ->label(TranslationHelper::translateIfNeeded('Name'))
                                         ->required(),
-                                    Select::make('Project')
+                                    Select::make('project')
                                         ->label(TranslationHelper::translateIfNeeded('Project'))
                                         ->options(function (callable $get) use ($currentTeamId) {
                                             return Projects::where('teams_id', $currentTeamId)
@@ -334,12 +334,39 @@ class PlannedMissionResource extends Resource
                                     TextInput::make('description')
                                     ->label(TranslationHelper::translateIfNeeded('Descriptions'))
                                     ->columnSpanFull(),
+                                    Hidden::make('teams_id')
+                                    ->default(Auth()->user()->teams()->first()->id)
                                     
                                 
                             ])
-                            // ->action()
+                            ->action(function(array $data){
+                                $flighLocation = new fligh_location([
+                                    'name' => $data['name'],
+                                    'description' => $data['description'],
+                                    'address' => $data['address'],
+                                    'city' => $data['city'],
+                                    'country' => $data['country'],
+                                    'pos_code' => $data['pos_code'],
+                                    'latitude' => $data['latitude'],
+                                    'longitude' => $data['longitude'],
+                                    'altitude' => $data['altitude'],
+                                    'teams_id' => $data['teams_id'],
+                                    'customers_id' => $data['customers_id'],
+                                    'projects_id' => $data['project'],
+                                ]);
+
+                                if ($flighLocation->save()) {
+                                    $flighLocation->teams()->attach($data['teams_id']);
+                                    session()->put('notification', 'Successfully created Location');
+                                } else {
+                                    session()->put('notificationError', 'error');
+                                }
+                            })
+                
                             
                     ])->extraAttributes(['style' => 'min-width: 200%;']),
+                    // end action
+
                     Forms\Components\Select::make('location_id')
                     ->options(function (callable $get) use ($currentTeamId) {
                         return fligh_location::where('teams_id', $currentTeamId)
@@ -570,31 +597,6 @@ class PlannedMissionResource extends Resource
                     //                  });
                     // })
                     ->relationship('drones', 'name')
-                    ->saveRelationshipsUsing(function ($state, callable $get) {
-                        $start = $get('start_date_flight');
-                        $end = $get('end_date_flight');
-                        $state = is_array($state) ? $state : [$state];
-                        foreach ($state as $key) {
-                            drone::where('id', $key)->increment('initial_flight');
-                        };
-                                if ($start && $end) {
-                                    $diffInSeconds = Carbon::parse($start)->diffInSeconds(Carbon::parse($end));
-                                    $duration = gmdate('H:i:s', $diffInSeconds);
-                                    $durationArray = is_array($duration) ? $duration : [$duration];
-                                    
-                                    foreach ($state as $key) {
-                                        $drone = drone::find($key);
-                                        if ($drone) { 
-                                            $currentFlightTime = Carbon::parse($drone->initial_flight_time)->secondsSinceMidnight();
-                                            $newDurationInSeconds = Carbon::parse($durationArray[0])->secondsSinceMidnight();
-                                            $totalFlightTimeInSeconds = $currentFlightTime + $newDurationInSeconds;
-                                            $totalFlightTime = gmdate('H:i:s', $totalFlightTimeInSeconds);
-                                            $drone->update(['initial_flight_time' => $totalFlightTime]);
-                                        }
-                                    }
-                                };
-  
-                    })
                     ->afterStateUpdated(function ($state, callable $set) {
                         if ($state) {
                             $kit = kits::where('drone_id', $state)->get();
@@ -732,7 +734,7 @@ class PlannedMissionResource extends Resource
                             $set('others', null);
                         }
                     }
-                }),
+                })->preload(),
                 ])->columnSpan(1),
                 //end grid Kits
 
@@ -924,9 +926,6 @@ class PlannedMissionResource extends Resource
                     ->searchable()
                     ->saveRelationshipsUsing(function ($component, $state) {
                         $component->getRecord()->battreis()->sync($state);
-                        foreach ($state as $key){
-                            battrei::where('id',$key)->increment('initial_Cycle_count');
-                        }
                     })
                     ->relationship('battreis', 'name')
                     ->default(function () {
@@ -1190,6 +1189,47 @@ class PlannedMissionResource extends Resource
                         'teams_id' => $record->teams_id,
                     ]);
                     if($flights){
+                        //add drone count fligh and flight time
+                        $start = $record->start_date_flight;
+                        $end = $record->end_date_flight;
+                        $IdDrone = [$record->drones_id];
+                        foreach ($IdDrone as $key) {
+                            drone::where('id', $key)->increment('initial_flight');
+                        };
+                        if ($start && $end) {
+                            $diffInSeconds = Carbon::parse($start)->diffInSeconds(Carbon::parse($end));
+                            $duration = gmdate('H:i:s', $diffInSeconds);
+                            $durationArray = is_array($duration) ? $duration : [$duration];
+                            
+                            foreach ($IdDrone as $key) {
+                                $drone = drone::find($key);
+                                if ($drone) { // Check if drone exists
+                                    $currentFlightTime = Carbon::parse($drone->initial_flight_time)->secondsSinceMidnight();
+                                    $newDurationInSeconds = Carbon::parse($durationArray[0])->secondsSinceMidnight();
+                                    $totalFlightTimeInSeconds = $currentFlightTime + $newDurationInSeconds;
+                                    
+                                    $totalFlightTime = gmdate('H:i:s', $totalFlightTimeInSeconds);
+                                    
+                                    $drone->update(['initial_flight_time' => $totalFlightTime]);
+                                }
+                            }
+                        };
+                        //end
+                        //add battre cycle and flight count
+                        $IdBattrei = $record->battreis;
+                        
+                        foreach ($IdBattrei as $key){
+                            battrei::where('id',$key->id)->increment('initial_Cycle_count');
+                            battrei::where('id',$key->id)->increment('flaight_count');
+                        }
+                        $kitId =$record->kits_id ?: null;
+                        $batteries = battrei::whereHas('kits', function ($query) use ($kitId) {
+                            $query->where('kits.id', $kitId);
+                        })->get();
+                        foreach ($batteries as $battery) {
+                            $battery->increment('flaight_count');
+                            $battery->increment('initial_Cycle_count');
+                        } 
                         $flights->teams()->attach($record->teams_id);
                         $flights->battreis()->attach($record->battreis);
                         $flights->equidments()->attach($record->equidments);

@@ -14,8 +14,14 @@ use App\Models\kits;
 use App\Models\User;
 use App\Models\Projects;
 use Closure;
+use Dotswan\MapPicker\Fields\Map;
 use Filament\Forms;
+use Filament\Forms\Components\Actions;
 use Filament\Forms\Components\Actions\Action;
+use Filament\Forms\Components\Group;
+use Filament\Forms\Components\Hidden;
+use Filament\Forms\Components\Select;
+use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\ToggleButtons;
 use Filament\Forms\Form;
 use Filament\Notifications\Notification;
@@ -37,6 +43,7 @@ use Filament\Forms\Components\Button;
 use Filament\Forms\Components\View;
 use Filament\Infolists\Components\View as InfolistView;
 use App\Helpers\TranslationHelper;
+use Filament\Forms\Components\Actions\Action as FormAction;
 
 
 class FlighResource extends Resource
@@ -220,7 +227,144 @@ class FlighResource extends Resource
                 ])->columnSpan(1),
                 //grid location
                 Forms\Components\Grid::make(1)->schema([
-                    View::make('component.button-location'),
+                //action form
+                Actions::make([
+                FormAction::make('Add Location')
+                    ->modalButton('Submit')
+                    ->extraAttributes(['style' => 'font-size: 12px; background-color: #4A5568; color: white; font-weight: bold; padding: 4px 8px; border-radius: 4px; border: none; cursor: pointer;'])
+                    ->form([
+                    
+                            TextInput::make('name')
+                                ->label(TranslationHelper::translateIfNeeded('Name'))
+                                ->required(),
+                            Select::make('project')
+                                ->label(TranslationHelper::translateIfNeeded('Project'))
+                                ->options(function (callable $get) use ($currentTeamId) {
+                                    return Projects::where('teams_id', $currentTeamId)
+                                    ->where('status_visible', '!=', 'archived')
+                                    ->pluck('case', 'id');
+                                })
+                                ->afterStateUpdated(function ($state, callable $set) {
+                                    if ($state) {
+                                        $project = Projects::find($state);
+                                        $set('customers_id', $project ? $project->customers_id : null);
+                                        $set('customers_name', $project && $project->customers ? $project->customers->name : null);
+                                    } else {
+                                        $set('customers_id', null);
+                                        $set('customers_name', null);
+                                    }
+                                })
+                                ->reactive()
+                                ->searchable(),
+                            Hidden::make('customers_id'),
+                            TextInput::make('customers_name')
+                                    ->label(TranslationHelper::translateIfNeeded('Customers Name'))    
+                                    ->disabled()
+                                    ->afterStateHydrated(function ($state, $component, $record) {
+                                        if ($record) {
+                                            $customerId = \DB::table('fligh_locations')
+                                                ->where('id', $record->id)
+                                                ->value('customers_id'); 
+                
+                                            if ($customerId) {
+                                                $customerName = \DB::table('customers')
+                                                    ->where('id', $customerId)
+                                                    ->value('name'); 
+                                
+                                                $component->state($customerName);
+                                            }
+                                        }
+                                    })
+                                    ->default(function (){
+                                        $currentTeam = auth()->user()->teams()->first();
+                                        return $currentTeam ? $currentTeam->id_customers  : null;
+                                    })
+                                    ->columnSpanFull(),
+                            
+                            Group::make([
+                                Group::make([
+                                    TextInput::make('latitude')
+                                    ->label(TranslationHelper::translateIfNeeded('Latitude'))->numeric()
+                                    ->extraAttributes(['id' => 'latitude-input']),
+                                TextInput::make('longitude')
+                                    ->label(TranslationHelper::translateIfNeeded('Longitude'))->numeric()
+                                    ->extraAttributes(['id' => 'longitude-input']),
+                                TextInput::make('altitude')
+                                    ->label(TranslationHelper::translateIfNeeded('Altitude'))
+                                    ->numeric()
+                                ])->columnSpan(1),
+                                
+                                Map::make('locationMaps')
+                                    ->label('Maps')
+                                    ->columnSpanFull()
+                                    ->defaultLocation(0.0, 0.0)
+                                    ->afterStateHydrated(function ($state, $record, callable $set) {
+                                        if ($record) {
+                                            $set('locationMaps', [
+                                                'lat' => $record->latitude,
+                                                'lng' => $record->longitude,
+                                            ]);
+                                        }
+                                    })
+                                    ->afterStateUpdated(function ($state, callable $set): void {
+                                        $set('latitude',  $state['lat']);
+                                        $set('longitude', $state['lng']);
+                                    })
+                                    ->extraStyles(['border-radius: 20px'])
+                                    ->liveLocation(true, true, 5000)
+                                    ->showMarker()
+                                    ->showFullscreenControl()
+                                    ->showZoomControl()
+                                    ->draggable()
+                                    ->rangeSelectField('altitude')->columnSpan(1),
+                                
+                            ])->columns(2),
+                
+                            TextInput::make('address')
+                            ->label(TranslationHelper::translateIfNeeded('Address'))    
+                            ->columnSpanFull(),
+                            TextInput::make('city')
+                            ->label(TranslationHelper::translateIfNeeded('City')),
+                            TextInput::make('pos_code')
+                            ->label(TranslationHelper::translateIfNeeded('Postal Code'))
+                            ->numeric(),
+                            TextInput::make('country')
+                            ->label(TranslationHelper::translateIfNeeded('Country')),
+                            TextInput::make('description')
+                            ->label(TranslationHelper::translateIfNeeded('Descriptions'))
+                            ->columnSpanFull(),
+                            Hidden::make('teams_id')
+                            ->default(Auth()->user()->teams()->first()->id)
+                            
+                        
+                    ])
+                    ->action(function(array $data){
+                        $flighLocation = new fligh_location([
+                            'name' => $data['name'],
+                            'description' => $data['description'],
+                            'address' => $data['address'],
+                            'city' => $data['city'],
+                            'country' => $data['country'],
+                            'pos_code' => $data['pos_code'],
+                            'latitude' => $data['latitude'],
+                            'longitude' => $data['longitude'],
+                            'altitude' => $data['altitude'],
+                            'teams_id' => $data['teams_id'],
+                            'customers_id' => $data['customers_id'],
+                            'projects_id' => $data['project'],
+                        ]);
+
+                        if ($flighLocation->save()) {
+                            $flighLocation->teams()->attach($data['teams_id']);
+                            session()->put('notification', 'Successfully created Location');
+                        } else {
+                            session()->put('notificationError', 'error');
+                        }
+                    })
+        
+                    
+                ])->extraAttributes(['style' => 'min-width: 200%;']),
+                // end action
                     Forms\Components\Select::make('location_id')
                     // ->relationship('fligh_location', 'name', function (Builder $query) {
                     //     $currentTeamId = auth()->user()->teams()->first()->id;
@@ -644,7 +788,17 @@ class FlighResource extends Resource
                             $set('others', null);
                         }
                     }
-                }),
+                })
+                ->saveRelationshipsUsing(function ($component, $state) {
+                   $kitId =$state;
+                        $batteries = battrei::whereHas('kits', function ($query) use ($kitId) {
+                            $query->where('kits.id', $kitId);
+                        })->get();
+                        foreach ($batteries as $battery) {
+                            $battery->increment('flaight_count');
+                            $battery->increment('initial_Cycle_count');
+                        }                   
+                })->preload(),
                 ])->columnSpan(1),
                 
                 //end grid Kits
@@ -868,6 +1022,7 @@ class FlighResource extends Resource
                         $component->getRecord()->battreis()->sync($state);
                         foreach ($state as $key){
                             battrei::where('id',$key)->increment('initial_Cycle_count');
+                            battrei::where('id',$key)->increment('flaight_count');
                         }
                     })->preload(),
                     // ->options(function (callable $get) use ($currentTeamId) {
