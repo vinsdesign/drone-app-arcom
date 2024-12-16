@@ -327,7 +327,7 @@ class BattreiResource extends Resource
                         'record' => $record->for_drone,
                     ]): null)->color(Color::Blue)
                     ->sortable()
-                    ->placeholder(TranslationHelper::translateIfNeeded('No drone selected')),
+                    ->placeholder(TranslationHelper::translateIfNeeded('No Drone Selected')),
                 // Tables\Columns\TextColumn::make('purchase_date')->label('Purchase Date')
                 //     ->date()
                 //     ->sortable(),

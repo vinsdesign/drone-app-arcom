@@ -44,6 +44,8 @@ use Filament\Forms\Components\View;
 use Filament\Infolists\Components\View as InfolistView;
 use App\Helpers\TranslationHelper;
 use Filament\Forms\Components\Actions\Action as FormAction;
+use Filament\Support\Enums\MaxWidth;
+
 
 
 class FlighResource extends Resource
@@ -227,6 +229,7 @@ class FlighResource extends Resource
                 ])->columnSpan(1),
                 //grid location
                 Forms\Components\Grid::make(1)->schema([
+
                 //action form
                 Actions::make([
                 FormAction::make('Add Location')
@@ -1279,6 +1282,7 @@ class FlighResource extends Resource
                             $query->where('users_id', auth()->id());
                     })
             ])
+            ->filtersFormWidth(MaxWidth::Medium)
             ->actions([
                 Tables\Actions\ActionGroup::make([
                     Tables\Actions\ViewAction::make(),

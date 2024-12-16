@@ -318,7 +318,7 @@
                                             </a>
                                             <p class="text-xs text-gray-500 dark:text-gray-300">{!! TranslationHelper::translateIfNeeded('Date:')!!} {{ $item->incident_date }}</p>
                                         </div>
-                                        <span class="px-2 py-1 rounded text-white text-xs {{ $item->status == 0 ? 'bg-green-500' : 'bg-red-500' }}">
+                                        <span class="px-2 py-1 rounded text-white text-xs text-center {{ $item->status == 0 ? 'bg-green-500' : 'bg-red-500' }}">
                                             @if($item->status == 0)
                                                 Closed
                                             @else
