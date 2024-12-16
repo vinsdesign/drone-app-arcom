@@ -37,6 +37,7 @@ use Filament\Forms\Components\Button;
 use Filament\Forms\Components\View;
 use Filament\Infolists\Components\View as InfolistView;
 use App\Helpers\TranslationHelper;
+use Filament\Support\Enums\MaxWidth;
 
 
 class FlighResource extends Resource
@@ -220,7 +221,7 @@ class FlighResource extends Resource
                 ])->columnSpan(1),
                 //grid location
                 Forms\Components\Grid::make(1)->schema([
-                    View::make('component.button-location'),
+                    // View::make('component.button-location'),
                     Forms\Components\Select::make('location_id')
                     // ->relationship('fligh_location', 'name', function (Builder $query) {
                     //     $currentTeamId = auth()->user()->teams()->first()->id;
@@ -1124,6 +1125,7 @@ class FlighResource extends Resource
                             $query->where('users_id', auth()->id());
                     })
             ])
+            ->filtersFormWidth(MaxWidth::Medium)
             ->actions([
                 Tables\Actions\ActionGroup::make([
                     Tables\Actions\ViewAction::make(),

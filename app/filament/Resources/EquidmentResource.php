@@ -325,7 +325,7 @@ class EquidmentResource extends Resource
                         'record' => $record->drones_id,
                     ]):null)->color(Color::Blue)
                      ->sortable()
-                     ->placeholder(TranslationHelper::translateIfNeeded('No drone selected')),
+                     ->placeholder(TranslationHelper::translateIfNeeded('No Drone Selected')),
                  Tables\Columns\TextColumn::make('users.name')
                  ->label(TranslationHelper::translateIfNeeded('Users'))
                     ->url(fn($record) => $record->users_id? route('filament.admin.resources.users.view', [
