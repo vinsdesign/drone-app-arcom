@@ -33,7 +33,7 @@ class buttonPopUpCreate extends Controller
         
         if($sql){
             $sql->teams()->attach($id);
-            session()->flash('successfully', 'Data berhasil ditambahkan!');
+            session()->flash('notification', 'Successfully created Project');
             return response()->json(['success' => 'Create successfully',
             'case' => $revenue]);      
         }else{
@@ -104,7 +104,7 @@ class buttonPopUpCreate extends Controller
         // Mengecek apakah data berhasil disimpan
         if ($name) {
             $sql->teams()->attach($id);
-            session()->flash('successfully', 'Data berhasil ditambahkan!');
+            session()->flash('notification', 'Successfully created Drone');
             return response()->json([
                 'success' => 'Create successfully.',
                 'name' => $name,
@@ -189,7 +189,7 @@ class buttonPopUpCreate extends Controller
             ]);
         if($sql){
             $sql->teams()->attach($id);
-            session()->flash('successfully', 'Data berhasil ditambahkan!');
+            session()->flash('notification', 'Successfully created Battery');
             return response()->json(['success' => 'Create successfully.',
             'case' => $name,
         'id' => $id,
@@ -257,7 +257,7 @@ class buttonPopUpCreate extends Controller
             ]);
         if($sql){
             $sql->teams()->attach($id);
-            session()->flash('successfully', 'Data berhasil ditambahkan!');
+            session()->flash('notification', 'Successfully created Equipment');
             return response()->json(['success' => 'Create successfully.',
             'case' => $name,
             'name' => $name,

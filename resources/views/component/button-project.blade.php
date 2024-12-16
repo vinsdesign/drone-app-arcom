@@ -319,7 +319,7 @@ $response =session('successfully');
                     behavior: 'smooth',
                     block: 'start'
                 });
-            } else if(customerValue.trim() == ''){
+            } else if(customerValue == null){
                 document.getElementById('bodyErrorMassagesProject').style.display = 'block';
                 document.getElementById('errorMassagesProject').textContent = 'Customer cannot be null';
                 setTimeout(() => {
