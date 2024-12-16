@@ -37,6 +37,7 @@ use App\Actions\Star;
 use App\Actions\ResetStars;
 use Filament\Forms\Components\Actions;
 use Filament\Forms\Components\Actions\Action as FormAction;
+use Filament\Support\Enums\MaxWidth;
 
 class PlannedMissionResource extends Resource
 {
@@ -1160,6 +1161,7 @@ class PlannedMissionResource extends Resource
                     ->default('planned')
                     ->label(TranslationHelper::translateIfNeeded('Status'))
             ])
+            ->filtersFormWidth(MaxWidth::Medium)
             ->actions([
                 Tables\Actions\ActionGroup::make([
                 //append flight

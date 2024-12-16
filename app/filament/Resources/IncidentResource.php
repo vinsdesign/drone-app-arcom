@@ -24,6 +24,7 @@ use Filament\Support\Colors\Color;
 use Filament\Tables\Actions\Action;
 use App\Helpers\TranslationHelper;
 use Filament\Notifications\Notification;
+use Filament\Support\Enums\MaxWidth;
 
 class IncidentResource extends Resource
 {
@@ -209,7 +210,8 @@ class IncidentResource extends Resource
                         'tenant' => Auth()->user()->teams()->first()->id,
                         'record' => $record->drone_id,
                     ]):null)->color(Color::Blue)
-                    ->sortable(),
+                    ->sortable()
+                    ->placeholder(TranslationHelper::translateIfNeeded('No Drone selected')),
                 Tables\Columns\TextColumn::make('project.case')
                 ->label(TranslationHelper::translateIfNeeded('Projects'))    
                     ->numeric()
@@ -218,7 +220,7 @@ class IncidentResource extends Resource
                         'record' => $record->projects_id,
                     ]):null)->color(Color::Blue)
                     ->sortable()
-                    ->placeholder(TranslationHelper::translateIfNeeded('No drone selected')),
+                    ->placeholder(TranslationHelper::translateIfNeeded('No Project selected')),
                 // Tables\Columns\TextColumn::make('personel_involved_id')
                 //     ->numeric()
                 //     ->sortable(),
@@ -258,6 +260,7 @@ class IncidentResource extends Resource
                         $query->when($data['until'], fn ($q) => $q->whereDate('incident_date', '<=', $data['until']));
                     }),
             ])
+            ->filtersFormWidth(MaxWidth::Medium)
             ->actions([
                 Action::make('viewFlight')
                 ->label(TranslationHelper::translateIfNeeded('View Flight'))

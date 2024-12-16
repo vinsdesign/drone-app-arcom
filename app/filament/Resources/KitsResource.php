@@ -141,7 +141,7 @@ class KitsResource extends Resource
                     'record' => $record->drone_id,
                 ]) : null)->color(Color::Blue)
                 ->sortable()
-                ->placeholder(TranslationHelper::translateIfNeeded('No drone selected')),
+                ->placeholder(TranslationHelper::translateIfNeeded('No Drone Selected')),
             Tables\Columns\TextColumn::make('battrei.name')
                 ->label(TranslationHelper::translateIfNeeded('Battery'))
                 ->numeric()

@@ -22,6 +22,8 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Filament\Support\Colors\Color;
 use App\Helpers\TranslationHelper;
+use Filament\Support\Enums\MaxWidth;
+
 
 class MaintenanceBatteryResource extends Resource
 {
@@ -154,7 +156,8 @@ class MaintenanceBatteryResource extends Resource
                     'record' => $record->equidment_id,
                 ]) : null)
                 ->color(Color::Blue)
-                ->searchable(),
+                ->searchable()
+                ->placeholder(TranslationHelper::translateIfNeeded('No Equipment selected')),
             Tables\Columns\TextColumn::make('battrei.name')
                 ->label(TranslationHelper::translateIfNeeded('Battery'))
                 ->url(fn($record) => $record->battrei_id ? route('filament.admin.resources.battreis.view', [
@@ -162,7 +165,8 @@ class MaintenanceBatteryResource extends Resource
                     'record' => $record->battrei_id,
                 ]) : null)
                 ->color(Color::Blue)
-                ->searchable(),
+                ->searchable()
+                ->placeholder(TranslationHelper::translateIfNeeded('No Battery selected')),
             Tables\Columns\TextColumn::make('date')
                 ->label(TranslationHelper::translateIfNeeded('Date'))
                 ->date()
@@ -262,6 +266,8 @@ class MaintenanceBatteryResource extends Resource
                 )
                 ->searchable(),
             ])
+            ->filtersFormColumns(2)
+            ->filtersFormWidth(MaxWidth::Medium)
             ->actions([
                 Tables\Actions\Action::make('resolve')
                     ->label(TranslationHelper::translateIfNeeded('Resolve'))

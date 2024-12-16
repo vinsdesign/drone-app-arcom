@@ -219,7 +219,7 @@
 
                 {{-- tabel --}}
                 <div class="mb-2">
-                    @if($id == Auth()->user()->first()->id)
+                    @if($id == Auth()->user()->id)
                         <div class="mt-4 flex justify-end mb-4">
                             <button type="button" onclick="openModal()" class="px-4 py-2 bg-gray-700 text-white font-semibold rounded-lg 
                         hover:bg-gray-600 dark:hover:bg-gray-400 focus:outline-none focus:ring-2 
@@ -318,7 +318,7 @@
                                             </a>
                                             <p class="text-xs text-gray-500 dark:text-gray-300">{!! TranslationHelper::translateIfNeeded('Date:')!!} {{ $item->incident_date }}</p>
                                         </div>
-                                        <span class="px-2 py-1 rounded text-white text-xs {{ $item->status == 0 ? 'bg-green-500' : 'bg-red-500' }}">
+                                        <span class="px-2 py-1 rounded text-white text-xs text-center {{ $item->status == 0 ? 'bg-green-500' : 'bg-red-500' }}">
                                             @if($item->status == 0)
                                                 Closed
                                             @else
