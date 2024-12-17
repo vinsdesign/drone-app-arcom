@@ -14,6 +14,7 @@ use Filament\Infolists\Components\IconEntry;
 use Filament\Notifications\Notification;
 use Filament\Resources\Resource;
 use Filament\Tables;
+use Filament\Tables\Columns\Layout\View as TableView;
 use Filament\Tables\Table;
 use Filament\Support\Colors\Color;
 use Filament\Support\Facades\FilamentColor;
@@ -227,10 +228,12 @@ class BattreiResource extends Resource
             ->columns([
                 Tables\Columns\TextColumn::make('name')
                     ->label(TranslationHelper::translateIfNeeded('Name'))
-                    ->searchable(),
+                    ->searchable()
+                    ->hidden(),
                 Tables\Columns\TextColumn::make('model')
                     ->label(TranslationHelper::translateIfNeeded('Model'))
-                    ->searchable(),
+                    ->searchable()
+                    ->hidden(),
                 Tables\Columns\TextColumn::make('status')
                     ->label(TranslationHelper::translateIfNeeded('Status'))
                     // ->color(fn ($record) => match ($record->status){
@@ -258,7 +261,8 @@ class BattreiResource extends Resource
                     })
                     ->html()
                     ->searchable()
-                    ->badge(),
+                    ->badge()
+                    ->hidden(),
                 Tables\Columns\TextColumn::make('flight_time')
                     ->label(TranslationHelper::translateIfNeeded('Flights & Flying Time'))
                     ->getStateUsing(function ($record) {
@@ -294,7 +298,8 @@ class BattreiResource extends Resource
                             <strong class='text-gray-800 dark:text-gray-200'>{$totalDuration}</strong></div>";
                    })
                     ->sortable()
-                    ->html(),
+                    ->html()
+                    ->hidden(),
                 // Tables\Columns\TextColumn::make('asset_inventory')->label('Inventory/Asset')
                 //     ->searchable(),
                 // Tables\Columns\TextColumn::make('serial_P')->label('Serial Printed')
@@ -313,10 +318,12 @@ class BattreiResource extends Resource
                 // Tables\Columns\TextColumn::make('initial_Cycle_count')->label('Initial Cycles Count')
                 //     ->numeric()
                 //     ->sortable(),
-                Tables\Columns\TextColumn::make('life_span')
-                    ->label(TranslationHelper::translateIfNeeded('Life Span'))
-                    ->numeric()
-                    ->sortable(),
+                Tables\Columns\TextColumn::make('Battery')
+                ->view('component.progresbar.progres-bar-battery')
+                ->extraAttributes(['style' => 'max-width: 10px'])
+                ->disableClick(),
+                // TableView::make('component.progresbar.progres-bar-battery')
+                //     ->extraAttributes(['style' => 'max-width: 10px']),
                 // Tables\Columns\TextColumn::make('flaight_count')->label('Flaight Count')
                 //     ->numeric()
                 //     ->sortable(),
@@ -327,7 +334,7 @@ class BattreiResource extends Resource
                         'record' => $record->for_drone,
                     ]): null)->color(Color::Blue)
                     ->sortable()
-                    ->placeholder(TranslationHelper::translateIfNeeded('No Drone Selected')),
+                    ->placeholder(TranslationHelper::translateIfNeeded('No Drone Selected'))->hidden(),
                 // Tables\Columns\TextColumn::make('purchase_date')->label('Purchase Date')
                 //     ->date()
                 //     ->sortable(),
@@ -353,17 +360,20 @@ class BattreiResource extends Resource
                         'record' => $record->users_id,
                     ]) : null)
                     ->color(Color::Blue)
-                    ->sortable(),
+                    ->sortable()
+                    ->hidden(),
                 Tables\Columns\TextColumn::make('created_at')
                     ->label(TranslationHelper::translateIfNeeded('Created at'))
                     ->dateTime()
                     ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
+                    ->toggleable(isToggledHiddenByDefault: true)
+                    ->hidden(),
                 Tables\Columns\TextColumn::make('updated_at')
                     ->label(TranslationHelper::translateIfNeeded('Updated at'))
                     ->dateTime()
                     ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
+                    ->toggleable(isToggledHiddenByDefault: true)
+                    ->hidden(),
             ])
             ->filters([
                 Tables\Filters\SelectFilter::make('status')
