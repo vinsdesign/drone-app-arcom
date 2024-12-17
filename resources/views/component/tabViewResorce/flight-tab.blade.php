@@ -26,10 +26,10 @@
 
     //flight Document
     if (Auth()->user()->roles()->pluck('name')->contains('super_admin') || (Auth()->user()->roles()->pluck('name')->contains('panel_user'))) {
-        $queryDocumentFlight = App\Models\Document::query()->where('scope','Flight')->where('status_visible', '!=', 'archived')->get();
+        $queryDocumentFlight = App\Models\Document::query()->where('flight_id', $id)->where('status_visible', '!=', 'archived')->get();
     }else{
         $queryDocumentFlight = App\Models\Document::query()
-        ->where('scope','Flight')
+        ->where('flight_id', $id)
         ->where('status_visible', '!=', 'archived')
         ->where(function ($query) {
             $query->where('shared', 1)

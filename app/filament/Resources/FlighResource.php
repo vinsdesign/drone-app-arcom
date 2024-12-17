@@ -45,6 +45,10 @@ use Filament\Infolists\Components\View as InfolistView;
 use App\Helpers\TranslationHelper;
 use Filament\Forms\Components\Actions\Action as FormAction;
 use Filament\Support\Enums\MaxWidth;
+use Filament\Forms\Components\Grid;
+use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Actions\ButtonAction;
+use App\Models\document;
 
 
 
@@ -1352,6 +1356,60 @@ class FlighResource extends Resource
                                 'clone' => $record->id,
                             ]);
                         }),
+                // Tables\Actions\Action::make('appendDocument')
+                //         ->label('Append Document')
+                //         ->icon('heroicon-o-paper-clip')
+                //         ->modalHeading('Append Existing Documents')
+                //         ->modalContent(function ($record) {
+                //             return view('component.table.append-documents-table', [
+                //                 'documents' => document::where('scope', 'Flight')->get(),
+                //                 'flightId' => $record->id,
+                //             ]);
+                //         })
+                //         ->modalButton('Append')
+                //         ->action(fn () => redirect()->route('append.document'))
+                        // ->action(function (array $data, $record) {
+                        //     dd($data);
+                        //     if (isset($data['document_ids']) && isset($record['flightId'])) {
+                        //         Document::whereIn('id', $data['document_ids'])
+                        //             ->update([
+                        //                 'flight_id' => $record['flightId'],
+                        //             ]);
+                    
+                        //         session()->flash('success', 'Documents successfully appended to flight.');
+                        //     } else {
+                        //         session()->flash('error', 'No documents selected.');
+                        //     }
+                        // }),
+                Tables\Actions\Action::make('appendDocument')
+                        ->label('Append Document')
+                        ->icon('heroicon-s-document-plus')
+                        ->modalHeading('Append Existing Document')
+                        ->form([
+                            // Forms\Components\Select::make('document_id')
+                            //     ->label('Select Documents')
+                            //     ->options(Document::where('scope', 'Flight')->pluck('name', 'id'))
+                            //     ->searchable()
+                            //     ->multiple(),
+                            Forms\Components\Select::make('document_id')
+                                ->label('Select Documents')
+                                ->options(
+                                    Document::where('scope', 'Flight')
+                                        ->get()
+                                        ->mapWithKeys(function ($document) {
+                                            return [
+                                                $document->id => "{$document->name} ({$document->type}, Ref: {$document->refnumber})",
+                                            ];
+                                        })
+                                )
+                                ->searchable()
+                                ->multiple(),
+                        ])
+                        ->action(function (array $data, $record) {
+                            Document::where('id', $data['document_id'])->update([
+                                'flight_id' => $record->id,
+                            ]);
+                        })
                 ])
             ])
             ->bulkActions([
