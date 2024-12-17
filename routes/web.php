@@ -16,6 +16,8 @@ use App\Livewire\DroneStatistik;
 use App\Livewire\BatteryStatistik;
 use App\Livewire\LocationStatistik;
 use App\Http\Controllers\LanguageController;
+use Illuminate\Http\Request;
+use App\Models\Document;
 
 Route::get('/', function () {
     return redirect('/admin');
@@ -72,3 +74,14 @@ Route::post('/create-document-drone',[popUpViewResource::class,'createDroneDocum
 Route::post('/create-document-personnel',[popUpViewResource::class,'createPersonnelDocument'])->name('create.document.personnel');
 Route::post('/edit-media-flight',[popUpViewResource::class,'buttonValues'])->name('edit.media.flight');
 Route::post('/create-media-flight-record',[popUpViewResource::class,'createMediaFlightRecord'])->name('create.media.flight.record');
+
+//append flight document
+
+Route::get('/append-document',[CurrencySettingController::class, 'append'])->name('append.document');
+
+
+
+
+
+
+

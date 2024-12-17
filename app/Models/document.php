@@ -26,7 +26,8 @@ class document extends Model
         'locked',
         'battrei_id',
         'drone_id',
-        'equidment_id'
+        'equidment_id',
+        'flight_id'
     ];
 
     public function users()
@@ -57,6 +58,10 @@ class document extends Model
     public function equidment()
     {
         return $this->belongsTo(equidment::class, 'equidment_id');
+    }
+    public function fligh()
+    {
+        return $this->belongsTo(fligh::class, 'flight_id');
     }
     // public function scopeShared($query){
     //     return $query->where('shared',1);
