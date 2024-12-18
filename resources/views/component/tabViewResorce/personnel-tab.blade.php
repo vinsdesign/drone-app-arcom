@@ -3,7 +3,7 @@
     //project Document
     $id = $getRecord()->id;
     if (Auth()->user()->roles()->pluck('name')->contains('super_admin') || (Auth()->user()->roles()->pluck('name')->contains('panel_user'))) {
-        $queryUsers = App\Models\Document::query()->where('users_id', $id)->where('status_visible', '!=', 'archived')->get();
+        $queryUsers = App\Models\Document::query()->where('users_id', $id)->where('status_visible', '!=', 'archived')->paginate(10);
        
     }else{
         $queryUsers = App\Models\Document::query()
@@ -12,7 +12,7 @@
         ->where(function ($query) {
             $query->where('shared', 1)
                 ->orWhere('users_id', auth()->id());
-        })->get();
+        })->paginate(10);
     }
 
     $documentProjects = $queryUsers;
@@ -288,6 +288,9 @@
                             
                             </div>
                         @endforeach
+                        <div class="mt-4">
+                            {{ $documentProjects->links() }}
+                        </div>
                     @else
                         <p class="text-center text-gray-600 dark:text-gray-300 mt-4">No Data Found</p>
                     @endif

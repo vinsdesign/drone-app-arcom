@@ -1382,34 +1382,85 @@ class FlighResource extends Resource
                         //     }
                         // }),
                 Tables\Actions\Action::make('appendDocument')
-                        ->label('Append Document')
+                        ->label(TranslationHelper::translateIfNeeded('Append Document'))
                         ->icon('heroicon-s-document-plus')
-                        ->modalHeading('Append Existing Document')
+                        ->modalHeading(TranslationHelper::translateIfNeeded('Append Existing Document'))
+                        ->modalButton('Append')
                         ->form([
-                            // Forms\Components\Select::make('document_id')
-                            //     ->label('Select Documents')
-                            //     ->options(Document::where('scope', 'Flight')->pluck('name', 'id'))
-                            //     ->searchable()
-                            //     ->multiple(),
+                            Forms\Components\Grid::make(3)
+                            ->schema([
+                            Forms\Components\Select::make('type')
+                                ->label(TranslationHelper::translateIfNeeded('Filter by Doc Type')) 
+                                ->options([
+                                    'Pilot License' => 'Pilot License',
+                                    'UAV Training Course' => 'UAV Training Course',
+                                    'Remote Pilot Certificate' => 'Remote Pilot Certificate',
+                                    'Currency Certificate' => 'Currency Certificate',
+                                    'Medical Certificate' => 'Medical Certificate',
+                                    'Insurance Certificate' => 'Insurance  Certificate',
+                                    'Registration #' => 'Registration #',
+                                    'Regulatory Certificate' => 'Regulatory Certificate',
+                                    'Checklist' => 'Checklist',
+                                    'Manual' => 'Manual',
+                                    'Other Certificate' => 'Other Certificate',
+                                    'Site Assessment' => 'Site Assessment',
+                                    'Safety Instruction' => 'Safety Instruction',
+                                    'Other' => 'Other',
+                                ])
+                                ->searchable()
+                                ->placeholder(TranslationHelper::translateIfNeeded('All Type')),
+                            Forms\Components\Select::make('projects_id')
+                                ->label(TranslationHelper::translateIfNeeded('Filter by Projects'))
+                                ->options(Projects::pluck('case', 'id'))
+                                ->searchable()
+                                ->placeholder(TranslationHelper::translateIfNeeded('All Projects')),
+                            Forms\Components\Select::make('customers_id')
+                                ->label(TranslationHelper::translateIfNeeded('Filter by Customers'))
+                                ->options(customer::pluck('name', 'id'))
+                                ->searchable()
+                                ->placeholder(TranslationHelper::translateIfNeeded('All Customers')),
+                                ]),
                             Forms\Components\Select::make('document_id')
-                                ->label('Select Documents')
-                                ->options(
-                                    Document::where('scope', 'Flight')
-                                        ->get()
+                                ->label(TranslationHelper::translateIfNeeded('Select Documents'))
+                                ->options(function (callable $get) {
+                                    $projectId = $get('projects_id');
+                                    $customerId = $get('customers_id');
+                                    $type = $get('type');
+                                    $query = Document::where('scope', 'Flight')
+                                        ->whereNull('flight_id')
+                                        ->whereNot('status_visible', 'archived');
+
+                                    if ($projectId) {
+                                        $query->where('projects_id', $projectId);
+                                    }
+                                    if ($customerId) {
+                                        $query->where('customers_id', $customerId);
+                                    }
+                                    if ($type) {
+                                        $query->where('type', $type);
+                                    }
+                                    return $query->get()
                                         ->mapWithKeys(function ($document) {
                                             return [
                                                 $document->id => "{$document->name} ({$document->type}, Ref: {$document->refnumber})",
                                             ];
-                                        })
-                                )
+                                        });
+                                })
                                 ->searchable()
-                                ->multiple(),
-                        ])
-                        ->action(function (array $data, $record) {
-                            Document::where('id', $data['document_id'])->update([
-                                'flight_id' => $record->id,
-                            ]);
-                        })
+                                ->multiple()
+                                ->placeholder(TranslationHelper::translateIfNeeded('All Documents')),
+                                ])
+                                ->action(function (array $data, $record) {
+                                    if (!empty($data['document_id']) && is_array($data['document_id'])) {
+                                        Document::whereIn('id', $data['document_id'])
+                                            ->update(['flight_id' => $record->id]);
+                                    }
+                                    Notification::make()
+                                        ->title(TranslationHelper::translateIfNeeded('Document Appended'))
+                                        ->body(TranslationHelper::translateIfNeeded('Selected documents have been successfully linked to the flight.'))
+                                        ->success()
+                                        ->send();
+                                })
                 ])
             ])
             ->bulkActions([
