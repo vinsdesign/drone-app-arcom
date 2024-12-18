@@ -137,10 +137,15 @@ class BattreiResource extends Resource
                             ->numeric()
                             ->default($defaultData['initial_Cycle_count'] ?? null),
                         Forms\Components\TextInput::make('life_span')
-                            ->label(TranslationHelper::translateIfNeeded('Life Span'))
+                            ->label(TranslationHelper::translateIfNeeded('Life Span (Flight)'))
                             ->required()
                             ->numeric()
                             ->default($defaultData['life_span'] ?? null),
+                        Forms\Components\TextInput::make('life_span_cycle')
+                            ->label(TranslationHelper::translateIfNeeded('Life Span (Cycle)'))
+                            ->required()
+                            ->numeric()
+                            ->default($defaultData['life_span_cycle'] ?? null),
                         Forms\Components\TextInput::make('flaight_count')
                             ->label(TranslationHelper::translateIfNeeded('Flight Count'))
                             ->required()

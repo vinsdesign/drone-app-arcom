@@ -3,6 +3,7 @@
 use App\Filament\Pages\Report;
 use App\Filament\Pages\Settings;
 use App\Http\Controllers\buttonPopUpCreate;
+use App\Http\Controllers\ChargerBattery;
 use App\Http\Controllers\createProject;
 use App\Http\Controllers\importDefaultValue;
 use App\Http\Controllers\popUpViewResource;
@@ -78,6 +79,11 @@ Route::post('/create-media-flight-record',[popUpViewResource::class,'createMedia
 //append flight document
 
 Route::get('/append-document',[CurrencySettingController::class, 'append'])->name('append.document');
+
+//charger Battery
+Route::post('/charger-battery-create',[ChargerBattery::class,'create'])->name('create.charger.battery');
+Route::post('/charger-battery-edit',[ChargerBattery::class,'edit'])->name('edit.charger.battery');
+Route::post('/charger-battery-clone',[ChargerBattery::class,'clone'])->name('clone.charger.battery');
 
 
 
