@@ -22,6 +22,7 @@ use Filament\Infolists\Components\TextEntry;
 use Carbon\Carbon;
 use Filament\Support\Colors\Color;
 use App\Helpers\TranslationHelper;
+use Filament\Forms\Components\Grid;
 
 class DocumentResource extends Resource
 {
@@ -408,6 +409,42 @@ class DocumentResource extends Resource
                         ->icon('heroicon-s-lock-open')
                         ->hidden(fn ($record) => $record->locked === null || $record->locked === 'unlocked')
                         ->visible(fn ($record) => auth()->user()->hasRole(['panel_user'])), 
+                    Tables\Actions\Action::make('replace')
+                        ->label(TranslationHelper::translateIfNeeded('Replace File'))
+                        ->ModalHeading(TranslationHelper::translateIfNeeded('Document Upload'))
+                        ->icon('heroicon-o-arrow-path-rounded-square')
+                        ->form([
+                            Forms\Components\Grid::make(2)
+                            ->schema([
+                            Forms\Components\FileUpload::make('doc')
+                                ->label(TranslationHelper::translateIfNeeded('Upload Document'))
+                                ->acceptedFileTypes(['application/pdf']),
+                            Forms\Components\TextInput::make('external link')
+                                ->label(TranslationHelper::translateIfNeeded('Or External Link, your document'))
+                                ->maxLength(255),
+                            ]),
+                        ])
+                        ->action(function (array $data, $record) {
+                            if (empty($data['doc']) && empty($data['external link'])) {
+                                Notification::make()
+                                    ->title(TranslationHelper::translateIfNeeded('Error'))
+                                    ->body(TranslationHelper::translateIfNeeded('Please upload a document or provide an external link.'))
+                                    ->danger()
+                                    ->send();
+                                return;
+                            }
+        
+                            $record->update([
+                                'doc' => $data['doc'] ?? $record->doc,
+                                'external link' => $data['external link'] ?? $record->external_link,
+                            ]);
+        
+                            Notification::make()
+                                ->title(TranslationHelper::translateIfNeeded('Document Replaced'))
+                                ->body(TranslationHelper::translateIfNeeded('The document has been successfully updated.'))
+                                ->success()
+                                ->send();
+                        }),
                 ])
                 
             ])
