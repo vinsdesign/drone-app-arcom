@@ -33,7 +33,8 @@ class battrei extends Model
         'users_id',
         'teams_id',
         'users_id',
-        'shared'
+        'shared',
+        'life_span_cycle',
     ];
 
     public function drone()
@@ -77,5 +78,10 @@ class battrei extends Model
         ->orWhere(function ($query) use ($userId) {
             $query->where('users_id', '!=', $userId)->where('shared', 1);
         });
+    }
+    //charger battery
+    public function chargerBatteries()
+    {
+        return $this->hasMany(BatteryCharger::class);
     }
 }
