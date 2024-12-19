@@ -38,6 +38,7 @@ class team extends Model implements HasAvatar
         'projects_id',
         'set_pilot',
         'flight_type',
+        'currencies_id'
     ];
 
     public function getFilamentAvatarUrl(): ?string

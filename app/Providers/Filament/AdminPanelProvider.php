@@ -87,7 +87,7 @@ class AdminPanelProvider extends PanelProvider
                 Billing::class
             ])
             ->tenantBillingProvider(new FilamentSubscriptionsProvider())
-            ->requiresTenantSubscription()
+            // ->requiresTenantSubscription()
 
             //shield
             ->plugins([
