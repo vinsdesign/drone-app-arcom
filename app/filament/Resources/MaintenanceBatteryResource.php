@@ -255,15 +255,19 @@ class MaintenanceBatteryResource extends Resource
                 }),
                 Tables\Filters\SelectFilter::make('battrei_id')
                 ->label(TranslationHelper::translateIfNeeded('Filter by Battery'))
-                ->options(
-                    battrei::pluck('name', 'id')->toArray()
-                )
+                ->relationship('battrei', 'name', function (Builder $query){
+                    $currentTeamId = auth()->user()->teams()->first()->id;;
+                    $query->where('teams_id', $currentTeamId);
+                })
+                ->preload()
                 ->searchable(),
                 Tables\Filters\SelectFilter::make('equidment_id')
                 ->label(TranslationHelper::translateIfNeeded('Filter by Equipment'))
-                ->options(
-                    equidment::pluck('name', 'id')->toArray()
-                )
+                ->relationship('equidment', 'name', function (Builder $query){
+                    $currentTeamId = auth()->user()->teams()->first()->id;;
+                    $query->where('teams_id', $currentTeamId);
+                })
+                ->preload()
                 ->searchable(),
             ])
             ->filtersFormColumns(2)

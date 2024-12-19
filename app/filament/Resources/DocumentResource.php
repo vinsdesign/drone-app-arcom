@@ -94,7 +94,9 @@ class DocumentResource extends Resource
                     //     $query->where('teams_id', $currentTeamId);
                     // }),
                     ->options(function (callable $get) use ($currentTeamId) {
-                        return customer::where('teams_id', $currentTeamId)->pluck('name', 'id');
+                        return customer::where('teams_id', $currentTeamId)
+                        ->where('status_visible', '!=', 'archived')
+                        ->pluck('name', 'id');
                     })
                     ->searchable(),
                 Forms\Components\Select::make('scope')

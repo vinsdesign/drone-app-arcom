@@ -220,7 +220,7 @@ class UserResource extends Resource
                     ->icon('heroicon-s-document-plus')
                     ->modalHeading('Add User Document/Registration')
                     ->modalButton('Save')
-                    ->visible(fn ($record) => $record->id === Auth()->user()->teams()->first()->id)
+                    ->visible(fn ($record) => $record->id == auth()->user()->id)
                     ->form([
                         Forms\Components\TextInput::make('name')
                             ->label(TranslationHelper::translateIfNeeded('Name'))

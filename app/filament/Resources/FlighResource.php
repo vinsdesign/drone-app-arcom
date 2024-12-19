@@ -237,7 +237,8 @@ class FlighResource extends Resource
                 //action form
                 Actions::make([
                 FormAction::make('Add Location')
-                    ->modalButton('Submit')
+                    ->label(TranslationHelper::translateIfNeeded('Add Location'))
+                    ->modalButton(TranslationHelper::translateIfNeeded('Submit'))
                     ->extraAttributes(['style' => 'font-size: 12px; background-color: #4A5568; color: white; font-weight: bold; padding: 4px 8px; border-radius: 4px; border: none; cursor: pointer;'])
                     ->form([
                     
@@ -1411,22 +1412,34 @@ class FlighResource extends Resource
                                 ->placeholder(TranslationHelper::translateIfNeeded('All Type')),
                             Forms\Components\Select::make('projects_id')
                                 ->label(TranslationHelper::translateIfNeeded('Filter by Projects'))
-                                ->options(Projects::pluck('case', 'id'))
+                                ->options(function () {
+                                    $currentTeamId = auth()->user()->teams()->first()->id;
+                                    return Projects::where('teams_id', $currentTeamId)
+                                    ->where('status_visible', '!=', 'archived')
+                                    ->pluck('case', 'id');
+                                })
                                 ->searchable()
                                 ->placeholder(TranslationHelper::translateIfNeeded('All Projects')),
                             Forms\Components\Select::make('customers_id')
                                 ->label(TranslationHelper::translateIfNeeded('Filter by Customers'))
-                                ->options(customer::pluck('name', 'id'))
+                                ->options(function () {
+                                    $currentTeamId = auth()->user()->teams()->first()->id;
+                                    return customer::where('teams_id', $currentTeamId)
+                                    ->where('status_visible', '!=', 'archived')
+                                    ->pluck('name', 'id');
+                                })
                                 ->searchable()
                                 ->placeholder(TranslationHelper::translateIfNeeded('All Customers')),
                                 ]),
                             Forms\Components\Select::make('document_id')
                                 ->label(TranslationHelper::translateIfNeeded('Select Documents'))
                                 ->options(function (callable $get) {
+                                    $currentTeamId = auth()->user()->teams()->first()->id;
                                     $projectId = $get('projects_id');
                                     $customerId = $get('customers_id');
                                     $type = $get('type');
-                                    $query = Document::where('scope', 'Flight')
+                                    $query = Document::where('teams_id', $currentTeamId)
+                                        ->where('scope', 'Flight')
                                         ->whereNull('flight_id')
                                         ->whereNot('status_visible', 'archived');
 
