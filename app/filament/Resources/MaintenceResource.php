@@ -285,9 +285,11 @@ class MaintenceResource extends Resource
                 }),
                 Tables\Filters\SelectFilter::make('drone_id')
                 ->label(TranslationHelper::translateIfNeeded('Filter by Drone'))
-                ->options(
-                    Drone::pluck('name', 'id')->toArray()
-                )
+                ->relationship('drone', 'name', function (Builder $query){
+                    $currentTeamId = auth()->user()->teams()->first()->id;;
+                    $query->where('teams_id', $currentTeamId);
+                })
+                ->preload()
                 ->searchable(),
             ])
             ->actions([
