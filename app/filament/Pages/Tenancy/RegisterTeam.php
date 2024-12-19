@@ -21,13 +21,21 @@ class RegisterTeam extends RegisterTenant
                 // ...
             ]);
     }
+
+    public function registerTeam(array $data)
+    {
+       
+        $team = $this->handleRegistration($data);
+
+        return $this->success($team);
+    }
  
     protected function handleRegistration(array $data): Team
     {
         $team = Team::create($data);
  
         $team->users()->attach(auth()->user());
- 
+    
         return $team;
     }
 }

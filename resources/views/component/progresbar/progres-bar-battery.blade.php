@@ -9,6 +9,7 @@ use Carbon\Carbon;
     $ownerId = $getRecord()->users_id;
     $ownerName = App\Models\User::where('id',$ownerId)->value('name');
     $lifespanCycle = $getRecord()->life_span_cycle;
+    $droneIds = $getRecord()->for_drone ?? 0;
 
     $flights = $getRecord()->fligh()
         ->whereHas('teams', function ($query) {
@@ -37,33 +38,17 @@ use Carbon\Carbon;
     $seconds = $totalSeconds % 60;
     $totalDuration = sprintf('%02d:%02d:%02d', $hours, $minutes, $seconds);
 
-    // $totalFlights = $flights->unique('id')->count();
-
-    // dd($flightTotal,$totalDuration,$ownerName);
-    // $route = route('filament.admin.resources.battery-chargers.index', [
-    // 'tenant' => auth()->user()->teams()->first()->id,
-    // 'record' => $id
-    // ]);
-
     
-
 
 ?>
 <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
 <style>
     .progress-container {
-        width: 100%;
-        background-color: #e0e0e0;
-        border-radius: 10px;
         overflow: hidden;
-        height: 30px;
-        margin: 20px auto;
-        box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.2);
     }
 
     .progress-bar {
         height: 100%;
-
         background-color: #4caf50;
         width: 0;
         text-align: center;
@@ -80,7 +65,9 @@ use Carbon\Carbon;
     <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 w-full">
     
         <div class="flex flex-col items-start sm:items-center space-y-2 w-full sm:w-auto flex-grow">
-            <p class="text-lg font-semibold text-gray-800">{{$name}}</p>
+            <a href="{{route('filament.admin.resources.battreis.view',['tenant' => Auth()->user()->teams()->first()->id,'record'=>$getRecord()->id])}}">
+                <p class="text-lg font-semibold text-gray-800">{{$name}}</p>
+            </a>
             <p class="text-sm text-gray-500">{{$getRecord()->model ?? null}}</p>
         </div>
         
@@ -94,7 +81,7 @@ use Carbon\Carbon;
             <!-- Bagian Lie Span dan Progress berada di bawah -->
             <div class="flex flex-col items-start sm:items-center text-center space-y-2 sm:space-y-0">
                 <p class="text-sm font-medium text-gray-700">Lifespan {{$lifeSpan}}/Flight</p>
-                <div class="w-full bg-gray-200 rounded-md h-6">
+                <div class="w-full bg-gray-200 rounded-md h-6 progress-container">
                     <div class="bg-blue-600 h-6 rounded-md progress-bar" id="progressBars-{{$id}}"></div>
                 </div>
             </div>
@@ -119,7 +106,7 @@ use Carbon\Carbon;
             <!-- Bagian Lie Span dan Progress berada di bawah -->
             <div class="flex flex-col items-center text-center space-y-2 sm:space-y-0 w-full">
                 <p class="text-sm font-medium text-gray-700">Lifespan {{$lifespanCycle}}/Cycle</p>
-                <div class="w-full bg-gray-200 rounded-md h-6">
+                <div class="w-full bg-gray-200 rounded-md h-6 progress-container">
                     <div class="bg-blue-600 h-6 rounded-md progress-bar" id="progressBar-{{$id}}"></div>
                 </div>
             </div>
@@ -128,16 +115,20 @@ use Carbon\Carbon;
 
         <div class="flex flex-col items-start sm:items-start space-y-2 w-full sm:w-auto flex-grow">
             <p class="text-sm font-medium text-gray-800">
-                Status: <span class="font-semibold text-blue-600">{{$status}}</span>
+                Status: <span id="status-{{$id}}" class="font-semibold">{{$status}}</span>
             </p>
-            <p class="text-sm font-medium text-gray-800">
-                Owner: <span class="font-semibold text-blue-600">{{$ownerName}}</span>
-            </p>
+            <a href="{{route('filament.admin.resources.users.view',['tenant'=>Auth()->user()->teams()->first()->id, 'record'=> $getRecord()->users_id])}}">
+                <p class="text-sm font-medium text-gray-800">
+                    Owner: <span class="font-semibold text-blue-600">{{$ownerName}}</span>
+                </p>
+            </a>
         </div>
 
         <div class="flex flex-col items-start sm:items-start space-y-2 w-full sm:w-auto flex-grow">
             <p class="text-lg font-semibold text-gray-800"> For Drone:</p>
-            <p class="text-sm text-gray-500">{{$getRecord()->drone->name ?? 'no set'}}</p>
+            <a id="fordrone-{{$id}}" href="{{route('filament.admin.resources.drones.view',['tenant' => Auth()->user()->teams()->first()->id, 'record' => $getRecord()->for_drone??0])}}">
+                <p class="text-sm text-gray-500">{{$getRecord()->drone->name ?? 'no set'}}</p>
+            </a>
         
         </div>
     </div>
@@ -145,7 +136,7 @@ use Carbon\Carbon;
 </div>
 
 <script>  
-    // Cycle
+    // Cycle bar
     document.addEventListener('DOMContentLoaded', function () {
         const progressBar = document.getElementById('progressBar-{{$id}}');
         const maxData = {{ $lifespanCycle }};
@@ -154,13 +145,18 @@ use Carbon\Carbon;
         const percentage = (currentData / maxData) * 100;
 
         setTimeout(() => {
-            progressBar.style.width = percentage + '%';
-            if (currentData >= maxData) {
+            if (maxData <= 0 ) {
+                progressBar.style.width = 100 + '%';
                 progressBar.classList.add('danger');
+            }else if (currentData >= maxData) {
+                progressBar.classList.add('danger');
+                progressBar.style.width = percentage + '%';
+            }else{
+                progressBar.style.width = percentage + '%';
             }
         }, 2000);
     });
-    //flight
+    //flight bar
     document.addEventListener('DOMContentLoaded', function () {
         const progressBar = document.getElementById('progressBars-{{$id}}');
         const maxData = {{ $lifeSpan }};
@@ -175,6 +171,31 @@ use Carbon\Carbon;
             }
         }, 2000);
     });
+
+    // color Changes
+    document.addEventListener('DOMContentLoaded', function (){
+       
+        const statusElement = document.getElementById('status-{{$id}}');
+        var batteryStatus = '{{$status}}';
+        
+        if(batteryStatus == 'airworthy'){
+            statusElement.classList.remove('text-danger-600');
+            statusElement.classList.add('text-green-600');
+        }else if(batteryStatus == 'maintenance'){
+            statusElement.classList.add('text-danger-600');
+        }else{
+            statusElement.classList.add('text-gray-500');
+        }
+    });
+    //disable click
+    document.addEventListener('DOMContentLoaded', function () {
+        const droneButton = document.getElementById('fordrone-{{$id}}');
+        const droneId = {{$droneIds}};
+       if(droneId == 0){
+        droneButton.style.pointerEvents = 'none';
+       }   
+    });
+</script>
 
 </script>
 

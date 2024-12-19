@@ -567,8 +567,12 @@ public static function infolist(Infolist $infolist): Infolist
             ->color(Color::Blue),
         TextEntry::make('purchase_date')->label(TranslationHelper::translateIfNeeded('Purchase Date')),
         TextEntry::make('insurable_value')->label(TranslationHelper::translateIfNeeded('Insurable Value'))
-        ->getStateUsing(fn($record) => $record->insurable_value . ' ' .
-        Auth()->user()->teams()->first()->currencie->iso ?? null),
+            ->getStateUsing(function ($record) {
+                $team = Auth()->user()->teams()->first();
+                $currencyIso = $team && $team->currencies_id ? $team->currencie->iso : null;
+        
+                return $record->insurable_value . ' ' . ($currencyIso ?? '');
+            }),
         TextEntry::make('wight')->label(TranslationHelper::translateIfNeeded('Weight'))
             ->getStateUsing(fn($record) => $record->wight . ' cm'),
         TextEntry::make('firmware_version')->label(TranslationHelper::translateIfNeeded('Firmware Version')),
