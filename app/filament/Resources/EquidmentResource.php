@@ -11,6 +11,7 @@ use Filament\Forms;
 use Filament\Forms\Components\Tabs;
 use Filament\Forms\Components\Wizard;
 use Filament\Forms\Form;
+use Filament\Infolists\Components\Group;
 use Filament\Notifications\Notification;
 use Filament\Resources\Resource;
 use Filament\Tables;
@@ -188,18 +189,16 @@ class EquidmentResource extends Resource
                                 ->numeric()
                                 ->default($defaultData['insurable_value'] ?? null),
                             Forms\Components\TextInput::make('weight')
-                           ->label(TranslationHelper::translateIfNeeded('Weight'))
+                           ->label(TranslationHelper::translateIfNeeded('Weight (gram)'))
                                 ->required()
                                 ->numeric()
                                 ->default($defaultData['weight'] ?? null),
                             Forms\Components\TextInput::make('firmware_v')
                            ->label(TranslationHelper::translateIfNeeded('Firmware Version'))
-                                ->required()
                                 ->maxLength(255)
                                 ->default($defaultData['firmware_v'] ?? null),
                             Forms\Components\TextInput::make('hardware_v')
                            ->label(TranslationHelper::translateIfNeeded('Hardware Version'))
-                                ->required()
                                 ->maxLength(255)
                                 ->default($defaultData['hardware_v'] ?? null),
                             Forms\Components\Toggle::make('is_loaner')
@@ -505,23 +504,32 @@ class EquidmentResource extends Resource
                 ])->columns(4),
             Section::make(TranslationHelper::translateIfNeeded('Extra Information'))
                 ->schema([
-                    TextEntry::make('users.name')->label(TranslationHelper::translateIfNeeded('Owner'))
+                    Group::make([
+                        TextEntry::make('users.name')->label(TranslationHelper::translateIfNeeded('Owner'))
                         ->url(fn($record) => $record->users_id ? route('filament.admin.resources.users.view', [
                             'tenant' => Auth()->user()->teams()->first()->id,
                             'record' => $record->users_id,
                         ]) : null)->color(Color::Blue),
-                    TextEntry::make('purchase_date')->label(TranslationHelper::translateIfNeeded('Purchase Date'))->date('Y-m-d'),
-                    TextEntry::make('insurable_value')->label(TranslationHelper::translateIfNeeded('Insurable Value'))
-                        ->getStateUsing(fn($record) => $record->insurable_value . ' ' .
-                    Auth()->user()->teams()->first()->currencie->iso ?? null),
-                    TextEntry::make('weight')->label(TranslationHelper::translateIfNeeded('Weight'))
-                        ->getStateUsing(fn($record) => $record->weight . ' cm'),
-                    TextEntry::make('firmware_v')->label(TranslationHelper::translateIfNeeded('Firmware Version')),
-                    TextEntry::make('hardware_v')->label(TranslationHelper::translateIfNeeded('Hardware Version')),
-                    IconEntry::make('is_loaner')->boolean()->label(TranslationHelper::translateIfNeeded('Loaner Equipment')),
-                    TextEntry::make('description')->label(TranslationHelper::translateIfNeeded('Description')),
-                    InfolistView::make('component.include-kits-Eq')->columnSpanFull(),
-                ])->columns(4),
+                        TextEntry::make('purchase_date')->label(TranslationHelper::translateIfNeeded('Purchase Date'))->date('Y-m-d'),
+                        TextEntry::make('insurable_value')->label(TranslationHelper::translateIfNeeded('Insurable Value'))
+                            ->getStateUsing(function ($record) {
+                                $team = Auth()->user()->teams()->first();
+                                $currencyIso = $team && $team->currencies_id ? $team->currencie->iso : null;
+                        
+                                return $record->insurable_value . ' ' . ($currencyIso ?? '');
+                            }),
+                        TextEntry::make('weight')->label(TranslationHelper::translateIfNeeded('Weight'))
+                            ->getStateUsing(fn($record) => $record->weight . ' gram(g)'),
+                        TextEntry::make('firmware_v')->label(TranslationHelper::translateIfNeeded('Firmware Version')),
+                        TextEntry::make('hardware_v')->label(TranslationHelper::translateIfNeeded('Hardware Version')),
+                        IconEntry::make('is_loaner')->boolean()->label(TranslationHelper::translateIfNeeded('Loaner Equipment')),
+                        TextEntry::make('description')->label(TranslationHelper::translateIfNeeded('Description')),
+                        InfolistView::make('component.include-kits-Eq')->columnSpanFull(),
+                    ])->columns(2)->columnSpan(1),
+                    Group::make([
+                        InfolistView::make('component.chartjs.equipment-statistik')
+                    ])->columnSpan(1),
+                ])->columns(2),
             Section::make('')
                 ->schema([
                     InfolistView::make('component.tabViewResorce.equipment-tab')

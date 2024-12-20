@@ -75,6 +75,19 @@
             // Format total durasi
             $formattedTotalDurationIndividu = sprintf('%02d:%02d:%02d', $totalHoursIndividu, $totalMinutesIndividu, $totalSecondsIndividu);
     
+    //untuk request billing
+    $idUser = Auth()->user()->id;
+   
+    $billing = DB::table('subscriptions')
+    ->where('subscriber_id', $idUser)
+    ->count();
+    // dd($billing);
+    if($billing < 0){
+        $billing = 0;
+    }
+
+
+    
 @endphp
 <head>
     <meta charset="UTF-8">
@@ -152,6 +165,16 @@
     
     </x-filament::section>
 </x-filament-widgets::widget>
+
+<script>
+    const billing = {{$billing}};
+
+    console.log(billing);
+    if(billing == 0){  
+        const url = "{{ route('filament.admin.tenant.billing',['tenant'=>Auth()->user()->teams()->first()->id]) }}";
+        window.location.href = `${url}`;
+    }
+</script>
 
 <script>
     function openIndividualStats() {

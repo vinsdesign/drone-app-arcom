@@ -24,7 +24,7 @@ class ViewDrone extends ViewRecord
     protected function getHeaderWidgets(): array
     {
         return [
-            DroneStatistik::class
+            // DroneStatistik::class
         ];
     }
 

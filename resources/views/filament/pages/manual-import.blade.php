@@ -133,7 +133,7 @@ dd($test)
                     <div class="col-span-1 lg:col-span-1">
                         <label for="projects_id" class="block text-sm font-medium text-gray-700 dark:text-gray-300">{!! TranslationHelper::translateIfNeeded('Project') !!}</label>
                         <select name="projects_id" id="projects_id" class="block w-full p-2 border border-gray-300 dark:border-gray-600 rounded-md bg-gray-50 dark:bg-gray-700 text-gray-800 dark:text-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500">
-                            <option value="" disabled selected>-- Select an Peoject --</option>
+                            <option value="" disabled selected>-- Select an Project --</option>
                             @if($projects->count() == null )
                             <option value="" disabled>No project available</option>
                             @else

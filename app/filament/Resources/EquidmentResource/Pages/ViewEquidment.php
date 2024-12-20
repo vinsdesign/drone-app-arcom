@@ -20,7 +20,7 @@ class ViewEquidment extends ViewRecord
     protected function getHeaderWidgets(): array
     {
         return [
-            EquipmentStatistik::class
+            // EquipmentStatistik::class
         ];
     }
 }

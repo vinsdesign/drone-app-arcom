@@ -18,7 +18,7 @@ class BatteryStatistik extends Widget
     public $battery_id;
     public $battery;
     protected $listeners = ['showBatteryStatistik'];
-    protected static string $view = 'component.chartjs.batterei-statisik';
+    // protected static string $view = 'component.chartjs.batterei-statisik';
 
     public function showBatteryStatistik($id)
     {

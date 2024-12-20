@@ -10,6 +10,7 @@ use App\Models\User;
 use Filament\Forms;
 use Filament\Forms\Components\Tabs;
 use Filament\Forms\Form;
+use Filament\Infolists\Components\Group;
 use Filament\Infolists\Components\IconEntry;
 use Filament\Notifications\Notification;
 use Filament\Resources\Resource;
@@ -177,18 +178,18 @@ class BattreiResource extends Resource
                             ->numeric()
                             ->default($defaultData['insurable_value'] ?? null),
                         Forms\Components\TextInput::make('wight')
-                            ->label(TranslationHelper::translateIfNeeded('Weight'))
-                            ->required()
+                            ->label(TranslationHelper::translateIfNeeded('Weight (g)'))
+                         
                             ->numeric()
                             ->default($defaultData['wight'] ?? null),
                         Forms\Components\TextInput::make('firmware_version')
                             ->label(TranslationHelper::translateIfNeeded('Firmware Version'))
-                            ->required()
+                         
                             ->maxLength(255)
                             ->default($defaultData['firmware_version'] ?? null),
                         Forms\Components\TextInput::make('hardware_version')
                             ->label(TranslationHelper::translateIfNeeded('Hardware Version'))
-                            ->required()
+                         
                             ->maxLength(255)
                             ->default($defaultData['hardware_version'] ?? null),
                         Forms\Components\Toggle::make('is_loaner')
@@ -559,28 +560,34 @@ public static function infolist(Infolist $infolist): Infolist
 
         Section::make(TranslationHelper::translateIfNeeded('Extra Information'))
             ->schema([
-        TextEntry::make('users.name')->label(TranslationHelper::translateIfNeeded('Owner'))
-            ->url(fn($record) => $record->users_id ? route('filament.admin.resources.users.view', [
-                'tenant' => auth()->user()->teams()->first()->id,
-                'record' => $record->users_id,
-            ]) : null)
-            ->color(Color::Blue),
-        TextEntry::make('purchase_date')->label(TranslationHelper::translateIfNeeded('Purchase Date')),
-        TextEntry::make('insurable_value')->label(TranslationHelper::translateIfNeeded('Insurable Value'))
-            ->getStateUsing(function ($record) {
-                $team = Auth()->user()->teams()->first();
-                $currencyIso = $team && $team->currencies_id ? $team->currencie->iso : null;
-        
-                return $record->insurable_value . ' ' . ($currencyIso ?? '');
-            }),
-        TextEntry::make('wight')->label(TranslationHelper::translateIfNeeded('Weight'))
-            ->getStateUsing(fn($record) => $record->wight . ' cm'),
-        TextEntry::make('firmware_version')->label(TranslationHelper::translateIfNeeded('Firmware Version')),
-        TextEntry::make('hardware_version')->label(TranslationHelper::translateIfNeeded('Hardware Version')),
-        IconEntry::make('is_loaner')->boolean()->label(TranslationHelper::translateIfNeeded('Loaner Battery')),
-        TextEntry::make('description')->label(TranslationHelper::translateIfNeeded('Description')),
-        InfolistView::make('component.include-kits')->columnSpanFull(),
-            ])->columns(4),
+                Group::make([
+                    TextEntry::make('users.name')->label(TranslationHelper::translateIfNeeded('Owner'))
+                    ->url(fn($record) => $record->users_id ? route('filament.admin.resources.users.view', [
+                        'tenant' => auth()->user()->teams()->first()->id,
+                        'record' => $record->users_id,
+                    ]) : null)
+                    ->color(Color::Blue),
+                TextEntry::make('purchase_date')->label(TranslationHelper::translateIfNeeded('Purchase Date')),
+                TextEntry::make('insurable_value')->label(TranslationHelper::translateIfNeeded('Insurable Value'))
+                    ->getStateUsing(function ($record) {
+                        $team = Auth()->user()->teams()->first();
+                        $currencyIso = $team && $team->currencies_id ? $team->currencie->iso : null;
+                
+                        return $record->insurable_value . ' ' . ($currencyIso ?? '');
+                    }),
+                TextEntry::make('wight')->label(TranslationHelper::translateIfNeeded('Weight'))
+                    ->getStateUsing(fn($record) => $record->wight . ' gram(g)'),
+                TextEntry::make('firmware_version')->label(TranslationHelper::translateIfNeeded('Firmware Version')),
+                TextEntry::make('hardware_version')->label(TranslationHelper::translateIfNeeded('Hardware Version')),
+                IconEntry::make('is_loaner')->boolean()->label(TranslationHelper::translateIfNeeded('Loaner Battery')),
+                TextEntry::make('description')->label(TranslationHelper::translateIfNeeded('Description')),
+                InfolistView::make('component.include-kits')->columnSpanFull(),
+                ])->columns(2)->columnSpan(1),
+                Group::make([
+                    InfolistView::make('component.chartjs.batterei-statisik')->columnSpanFull(),
+                ])->columnSpan(1),
+                
+            ])->columns(2),
         Section::make('')
             ->schema([
                 InfolistView::make('component.tabViewResorce.battrei-tab')
