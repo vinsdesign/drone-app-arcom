@@ -98,7 +98,7 @@ $count = $flightCount->count('id');
             <!-- Container kedua dengan ukuran lebih kecil -->
             <div class="flex items-center justify-between py-4 px-6 border-t border-gray-400 bg-gray-300 dark:bg-gray-700  shadow-lg">
                 <div class="flex-1 min-w-[180px]">
-                    <p class="text-sm text-gray-700 dark:text-gray-400"><strong>{!! TranslationHelper::translateIfNeeded('Personnel:')!!} </strong>{{$item->users->name}} (Pilot) {{$item->instructor}} (Instructor)</p>
+                    <p class="text-sm text-gray-700 dark:text-gray-400"><strong>{!! TranslationHelper::translateIfNeeded('Personnel:')!!} </strong>{{$item->users->name}} (Pilot) {{$item->instructors->name ?? null}} (Instructor)</p>
                 </div>
             </div>
         </div>

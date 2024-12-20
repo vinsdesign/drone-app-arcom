@@ -208,7 +208,7 @@
                     <tr class="detail-row">
                         <td colspan="6">
                             <strong>Drones:</strong> {{ $flights->drones->name ?? null}}/{{ $flights->drones->geometry ?? null}} &nbsp;&nbsp;
-                            <strong>2nd Pilot:</strong> {{ $flights->instructor ?? null}} &nbsp;&nbsp;
+                            <strong>2nd Pilot:</strong> {{ $flights->instructors->name ?? null}} &nbsp;&nbsp;
                             <strong>OPS:</strong> {{ $flights->ops ?? null}}
                             <br>
                             <strong>VO:</strong> {{ $flights->vo ?? null}} &nbsp;&nbsp;
