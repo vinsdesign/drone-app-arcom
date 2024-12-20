@@ -305,7 +305,7 @@ class FlighResource extends Resource
                                 Map::make('locationMaps')
                                     ->label('Maps')
                                     ->columnSpanFull()
-                                    ->defaultLocation(0.0, 0.0)
+                                    ->defaultLocation(-8.592113191530379, 115.27542114257814)
                                     ->afterStateHydrated(function ($state, $record, callable $set) {
                                         if ($record) {
                                             $set('locationMaps', [

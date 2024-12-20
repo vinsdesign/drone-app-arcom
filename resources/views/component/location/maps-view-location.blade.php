@@ -43,12 +43,12 @@ if($project != 0){
     //marker di 1 lokasi
     L.marker([{{ $latitude }}, {{ $longitude }}]).addTo(map)
     .bindPopup(`
-        <section class="p-2 bg-white dark:bg-gray-800 shadow-md rounded-lg max-w-xs mx-auto">
-            <header class="font-semibold text-sm text-gray-800 dark:text-gray-100">
-                <strong>Lokasi: </strong><span style="color:blue;">{{$address}}</span>
+        <section>
+            <header class="font-medium text-sm text-gray-800 dark:text-gray-100">
+                <strong class="font-semibold">Lokasi: </strong><span class="text-blue-600">{{$address}}</span>
             </header>
-            <section class="font-semibold text-sm text-gray-800 dark:text-gray-100 mt-1">
-                <strong>Projects: </strong><span class="text-gray-700 dark:text-gray-300">{{$case}}</span>
+            <section class="font-medium text-sm text-gray-800 dark:text-gray-100 mt-1">
+                <strong class="font-semibold">Projects: </strong><span class="text-gray-700 dark:text-gray-300">{{$case}}</span>
             </section>
             <footer class="mt-2">
                 <a href="https://www.google.com/maps?q={{$latitude}},{{$longitude }}" target="_blank">

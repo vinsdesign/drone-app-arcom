@@ -2,7 +2,7 @@
 session_start();
 $year = session('tahun', now()->year);
     $tenant_id = Auth()->user()->teams()->first()->id;
-        $equipmentID = session('equipment_id');
+        $equipmentID = $getRecord()->id;
 
         $pivotEquipment_id = DB::table('fligh_equidment')->where('equidment_id', $equipmentID)
         ->select('fligh_id')
@@ -88,7 +88,7 @@ $year = session('tahun', now()->year);
     }
     </style>
 </head>
-<x-filament-widgets::widget>
+
     <div class="flex justify-center items-center mb-2">
         <div class="rounded-lg shadow-lg p-4 w-full max-w-md sm:max-w-lg md:max-w-2xl lg:max-w-1/2 dark:bg-gray-900">
             <p class="text-sm font-semibold text-center text-gray-800 dark:text-gray-100">Flight & Flying Times <br> {{$year}}</p>
@@ -110,7 +110,7 @@ $year = session('tahun', now()->year);
     
 
     
-</x-filament-widgets::widget>
+
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
     let tahun = {{ $year }};

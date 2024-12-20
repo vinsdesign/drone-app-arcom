@@ -2,7 +2,7 @@
 session_start();
 
 $year = session('tahun', now()->year);
-    $droneId = session('drone_id');
+    $droneId =$getRecord()->id;
         $tenant_id = Auth()->user()->teams()->first()->id;
             $flights = App\Models\fligh::where('teams_id', $tenant_id)->where('drones_id', $droneId)
                 ->whereBetween('start_date_flight', [
@@ -62,7 +62,7 @@ $year = session('tahun', now()->year);
     }
     </style>
 </head>
-<x-filament-widgets::widget>
+
     <div class="flex justify-center items-center mb-2">
         <div class="rounded-lg shadow-lg p-4 w-full max-w-md sm:max-w-lg md:max-w-2xl lg:max-w-1/2 dark:bg-gray-900">
             <p class="text-sm font-semibold text-center text-gray-800 dark:text-gray-100">Flight & Flying Times <br> {{$year}}</p>
@@ -84,7 +84,7 @@ $year = session('tahun', now()->year);
     
 
     
-</x-filament-widgets::widget>
+
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
     let tahun = {{ $year }};

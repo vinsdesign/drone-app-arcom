@@ -919,6 +919,12 @@
         tableFilter.classList.add('active');
         tablePage.classList.remove('active');
 
+        const inputfrom = document.getElementById('from');
+        const inputto = document.getElementById('to');
+        // Reset input fields
+        inputfrom.value = '';
+        inputto.value = '';
+
     }
     function openFilter() {
         const btnClose = document.getElementById('btnClose');

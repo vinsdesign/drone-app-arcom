@@ -14,7 +14,7 @@ class ViewBattrei extends ViewRecord
     protected function getHeaderWidgets(): array
     {
         return [
-            BatteryStatistik::class
+            // BatteryStatistik::class
         ];
     }
 }

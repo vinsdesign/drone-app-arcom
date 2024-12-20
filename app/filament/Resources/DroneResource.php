@@ -8,6 +8,7 @@ use App\Models\Drone;
 use App\Models\User;
 use Filament\Forms;
 use Filament\Forms\Form;
+use Filament\Infolists\Components\Group;
 use Filament\Infolists\Components\View;
 use Filament\Notifications\Notification;
 use Filament\Resources\Resource;
@@ -175,12 +176,10 @@ class DroneResource extends Resource
                             ->default($defaultData['users_id'] ?? null),
                         Forms\Components\TextInput::make('firmware_v')
                         ->label(TranslationHelper::translateIfNeeded('Firmware Version'))
-                            ->required()
                             ->maxLength(255)
                             ->default($defaultData['firmware_v'] ?? null),
                         Forms\Components\TextInput::make('hardware_v')
                         ->label(TranslationHelper::translateIfNeeded('Hardware Version'))
-                            ->required()
                             ->maxLength(255)
                             ->default($defaultData['hardware_v'] ?? null),
                         Forms\Components\Select::make('propulsion_v')
@@ -202,12 +201,12 @@ class DroneResource extends Resource
                             'oninput' => "this.value = this.value.replace(/[^0-9:]/g, '').replace(/^([0-9]{2})([0-9]{2})/, '$1:$2:');", 
                             'placeholder' => 'HH:mm:ss'
                         ])->default('00:00:00')
-                        ->default($defaultData['max_flight_time'] ?? null),
+                        ->default($defaultData['max_flight_time'] ?? '00:00:00'),
                         //initial_Flight
                         Forms\Components\TextInput::make('initial_flight')
                         ->label(TranslationHelper::translateIfNeeded('Initial Flight'))
                         ->numeric()
-                        ->default($defaultData['initial_flight'] ?? null),
+                        ->default($defaultData['initial_flight'] ?? 0),
                         //initial FLight Time
                         Forms\Components\TextInput::make('initial_flight_time')
                         ->label(TranslationHelper::translateIfNeeded('Initial Flight Time'))
@@ -217,10 +216,10 @@ class DroneResource extends Resource
                             'placeholder' => 'HH:mm:ss'
                             
                         ])->default('00:00:00')
-                        ->default($defaultData['initial_flight_time'] ?? null),
+                        ->default($defaultData['initial_flight_time'] ?? '00:00:00'),
                         Forms\Components\Textarea::make('description')
                         ->label(TranslationHelper::translateIfNeeded('Description'))
-                            ->required()
+                   
                             ->maxLength(255)->columnSpanFull()
                             ->default($defaultData['description'] ?? null),
 
@@ -230,35 +229,35 @@ class DroneResource extends Resource
                     ->schema([
                         Forms\Components\TextInput::make('serial_p')
                         ->label(TranslationHelper::translateIfNeeded('Serial Printed'))
-                            ->required()
+                           
                             ->default($defaultData['serial_p'] ?? null),
                         Forms\Components\TextInput::make('serial_i')
                         ->label(TranslationHelper::translateIfNeeded('Serial Internal'))
-                            ->required()
+                           
                             ->default($defaultData['serial_i'] ?? null),
                         Forms\Components\TextInput::make('flight_c')
                         ->label(TranslationHelper::translateIfNeeded('Flight Controller'))
-                            ->required()
+                           
                             ->maxLength(255)
                             ->default($defaultData['flight_c'] ?? null),
                         Forms\Components\TextInput::make('remote_c')
                         ->label(TranslationHelper::translateIfNeeded('Remote Controller'))
-                            ->required()
+                           
                             ->maxLength(255)
                             ->default($defaultData['remote_c'] ?? null),
                             Forms\Components\TextInput::make('remote_cc')
                             ->label(TranslationHelper::translateIfNeeded('Remote Controller2'))
-                            ->required()
+                           
                             ->maxLength(255)->columnSpan(2)
                             ->default($defaultData['remote_cc'] ?? null),
                         Forms\Components\TextInput::make('remote')
                         ->label(TranslationHelper::translateIfNeeded('Remote ID'))
-                            ->required()
+                           
                             ->maxLength(255)
                             ->default($defaultData['remote'] ?? null),
                         Forms\Components\TextInput::make('conn_card')
                         ->label(TranslationHelper::translateIfNeeded('Connection Card'))
-                            ->required()
+                           
                             ->maxLength(255)->columnSpan(2)
                             ->default($defaultData['conn_card'] ?? null),
                     ])->columns(3),
@@ -559,19 +558,25 @@ class DroneResource extends Resource
         
         ->schema([
             Section::make(TranslationHelper::translateIfNeeded('Overview'))
-                ->schema([       
-                    TextEntry::make('name')->label(TranslationHelper::translateIfNeeded('Name')),
-                    TextEntry::make('idlegal')->label(TranslationHelper::translateIfNeeded('Legal ID')),
-                    TextEntry::make('status')->label(TranslationHelper::translateIfNeeded('Status'))
-                        ->color(fn ($record) => match ($record->status) {
-                            'airworthy' => Color::Green,
-                            'maintenance' => Color::Red,
-                            'retired' => Color::Zinc
-                        }),
-                    TextEntry::make('brand')->label(TranslationHelper::translateIfNeeded('Brand')),
-                    TextEntry::make('model')->label(TranslationHelper::translateIfNeeded('Model')),
-                    TextEntry::make('type')->label(TranslationHelper::translateIfNeeded('Type')),
-                ])->columns(3),
+                ->schema([      
+                    Group::make([
+                        TextEntry::make('name')->label(TranslationHelper::translateIfNeeded('Name')),
+                        TextEntry::make('idlegal')->label(TranslationHelper::translateIfNeeded('Legal ID')),
+                        TextEntry::make('status')->label(TranslationHelper::translateIfNeeded('Status'))
+                            ->color(fn ($record) => match ($record->status) {
+                                'airworthy' => Color::Green,
+                                'maintenance' => Color::Red,
+                                'retired' => Color::Zinc
+                            }),
+                        TextEntry::make('brand')->label(TranslationHelper::translateIfNeeded('Brand')),
+                        TextEntry::make('model')->label(TranslationHelper::translateIfNeeded('Model')),
+                        TextEntry::make('type')->label(TranslationHelper::translateIfNeeded('Type')),
+                    ])->columns(2)->columnSpan(1),
+                    Group::make([
+                        InfolistView::make('component.chartjs.drone-statistik')
+                    ])->columnSpan(1),
+                    
+                ])->columns(2),
             Section::make(TranslationHelper::translateIfNeeded('Drone Details'))
                 ->schema([
                     TextEntry::make('geometry')->label(TranslationHelper::translateIfNeeded('Drone Geometry')),

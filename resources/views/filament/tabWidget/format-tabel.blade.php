@@ -53,9 +53,9 @@ $incident = App\Models\incident::whereHas('teams', function ($query) use ($curre
 ?>
 <x-filament-widgets::widget>
     {{-- tabel di filight --}}
-    @php
+    {{-- @php
     use App\Helpers\TranslationHelper;
-    @endphp
+    @endphp --}}
     @foreach($flight as $item)
     <div class="flex flex-wrap space-x-4 border border-gray-300 rounded-lg p-2 bg-gray-100 dark:bg-gray-800 max-w-[800px] mx-auto mb-4 shadow-lg"">
         <div class="flex-1 min-w-[150px] mb-2 border-r border-gray-300 pr-2">

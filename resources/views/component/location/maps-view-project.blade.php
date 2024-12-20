@@ -81,15 +81,15 @@ if({{$flighID}} != 0){
 
     L.marker([altitude, longitude]).addTo(map)
         .bindPopup(`  
-        <section class="p-2 bg-white dark:bg-gray-800 shadow-md rounded-lg max-w-xs mx-auto">
-            <header class="font-semibold text-sm text-gray-800 dark:text-gray-100">
-                <strong>Lokasi: </strong><span class="text-blue-500 dark:text-blue-400">${locationName}</span>
+        <section>
+            <header class="font-medium text-sm text-gray-800 dark:text-gray-100">
+                <strong class="font-semibold">Lokasi: </strong><span class="text-blue-600">${locationName}</span>
             </header>
-            <section class="font-semibold text-sm text-gray-800 dark:text-gray-100 mt-1">
-                <strong>Projects: </strong><span class="text-gray-700 dark:text-gray-300">{{$case}}</span>
+            <section class="font-medium text-sm text-gray-800 dark:text-gray-100 mt-1">
+                <strong class="font-semibold">Projects: </strong><span class="text-gray-700 dark:text-gray-300">{{$case}}</span>
             </section>
-                        <section class="font-semibold text-sm text-gray-800 dark:text-gray-100 mt-1">
-                <strong>Flight Name: </strong><span class="text-gray-700 dark:text-gray-300">${flight.name}</span>
+            <section class="font-medium text-sm text-gray-800 dark:text-gray-100 mt-1">
+                <strong class="font-semibold">Flight Name: </strong><span class="text-gray-700 dark:text-gray-300">${flight.name}</span>
             </section>
             <footer class="mt-2">
                 <a href="https://www.google.com/maps?q=${altitude},${longitude}" target="_blank">
