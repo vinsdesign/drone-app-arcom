@@ -209,10 +209,11 @@
                         <td colspan="6">
                             <strong>Drones:</strong> {{ $flights->drones->name ?? null}}/{{ $flights->drones->geometry ?? null}} &nbsp;&nbsp;
                             <strong>2nd Pilot:</strong> {{ $flights->instructors->name ?? null}} &nbsp;&nbsp;
-                            <strong>OPS:</strong> {{ $flights->ops ?? null}}
+                            {{-- <strong>OPS:</strong> {{ $flights->ops ?? null}} --}}
                             <br>
-                            <strong>VO:</strong> {{ $flights->vo ?? null}} &nbsp;&nbsp;
-                            <strong>PO:</strong> {{ $flights->po ?? null}} &nbsp;&nbsp;
+                            {{-- <strong>VO:</strong> {{ $flights->vo ?? null}} &nbsp;&nbsp;
+                            <strong>PO:</strong> {{ $flights->po ?? null}} &nbsp;&nbsp; --}}
+                            <strong>OPS:</strong> {{ $flights->ops ?? null}} &nbsp;&nbsp;
                             <strong>Kits:</strong> {{ $flights->kits->name ?? null}}
                         </td>
                     </tr>
@@ -220,7 +221,8 @@
                         <td colspan="6">
                             @foreach ($flights->battreis as $battery)
                                 <strong>Battery:</strong> {{ $battery->name}}@if(!$loop->last), @endif
-                            @endforeach
+                            @endforeach 
+                            &nbsp;&nbsp;
                             @foreach ($flights->equidments as $equipment)
                                 <strong>Equipment:</strong> {{ $equipment->name}}@if(!$loop->last), @endif
                             @endforeach

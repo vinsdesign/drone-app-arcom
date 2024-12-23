@@ -355,7 +355,9 @@ class MaintenceResource extends Resource
                         }),
                     TextEntry::make('cost')->label(TranslationHelper::translateIfNeeded('Cost')),
                     TextEntry::make('currencies.iso')->label(TranslationHelper::translateIfNeeded('Currency')),
-                    TextEntry::make('notes')->label(TranslationHelper::translateIfNeeded('Notes')),
+                    TextEntry::make('notes')
+                        ->label(TranslationHelper::translateIfNeeded('Notes'))
+                        ->columnspan(2),
                 ])->columns(4),
         
             Section::make(TranslationHelper::translateIfNeeded('Add Tasks (Optional)'))
@@ -366,7 +368,9 @@ class MaintenceResource extends Resource
                     TextEntry::make('technician')->label(TranslationHelper::translateIfNeeded('Technician')),
                     IconEntry::make('replaced')->boolean()->label(TranslationHelper::translateIfNeeded('Replaced')),
                     TextEntry::make('new_part_serial')->label(TranslationHelper::translateIfNeeded('New Part Serial')),
-                    TextEntry::make('description_part')->label(TranslationHelper::translateIfNeeded('Description Part')),
+                    TextEntry::make('description_part')
+                        ->label(TranslationHelper::translateIfNeeded('Description Part'))
+                        ->columnspan(2),
                 ])->columns(4),
         ]);        
     }

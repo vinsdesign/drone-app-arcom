@@ -112,45 +112,45 @@ class CustomerResource extends Resource
         return $table
             
             ->columns([
-                Tables\Columns\TextColumn::make('id')
-                ->formatStateUsing(fn ($record) => view('component.table.table-customer', ['record' => $record]))
-                ->extraAttributes(['class' => 'w-full'])
-                ->disableClick(),
+                // Tables\Columns\TextColumn::make('id')
+                // ->formatStateUsing(fn ($record) => view('component.table.table-customer', ['record' => $record]))
+                // ->extraAttributes(['class' => 'w-full'])
+                // ->disableClick(),
     
-                    Tables\Columns\TextColumn::make('name')
-                    ->searchable()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
+                //     Tables\Columns\TextColumn::make('name')
+                //     ->searchable()
+                //     ->sortable()
+                //     ->toggleable(isToggledHiddenByDefault: true),
 
-                    Tables\Columns\TextColumn::make('phone')
-                        ->searchable()
-                        ->sortable()
-                        ->toggleable(isToggledHiddenByDefault: true),
+                //     Tables\Columns\TextColumn::make('phone')
+                //         ->searchable()
+                //         ->sortable()
+                //         ->toggleable(isToggledHiddenByDefault: true),
 
-                    Tables\Columns\TextColumn::make('email')
-                        ->searchable()
-                        ->sortable()
-                        ->toggleable(isToggledHiddenByDefault: true),
+                //     Tables\Columns\TextColumn::make('email')
+                //         ->searchable()
+                //         ->sortable()
+                //         ->toggleable(isToggledHiddenByDefault: true),
 
 
-                        //     Tables\Columns\TextColumn::make('name')
-                        //     ->searchable(),
-                        // Tables\Columns\TextColumn::make('phone')
-                        //     ->searchable(),
-                        // Tables\Columns\TextColumn::make('email')
-                        //     ->searchable(),
-                        // Tables\Columns\TextColumn::make('address')
-                        //     ->searchable(),
-                        // Tables\Columns\TextColumn::make('description')
-                        //     ->searchable(),
-                        // Tables\Columns\TextColumn::make('created_at')
-                        //     ->dateTime()
-                        //     ->sortable()
-                        //     ->toggleable(isToggledHiddenByDefault: true),
-                        // Tables\Columns\TextColumn::make('updated_at')
-                        //     ->dateTime()
-                        //     ->sortable()
-                        //     ->toggleable(isToggledHiddenByDefault: true),
+                            Tables\Columns\TextColumn::make('name')
+                            ->searchable(),
+                        Tables\Columns\TextColumn::make('phone')
+                            ->searchable(),
+                        Tables\Columns\TextColumn::make('email')
+                            ->searchable(),
+                        Tables\Columns\TextColumn::make('address')
+                            ->searchable(),
+                        Tables\Columns\TextColumn::make('description')
+                            ->searchable(),
+                        Tables\Columns\TextColumn::make('created_at')
+                            ->dateTime()
+                            ->sortable()
+                            ->toggleable(isToggledHiddenByDefault: true),
+                        Tables\Columns\TextColumn::make('updated_at')
+                            ->dateTime()
+                            ->sortable()
+                            ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
                 Tables\Filters\SelectFilter::make('status_visible')
