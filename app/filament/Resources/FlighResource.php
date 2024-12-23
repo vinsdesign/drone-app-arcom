@@ -545,14 +545,14 @@ class FlighResource extends Resource
                         }
                     }
                 }),
-                Forms\Components\TextInput::make('vo')
-                ->label(TranslationHelper::translateIfNeeded('VO'))    
-                    ->maxLength(255)
-                    ->default($defaultData['vo'] ?? null),
-                Forms\Components\TextInput::make('po')
-                ->label(TranslationHelper::translateIfNeeded('PO'))    
-                    ->maxLength(255)
-                    ->default($defaultData['po'] ?? null),
+                // Forms\Components\TextInput::make('vo')
+                // ->label(TranslationHelper::translateIfNeeded('VO'))    
+                //     ->maxLength(255)
+                //     ->default($defaultData['vo'] ?? null),
+                // Forms\Components\TextInput::make('po')
+                // ->label(TranslationHelper::translateIfNeeded('PO'))    
+                //     ->maxLength(255)
+                //     ->default($defaultData['po'] ?? null),
                 ])->columns(2),
                 Forms\Components\Section::make(TranslationHelper::translateIfNeeded('Drone & Equipment'))
                     ->description('')
@@ -1520,8 +1520,8 @@ class FlighResource extends Resource
                             'record' => $record->users_id,
                         ]) : null)->color(Color::Blue),
                     TextEntry::make('instructors.name')->label(TranslationHelper::translateIfNeeded('Instructor')),
-                    TextEntry::make('vo')->label(TranslationHelper::translateIfNeeded('VO')),
-                    TextEntry::make('po')->label(TranslationHelper::translateIfNeeded('PO')),
+                    // TextEntry::make('vo')->label(TranslationHelper::translateIfNeeded('VO')),
+                    // TextEntry::make('po')->label(TranslationHelper::translateIfNeeded('PO')),
                 ])->columns(4),
             Section::make(TranslationHelper::translateIfNeeded('Drone & Equipments'))
                 ->schema([

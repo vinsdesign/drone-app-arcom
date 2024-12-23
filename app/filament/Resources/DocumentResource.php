@@ -504,8 +504,6 @@ class DocumentResource extends Resource
                         return "<a href='/storage/{$state}' target='_blank' rel='noopener noreferrer' style='padding:5px 10px; background-color:#ff8303; color:white; border-radius:5px;'>{$translatedText}</a>";
                     })
                     ->html(),
-                TextEntry::make('description')
-                    ->label(TranslationHelper::translateIfNeeded('Description')),
                 TextEntry::make('customers.name')
                     ->label(TranslationHelper::translateIfNeeded('Customers'))
                     ->url(fn($record) => $record->customers_id ? route('filament.admin.resources.customers.view', [
@@ -518,6 +516,9 @@ class DocumentResource extends Resource
                         'tenant' => Auth()->user()->teams()->first()->id,
                         'record' => $record->projects_id,
                     ]): null)->color(Color::Blue),
+                TextEntry::make('description')
+                    ->label(TranslationHelper::translateIfNeeded('Description'))
+                    ->columnspan(2),
             ])->columns(3)
 
         ]);
