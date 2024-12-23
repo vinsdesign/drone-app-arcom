@@ -106,4 +106,9 @@ class User extends Authenticatable implements HasTenants, FilamentUser, HasAvata
             ->toArray();
     }
      //End menginjinkan akses login ke seluruh role yang ada
+     // incident
+     public function incidents(){
+        return $this->belongsToMany(incident::class, 'personnel_incident');
+    }
+
 }

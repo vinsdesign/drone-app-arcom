@@ -19,7 +19,9 @@
     $documentProjects = $queryDocument;
 
     //FlightIncident
-    $flighIncident = App\Models\Incident::Where('projects_id',$id)->get();
+    $flighIncident = App\Models\Incident::whereHas('projects', function ($query) use ($id) {
+        $query->where('projects_id', $id);
+    })->get();
 
     //flighLocation
     $flighLocation = App\Models\Fligh_location::Where('projects_id',$id)->where('status_visible', '!=', 'archived')->get();
@@ -315,13 +317,22 @@
                                     </p>
                                 </div>
 
-                                <!-- Column Modified-->
+                                <!-- Kolom Personnel Involved -->
                                 <div class="flex-1 min-w-[150px] mb-2 border-r border-gray-300 pr-2">
-                                    <p class="text-l text-gray-800 dark:text-gray-200 font-semibold">{!! TranslationHelper::translateIfNeeded('Pilot : ')!!}</p>
-                                    
-                                    <p class="text-sm text-gray-500 dark:text-gray-150 font-semibold truncate">
-                                        {{$item->users->name}}
+                                    <p class="text-l text-gray-800 dark:text-gray-200 font-semibold">
+                                        {!! TranslationHelper::translateIfNeeded('Personnel Involved:') !!}
                                     </p>
+                                
+                                    @php
+                                        $userLinks = $item->users->map(function ($user) {
+                                            return "<a href='" . route('filament.admin.resources.users.view', [
+                                                'tenant' => auth()->user()->teams()->first()->id,
+                                                'record' => $user->id,
+                                            ]) . "' style='color: #3b82f6; text-decoration: underline; font-size: 0.875rem;'>{$user->name}</a>";
+                                        })->implode(', ');
+                                    @endphp
+                                
+                                    {!! $userLinks !!}
                                 </div>
                                 <div class="flex justify-end items-center mb-2 min-w-[150px] border-gray-300 pr-2">
                                     <a href="{{route('filament.admin.resources.incidents.edit',['tenant' => Auth()->user()->teams()->first()->id, 'record' => $item->id])}}" class="px-4 py-2 bg-gray-700 text-white font-semibold rounded-lg 

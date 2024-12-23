@@ -112,25 +112,25 @@ class CustomerResource extends Resource
         return $table
             
             ->columns([
-                Tables\Columns\TextColumn::make('id')
-                ->formatStateUsing(fn ($record) => view('component.table.table-customer', ['record' => $record]))
-                ->extraAttributes(['class' => 'w-full'])
-                ->disableClick(),
+                // Tables\Columns\TextColumn::make('id')
+                // ->formatStateUsing(fn ($record) => view('component.table.table-customer', ['record' => $record]))
+                // ->extraAttributes(['class' => 'w-full'])
+                // ->disableClick(),
     
                     Tables\Columns\TextColumn::make('name')
                     ->searchable()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
+                    ->sortable(),
+                    // ->toggleable(isToggledHiddenByDefault: true),
 
                     Tables\Columns\TextColumn::make('phone')
                         ->searchable()
-                        ->sortable()
-                        ->toggleable(isToggledHiddenByDefault: true),
+                        ->sortable(),
+                        // ->toggleable(isToggledHiddenByDefault: true),
 
                     Tables\Columns\TextColumn::make('email')
                         ->searchable()
-                        ->sortable()
-                        ->toggleable(isToggledHiddenByDefault: true),
+                        ->sortable(),
+                        // ->toggleable(isToggledHiddenByDefault: true),
 
 
                         //     Tables\Columns\TextColumn::make('name')
