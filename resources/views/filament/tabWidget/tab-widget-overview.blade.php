@@ -698,10 +698,20 @@
                             
                                     <!-- Kolom Personnel Involved -->
                                     <div class="flex-1 min-w-[150px] mb-2 border-r border-gray-300 pr-2">
-                                        <p class="text-sm text-gray-800 dark:text-gray-200 font-semibold">{!! TranslationHelper::translateIfNeeded('Personnel Involved:')!!}</p>
-                                        <a href="{{route('filament.admin.resources.users.view',['tenant'=>Auth()->user()->teams()->first()->id, 'record'=> $item->users->id ?? 0])}}">
-                                            <p class="text-sm text-gray-700 dark:text-gray-400">{{ $item->users->name ??  TranslationHelper::translateIfNeeded('No Personnel') }}</p>
-                                        </a>
+                                        <p class="text-sm text-gray-800 dark:text-gray-200 font-semibold">
+                                            {!! TranslationHelper::translateIfNeeded('Personnel Involved:') !!}
+                                        </p>
+                                    
+                                        @php
+                                            $userLinks = $item->users->map(function ($user) {
+                                                return "<a href='" . route('filament.admin.resources.users.view', [
+                                                    'tenant' => auth()->user()->teams()->first()->id,
+                                                    'record' => $user->id,
+                                                ]) . "' style='color: #3b82f6; text-decoration: underline; font-size: 0.875rem;'>{$user->name}</a>";
+                                            })->implode(', ');
+                                        @endphp
+                                    
+                                        {!! $userLinks !!}
                                     </div>
                             
                                     <!-- Kolom Location -->

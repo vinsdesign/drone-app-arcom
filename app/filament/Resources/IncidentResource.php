@@ -117,7 +117,7 @@ class IncidentResource extends Resource
                         })
                         ->searchable()
                         ->required(),
-                    Forms\Components\Select::make('personel_involved_id')
+                    Forms\Components\Select::make('personnel_incident')
                     ->label(TranslationHelper::translateIfNeeded('Organization Personnel Involved'))
                         ->options(
                             function (Builder $query) use ($currentTeamId) {
@@ -126,6 +126,11 @@ class IncidentResource extends Resource
                             })->pluck('name','id');
                         }  
                         )->searchable()
+                        ->multiple()
+                        ->relationship('users', 'name')
+                        ->saveRelationshipsUsing(function ($component, $state) {
+                            $component->getRecord()->users()->sync($state);
+                        })
                         ->columnSpanFull(),
                     ])->columns(2),
                     //section 2
@@ -401,7 +406,18 @@ class IncidentResource extends Resource
                             'tenant' => Auth()->user()->teams()->first()->id,
                             'record' => $record->projects_id,
                         ]) : null)->color(Color::Blue),
-                    TextEntry::make('users.name')->label(TranslationHelper::translateIfNeeded('Organization Personnel Involved')),
+                        TextEntry::make('users.name')
+                        ->label(TranslationHelper::translateIfNeeded('Organization Personnel Involved'))
+                        ->formatStateUsing(function ($record) {
+                            return $record->users->map(function ($user) {
+                                // Pastikan relasi 'users' sudah dimuat dengan pivot data
+                                return "<a href='" . route('filament.admin.resources.users.view', [
+                                    'tenant' => auth()->user()->teams()->first()->id,
+                                    'record' => $user->id,
+                                ]) . "' style='color: #3b82f6; text-decoration: underline; font-size: 0.875rem;'>{$user->name}</a>";
+                            })->implode(', ');
+                        })
+                        ->HTML(),                    
                 ])->columns(4),
             Section::make(TranslationHelper::translateIfNeeded('Incident Description'))
                 ->schema([

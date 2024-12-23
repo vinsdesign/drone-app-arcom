@@ -43,16 +43,35 @@
     $incidents = DB::table('incidents')
     ->join('drones', 'incidents.drone_id', '=', 'drones.id')
     ->join('fligh_locations', 'incidents.location_id', '=', 'fligh_locations.id')
-    ->join('users', 'incidents.personel_involved_id', '=', 'users.id')
     ->join('flighs', function ($join) {
         $join->on('incidents.projects_id', '=', 'flighs.projects_id')
              ->on('incidents.location_id', '=', 'flighs.location_id')
              ->on('incidents.drone_id', '=', 'flighs.drones_id')
              ->whereRaw('DATE(incidents.incident_date) = DATE(flighs.start_date_flight)');
     })
-    ->where('flighs.id',$id)
-    ->select('incidents.*','fligh_locations.name as location_name','drones.name as drone_name','users.name as user_name')
+    ->leftJoin('personnel_incident', 'personnel_incident.incident_id', '=', 'incidents.id')
+    ->leftJoin('users', 'personnel_incident.user_id', '=', 'users.id')
+    ->where('flighs.id', $id)
+    ->select([
+        'incidents.*',
+        'fligh_locations.name as location_name',
+        'drones.name as drone_name',
+        DB::raw('GROUP_CONCAT(DISTINCT users.name SEPARATOR ", ") as user_names')
+    ])
+    ->groupBy([
+        'incidents.id',
+        'incidents.incident_date',
+        'incidents.drone_id',
+        'incidents.location_id',
+        'incidents.projects_id',
+        'incidents.description',
+        'incidents.created_at',
+        'incidents.updated_at',
+        'location_name',
+        'drone_name'
+    ])
     ->get();
+    // dd($incidents);
 
     //fligh media
     $flighmedia = App\Models\media_fligh::Where('fligh_id',$id)->get();
@@ -532,10 +551,10 @@
 
                                 <!-- Column Modified-->
                                 <div class="flex-1 min-w-[150px] mb-2 border-r border-gray-300 pr-2">
-                                    <p class="text-l text-gray-800 dark:text-gray-200 font-semibold">{!! TranslationHelper::translateIfNeeded('Pilot : ')!!}</p>
+                                    <p class="text-l text-gray-800 dark:text-gray-200 font-semibold">{!! TranslationHelper::translateIfNeeded('Personnel Involved : ')!!}</p>
                                     
                                     <p class="text-sm text-gray-500 dark:text-gray-150 font-semibold truncate">
-                                        {{$item->user_name}}
+                                        {{$item->user_names}}
                                     </p>
                                 </div>
                                 <div class="flex justify-end items-center mb-2 min-w-[150px] border-gray-300 pr-2">

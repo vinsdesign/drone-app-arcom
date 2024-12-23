@@ -117,6 +117,7 @@ class CustomerResource extends Resource
                 // ->extraAttributes(['class' => 'w-full'])
                 // ->disableClick(),
     
+
                 //     Tables\Columns\TextColumn::make('name')
                 //     ->searchable()
                 //     ->sortable()
@@ -151,6 +152,7 @@ class CustomerResource extends Resource
                             ->dateTime()
                             ->sortable()
                             ->toggleable(isToggledHiddenByDefault: true),
+
             ])
             ->filters([
                 Tables\Filters\SelectFilter::make('status_visible')
