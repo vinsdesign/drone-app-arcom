@@ -590,7 +590,9 @@ class DroneResource extends Resource
                     TextEntry::make('firmware_v')->label(TranslationHelper::translateIfNeeded('Firmware Version')),
                     TextEntry::make('hardware_v')->label(TranslationHelper::translateIfNeeded('Hardware Version')),
                     TextEntry::make('propulsion_v')->label(TranslationHelper::translateIfNeeded('Propulsion Version')),
-                    TextEntry::make('description')->label(TranslationHelper::translateIfNeeded('Description')),
+                    TextEntry::make('description')
+                        ->label(TranslationHelper::translateIfNeeded('Description'))
+                        ->columnspan(3),
                 ])->columns(5),
             Section::make(TranslationHelper::translateIfNeeded('Connect'))
                 ->schema([
