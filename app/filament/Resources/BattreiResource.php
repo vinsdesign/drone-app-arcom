@@ -113,7 +113,10 @@ class BattreiResource extends Resource
                             ->label(TranslationHelper::translateIfNeeded('For Drone (Optional)'))
                             ->searchable()
                             ->options(function (callable $get) use ($currentTeamId) {
-                                return drone::where('teams_id', $currentTeamId)->pluck('name', 'id');
+                                return drone::where('teams_id', $currentTeamId)
+                                ->where('shared', '!=', 0)
+                                ->where('status', 'airworthy')
+                                ->pluck('name', 'id');
                             })
                             ->default($defaultData['for_drone'] ?? null)
                             ->columnSpanFull(),
@@ -335,10 +338,21 @@ class BattreiResource extends Resource
                 //     ->sortable(),
                 Tables\Columns\TextColumn::make('drone.name')
                     ->label(TranslationHelper::translateIfNeeded('For Drone'))
-                    ->numeric()->url(fn($record) => $record->for_drone ? route('filament.admin.resources.drones.view', [
-                        'tenant' => Auth()->user()->teams()->first()->id,
-                        'record' => $record->for_drone,
-                    ]): null)->color(Color::Blue)
+                    ->numeric()
+                    // ->url(fn($record) => $record->for_drone ? route('filament.admin.resources.drones.view', [
+                    //     'tenant' => Auth()->user()->teams()->first()->id,
+                    //     'record' => $record->for_drone,
+                    // ]): null)->color(Color::Blue)
+                    ->url(function ($record) {
+                        if ($record->drone && $record->drone->shared !== 0) {
+                            return route('filament.admin.resources.drones.view', [
+                                'tenant' => Auth()->user()->teams()->first()->id,
+                                'record' => $record->for_drone,
+                            ]);
+                        }
+                        return null;
+                    })
+                    ->color(fn($record) => $record->drone && $record->drone->shared !== 0 ? Color::Blue : Color::Gray)
                     ->sortable()
                     ->placeholder(TranslationHelper::translateIfNeeded('No Drone Selected'))->hidden(),
                 // Tables\Columns\TextColumn::make('purchase_date')->label('Purchase Date')
@@ -551,11 +565,21 @@ public static function infolist(Infolist $infolist): Infolist
                 TextEntry::make('flaight_count')->label(TranslationHelper::translateIfNeeded('Flight Count'))
                     ->getStateUsing(fn($record) => $record->flaight_count . ' Flights'),
                 TextEntry::make('drone.name')->label(TranslationHelper::translateIfNeeded('For Drone (Optional)'))
-                    ->url(fn($record) => $record->for_drone ? route('filament.admin.resources.drones.view', [
-                        'tenant' => auth()->user()->teams()->first()->id,
-                        'record' => $record->for_drone,
-                    ]) : null)
-                    ->color(Color::Blue),
+                    // ->url(fn($record) => $record->for_drone ? route('filament.admin.resources.drones.view', [
+                    //     'tenant' => auth()->user()->teams()->first()->id,
+                    //     'record' => $record->for_drone,
+                    // ]) : null)
+                    // ->color(Color::Blue),
+                    ->url(function ($record) {
+                        if ($record->drone && $record->drone->shared !== 0) {
+                            return route('filament.admin.resources.drones.view', [
+                                'tenant' => Auth()->user()->teams()->first()->id,
+                                'record' => $record->for_drone,
+                            ]);
+                        }
+                        return null;
+                    })
+                    ->color(fn($record) => $record->drone && $record->drone->shared !== 0 ? Color::Blue : Color::Gray),
             ])->columns(5),
 
         Section::make(TranslationHelper::translateIfNeeded('Extra Information'))

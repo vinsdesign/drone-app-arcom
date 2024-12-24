@@ -18,7 +18,7 @@
     $documentDrone = $queryDocument;
 
     //FlightIncident
-    $flighIncident = App\Models\Incident::whereHas('drones', function ($query) use ($id) {
+    $flighIncident = App\Models\Incident::whereHas('drone', function ($query) use ($id) {
         $query->where('drone_id', $id);
     })->get();
 

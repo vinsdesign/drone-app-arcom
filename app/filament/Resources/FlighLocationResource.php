@@ -71,11 +71,11 @@ class FlighLocationResource extends Resource
                         //     $currentTeamId = auth()->user()->teams()->first()->id;
                         //     $query->where('teams_id', $currentTeamId);
                         // }),  
-                        ->options(function (callable $get) use ($currentTeamId) {
-                            return projects::where('teams_id', $currentTeamId)
+                        ->relationship('projects', 'case')
+                        ->options(projects::where('teams_id', auth()->user()->teams()->first()->id)
                             ->where('status_visible', '!=', 'archived')
-                            ->pluck('case', 'id');
-                        })
+                            ->where('shared', '!=', 0)
+                            ->pluck('case', 'id'))
                         ->afterStateUpdated(function ($state, callable $set) {
                             if ($state) {
                                 $project = Projects::find($state);
@@ -236,11 +236,21 @@ class FlighLocationResource extends Resource
                 ->label(TranslationHelper::translateIfNeeded('Location Name'))
                     ->searchable(),
                 Tables\Columns\TextColumn::make('projects.case')
-                ->label(TranslationHelper::translateIfNeeded('Project Case'))
-                ->url(fn($record)  =>  $record->projects_id ? route('filament.admin.resources.projects.view', [
-                    'tenant' => Auth()->user()->teams()->first()->id,
-                    'record' => $record->projects_id,
-                ]) : null)->color(Color::Blue)
+                    ->label(TranslationHelper::translateIfNeeded('Project Case'))
+                // ->url(fn($record)  =>  $record->projects_id ? route('filament.admin.resources.projects.view', [
+                //     'tenant' => Auth()->user()->teams()->first()->id,
+                //     'record' => $record->projects_id,
+                // ]) : null)->color(Color::Blue)
+                    ->url(function ($record) {
+                        if ($record->projects && $record->projects->shared !== 0 && $record->projects->status_visible !== 'archived') {
+                            return route('filament.admin.resources.projects.view', [
+                                'tenant' => Auth()->user()->teams()->first()->id,
+                                'record' => $record->projects_id,
+                            ]);
+                        }
+                        return null;
+                    })
+                    ->color(fn($record) => $record->projects && $record->projects->shared !== 0 && $record->projects->status_visible !== 'archived' ? Color::Blue : Color::Gray)
                     ->searchable(),
                 Tables\Columns\TextColumn::make('customers.name')
                 ->label(TranslationHelper::translateIfNeeded('Customers Name'))
@@ -371,10 +381,20 @@ class FlighLocationResource extends Resource
                 Group::make([
                     TextEntry::make('name')->label(TranslationHelper::translateIfNeeded('Location Name')),
                     TextEntry::make('projects.case')->label(TranslationHelper::translateIfNeeded('Project Case'))
-                        ->url(fn($record)  =>  $record->projects_id ? route('filament.admin.resources.projects.view', [
-                            'tenant' => Auth()->user()->teams()->first()->id,
-                            'record' => $record->projects_id,
-                        ]) : null)->color(Color::Blue),
+                        // ->url(fn($record)  =>  $record->projects_id ? route('filament.admin.resources.projects.view', [
+                        //     'tenant' => Auth()->user()->teams()->first()->id,
+                        //     'record' => $record->projects_id,
+                        // ]) : null)->color(Color::Blue),
+                        ->url(function ($record) {
+                            if ($record->projects && $record->projects->shared !== 0) {
+                                return route('filament.admin.resources.projects.view', [
+                                    'tenant' => Auth()->user()->teams()->first()->id,
+                                    'record' => $record->projects_id,
+                                ]);
+                            }
+                            return null;
+                        })
+                        ->color(fn($record) => $record->projects && $record->projects->shared !== 0 ? Color::Blue : Color::Gray),
                     TextEntry::make('customers.name')->label(TranslationHelper::translateIfNeeded('Customers Name'))
                         ->url(fn($record) => $record->customers_id ? route('filament.admin.resources.customers.view', [
                             'tenant' => Auth()->user()->teams()->first()->id,
@@ -391,7 +411,6 @@ class FlighLocationResource extends Resource
                 TextEntry::make('address')->label(TranslationHelper::translateIfNeeded('Address')),
                 TextEntry::make('city')->label(TranslationHelper::translateIfNeeded('City')),
                 TextEntry::make('pos_code')->label(TranslationHelper::translateIfNeeded('Postal Code')),
-                TextEntry::make('state')->label(TranslationHelper::translateIfNeeded('State')),
                 TextEntry::make('country')->label(TranslationHelper::translateIfNeeded('Country')),
                 TextEntry::make('latitude')->label(TranslationHelper::translateIfNeeded('Latitude')),
                 TextEntry::make('longitude')->label(TranslationHelper::translateIfNeeded('Longitude')),

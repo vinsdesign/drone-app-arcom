@@ -126,8 +126,17 @@ use Carbon\Carbon;
 
         <div class="flex flex-col items-start sm:items-start space-y-2 w-full sm:w-auto flex-grow">
             <p class="text-lg font-semibold text-gray-800"> For Drone:</p>
-            <a id="fordrone-{{$id}}" href="{{route('filament.admin.resources.drones.view',['tenant' => Auth()->user()->teams()->first()->id, 'record' => $getRecord()->for_drone??0])}}">
+            {{-- <a id="fordrone-{{$id}}" href="{{route('filament.admin.resources.drones.view',['tenant' => Auth()->user()->teams()->first()->id, 'record' => $getRecord()->for_drone??0])}}">
                 <p class="text-sm text-gray-500">{{$getRecord()->drone->name ?? 'no set'}}</p>
+            </a> --}}
+            <a id="fordrone-{{$id}}" 
+                href="{{ $getRecord()->drone && $getRecord()->drone->shared !== 0 
+                    ? route('filament.admin.resources.drones.view', ['tenant' => Auth()->user()->teams()->first()->id, 'record' => $getRecord()->for_drone ?? 0]) 
+                    : 'javascript:void(0)' }}" 
+                class="{{ $getRecord()->drone && $getRecord()->drone->shared !== 0 ? 'text-blue-500' : 'text-gray-500 cursor-not-allowed' }}">
+                <p class="text-sm">
+                    {{ $getRecord()->drone->name ?? 'no set' }}
+                </p>
             </a>
         
         </div>
