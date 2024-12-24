@@ -156,7 +156,7 @@
                             @if(App\Models\Drone::where('teams_id', auth()->user()->teams()->first()->id)->count() == null)
                                 <option value="" disabled>{!! TranslationHelper::translateIfNeeded('No Drones Found')!!}</option>
                             @else
-                                @foreach (App\Models\Drone::where('teams_id', auth()->user()->teams()->first()->id)->pluck('name', 'id') as $id => $name)
+                                @foreach (App\Models\Drone::where('teams_id', auth()->user()->teams()->first()->id)->where('shared', '!=', 0)->pluck('name', 'id') as $id => $name)
                                     <option value="{{ $id }}">{{ $name }}</option>
                                 @endforeach
                             @endif

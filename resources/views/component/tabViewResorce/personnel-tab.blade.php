@@ -338,9 +338,13 @@
                                 <!-- Kolom Drone Name -->
                                 <div class="flex-1 min-w-[150px] mb-2 border-r border-gray-300 pr-2">
                                     <p class="text-sm text-gray-800 dark:text-gray-200 font-semibold">{!! TranslationHelper::translateIfNeeded('Drone:')!!}</p>
+                                    @if($item->drone->shared != 0)
                                     <a href="{{route('drone.statistik', ['drone_id' => $item->drone->id ?? 0])}}">
                                         <p class="text-sm text-gray-700 dark:text-gray-400">{{ $item->drone->name ??  TranslationHelper::translateIfNeeded('No Drone') }}</p>
                                     </a>
+                                    @else
+                                        <p class="text-sm text-gray-700 dark:text-gray-400">{{ $item->drone->name ??  TranslationHelper::translateIfNeeded('No Drone') }}</p>
+                                    @endif
                                     <p class="text-sm text-gray-700 dark:text-gray-400">{{ $item->drone->brand ??  TranslationHelper::translateIfNeeded('No Drone') }} / {{$item->drone->model}}</p>
                                 </div>
                         
@@ -366,17 +370,26 @@
                                 <!-- Kolom Location -->
                                 <div class="flex-1 min-w-[150px] mb-2 border-r border-gray-300 pr-2">
                                     <p class="text-sm text-gray-800 dark:text-gray-200 font-semibold">{!! TranslationHelper::translateIfNeeded('Location:')!!}</p>
+                                    @if($item->fligh_locations->shared !=0)
                                     <a href="{{route('filament.admin.resources.fligh-locations.edit',['tenant' =>Auth()->user()->teams()->first()->id,'record'=>$item->fligh_locations->id ?? 0])}}">
                                         <p class="text-sm text-gray-700 dark:text-gray-400">{{ $item->fligh_locations->name ??  TranslationHelper::translateIfNeeded('No Location') }}</p>
                                     </a>
+                                    @else
+                                        <p class="text-sm text-gray-700 dark:text-gray-400">{{ $item->fligh_locations->name ??  TranslationHelper::translateIfNeeded('No Location') }}</p>
+                                    @endif
+
                                 </div>
                         
                                 <!-- Kolom Project -->
                                 <div class="flex-1 min-w-[150px] mb-2">
                                     <p class="text-sm text-gray-800 dark:text-gray-200 font-semibold">{!! TranslationHelper::translateIfNeeded('Project:')!!}</p>
+                                    @if($item->project->shared != 0)
                                     <a href="{{route('filament.admin.resources.projects.view',['tenant'=>Auth()->user()->teams()->first()->id,'record'=>$item->project->id ?? 0])}}">
                                         <p class="text-sm text-gray-700 dark:text-gray-400">{{ $item->project->case ??  TranslationHelper::translateIfNeeded('No Project') }}</p>
                                     </a>
+                                    @else
+                                        <p class="text-sm text-gray-700 dark:text-gray-400">{{ $item->project->case ??  TranslationHelper::translateIfNeeded('No Project') }}</p>
+                                    @endif
                                 </div>
                         
                             </div>

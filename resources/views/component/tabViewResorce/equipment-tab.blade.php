@@ -121,11 +121,15 @@
                             <div class="flex flex-wrap space-x-4 border border-gray-300 rounded-lg p-2 bg-gray-100 dark:bg-gray-800 max-w-[900px] mx-auto shadow-lg">
                                 <div class="flex-1 min-w-[180px] border-r border-gray-300 pr-4">
                                     <p class="text-sm text-gray-800 dark:text-gray-200 font-semibold">{!! TranslationHelper::translateIfNeeded('Name')!!}</p>
+                                    @if($item->shared != 0)
                                     <a href="{{route('filament.admin.resources.flighs.view',
                                             ['tenant' => Auth()->user()->teams()->first()->id,
                                             'record' => $item->id,])}}">
                                         <p class="text-sm text-gray-700 dark:text-gray-400" style="color:rgb(0, 85, 255)">{{$item->name ?? null}}</p>
                                     </a>
+                                    @else
+                                        <p class="text-sm text-gray-700 dark:text-gray-400">{{$item->name ?? null}}</p>
+                                    @endif
                                     <div class="flex justify-between items-center">
                                         <p class="text-sm text-gray-700 dark:text-gray-400 border-r pr-4">
                                             {{$item->start_date_flight ?? null}}
@@ -139,10 +143,14 @@
                             
                                 <div class="flex-1 min-w-[180px] border-r border-gray-300 pr-4 px-4">
                                     <p class="text-sm text-gray-800 dark:text-gray-200 font-semibold">{!! TranslationHelper::translateIfNeeded('Drone')!!}</p>
+                                    @if($item->drones->shared != 0)
                                     <a href="{{route('filament.admin.resources.drones.view',
                                     ['tenant' => Auth()->user()->teams()->first()->id,
                                     'record' => $item->drones->id,])}}"><p class="text-sm text-gray-700 dark:text-gray-400" style="color:rgb(0, 85, 255)">{{$item->drones->name}}</p></a>  
                                     <p class="text-sm text-gray-700 dark:text-gray-400" >{{$item->drones->brand}} / {{$item->drones->model}}</p>
+                                    @else
+                                    <p class="text-sm text-gray-700 dark:text-gray-400" >{{$item->drones->brand}} / {{$item->drones->model}}</p>
+                                    @endif
                                 </div>
                             
                                 <div class="flex-1 min-w-[180px] border-r border-gray-300 pr-2">
@@ -155,12 +163,15 @@
                             
                                 <div class="flex-1 min-w-[180px] border-r border-gray-300 pr-4">
                                     <p class="text-sm text-gray-800 dark:text-gray-200 font-semibold">{!! TranslationHelper::translateIfNeeded('Location')!!}</p>
+                                    @if($item->fligh_location->shared != 0)
                                     <a href="{{route('filament.admin.resources.fligh-locations.view',
                                             ['tenant' => Auth()->user()->teams()->first()->id,
                                             'record' => $item->fligh_location->id,])}}">
                                             <p class="text-sm text-gray-700 dark:text-gray-400" style="color:rgb(0, 85, 255)">{{$item->fligh_location->name ?? null}}</p>
-                                            </a>
-                                
+                                    </a>
+                                    @else
+                                        <p class="text-sm text-gray-700 dark:text-gray-400">{{$item->fligh_location->name ?? null}}</p>
+                                    @endif
                                 </div>
                                 
                                 <div class="flex-1 min-w-[180px] mt-4 justify-end">
@@ -444,13 +455,21 @@
                                 <div class="flex-1 min-w-[150px] mb-2 border-r border-gray-300 pr-2">
                                     <p class="text-sm text-gray-800 dark:text-gray-200 font-semibold">{!! TranslationHelper::translateIfNeeded('Battery / Equipment') !!}</p>
                                         @if($item->equidment_id == null)
+                                            @if($item->battrei->shared)
                                             <a href="{{route('battery.statistik', ['battery_id' => $item->battrei_id])}}">
                                                 <p class="text-sm text-gray-700 dark:text-gray-400">{{ $item->battrei->name ?? null }}</p>
                                             </a>
+                                            @else
+                                                <p class="text-sm text-gray-700 dark:text-gray-400">{{ $item->battrei->name ?? null }}</p>
+                                            @endif
                                         @else
+                                            @if($item->equidment->shared != 0)
                                             <a href="{{route('equipment.statistik', ['equipment_id' => $item->equidment_id])}}">
                                                 <p class="text-sm text-gray-700 dark:text-gray-400">{{ $item->equidment->name ?? null }}</p>
                                             </a>
+                                            @else
+                                            <p class="text-sm text-gray-700 dark:text-gray-400">{{ $item->equidment->name ?? null }}</p>
+                                            @endif
                                         @endif
                                     <p class="text-sm text-gray-700 dark:text-gray-400">
                                         @if($item->equidment == false)

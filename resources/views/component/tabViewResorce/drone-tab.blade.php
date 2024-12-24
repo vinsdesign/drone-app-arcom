@@ -18,7 +18,7 @@
     $documentDrone = $queryDocument;
 
     //FlightIncident
-    $flighIncident = App\Models\Incident::whereHas('drones', function ($query) use ($id) {
+    $flighIncident = App\Models\Incident::whereHas('drone', function ($query) use ($id) {
         $query->where('drone_id', $id);
     })->get();
 
@@ -126,11 +126,15 @@
                             <div class="flex flex-wrap space-x-4 border border-gray-300 rounded-lg p-2 bg-gray-100 dark:bg-gray-800 max-w-[900px] mx-auto shadow-lg">
                                 <div class="flex-1 min-w-[180px] border-r border-gray-300 pr-4">
                                     <p class="text-sm text-gray-800 dark:text-gray-200 font-semibold">{!! TranslationHelper::translateIfNeeded('Name')!!}</p>
+                                    @if($item->shared != 0)
                                     <a href="{{route('filament.admin.resources.flighs.view',
                                             ['tenant' => Auth()->user()->teams()->first()->id,
                                             'record' => $item->id,])}}">
                                         <p class="text-sm text-gray-700 dark:text-gray-400" style="color:rgb(0, 85, 255)">{{$item->name ?? null}}</p>
                                     </a>
+                                    @else
+                                    <p class="text-sm text-gray-700 dark:text-gray-400">{{$item->name ?? null}}</p>
+                                    @endif
                                     <div class="flex justify-between items-center">
                                         <p class="text-sm text-gray-700 dark:text-gray-400 border-r pr-4">
                                             
@@ -159,11 +163,16 @@
                             
                                 <div class="flex-1 min-w-[180px] border-r border-gray-300 pr-4">
                                     <p class="text-sm text-gray-800 dark:text-gray-200 font-semibold">{!! TranslationHelper::translateIfNeeded('Location')!!}</p>
+                                    @if($item->fligh_location->shared != 0)
                                     <a href="{{route('filament.admin.resources.fligh-locations.view',
                                             ['tenant' => Auth()->user()->teams()->first()->id,
                                             'record' => $item->fligh_location->id,])}}">
-                                            <p class="text-sm text-gray-700 dark:text-gray-400" style="color:rgb(0, 85, 255)">{{$item->fligh_location->name ?? null}}</p>
-                                            </a>
+                                        <p class="text-sm text-gray-700 dark:text-gray-400" style="color:rgb(0, 85, 255)">{{$item->fligh_location->name ?? null}}</p>
+                                    </a>
+                                    @else
+                                    <p class="text-sm text-gray-700 dark:text-gray-400">{{$item->fligh_location->name ?? null}}</p>
+                                    @endif
+
                                 
                                 </div>
                                 
@@ -522,9 +531,13 @@
                         
                             <div class="flex-1 min-w-[150px] mb-2 border-r border-gray-300 pr-2">
                                 <p class="text-sm text-gray-800 dark:text-gray-200 font-semibold">{!! TranslationHelper::translateIfNeeded('Drone')!!}</p>
+                                @if($item->drone->shared != 0)
                                 <a href="{{route('drone.statistik', ['drone_id' => $item->drone->id ?? 0])}}">
                                     <p class="text-sm text-gray-700 dark:text-gray-400">{{$item->drone->name??null}}</p>
                                 </a>
+                                @else
+                                    <p class="text-sm text-gray-700 dark:text-gray-400">{{$item->drone->name??null}}</p>
+                                @endif
                                 <p class="text-sm text-gray-700 dark:text-gray-400">{{$item->drone->brand?? null}}/{{$item->drone->model??null}}</p>    
                             </div>
                         
