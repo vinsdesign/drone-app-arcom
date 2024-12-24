@@ -160,9 +160,11 @@ class EquidmentResource extends Resource
                                 //     $query->where('teams_id', $currentTeamId);
                                 // }),
                                 ->searchable()
-                                ->options(function (callable $get) use ($currentTeamId) {
-                                    return drone::where('teams_id', $currentTeamId)->pluck('name', 'id');
-                                })
+                                ->relationship('drones', 'name')
+                                ->options(drone::where('teams_id', auth()->user()->teams()->first()->id)
+                                    ->where('shared', '!=', 0)
+                                    ->where('status', 'airworthy')
+                                    ->pluck('name', 'id'))
                                 ->default($defaultData['drones_id'] ?? null)
                         ])->columns(4),
                         Tabs\Tab::make(TranslationHelper::translateIfNeeded('Extra Information'))
@@ -318,13 +320,23 @@ class EquidmentResource extends Resource
                     ->badge(),
                  Tables\Columns\TextColumn::make('drones.name')
                 ->label(TranslationHelper::translateIfNeeded('For Drone'))
-                     ->numeric()
-                     ->url(fn($record) =>$record->drones_id? route('filament.admin.resources.drones.view', [
-                        'tenant' => Auth()->user()->teams()->first()->id,
-                        'record' => $record->drones_id,
-                    ]):null)->color(Color::Blue)
-                     ->sortable()
-                     ->placeholder(TranslationHelper::translateIfNeeded('No Drone Selected')),
+                    ->numeric()
+                    //  ->url(fn($record) =>$record->drones_id? route('filament.admin.resources.drones.view', [
+                    //     'tenant' => Auth()->user()->teams()->first()->id,
+                    //     'record' => $record->drones_id,
+                    // ]):null)->color(Color::Blue)
+                    ->url(function ($record) {
+                        if ($record->drones && $record->drones->shared !== 0) {
+                            return route('filament.admin.resources.drones.view', [
+                                'tenant' => Auth()->user()->teams()->first()->id,
+                                'record' => $record->drones_id,
+                            ]);
+                        }
+                        return null;
+                    })
+                    ->color(fn($record) => $record->drones && $record->drones->shared !== 0 ? Color::Blue : Color::Gray)
+                    ->sortable()
+                    ->placeholder(TranslationHelper::translateIfNeeded('No Drone Selected')),
                  Tables\Columns\TextColumn::make('users.name')
                  ->label(TranslationHelper::translateIfNeeded('Users'))
                     ->url(fn($record) => $record->users_id? route('filament.admin.resources.users.view', [
@@ -497,10 +509,16 @@ class EquidmentResource extends Resource
                     TextEntry::make('serial')->label(TranslationHelper::translateIfNeeded('Serial')),
                     TextEntry::make('type')->label(TranslationHelper::translateIfNeeded('Type')),
                     TextEntry::make('drones.name')->label(TranslationHelper::translateIfNeeded('Drones'))
-                        ->url(fn($record) => $record->drones_id ? route('filament.admin.resources.drones.view', [
-                            'tenant' => Auth()->user()->teams()->first()->id,
-                            'record' => $record->drones_id,
-                        ]) : null)->color(Color::Blue),
+                    ->url(function ($record) {
+                        if ($record->drones && $record->drones->shared !== 0) {
+                            return route('filament.admin.resources.drones.view', [
+                                'tenant' => Auth()->user()->teams()->first()->id,
+                                'record' => $record->drones_id,
+                            ]);
+                        }
+                        return null;
+                    })
+                    ->color(fn($record) => $record->drones && $record->drones->shared !== 0 ? Color::Blue : Color::Gray),
                 ])->columns(4),
             Section::make(TranslationHelper::translateIfNeeded('Extra Information'))
                 ->schema([
