@@ -134,6 +134,7 @@ class DocumentResource extends Resource
                     ->options(function (callable $get) use ($currentTeamId) {
                         return projects::where('teams_id', $currentTeamId)
                         ->where('status_visible', '!=', 'archived')
+                        ->where('shared', '!=', 0)
                         ->pluck('case', 'id');
                     })
                     ->columnSpanFull(),
@@ -289,7 +290,7 @@ class DocumentResource extends Resource
                 Tables\Columns\TextColumn::make('projects.case')
                     ->label(TranslationHelper::translateIfNeeded('Project'))   
                     ->numeric()
-                    ->url(fn($record) => $record->projects_id ?  route('filament.admin.resources.projects.view', [
+                    ->url(fn($record) => $record->projects_id && $record->projects->shared != 0 ?  route('filament.admin.resources.projects.view', [
                         'tenant' => Auth()->user()->teams()->first()->id,
                         'record' => $record->projects_id,
                     ]): null)->color(Color::Blue)
@@ -512,7 +513,7 @@ class DocumentResource extends Resource
                     ]): null)->color(Color::Blue),
                 TextEntry::make('projects.case')
                     ->label(TranslationHelper::translateIfNeeded('Projects'))
-                    ->url(fn($record) => $record->projects_id ?  route('filament.admin.resources.projects.view', [
+                    ->url(fn($record) => $record->projects_id && $record->projects->shared != 0 ?  route('filament.admin.resources.projects.view', [
                         'tenant' => Auth()->user()->teams()->first()->id,
                         'record' => $record->projects_id,
                     ]): null)->color(Color::Blue),

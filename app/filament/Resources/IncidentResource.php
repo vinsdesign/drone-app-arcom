@@ -93,6 +93,7 @@ class IncidentResource extends Resource
                         ->options(function (callable $get) use ($currentTeamId) {
                             return fligh_location::where('teams_id', $currentTeamId)
                             ->where('status_visible', '!=', 'archived')
+                            ->where('shared', '!=', 0)
                             ->pluck('name', 'id');
                         })
                         ->searchable()
@@ -103,7 +104,9 @@ class IncidentResource extends Resource
                         // ->relationship('drone','name')
                         ->label(TranslationHelper::translateIfNeeded('Drone'))
                         ->options(function (callable $get) use ($currentTeamId) {
-                            return drone::where('teams_id', $currentTeamId)->pluck('name', 'id');
+                            return drone::where('teams_id', $currentTeamId)
+                            ->where('shared', '!=', 0)
+                            ->pluck('name', 'id');
                         })
                         ->searchable()
                         ->required(),
@@ -113,12 +116,14 @@ class IncidentResource extends Resource
                         ->options(function (callable $get) use ($currentTeamId) {
                             return Projects::where('teams_id', $currentTeamId)
                             ->where('status_visible', '!=', 'archived')
+                            ->where('shared', '!=', 0)
                             ->pluck('case', 'id');
                         })
                         ->searchable()
                         ->required(),
                     Forms\Components\Select::make('personnel_incident')
                     ->label(TranslationHelper::translateIfNeeded('Organization Personnel Involved'))
+
                         ->relationship('users', 'name')
                         ->options(
                             function (Builder $query) use ($currentTeamId) {
@@ -128,6 +133,7 @@ class IncidentResource extends Resource
                         }  
                         )->searchable()
                         ->multiple()
+
                         ->saveRelationshipsUsing(function ($component, $state) {
                             $component->getRecord()->users()->sync($state);
                         })
@@ -211,7 +217,7 @@ class IncidentResource extends Resource
                 Tables\Columns\TextColumn::make('drone.name')
                 ->label(TranslationHelper::translateIfNeeded('Drones'))    
                     ->numeric()
-                    ->url(fn($record) => $record->drone_id?route('filament.admin.resources.drones.view', [
+                    ->url(fn($record) => $record->drone_id && $record->drone->shared != 0 ? route('filament.admin.resources.drones.view', [
                         'tenant' => Auth()->user()->teams()->first()->id,
                         'record' => $record->drone_id,
                     ]):null)->color(Color::Blue)
@@ -220,7 +226,7 @@ class IncidentResource extends Resource
                 Tables\Columns\TextColumn::make('project.case')
                 ->label(TranslationHelper::translateIfNeeded('Projects'))    
                     ->numeric()
-                    ->url(fn($record) => $record->projects_id?route('filament.admin.resources.projects.view', [
+                    ->url(fn($record) => $record->projects_id && $record->project->shared != 0 ? route('filament.admin.resources.projects.view', [
                         'tenant' => Auth()->user()->teams()->first()->id,
                         'record' => $record->projects_id,
                     ]):null)->color(Color::Blue)
@@ -390,19 +396,19 @@ class IncidentResource extends Resource
                     TextEntry::make('cause')->label(TranslationHelper::translateIfNeeded('Cause')),
                     TextEntry::make('status')->label(TranslationHelper::translateIfNeeded('Status')),
                     TextEntry::make('fligh_locations.name')->label(TranslationHelper::translateIfNeeded('Locations'))
-                        ->url(fn($record) => $record->location_id? route('filament.admin.resources.fligh-locations.view', [
+                        ->url(fn($record) => $record->location_id && $record->fligh_locations->shared != 0 ? route('filament.admin.resources.fligh-locations.view', [
                             'tenant' => Auth()->user()->teams()->first()->id,
                             'record' => $record->location_id,
                         ]) : null)->color(Color::Blue),
                     TextEntry::make('drone.name')
                         ->label(TranslationHelper::translateIfNeeded('Drones'))
-                        ->url(fn($record) => $record->drone_id ? route('filament.admin.resources.drones.view', [
+                        ->url(fn($record) => $record->drone_id && $record->drone->shared != 0  ? route('filament.admin.resources.drones.view', [
                             'tenant' => Auth()->user()->teams()->first()->id,
                             'record' => $record->drone_id,
                         ]) : null)->color(Color::Blue),
                     TextEntry::make('project.case')
                         ->label(TranslationHelper::translateIfNeeded('Projects'))
-                        ->url(fn($record) => $record->projects_id ? route('filament.admin.resources.projects.view', [
+                        ->url(fn($record) => $record->projects_id && $record->project->shared != 0 ? route('filament.admin.resources.projects.view', [
                             'tenant' => Auth()->user()->teams()->first()->id,
                             'record' => $record->projects_id,
                         ]) : null)->color(Color::Blue),

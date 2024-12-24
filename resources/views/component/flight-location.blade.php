@@ -33,10 +33,14 @@ $count = $flightCount->count('id');
             <div class="flex-1 min-w-[180px] border-r border-gray-300 pr-4">
                 
                 <p class="text-sm text-gray-800 dark:text-gray-200 font-semibold">{!! TranslationHelper::translateIfNeeded('Name')!!}</p>
+                @if($item->shared != 0)
                 <a href="{{route('filament.admin.resources.flighs.view', 
                             ['tenant' => Auth()->user()->teams()->first()->id, 'record' => $item->id]) }}">
                     <p class="text-sm text-gray-700 dark:text-gray-400" style="color:rgb(0, 85, 255)">{{$item->name ?? null}}</p>
                 </a>
+                @else
+                    <p class="text-sm text-gray-700 dark:text-gray-400">{{$item->name ?? null}}</p>
+                @endif
 
                 <div class="flex justify-between items-center">
                     <p class="text-sm text-gray-700 dark:text-gray-400 border-r pr-4">
@@ -51,9 +55,13 @@ $count = $flightCount->count('id');
         
             <div class="flex-1 min-w-[180px] border-r border-gray-300 pr-4 px-4">
                 <p class="text-sm text-gray-800 dark:text-gray-200 font-semibold">{!! TranslationHelper::translateIfNeeded('Drone')!!}</p>
+                @if($item->drones->shared != 0)
                 <a href="{{route('filament.admin.resources.drones.view',
                 ['tenant' => Auth()->user()->teams()->first()->id,
-                'record' => $item->drones->id,])}}"><p class="text-sm text-gray-700 dark:text-gray-400" style="color:rgb(0, 85, 255)">{{$item->drones->name}}</p></a>  
+                'record' => $item->drones->id,])}}"><p class="text-sm text-gray-700 dark:text-gray-400" style="color:rgb(0, 85, 255)">{{$item->drones->name}}</p></a>
+                @else
+                    <p class="text-sm text-gray-700 dark:text-gray-400" style="color:rgb(0, 85, 255)">{{$item->drones->name}}
+                @endif
                 <p class="text-sm text-gray-700 dark:text-gray-400" >{{$item->drones->brand}} / {{$item->drones->model}}</p>
             </div>
         

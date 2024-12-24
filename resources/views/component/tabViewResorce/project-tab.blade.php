@@ -19,7 +19,7 @@
     $documentProjects = $queryDocument;
 
     //FlightIncident
-    $flighIncident = App\Models\Incident::whereHas('projects', function ($query) use ($id) {
+    $flighIncident = App\Models\Incident::whereHas('project', function ($query) use ($id) {
         $query->where('projects_id', $id);
     })->get();
 
@@ -374,9 +374,13 @@
                                 <!-- column Name -->
                                 <div class="flex-1 min-w-[150px] mb-2 border-r border-gray-300 pr-2 overflow-hidden">
                                     <p class="text-l text-gray-800 dark:text-gray-200 font-semibold truncate">{!! TranslationHelper::translateIfNeeded('Name : ')!!}</p>
+                                    @if($item->shared != 0)
                                     <a href="{{route('filament.admin.resources.fligh-locations.view',['tenant'=>Auth()->user()->teams()->first()->id,'record'=>$item->id])}}">
                                         <p class="text-sm text-gray-500 dark:text-gray-150 font-semibold truncate">{{$item->name}}</p>
                                     </a>  
+                                    @else
+                                    <p class="text-sm text-gray-500 dark:text-gray-150 font-semibold truncate">{{$item->name}}</p>
+                                    @endif
                                     <p class="text-sm text-gray-500 dark:text-gray-150 font-semibold truncate">{{$item->latitude}} / {{$item->longitude}}</p>
                                 </div>
                         

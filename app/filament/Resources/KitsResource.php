@@ -72,7 +72,9 @@ class KitsResource extends Resource
                 Forms\Components\Select::make('drone_id')
                 ->label(TranslationHelper::translateIfNeeded('Blocked To Drone'))    
                     ->options(function (callable $get) use ($currentTeamId) {
-                        return drone::where('teams_id', $currentTeamId)->pluck('name', 'id');
+                        return drone::where('teams_id', $currentTeamId)
+                        ->where('shared', '!=', 0)
+                        ->pluck('name', 'id');
                     })
                     ->nullable()
                     ->searchable()
@@ -87,6 +89,7 @@ class KitsResource extends Resource
                         ->whereDoesntHave('kits', function ($query){
                             $query->whereNotNull('battrei_id');
                             })
+                            ->where('shared', '!=', 0)
                             ->pluck('name', 'id')
                     )
                     ->visible(fn (callable $get) => $get('type') === 'battery' || $get('type') === 'mix')
@@ -105,6 +108,7 @@ class KitsResource extends Resource
                             ->whereDoesntHave('kits', function ($query){
                                 $query->whereNotNull('equidment_id');
                             })
+                            ->where('shared', '!=', 0)
                             // ->pluck('name', 'id')
                             ->get()
                             ->mapWithKeys(function ($equidment) {
@@ -136,7 +140,7 @@ class KitsResource extends Resource
             Tables\Columns\TextColumn::make('drone.name')
                 ->label(TranslationHelper::translateIfNeeded('Blocked To Drone'))
                 ->numeric()
-                ->url(fn($record) => $record->drone_id ? route('filament.admin.resources.drones.view', [
+                ->url(fn($record) => $record->drone_id && $record->drone->shared != 0  ? route('filament.admin.resources.drones.view', [
                     'tenant' => Auth()->user()->teams()->first()->id,
                     'record' => $record->drone_id,
                 ]) : null)->color(Color::Blue)
@@ -151,10 +155,14 @@ class KitsResource extends Resource
                 // ]) : null)->color(Color::Blue)
                 ->formatStateUsing(function ($record) {
                     return $record->battrei->map(function ($battrei) {
-                        return "<a href='" . route('filament.admin.resources.battreis.view', [
-                            'tenant' => auth()->user()->teams()->first()->id,
-                            'record' => $battrei->id,
-                        ]) . "' style='color: #3b82f6; text-decoration: underline; font-size: 0.875rem;'>{$battrei->name}</a>";
+                        if($battrei->shared != 0){
+                            return "<a href='" . route('filament.admin.resources.battreis.view', [
+                                'tenant' => auth()->user()->teams()->first()->id,
+                                'record' => $battrei->id,
+                            ]) . "' style='color: #3b82f6; text-decoration: underline; font-size: 0.875rem;'>{$battrei->name}</a>";
+                        }else{
+                            return $battrei->name;
+                        }
                     })->implode(', ');
                 })
                 ->html()
@@ -169,10 +177,15 @@ class KitsResource extends Resource
                 // ->color(Color::Blue)
                 ->formatStateUsing(function ($record) {
                     return $record->equidment->map(function ($equidment) {
-                        return "<a href='" . route('filament.admin.resources.equidments.view', [
-                            'tenant' => auth()->user()->teams()->first()->id,
-                            'record' => $equidment->id,
-                        ]) . "' style='color: #3b82f6; text-decoration: underline; font-size: 0.875rem;'>{$equidment->name}</a>";
+                        if($equidment->shared != 0){
+                            return "<a href='" . route('filament.admin.resources.equidments.view', [
+                                'tenant' => auth()->user()->teams()->first()->id,
+                                'record' => $equidment->id,
+                            ]) . "' style='color: #3b82f6; text-decoration: underline; font-size: 0.875rem;'>{$equidment->name}</a>";
+                        }else{
+                            return $equidment->name;
+                        }
+                            
                     })->implode(', ');
                 })
                 ->html()
@@ -216,7 +229,7 @@ class KitsResource extends Resource
                 ->label(TranslationHelper::translateIfNeeded('Enabled')),
             TextEntry::make('drone.name')
                 ->label(TranslationHelper::translateIfNeeded('Blocked To Drone'))
-                ->url(fn($record) => $record->drone_id ? route('filament.admin.resources.drones.view', [
+                ->url(fn($record) => $record->drone_id && $record->drone->shared != 0 ? route('filament.admin.resources.drones.view', [
                     'tenant' => Auth()->user()->teams()->first()->id,
                     'record' => $record->drone_id,
                 ]) : null)->color(Color::Blue),
@@ -224,10 +237,14 @@ class KitsResource extends Resource
                 ->label(TranslationHelper::translateIfNeeded('Battery'))
                 ->formatStateUsing(function ($record) {
                     return $record->battrei->map(function ($battrei) {
-                        return "<a href='" . route('filament.admin.resources.battreis.view', [
-                            'tenant' => auth()->user()->teams()->first()->id,
-                            'record' => $battrei->id,
-                        ]) . "' style='color: #3b82f6; text-decoration: underline; font-size: 0.875rem;'>{$battrei->name}</a>";
+                        if($battrei->shared != 0){
+                            return "<a href='" . route('filament.admin.resources.battreis.view', [
+                                'tenant' => auth()->user()->teams()->first()->id,
+                                'record' => $battrei->id,
+                            ]) . "' style='color: #3b82f6; text-decoration: underline; font-size: 0.875rem;'>{$battrei->name}</a>";
+                        }else{
+                            return $battrei->name;
+                        }
                     })->implode(', ');
                 })
                 ->html(),
@@ -235,10 +252,14 @@ class KitsResource extends Resource
                 ->label(TranslationHelper::translateIfNeeded('Equipment'))
                 ->formatStateUsing(function ($record) {
                     return $record->equidment->map(function ($equidment) {
-                        return "<a href='" . route('filament.admin.resources.equidments.view', [
-                            'tenant' => auth()->user()->teams()->first()->id,
-                            'record' => $equidment->id,
-                        ]) . "' style='color: #3b82f6; text-decoration: underline; font-size: 0.875rem;'>{$equidment->name}</a>";
+                        if($equidment->shared != 0){
+                            return "<a href='" . route('filament.admin.resources.equidments.view', [
+                                'tenant' => auth()->user()->teams()->first()->id,
+                                'record' => $equidment->id,
+                            ]) . "' style='color: #3b82f6; text-decoration: underline; font-size: 0.875rem;'>{$equidment->name}</a>";
+                        }else{
+                            return $equidment->name;
+                        }
                     })->implode(', ');
                 })
                 ->html()

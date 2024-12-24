@@ -228,10 +228,14 @@
                                 <div class="flex flex-wrap space-x-4 border border-gray-300 rounded-lg p-2 bg-gray-100 dark:bg-gray-800 max-w-[800px] mx-auto mb-4 shadow-lg"">
                                     <div class="flex-1 min-w-[150px] mb-2 border-r border-gray-300 pr-2">
                                         <p class="text-sm text-gray-800 dark:text-gray-200 font-semibold">{!! TranslationHelper::translateIfNeeded('Flight Name')!!}</p>
+                                        @if($item->shared != 0)
                                         <a href="{{route('filament.admin.resources.flighs.view',
                                             ['tenant' => Auth()->user()->teams()->first()->id,
                                             'record' => $item->id,])}}"><p class="text-sm text-gray-700 dark:text-gray-400">{{$item->name}}</p>
                                         </a>
+                                        @else
+                                            <p class="text-sm text-gray-700 dark:text-gray-400">{{$item->name}}</p>
+                                        @endif 
                                         <div class="flex justify-between items-center rounded">
                                             <p class="text-sm text-gray-700 dark:text-gray-400 border border-gray-300 dark:border-gray-700">{{ $item->duration ?? null }}</p>
                                             <p class="text-sm text-gray-700 dark:text-gray-400">{{ $item->start_date_flight ?? null }}</p>
@@ -243,9 +247,13 @@
                                     </div>
                                     <div class="flex-1 min-w-[150px] mb-2 border-r border-gray-300 pr-2">
                                         <p class="text-sm text-gray-800 dark:text-gray-200 font-semibold">{!! TranslationHelper::translateIfNeeded('Drone') !!}</p>
+                                        @if($item->drones->shared != 0)
                                         <a href="{{route('drone.statistik', ['drone_id' => $item->drones->id ?? null])}}">
                                             <p class="text-sm text-gray-700 dark:text-gray-400">{{$item->drones->name?? null}}</p>
                                         </a>
+                                        @else
+                                            <p class="text-sm text-gray-700 dark:text-gray-400">{{$item->drones->name?? null}}</p>
+                                        @endif
                                         <p class="text-sm text-gray-700 dark:text-gray-400">{{$item->drones->brand?? null}} / {{$item->drones->model??null}}</p>
                                         
                                     </div>
@@ -257,10 +265,14 @@
                                 
                                     <div class="flex-1 min-w-[150px] mb-2 border-r border-gray-300 pr-2">
                                         <p class="text-sm text-gray-800 dark:text-gray-200 font-semibold">{!! TranslationHelper::translateIfNeeded('Flight Location') !!}</p>
+                                        @if($item->fligh_location->shared != 0)
                                         <a href="{{route('filament.admin.resources.fligh-locations.edit',
                                         ['tenant' => Auth()->user()->teams()->first()->id,
                                         'record' => $item->fligh_location->id ?? 0])}}"><p class="text-sm text-gray-700 dark:text-gray-400">{{$item->fligh_location->name?? null}}</p>
-                                    </a>
+                                        </a>
+                                        @else
+                                            <p class="text-sm text-gray-700 dark:text-gray-400">{{$item->fligh_location->name?? null}}</p>
+                                        @endif
                                     </div>
                             
 
@@ -337,9 +349,13 @@
                                     
                                         <div class="flex-1 min-w-[150px] mb-2 border-r border-gray-300 pr-2">
                                             <p class="text-sm text-gray-800 dark:text-gray-200 font-semibold">{!! TranslationHelper::translateIfNeeded('Drone')!!}</p>
+                                            @if($item->drone->shared != 0)
                                             <a href="{{route('drone.statistik', ['drone_id' => $item->drone->id ?? 0])}}">
                                                 <p class="text-sm text-gray-700 dark:text-gray-400">{{$item->drone->name??null}}</p>
                                             </a>
+                                            @else
+                                                <p class="text-sm text-gray-700 dark:text-gray-400">{{$item->drone->name??null}}</p>
+                                            @endif    
                                             <p class="text-sm text-gray-700 dark:text-gray-400">{{$item->drone->brand?? null}}/{{$item->drone->model??null}}</p>    
                                         </div>
                                     
@@ -396,13 +412,21 @@
                                             <div class="flex-1 min-w-[150px] mb-2 border-r border-gray-300 pr-2">
                                                 <p class="text-sm text-gray-800 dark:text-gray-200 font-semibold">{!! TranslationHelper::translateIfNeeded('Battery / Equipment') !!}</p>
                                                     @if($item->equidment_id == null)
+                                                        @if($item->battrei->shared != 0)
                                                         <a href="{{route('battery.statistik', ['battery_id' => $item->battrei_id])}}">
                                                             <p class="text-sm text-gray-700 dark:text-gray-400">{{ $item->battrei->name ?? null }}</p>
                                                         </a>
+                                                        @else
+                                                            <p class="text-sm text-gray-700 dark:text-gray-400">{{ $item->battrei->name ?? null }}</p>
+                                                        @endif      
                                                     @else
+                                                        @if($item->equidment->shared != 0)
                                                         <a href="{{route('equipment.statistik', ['equipment_id' => $item->equidment_id])}}">
                                                             <p class="text-sm text-gray-700 dark:text-gray-400">{{ $item->equidment->name ?? null }}</p>
                                                         </a>
+                                                        @else
+                                                            <p class="text-sm text-gray-700 dark:text-gray-400">{{ $item->equidment->name ?? null }}</p>
+                                                        @endif
                                                     @endif
                                                 <p class="text-sm text-gray-700 dark:text-gray-400">
                                                     @if($item->equidment == false)
@@ -463,9 +487,13 @@
                                     <div class="flex-1 min-w-[150px] mb-2 border-r border-gray-300 pr-2">
                                         <p class="text-sm text-gray-800 dark:text-gray-200 font-semibold">{!! TranslationHelper::translateIfNeeded('Item:') !!}</p>
                                         <p class="text-sm text-gray-700 dark:text-gray-400">
+                                        @if($item->shared != 0)
                                         <a href="{{route('battery.statistik', ['battery_id' => $item->id])}}">
                                             <p class="text-sm text-gray-700 dark:text-gray-400">{{ $item->name ?? 'No Battery' }} <br> {!! TranslationHelper::translateIfNeeded('Batteries') !!}</p>
                                         </a>
+                                        @else
+                                            <p class="text-sm text-gray-700 dark:text-gray-400">{{ $item->name ?? 'No Battery' }} <br> {!! TranslationHelper::translateIfNeeded('Batteries') !!}</p>
+                                        @endif
                                     </div>
                                 
                                     <div class="flex-1 min-w-[150px] mb-2 border-r border-gray-300 pr-2">
@@ -509,9 +537,13 @@
                                 
                                     <div class="flex-1 min-w-[150px] mb-2 border-r border-gray-300 pr-2">
                                             <p class="text-sm text-gray-800 dark:text-gray-200 font-semibold">{!! TranslationHelper::translateIfNeeded('For Drone')!!}</p>
+                                            @if($item->drone->shared != 0)
                                             <a href="{{route('drone.statistik', ['drone_id' => $item->drone->id ?? 0])}}">
                                                 <p class="text-sm text-gray-700 dark:text-gray-400">{{$item->drone->name??null}}</p>
                                             </a>
+                                            @else
+                                                <p class="text-sm text-gray-700 dark:text-gray-400">{{$item->drone->name??null}}</p>
+                                            @endif
                                             <p class="text-sm text-gray-700 dark:text-gray-400">{{$item->drone->brand??null}} - {{$item->drone->model??null}}</p>
                                     </div>
                                 </div>
@@ -523,9 +555,13 @@
                                     <div class="flex-1 min-w-[150px] mb-2 border-r border-gray-300 pr-2">
                                         <p class="text-sm text-gray-800 dark:text-gray-200 font-semibold">{!! TranslationHelper::translateIfNeeded('Item:')!!}</p>
                                         <p class="text-sm text-gray-700 dark:text-gray-400">
+                                            @if($item->shared != 0)
                                             <a href="{{route('equipment.statistik', ['equipment_id' => $item->id])}}">
                                                 <p class="text-sm text-gray-700 dark:text-gray-400">{{ $item->name ?? 'No Equipment' }} <br> {{$item->type ?? 'test'}}</p>
                                             </a>
+                                            @else
+                                                <p class="text-sm text-gray-700 dark:text-gray-400">{{ $item->name ?? 'No Equipment' }} <br> {{$item->type ?? 'test'}}</p>
+                                            @endif
                                         </p>
                                     </div>
                                 
@@ -571,10 +607,16 @@
                                 
                                     <div class="flex-1 min-w-[150px] mb-2 border-r border-gray-300 pr-2">
                                             <p class="text-sm text-gray-800 dark:text-gray-200 font-semibold">{!! TranslationHelper::translateIfNeeded('For Drone')!!}</p>
-                                            <a href="{{route('drone.statistik', ['drone_id' => $item->drones->id ?? 0])}}">
-                                                <p class="text-sm text-gray-700 dark:text-gray-400">{{$item->drones->name??null}}</p>
-                                            </a>                 
-                                            <p class="text-sm text-gray-700 dark:text-gray-400">{{$item->drones->brand??null}} - {{$item->drones->model??null}}</p>
+                                            @if($item->drone_id != null)
+                                                @if($item->drones->shared != 0)
+                                                <a href="{{route('drone.statistik', ['drone_id' => $item->drones->id ?? 0])}}">
+                                                    <p class="text-sm text-gray-700 dark:text-gray-400">{{$item->drones->name??null}}</p>
+                                                </a>
+                                                @else
+                                                    <p class="text-sm text-gray-700 dark:text-gray-400">{{$item->drones->name??null}}</p> 
+                                                @endif         
+                                                <p class="text-sm text-gray-700 dark:text-gray-400">{{$item->drones->brand??null}} - {{$item->drones->model??null}}</p>
+                                            @endif
                                     </div>
                                 </div>
                             @endforeach
@@ -583,7 +625,6 @@
                         </div>
                     {{-- end tabel --}}      
                 </div>
-
                 <div id="content4" class="tab-content">
                     {{-- tabel Document --}}
 
@@ -604,9 +645,13 @@
                                     <!-- Kolom Name -->
                                     <div class="flex-1 min-w-[150px] mb-2 border-r border-gray-300 pr-2">
                                         <p class="text-sm text-gray-800 dark:text-gray-200 font-semibold">{!! TranslationHelper::translateIfNeeded('Name:')!!}</p>
+                                        @if($item->shared != 0)
                                         <a href="{{route('filament.admin.resources.documents.edit',['tenant' => Auth()->user()->teams()->first()->id , 'record' => $item->id])}}">
                                             <p class="text-sm text-gray-700 dark:text-gray-400">{{ $item->name ?? TranslationHelper::translateIfNeeded('No Name') }}</p>
                                         </a>
+                                        @else
+                                            <p class="text-sm text-gray-700 dark:text-gray-400">{{ $item->name ?? TranslationHelper::translateIfNeeded('No Name') }}</p>
+                                        @endif
                                     </div>
                             
                                     <!-- Kolom Owner -->
@@ -690,9 +735,13 @@
                                     <!-- Kolom Drone Name -->
                                     <div class="flex-1 min-w-[150px] mb-2 border-r border-gray-300 pr-2">
                                         <p class="text-sm text-gray-800 dark:text-gray-200 font-semibold">{!! TranslationHelper::translateIfNeeded('Drone:')!!}</p>
+                                        @if($item->drone->shared != 0)
                                         <a href="{{route('drone.statistik', ['drone_id' => $item->drone->id ?? 0])}}">
                                             <p class="text-sm text-gray-700 dark:text-gray-400">{{ $item->drone->name ??  TranslationHelper::translateIfNeeded('No Drone') }}</p>
                                         </a>
+                                        @else
+                                            <p class="text-sm text-gray-700 dark:text-gray-400">{{ $item->drone->name ??  TranslationHelper::translateIfNeeded('No Drone') }}</p>
+                                        @endif
                                         <p class="text-sm text-gray-700 dark:text-gray-400">{{ $item->drone->brand ??  TranslationHelper::translateIfNeeded('No Drone') }} / {{$item->drone->model}}</p>
                                     </div>
                             
@@ -717,17 +766,25 @@
                                     <!-- Kolom Location -->
                                     <div class="flex-1 min-w-[150px] mb-2 border-r border-gray-300 pr-2">
                                         <p class="text-sm text-gray-800 dark:text-gray-200 font-semibold">{!! TranslationHelper::translateIfNeeded('Location:')!!}</p>
+                                        @if($item->fligh_locations->shared != 0)
                                         <a href="{{route('filament.admin.resources.fligh-locations.edit',['tenant' =>Auth()->user()->teams()->first()->id,'record'=>$item->fligh_locations->id ?? 0])}}">
                                             <p class="text-sm text-gray-700 dark:text-gray-400">{{ $item->fligh_locations->name ??  TranslationHelper::translateIfNeeded('No Location') }}</p>
                                         </a>
+                                        @else
+                                            <p class="text-sm text-gray-700 dark:text-gray-400">{{ $item->fligh_locations->name ??  TranslationHelper::translateIfNeeded('No Location') }}</p>
+                                        @endif
                                     </div>
                             
                                     <!-- Kolom Project -->
                                     <div class="flex-1 min-w-[150px] mb-2">
                                         <p class="text-sm text-gray-800 dark:text-gray-200 font-semibold">{!! TranslationHelper::translateIfNeeded('Project:')!!}</p>
+                                        @if( $item->project->shared != 0)
                                         <a href="{{route('filament.admin.resources.projects.view',['tenant'=>Auth()->user()->teams()->first()->id,'record'=>$item->project->id ?? 0])}}">
                                             <p class="text-sm text-gray-700 dark:text-gray-400">{{ $item->project->case ??  TranslationHelper::translateIfNeeded('No Project') }}</p>
                                         </a>
+                                        @else
+                                            <p class="text-sm text-gray-700 dark:text-gray-400">{{ $item->project->case ??  TranslationHelper::translateIfNeeded('No Project') }}</p>
+                                        @endif
                                     </div>
                             
                                 </div>

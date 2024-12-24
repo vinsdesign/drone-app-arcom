@@ -228,6 +228,7 @@ class FlighResource extends Resource
                     })
                     ->options(Projects::where('teams_id', auth()->user()->teams()->first()->id)
                             ->where('status_visible', '!=', 'archived')
+                            ->where('shared', '!=', 0)
                             ->pluck('case', 'id')
                             )->searchable(),
                 ])->columnSpan(1),
@@ -250,6 +251,7 @@ class FlighResource extends Resource
                                 ->options(function (callable $get) use ($currentTeamId) {
                                     return Projects::where('teams_id', $currentTeamId)
                                     ->where('status_visible', '!=', 'archived')
+                                    ->where('shared', '!=', 0)
                                     ->pluck('case', 'id');
                                 })
                                 ->afterStateUpdated(function ($state, callable $set) {
@@ -383,6 +385,7 @@ class FlighResource extends Resource
                     ->options(function (callable $get) use ($currentTeamId) {
                         return fligh_location::where('teams_id', $currentTeamId)
                         ->where('status_visible', '!=', 'archived')
+                        ->where('shared', '!=', 0)
                         ->pluck('name', 'id');
                     })
                     ->label(TranslationHelper::translateIfNeeded('Location'))
@@ -671,6 +674,7 @@ class FlighResource extends Resource
                         
                         $query = drone::where('teams_id', $currentTeamId)
                             ->where('status', 'airworthy')
+                            ->where('shared', '!=', 0)
                             ->where(function ($query) {
                                 $query->doesntHave('maintence_drone')
                                       ->orWhereHas('maintence_drone', function ($query) {
@@ -730,7 +734,8 @@ class FlighResource extends Resource
                     $isEdit = $get('id') !== null;
 
                     if ($showAllKits){
-                        return Kits::where('teams_id', $currentTeamId)->pluck('name', 'id');
+                        return Kits::where('teams_id', $currentTeamId)
+                        ->pluck('name', 'id');
                     }
                     if (!$startDate || !$endDate || $isEdit) {
                         return Kits::whereHas('teams', function (Builder $query) use ($currentTeamId, $droneId) {
@@ -984,7 +989,7 @@ class FlighResource extends Resource
                         $startDate = $get('start_date_flight');
                         $endDate = $get('end_date_flight');
                         
-                        return battrei::where('teams_id', $currentTeamId)
+                        return battrei::where('teams_id', $currentTeamId)->where('shared', '!=', 0)
                             ->whereDoesntHave('kits', function ($query) {
                                 $query->whereNotNull('kits.id');
                             })
@@ -1061,6 +1066,7 @@ class FlighResource extends Resource
                                         
                         return equidment::where('teams_id', $currentTeamId)
                             ->where('status', 'airworthy')
+                            ->where('shared', '!=', 0)
                             ->where(function ($query) {
                                 $query->doesntHave('maintence_eq')
                                     ->orWhereHas('maintence_eq', function ($query) {
@@ -1187,7 +1193,7 @@ class FlighResource extends Resource
             Tables\Columns\TextColumn::make('fligh_location.name')
                 ->label(TranslationHelper::translateIfNeeded('Flight Location'))
                 ->numeric()
-                ->url(fn($record) => $record->location_id ? route('filament.admin.resources.fligh-locations.view', [
+                ->url(fn($record) => $record->location_id && $record->fligh_location->shared != 0 ? route('filament.admin.resources.fligh-locations.view', [
                     'tenant' => Auth()->user()->teams()->first()->id,
                     'record' => $record->location_id,
                 ]) : null)
@@ -1196,7 +1202,7 @@ class FlighResource extends Resource
             Tables\Columns\TextColumn::make('projects.case')
                 ->label(TranslationHelper::translateIfNeeded('Projects Case'))
                 ->numeric()
-                ->url(fn($record) => $record->projects_id ? route('filament.admin.resources.projects.view', [
+                ->url(fn($record) => $record->projects_id && $record->projects->shared != 0 ? route('filament.admin.resources.projects.view', [
                     'tenant' => Auth()->user()->teams()->first()->id,
                     'record' => $record->projects_id,
                 ]) : null)
@@ -1416,6 +1422,7 @@ class FlighResource extends Resource
                                     $currentTeamId = auth()->user()->teams()->first()->id;
                                     return Projects::where('teams_id', $currentTeamId)
                                     ->where('status_visible', '!=', 'archived')
+                                    ->where('shared', '!=', 0)
                                     ->pluck('case', 'id');
                                 })
                                 ->searchable()
@@ -1496,7 +1503,7 @@ class FlighResource extends Resource
                     TextEntry::make('ops')->label(TranslationHelper::translateIfNeeded('Ops')),
                     TextEntry::make('landings')->label(TranslationHelper::translateIfNeeded('Landings')),
                     TextEntry::make('fligh_location.name')->label(TranslationHelper::translateIfNeeded('Location'))
-                        ->url(fn($record) => $record->location_id ? route('filament.admin.resources.fligh-locations.view', [
+                        ->url(fn($record) => $record->location_id && $record->fligh_location->shared != 0 ? route('filament.admin.resources.fligh-locations.view', [
                             'tenant' => Auth()->user()->teams()->first()->id,
                             'record' => $record->location_id,
                         ]) : null)
@@ -1507,7 +1514,7 @@ class FlighResource extends Resource
                             'record' => $record->customers_id,
                         ]) : null)->color(Color::Blue),
                     TextEntry::make('projects.case')->label(TranslationHelper::translateIfNeeded('Project'))
-                        ->url(fn($record) => $record->projects_id ? route('filament.admin.resources.projects.view', [
+                        ->url(fn($record) => $record->projects_id && $record->projects->shared != 0? route('filament.admin.resources.projects.view', [
                             'tenant' => Auth()->user()->teams()->first()->id,
                             'record' => $record->projects_id,
                         ]) : null)->color(Color::Blue),
@@ -1527,27 +1534,35 @@ class FlighResource extends Resource
                 ->schema([
                     TextEntry::make('kits.name')->label(TranslationHelper::translateIfNeeded('Kits')),
                     TextEntry::make('drones.name')->label(TranslationHelper::translateIfNeeded('Drone'))
-                        ->url(fn($record) => $record->drones_id ? route('filament.admin.resources.drones.view', [
+                        ->url(fn($record) => $record->drones_id && $record->drones->shared != 0 ? route('filament.admin.resources.drones.view', [
                             'tenant' => Auth()->user()->teams()->first()->id,
                             'record' => $record->drones_id,
                         ]) : null)->color(Color::Blue),
                     TextEntry::make('battreis.name')->label(TranslationHelper::translateIfNeeded('Battery'))
                         ->formatStateUsing(function ($record) {
                             return $record->battreis->map(function ($battreis) {
-                                return "<a href='" . route('filament.admin.resources.battreis.view', [
-                                    'tenant' => auth()->user()->teams()->first()->id,
-                                    'record' => $battreis->id,
-                                ]) . "' style='color: #3b82f6; text-decoration: underline; font-size: 0.875rem;'>{$battreis->name}</a>";
+                                if($battreis->shared != 0 ){
+                                    return "<a href='" . route('filament.admin.resources.battreis.view', [
+                                        'tenant' => auth()->user()->teams()->first()->id,
+                                        'record' => $battreis->id,
+                                    ]) . "' style='color: #3b82f6; text-decoration: underline; font-size: 0.875rem;'>{$battreis->name}</a>";
+                                }else{
+                                    return $battreis->name;
+                                }
                             })->implode(', ');
                         })
                         ->html(),
                     TextEntry::make('equidments.name')->label(TranslationHelper::translateIfNeeded('Equipment'))
                         ->formatStateUsing(function ($record) {
                             return $record->equidments->map(function ($equidments) {
-                                return "<a href='" . route('filament.admin.resources.equidments.view', [
-                                    'tenant' => auth()->user()->teams()->first()->id,
-                                    'record' => $equidments->id,
-                                ]) . "' style='color: #3b82f6; text-decoration: underline; font-size: 0.875rem;'>{$equidments->name}</a>";
+                                if($equidments->shared != 0 ){
+                                    return "<a href='" . route('filament.admin.resources.equidments.view', [
+                                        'tenant' => auth()->user()->teams()->first()->id,
+                                        'record' => $equidments->id,
+                                    ]) . "' style='color: #3b82f6; text-decoration: underline; font-size: 0.875rem;'>{$equidments->name}</a>";
+                                }else{
+                                    return $equidments->name;
+                                }
                             })->implode(', ');
                         })
                         ->html(),
