@@ -81,9 +81,10 @@ class MaintenceResource extends Resource
                             //     $currentTeamId = auth()->user()->teams()->first()->id;
                             //     $query->where('teams_id', $currentTeamId);
                             // })
-                            ->options(function (callable $get) use ($currentTeamId) {
-                                return drone::where('teams_id', $currentTeamId)->pluck('name', 'id');
-                            })
+                            ->relationship('drone', 'name')
+                            ->options(drone::where('teams_id', auth()->user()->teams()->first()->id)
+                                ->where('shared', '!=', 0)
+                                ->pluck('name', 'id'))
                             ->label(TranslationHelper::translateIfNeeded('Drone'))
                             ->searchable()
                             ->columnSpan(1)
@@ -192,10 +193,20 @@ class MaintenceResource extends Resource
                     ->searchable(),
                 Tables\Columns\TextColumn::make('drone.name')
                 ->label(TranslationHelper::translateIfNeeded('Drone'))
-                ->url(fn($record) =>$record->drone_id? route('filament.admin.resources.drones.view', [
-                    'tenant' => Auth()->user()->teams()->first()->id,
-                    'record' => $record->drone_id,
-                ]):null)->color(Color::Blue)
+                // ->url(fn($record) =>$record->drone_id? route('filament.admin.resources.drones.view', [
+                //     'tenant' => Auth()->user()->teams()->first()->id,
+                //     'record' => $record->drone_id,
+                // ]):null)->color(Color::Blue)
+                    ->url(function ($record) {
+                        if ($record->drone && $record->drone->shared !== 0) {
+                            return route('filament.admin.resources.drones.view', [
+                                'tenant' => Auth()->user()->teams()->first()->id,
+                                'record' => $record->drone_id,
+                            ]);
+                        }
+                        return null;
+                    })
+                    ->color(fn($record) => $record->drone && $record->drone->shared !== 0 ? Color::Blue : Color::Gray)
                     ->searchable(),
                 Tables\Columns\TextColumn::make('date')
                 ->label(TranslationHelper::translateIfNeeded('Date'))    
@@ -341,11 +352,21 @@ class MaintenceResource extends Resource
                 ->schema([
                     TextEntry::make('name')->label(TranslationHelper::translateIfNeeded('Name')),
                     TextEntry::make('drone.name')->label(TranslationHelper::translateIfNeeded('Drone'))
-                        ->url(fn($record) => $record->drone_id ? route('filament.admin.resources.drones.view', [
-                            'tenant' => Auth()->user()->teams()->first()->id,
-                            'record' => $record->drone_id,
-                        ]) : null)
-                        ->color(Color::Blue),
+                        // ->url(fn($record) => $record->drone_id ? route('filament.admin.resources.drones.view', [
+                        //     'tenant' => Auth()->user()->teams()->first()->id,
+                        //     'record' => $record->drone_id,
+                        // ]) : null)
+                        // ->color(Color::Blue),
+                        ->url(function ($record) {
+                            if ($record->drone && $record->drone->shared !== 0) {
+                                return route('filament.admin.resources.drones.view', [
+                                    'tenant' => Auth()->user()->teams()->first()->id,
+                                    'record' => $record->drone_id,
+                                ]);
+                            }
+                            return null;
+                        })
+                        ->color(fn($record) => $record->drone && $record->drone->shared !== 0 ? Color::Blue : Color::Gray),
                     TextEntry::make('date')->label(TranslationHelper::translateIfNeeded('Date')),
                     TextEntry::make('status')->label(TranslationHelper::translateIfNeeded('Status'))
                         ->color(fn ($record) => match ($record->status) {

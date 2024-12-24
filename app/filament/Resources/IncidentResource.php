@@ -119,6 +119,7 @@ class IncidentResource extends Resource
                         ->required(),
                     Forms\Components\Select::make('personnel_incident')
                     ->label(TranslationHelper::translateIfNeeded('Organization Personnel Involved'))
+                        ->relationship('users', 'name')
                         ->options(
                             function (Builder $query) use ($currentTeamId) {
                                 return User::whereHas('teams', function (Builder $query) use ($currentTeamId) {
@@ -127,7 +128,6 @@ class IncidentResource extends Resource
                         }  
                         )->searchable()
                         ->multiple()
-                        ->relationship('users', 'name')
                         ->saveRelationshipsUsing(function ($component, $state) {
                             $component->getRecord()->users()->sync($state);
                         })

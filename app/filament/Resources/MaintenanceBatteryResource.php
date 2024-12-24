@@ -77,18 +77,20 @@ class MaintenanceBatteryResource extends Resource
                             ->maxLength(255)
                             ->default($defaultData['name'] ?? null),
                         Forms\Components\Select::make('equidment_id')
-                        ->label(TranslationHelper::translateIfNeeded('Equipment'))    
-                            ->options(function (callable $get) use ($currentTeamId) {
-                                return equidment::where('teams_id', $currentTeamId)->pluck('name', 'id');
-                            })
+                        ->label(TranslationHelper::translateIfNeeded('Equipment'))  
+                            ->relationship('equidment', 'name')  
+                            ->options(equidment::where('teams_id', auth()->user()->teams()->first()->id)
+                                ->where('shared', '!=', 0)
+                                ->pluck('name', 'id'))
                             ->searchable()
                             ->columnSpan(1)
                             ->default($defaultData['equidment_id'] ?? null),
                             Forms\Components\Select::make('battrei_id')
                             ->label(TranslationHelper::translateIfNeeded('Battery'))
-                            ->options(function (callable $get) use ($currentTeamId) {
-                                return battrei::where('teams_id', $currentTeamId)->pluck('name', 'id');
-                            })
+                            ->relationship('battrei', 'name')
+                            ->options(battrei::where('teams_id', auth()->user()->teams()->first()->id)
+                                ->where('shared', '!=', 0)
+                                ->pluck('name', 'id'))
                             ->searchable()
                             ->columnSpan(1)
                             ->default($defaultData['battrei_id'] ?? null),
@@ -151,20 +153,40 @@ class MaintenanceBatteryResource extends Resource
                 ->searchable(),
             Tables\Columns\TextColumn::make('equidment.name')
                 ->label(TranslationHelper::translateIfNeeded('Equipment'))
-                ->url(fn($record) => $record->equidment_id ? route('filament.admin.resources.equidments.view', [
-                    'tenant' => Auth()->user()->teams()->first()->id,
-                    'record' => $record->equidment_id,
-                ]) : null)
-                ->color(Color::Blue)
+                // ->url(fn($record) => $record->equidment_id ? route('filament.admin.resources.equidments.view', [
+                //     'tenant' => Auth()->user()->teams()->first()->id,
+                //     'record' => $record->equidment_id,
+                // ]) : null)
+                // ->color(Color::Blue)
+                ->url(function ($record) {
+                    if ($record->equidment && $record->equidment->shared !== 0) {
+                        return route('filament.admin.resources.equidments.view', [
+                            'tenant' => Auth()->user()->teams()->first()->id,
+                            'record' => $record->equidment_id,
+                        ]);
+                    }
+                    return null;
+                })
+                ->color(fn($record) => $record->equidment && $record->equidment->shared !== 0 ? Color::Blue : Color::Gray)
                 ->searchable()
                 ->placeholder(TranslationHelper::translateIfNeeded('No Equipment selected')),
             Tables\Columns\TextColumn::make('battrei.name')
                 ->label(TranslationHelper::translateIfNeeded('Battery'))
-                ->url(fn($record) => $record->battrei_id ? route('filament.admin.resources.battreis.view', [
-                    'tenant' => Auth()->user()->teams()->first()->id,
-                    'record' => $record->battrei_id,
-                ]) : null)
-                ->color(Color::Blue)
+                // ->url(fn($record) => $record->battrei_id ? route('filament.admin.resources.battreis.view', [
+                //     'tenant' => Auth()->user()->teams()->first()->id,
+                //     'record' => $record->battrei_id,
+                // ]) : null)
+                // ->color(Color::Blue)
+                ->url(function ($record) {
+                    if ($record->battrei && $record->battrei->shared !== 0) {
+                        return route('filament.admin.resources.battreis.view', [
+                            'tenant' => Auth()->user()->teams()->first()->id,
+                            'record' => $record->battrei_id,
+                        ]);
+                    }
+                    return null;
+                })
+                ->color(fn($record) => $record->battrei && $record->battrei->shared !== 0 ? Color::Blue : Color::Gray)
                 ->searchable()
                 ->placeholder(TranslationHelper::translateIfNeeded('No Battery selected')),
             Tables\Columns\TextColumn::make('date')
@@ -319,18 +341,38 @@ class MaintenanceBatteryResource extends Resource
                 ->label(TranslationHelper::translateIfNeeded('Name')),
             TextEntry::make('equidment.name')
                 ->label(TranslationHelper::translateIfNeeded('Equipment'))
-                ->url(fn($record) => $record->equidment_id ? route('filament.admin.resources.equidments.view', [
-                    'tenant' => Auth()->user()->teams()->first()->id,
-                    'record' => $record->equidment_id,
-                ]) : null)
-                ->color(Color::Blue),
+                // ->url(fn($record) => $record->equidment_id ? route('filament.admin.resources.equidments.view', [
+                //     'tenant' => Auth()->user()->teams()->first()->id,
+                //     'record' => $record->equidment_id,
+                // ]) : null)
+                // ->color(Color::Blue),
+                ->url(function ($record) {
+                    if ($record->equidment && $record->equidment->shared !== 0) {
+                        return route('filament.admin.resources.equidments.view', [
+                            'tenant' => Auth()->user()->teams()->first()->id,
+                            'record' => $record->equidment_id,
+                        ]);
+                    }
+                    return null;
+                })
+                ->color(fn($record) => $record->equidment && $record->equidment->shared !== 0 ? Color::Blue : Color::Gray),
             TextEntry::make('battrei.name')
                 ->label(TranslationHelper::translateIfNeeded('Battery'))
-                ->url(fn($record) => $record->battrei_id ? route('filament.admin.resources.battreis.view', [
-                    'tenant' => Auth()->user()->teams()->first()->id,
-                    'record' => $record->battrei_id,
-                ]) : null)
-                ->color(Color::Blue),
+                // ->url(fn($record) => $record->battrei_id ? route('filament.admin.resources.battreis.view', [
+                //     'tenant' => Auth()->user()->teams()->first()->id,
+                //     'record' => $record->battrei_id,
+                // ]) : null)
+                // ->color(Color::Blue),
+                ->url(function ($record) {
+                    if ($record->battrei && $record->battrei->shared !== 0) {
+                        return route('filament.admin.resources.battreis.view', [
+                            'tenant' => Auth()->user()->teams()->first()->id,
+                            'record' => $record->battrei_id,
+                        ]);
+                    }
+                    return null;
+                })
+                ->color(fn($record) => $record->battrei && $record->battrei->shared !== 0 ? Color::Blue : Color::Gray),
             TextEntry::make('date')
                 ->label(TranslationHelper::translateIfNeeded('Date')),
             TextEntry::make('status')
