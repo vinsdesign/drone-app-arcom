@@ -60,6 +60,15 @@
     ])
     ->groupBy([
         'incidents.id',
+        'incidents.cause',
+        'incidents.aircraft_damage',
+        'incidents.other_damage',
+        'incidents.incuration_type',
+        'incidents.rectification_note',
+        'incidents.rectification_date',
+        'incidents.Technician',
+        'incidents.status',
+        'incidents.teams_id',
         'incidents.incident_date',
         'incidents.drone_id',
         'incidents.location_id',

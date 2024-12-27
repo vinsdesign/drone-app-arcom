@@ -67,7 +67,7 @@
                                 </div>
                                 <div class="flex justify-between items-center">
                                     <div class="text-sm text-gray-600 dark:text-gray-400">{!! TranslationHelper::translateIfNeeded('Project name:')!!} 
-                                        <a href="{{route('flight-peroject',['project_id' => $item->projects->id ?? 0])}}">
+                                        <a href="{{route('flight-peroject',['projects_id' => $item->projects->id ?? 0])}}">
                                             {{$item->projects->case ?? null}}
                                         </a>
                                     </div>
