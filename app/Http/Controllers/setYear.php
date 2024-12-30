@@ -18,14 +18,17 @@ class setYear extends Controller
     }
     public function setSessionProject(Request $request){
         $data = $request->input('dataSession');
-        session('project_id', $data);
+        session()->put('project_id', $data);
+        return response()->json(['redirect' => route('flight-peroject',['project_id' => $data])]);
     }
     public function setSessionLocation(Request $request){
         $data = $request->input('dataSession');
-        session('location_id', $data);
+        session()->put('location_id', $data);
+        return response()->json(['redirect' => route('flight-location', ['location_id' => $data])]);
     }
     public function setSessionPersonnel(Request $request){
         $data = $request->input('dataSession');
-        session('personnel_id', $data);
+        session()->put('personnel_id', $data);
+        return response()->json(['redirect' => route('flight-personnel', ['personnel_id' => $data])]);
     }
 }
