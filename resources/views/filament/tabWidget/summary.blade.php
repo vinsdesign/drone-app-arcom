@@ -9,7 +9,6 @@
     ->whereRaw('DATE(date) < ?', [Carbon\Carbon::now()->format('Y-m-d')])
     ->get();
 
-
     $maintenance_drone = App\Models\maintence_drone::whereHas('teams', function ($query) use ($currentTeamId){
     $query->where('id', $currentTeamId);
     })->whereNotIn('status', ['completed'])
@@ -73,17 +72,17 @@
                                     <div class="text-sm text-gray-600 dark:text-gray-400">{!! TranslationHelper::translateIfNeeded('Project name:')!!} 
 
                                         @if($item->projects->shared != 0)
-                                        <a href="{{route('flight-peroject',['project_id' => $item->projects->id ?? 0])}}" onclick="setsessions({{$item->projects->id}})">
+                                        <button type="button" onclick="setSessionProject({{$item->projects->id}})">
                                             {{$item->projects->case ?? null}}
-                                        </a>
+                                        </button>
                                         @else
                                             {{$item->projects->case ?? null}}
                                         @endif
                                     </div>
                                     <div class="text-red-900 dark:text-red-300">{!! TranslationHelper::translateIfNeeded('Pilot:')!!} 
-                                        <a href="{{route('flight-personnel',['personnel_id'=>$item->users->id])}}">
+                                        <button type="button" onclick="setSessionPersonnel({{$item->users->id}}">
                                             {{$item->users->name ?? null}}
-                                        </a>
+                                        </button>
                                     </div>
                                 </div>
                                 <div class="flex justify-between items-center">
@@ -94,9 +93,11 @@
                                     </span>
                                     <div class="text-sm text-gray-600 dark:text-gray-400">{!! TranslationHelper::translateIfNeeded('Locations:')!!} 
                                         @if($item->fligh_location->shared != 0)
-                                        <a href="{{route('flight-location', ['location_id' => $item->fligh_location->id])}}" onclick="setSessionLocation({{$item->fligh_location->id}})">
+
+                                        <button type="button" onclick="setSessionLocation({{$item->fligh_location->id}})">
+
                                             {{$item->fligh_location->name ?? null}}
-                                        </a>
+                                        </button>
                                         @else
                                             {{$item->fligh_location->name ?? null}}
                                         @endif 
@@ -131,18 +132,20 @@
                         <div class="flex justify-between items-center">
                             <div class="text-sm text-gray-600 dark:text-gray-400">{!! TranslationHelper::translateIfNeeded('Project name:')!!} 
                             @if($item->projects->shared != 0)
-                                <a href="{{route('flight-peroject',['project_id' => $item->projects->id ?? 0])}}" onclick="setsessions({{$item->projects->id}})">
+                                <button type="button" onclick="setSessionProject({{$item->projects->id}})">
                                     {{$item->projects->case ?? null}}
-                                </a>
+                                </button>
                             @else
                                 {{$item->projects->case ?? null}}
                             @endif
 
                             </div>
                             <div class="text-red-900 dark:text-red-300">{!! TranslationHelper::translateIfNeeded('Pilot:')!!} 
-                                <a href="{{route('flight-personnel',['personnel_id'=>$item->users->id])}}" onclick="setSessionPersonnel({{$item->users->id}})">
+
+                                <button type="button" onclick="setSessionPersonnel({{$item->users->id}})">
+
                                     {{$item->users->name ?? null}}
-                                </a>
+                                </button>
                             </div>
                         </div>
                         <div class="flex justify-between items-center">
@@ -153,9 +156,11 @@
                             </span>
                             <div class="text-sm text-gray-600 dark:text-gray-400">{!! TranslationHelper::translateIfNeeded('Locations:')!!} 
                                 @if($item->fligh_location->shared != 0)
-                                <a href="{{route('flight-location', ['location_id' => $item->fligh_location->id])}}" onclick="setSessionLocation({{$item->fligh_location->id}})">
+
+                                <button type="button" onclick="setSessionLocation({{$item->fligh_location->id}})">
+
                                     {{$item->fligh_location->name ?? null}}
-                                </a> 
+                                </button> 
                                 @else
                                     {{$item->fligh_location->name ?? null}}
                                 @endif
@@ -268,35 +273,42 @@
         </div>
     </div>
 </x-filament-widgets::widget>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
-    function setSession(param) {
+    function setSessionProject(param) {
         $.ajax({
-            url: 'setSession.project',
+            url: '{{ route('setSession.project') }}',
             method: 'POST',
-            data: { dataSession: param },
+            data: { dataSession: param, _token: '{{ csrf_token()}}'  },
             success: function(response) {
-                console.log('Session param set on server: ' + response);
+                if (response.redirect) {
+                    window.location.href = response.redirect;
+                }
             }
         });
     }
 
     function setSessionLocation(param) {
         $.ajax({
-            url: 'setSession.location',
+            url: '{{ route('setSession.location') }}',
             method: 'POST',
-            data: { dataSession: param },
+            data: { dataSession: param, _token: '{{ csrf_token()}}' },
             success: function(response) {
-                console.log('Session param set on server: ' + response);
+                if (response.redirect) {
+                    window.location.href = response.redirect;
+                }
             }
         });
     }
     function setSessionPersonnel(param) {
         $.ajax({
-            url: 'setSession.personnel',
+            url: '{{ route('setSession.personnel') }}',
             method: 'POST',
-            data: { dataSession: param },
+            data: { dataSession: param, _token: '{{ csrf_token()}}' },
             success: function(response) {
-                console.log('Session param set on server: ' + response);
+                if (response.redirect) {
+                    window.location.href = response.redirect;
+                }
             }
         });
     }
