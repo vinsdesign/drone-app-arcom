@@ -242,7 +242,7 @@ class FlighLocationResource extends Resource
                 //     'record' => $record->projects_id,
                 // ]) : null)->color(Color::Blue)
                     ->url(function ($record) {
-                        if ($record->projects && $record->projects->shared !== 0 && $record->projects->status_visible !== 'archived') {
+                        if ($record->projects && $record->projects->shared !== 0) {
                             return route('filament.admin.resources.projects.view', [
                                 'tenant' => Auth()->user()->teams()->first()->id,
                                 'record' => $record->projects_id,
@@ -250,7 +250,7 @@ class FlighLocationResource extends Resource
                         }
                         return null;
                     })
-                    ->color(fn($record) => $record->projects && $record->projects->shared !== 0 && $record->projects->status_visible !== 'archived' ? Color::Blue : Color::Gray)
+                    ->color(fn($record) => $record->projects && $record->projects->shared !== 0 ? Color::Blue : Color::Gray)
                     ->searchable(),
                 Tables\Columns\TextColumn::make('customers.name')
                 ->label(TranslationHelper::translateIfNeeded('Customers Name'))

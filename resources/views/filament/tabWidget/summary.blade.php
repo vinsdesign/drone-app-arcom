@@ -71,6 +71,7 @@
                                 </div>
                                 <div class="flex justify-between items-center">
                                     <div class="text-sm text-gray-600 dark:text-gray-400">{!! TranslationHelper::translateIfNeeded('Project name:')!!} 
+
                                         @if($item->projects->shared != 0)
                                         <a href="{{route('flight-peroject',['project_id' => $item->projects->id ?? 0])}}" onclick="setsessions({{$item->projects->id}})">
                                             {{$item->projects->case ?? null}}

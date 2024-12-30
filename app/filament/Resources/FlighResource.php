@@ -1197,7 +1197,7 @@ class FlighResource extends Resource
                     'tenant' => Auth()->user()->teams()->first()->id,
                     'record' => $record->location_id,
                 ]) : null)
-                ->color(Color::Blue)
+                ->color(fn($record) => $record->fligh_location && $record->fligh_location->shared !== 0 ? Color::Blue : Color::Gray)
                 ->sortable(),
             Tables\Columns\TextColumn::make('projects.case')
                 ->label(TranslationHelper::translateIfNeeded('Projects Case'))
@@ -1206,7 +1206,7 @@ class FlighResource extends Resource
                     'tenant' => Auth()->user()->teams()->first()->id,
                     'record' => $record->projects_id,
                 ]) : null)
-                ->color(Color::Blue)
+                ->color(fn($record) => $record->projects && $record->projects->shared !== 0 ? Color::Blue : Color::Gray)
                 ->sortable(),
             Tables\Columns\TextColumn::make('projects.customers.name')
                 ->label(TranslationHelper::translateIfNeeded('Customers Name'))
@@ -1507,7 +1507,7 @@ class FlighResource extends Resource
                             'tenant' => Auth()->user()->teams()->first()->id,
                             'record' => $record->location_id,
                         ]) : null)
-                        ->color(Color::Blue),
+                        ->color(fn($record) => $record->fligh_location && $record->fligh_location->shared !== 0 ? Color::Blue : Color::Gray),
                     TextEntry::make('customers.name')->label(TranslationHelper::translateIfNeeded('Customer'))
                         ->url(fn($record) => $record->customers_id ? route('filament.admin.resources.customers.view', [
                             'tenant' => Auth()->user()->teams()->first()->id,
@@ -1517,7 +1517,7 @@ class FlighResource extends Resource
                         ->url(fn($record) => $record->projects_id && $record->projects->shared != 0? route('filament.admin.resources.projects.view', [
                             'tenant' => Auth()->user()->teams()->first()->id,
                             'record' => $record->projects_id,
-                        ]) : null)->color(Color::Blue),
+                        ]) : null)->color(fn($record) => $record->projects && $record->projects->shared !== 0 ? Color::Blue : Color::Gray),
                 ])->columns(5),
             Section::make(TranslationHelper::translateIfNeeded('Personnel'))
                 ->schema([
@@ -1537,7 +1537,7 @@ class FlighResource extends Resource
                         ->url(fn($record) => $record->drones_id && $record->drones->shared != 0 ? route('filament.admin.resources.drones.view', [
                             'tenant' => Auth()->user()->teams()->first()->id,
                             'record' => $record->drones_id,
-                        ]) : null)->color(Color::Blue),
+                        ]) : null)->color(fn($record) => $record->drones && $record->drones->shared !== 0 ? Color::Blue : Color::Gray),
                     TextEntry::make('battreis.name')->label(TranslationHelper::translateIfNeeded('Battery'))
                         ->formatStateUsing(function ($record) {
                             return $record->battreis->map(function ($battreis) {
