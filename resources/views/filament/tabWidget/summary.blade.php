@@ -94,7 +94,7 @@
                                     </span>
                                     <div class="text-sm text-gray-600 dark:text-gray-400">{!! TranslationHelper::translateIfNeeded('Locations:')!!} 
                                         @if($item->fligh_location->shared != 0)
-                                        <a href="{{route('flight-location', ['location_id' => $record->id])}}" onclick="setSessionLocation({{$item->fligh_location->id}})">
+                                        <a href="{{route('flight-location', ['location_id' => $item->fligh_location->id])}}" onclick="setSessionLocation({{$item->fligh_location->id}})">
                                             {{$item->fligh_location->name ?? null}}
                                         </a>
                                         @else
@@ -140,7 +140,7 @@
 
                             </div>
                             <div class="text-red-900 dark:text-red-300">{!! TranslationHelper::translateIfNeeded('Pilot:')!!} 
-                                <a href="{{route('flight-personnel',['personnel_id'=>$item->users->id])}}">
+                                <a href="{{route('flight-personnel',['personnel_id'=>$item->users->id])}}" onclick="setSessionPersonnel({{$item->users->id}})">
                                     {{$item->users->name ?? null}}
                                 </a>
                             </div>
@@ -153,7 +153,7 @@
                             </span>
                             <div class="text-sm text-gray-600 dark:text-gray-400">{!! TranslationHelper::translateIfNeeded('Locations:')!!} 
                                 @if($item->fligh_location->shared != 0)
-                                <a href="{{route('flight-location', ['location_id' => $record->id])}}" onclick="setSessionLocation({{$item->fligh_location->id}})">
+                                <a href="{{route('flight-location', ['location_id' => $item->fligh_location->id])}}" onclick="setSessionLocation({{$item->fligh_location->id}})">
                                     {{$item->fligh_location->name ?? null}}
                                 </a> 
                                 @else
