@@ -60,16 +60,25 @@
                         @foreach($flightSummary as $item)
                             <div class="flex flex-col border-b border-gray-200 dark:border-gray-600 pb-2">
                                 <div class="mb-2 flex justify-between items-center">
+                                    @if($item->shared != 0)
                                     <a href="{{route('filament.admin.resources.flighs.view',['tenant'=>Auth()->user()->teams()->first()->id, 'record'=>$item->id ?? 0])}}">
                                         <span class="font-semibold text-gray-900 dark:text-gray-200">{{$item->name ?? null}}</span>
                                     </a>
+                                    @else
+                                        <span class="font-semibold text-gray-900 dark:text-gray-200">{{$item->name ?? null}}</span>
+                                    @endif
                                     <div class="text-sm text-gray-600 dark:text-gray-400">{!! TranslationHelper::translateIfNeeded('Missions Date:')!!} {{$item->start_date_flight ?? null}}</div>
                                 </div>
                                 <div class="flex justify-between items-center">
                                     <div class="text-sm text-gray-600 dark:text-gray-400">{!! TranslationHelper::translateIfNeeded('Project name:')!!} 
-                                        <a href="{{route('flight-peroject',['projects_id' => $item->projects->id ?? 0])}}">
+
+                                        @if($item->projects->shared != 0)
+                                        <a href="{{route('flight-peroject',['project_id' => $item->projects->id ?? 0])}}" onclick="setsessions({{$item->projects->id}})">
                                             {{$item->projects->case ?? null}}
                                         </a>
+                                        @else
+                                            {{$item->projects->case ?? null}}
+                                        @endif
                                     </div>
                                     <div class="text-red-900 dark:text-red-300">{!! TranslationHelper::translateIfNeeded('Pilot:')!!} 
                                         <a href="{{route('flight-personnel',['personnel_id'=>$item->users->id])}}">
@@ -84,9 +93,13 @@
                                         </a>
                                     </span>
                                     <div class="text-sm text-gray-600 dark:text-gray-400">{!! TranslationHelper::translateIfNeeded('Locations:')!!} 
-                                        <a href="{{route('filament.admin.resources.fligh-locations.edit',['tenant'=> Auth()->user()->teams()->first()->id, 'record' => $item->fligh_location->id])}}">
+                                        @if($item->fligh_location->shared != 0)
+                                        <a href="{{route('flight-location', ['location_id' => $record->id])}}" onclick="setSessionLocation({{$item->fligh_location->id}})">
                                             {{$item->fligh_location->name ?? null}}
-                                        </a>    
+                                        </a>
+                                        @else
+                                            {{$item->fligh_location->name ?? null}}
+                                        @endif 
                                     </div>
                                 </div>
                             </div>
@@ -105,16 +118,26 @@
                        @foreach($flightSummaryMonth as $item)
                        <div class="flex flex-col border-b border-gray-200 dark:border-gray-600 pb-2">
                         <div class="mb-2 flex justify-between items-center">
-                            <a href="{{route('filament.admin.resources.flighs.view',['tenant'=>Auth()->user()->teams()->first()->id, 'record'=>$item->id ?? 0])}}">
+                            @if($item->shared != 0)
+                                <a href="{{route('filament.admin.resources.flighs.view',['tenant'=>Auth()->user()->teams()->first()->id, 'record'=>$item->id ?? 0])}}">
+                                    <span class="font-semibold text-gray-900 dark:text-gray-200">{{$item->name ?? null}}</span>
+                                </a>
+                            @else
                                 <span class="font-semibold text-gray-900 dark:text-gray-200">{{$item->name ?? null}}</span>
-                            </a>
+                            @endif
+
                             <div class="text-sm text-gray-600 dark:text-gray-400">{!! TranslationHelper::translateIfNeeded('Missions Date:')!!} {{$item->start_date_flight ?? null}}</div>
                         </div>
                         <div class="flex justify-between items-center">
                             <div class="text-sm text-gray-600 dark:text-gray-400">{!! TranslationHelper::translateIfNeeded('Project name:')!!} 
-                                <a href="{{route('flight-peroject',['project_id' => $item->projects->id ?? 0])}}">
+                            @if($item->projects->shared != 0)
+                                <a href="{{route('flight-peroject',['project_id' => $item->projects->id ?? 0])}}" onclick="setsessions({{$item->projects->id}})">
                                     {{$item->projects->case ?? null}}
                                 </a>
+                            @else
+                                {{$item->projects->case ?? null}}
+                            @endif
+
                             </div>
                             <div class="text-red-900 dark:text-red-300">{!! TranslationHelper::translateIfNeeded('Pilot:')!!} 
                                 <a href="{{route('flight-personnel',['personnel_id'=>$item->users->id])}}">
@@ -129,9 +152,13 @@
                                 </a>
                             </span>
                             <div class="text-sm text-gray-600 dark:text-gray-400">{!! TranslationHelper::translateIfNeeded('Locations:')!!} 
-                                <a href="{{route('filament.admin.resources.fligh-locations.edit',['tenant'=> Auth()->user()->teams()->first()->id, 'record' => $item->fligh_location->id])}}">
+                                @if($item->fligh_location->shared != 0)
+                                <a href="{{route('flight-location', ['location_id' => $record->id])}}" onclick="setSessionLocation({{$item->fligh_location->id}})">
                                     {{$item->fligh_location->name ?? null}}
-                                </a>    
+                                </a> 
+                                @else
+                                    {{$item->fligh_location->name ?? null}}
+                                @endif
                             </div>
                         </div>
                     </div>
@@ -180,9 +207,13 @@
                             </div>
                             <div class="flex justify-between items-center">
                                 <span class="text-sm text-gray-600 dark:text-gray-400">{{$item->drones->brand?? null}}</span>
+                                @if($item->drone->shared != 0)
                                 <a href="{{route('drone.statistik',['drone_id'=>$item->drone->id ?? 0])}}">
                                     <div class="text-sm text-gray-600 dark:text-gray-400">{{$item->drones->name??null}}</div>
                                 </a>
+                                @else 
+                                    <div class="text-sm text-gray-600 dark:text-gray-400">{{$item->drones->name??null}}</div>
+                                @endif
                             </div>
                         </div>
                     @endforeach
@@ -209,16 +240,24 @@
                             @if($item->equidment == true)
                                 <div class="flex justify-between items-center">
                                     <span class="text-sm text-gray-600 dark:text-gray-400">{{$item->equidment->type?? null}}</span>
+                                    @if($item->equidment->shared != 0)
                                     <a href="{{route('equipment.statistik',['equipment_id'=>$item->equidment->id ?? 0])}}">
                                         <div class="text-sm text-gray-600 dark:text-gray-400">{{$item->equidment->name??null}}</div>
                                     </a>  
+                                    @else
+                                    <div class="text-sm text-gray-600 dark:text-gray-400">{{$item->equidment->name??null}}</div>
+                                    @endif
                                 </div>
                             @elseif($item->battrei == true)
                                 <div class="flex justify-between items-center">
                                     <span class="text-sm text-gray-600 dark:text-gray-400">{!! TranslationHelper::translateIfNeeded('Batteries:')!!}</span>
+                                    @if($item->battrei->shared != 0)
                                     <a href="{{route('battery.statistik',['battery_id'=>$item->battrei->id ?? 0])}}">
                                         <div class="text-sm text-gray-600 dark:text-gray-400">{{$item->battrei->name??null}}</div>
-                                    </a>  
+                                    </a>
+                                    @else
+                                        <div class="text-sm text-gray-600 dark:text-gray-400">{{$item->battrei->name??null}}</div>
+                                    @endif
                                 </div>
                             @endif
                         </div>
@@ -229,6 +268,40 @@
         </div>
     </div>
 </x-filament-widgets::widget>
+<script>
+    function setSession(param) {
+        $.ajax({
+            url: 'setSession.project',
+            method: 'POST',
+            data: { dataSession: param },
+            success: function(response) {
+                console.log('Session param set on server: ' + response);
+            }
+        });
+    }
+
+    function setSessionLocation(param) {
+        $.ajax({
+            url: 'setSession.location',
+            method: 'POST',
+            data: { dataSession: param },
+            success: function(response) {
+                console.log('Session param set on server: ' + response);
+            }
+        });
+    }
+    function setSessionPersonnel(param) {
+        $.ajax({
+            url: 'setSession.personnel',
+            method: 'POST',
+            data: { dataSession: param },
+            success: function(response) {
+                console.log('Session param set on server: ' + response);
+            }
+        });
+    }
+</script>
+
 <script>
     function missionDayActive() {
         const content = document.querySelector('.content-mission');

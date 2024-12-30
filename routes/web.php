@@ -85,7 +85,10 @@ Route::post('/charger-battery-create',[ChargerBattery::class,'create'])->name('c
 Route::post('/charger-battery-edit',[ChargerBattery::class,'edit'])->name('edit.charger.battery');
 Route::post('/charger-battery-clone',[ChargerBattery::class,'clone'])->name('clone.charger.battery');
 
-
+//session project
+Route::post('/set-session-project', [setYear::class, 'setSessionProject'])->name('setSession.project');
+Route::post('/set-session-location', [setYear::class, 'setSessionLocation'])->name('setSession.location');
+Route::post('/set-session-personnel', [setYear::class, 'setSessionPersonnel'])->name('setSession.personnel');
 
 
 

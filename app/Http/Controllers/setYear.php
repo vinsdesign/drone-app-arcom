@@ -16,4 +16,16 @@ class setYear extends Controller
 
         return response()->json(['tahun' => $tahun]);
     }
+    public function setSessionProject(Request $request){
+        $data = $request->input('dataSession');
+        session('project_id', $data);
+    }
+    public function setSessionLocation(Request $request){
+        $data = $request->input('dataSession');
+        session('location_id', $data);
+    }
+    public function setSessionPersonnel(Request $request){
+        $data = $request->input('dataSession');
+        session('personnel_id', $data);
+    }
 }
