@@ -93,7 +93,9 @@
                                     </span>
                                     <div class="text-sm text-gray-600 dark:text-gray-400">{!! TranslationHelper::translateIfNeeded('Locations:')!!} 
                                         @if($item->fligh_location->shared != 0)
+
                                         <button type="button" onclick="setSessionLocation({{$item->fligh_location->id}})">
+
                                             {{$item->fligh_location->name ?? null}}
                                         </button>
                                         @else
@@ -139,7 +141,9 @@
 
                             </div>
                             <div class="text-red-900 dark:text-red-300">{!! TranslationHelper::translateIfNeeded('Pilot:')!!} 
+
                                 <button type="button" onclick="setSessionPersonnel({{$item->users->id}})">
+
                                     {{$item->users->name ?? null}}
                                 </button>
                             </div>
@@ -152,7 +156,9 @@
                             </span>
                             <div class="text-sm text-gray-600 dark:text-gray-400">{!! TranslationHelper::translateIfNeeded('Locations:')!!} 
                                 @if($item->fligh_location->shared != 0)
+
                                 <button type="button" onclick="setSessionLocation({{$item->fligh_location->id}})">
+
                                     {{$item->fligh_location->name ?? null}}
                                 </button> 
                                 @else
