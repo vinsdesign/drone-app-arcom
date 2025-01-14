@@ -74,7 +74,7 @@ class UserResource extends Resource
                                     ->ignore($get('id')),
                             ];
                         })
-                        ->maxLength(255)->columnSpan(2),
+                        ->maxLength(255)->columnSpan(['sm' => 3 , 'md' => 1 , 'lg' => 2 , 'xl' => 2 , '2xl' => 2]),
                     Forms\Components\TextInput::make('password')
                     ->label(TranslationHelper::translateIfNeeded('Password'))    
                         ->password()
@@ -134,7 +134,7 @@ class UserResource extends Resource
                         ->columnSpanFull()
                         
                     
-                ])->columns(3),
+                ])->columns(['sm' => 1 , 'md' => 1 , 'lg' => 3]),
                 
             ]);
     }

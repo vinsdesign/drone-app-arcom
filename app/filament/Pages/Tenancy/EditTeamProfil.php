@@ -34,7 +34,7 @@ class EditTeamProfil extends EditTenantProfile
                     FileUpload::make('avatar_url')->label(TranslationHelper::translateIfNeeded('Your Avatar'))
                     ->acceptedFileTypes(['image/jpeg', 'image/png', 'image/gif'])
                     ->helperText(TranslationHelper::translateIfNeeded('Please choose image type jpg/jpeg/png')),
-                    TextInput::make('name')->label(TranslationHelper::translateIfNeeded('Organization Name'))->columnSpan(2),
+                    TextInput::make('name')->label(TranslationHelper::translateIfNeeded('Organization Name'))->columnSpan(['sm' => 4 , 'md' => 1 , 'lg' => 2 , 'xl' => 2 , '2xl' => 2]),
                     TextInput::make('email')->email()->label(TranslationHelper::translateIfNeeded('Email Address'))
                     ->rules(function ($get) {
                         return [
@@ -51,7 +51,7 @@ class EditTeamProfil extends EditTenantProfile
                                 ->ignore($get('id')),
                         ];
                     }),
-                    TextInput::make('owner')->label(TranslationHelper::translateIfNeeded('Incorporation Name'))->columnSpan(2),
+                    TextInput::make('owner')->label(TranslationHelper::translateIfNeeded('Incorporation Name'))->columnSpan(['sm' => 4 , 'md' => 1 , 'lg' => 2 , 'xl' => 2 , '2xl' => 2]),
                     TextInput::make('website')->label(TranslationHelper::translateIfNeeded('Website')),
                     TextInput::make('company_size')->label(TranslationHelper::translateIfNeeded('Company Size'))->numeric(),
                     TextInput::make('gov_registration')->label(TranslationHelper::translateIfNeeded('Gov. Registration')),
@@ -70,7 +70,7 @@ class EditTeamProfil extends EditTenantProfile
                         ->reactive()
                         ->afterStateUpdated(fn(callable $set)=>$set('cities_id',null))
                         ->placeholder(TranslationHelper::translateIfNeeded('Select a Country'))
-                        ->searchable()->columnSpan(2),
+                        ->searchable()->columnSpan(['sm' => 4 , 'md' => 1 , 'lg' => 2 , 'xl' => 2 , '2xl' => 2]),
                     //end
                     //city
                     Select::make('cities_id')->label(TranslationHelper::translateIfNeeded('City'))
@@ -87,13 +87,13 @@ class EditTeamProfil extends EditTenantProfile
                     ->disabled(fn ($get) => !$get('countries_id')),
                     //end
                     TextInput::make('postal_code')->label(TranslationHelper::translateIfNeeded('Postal Code')),
-                    TextInput::make('state')->label(TranslationHelper::translateIfNeeded('State'))->columnSpan(2),
-                    TextInput::make('address')->label(TranslationHelper::translateIfNeeded('Address'))->columnSpan(2),
-                    CheckBox::make('insurance')->default(1)->label(TranslationHelper::translateIfNeeded('Insurance'))->columnSpan(2),
+                    TextInput::make('state')->label(TranslationHelper::translateIfNeeded('State'))->columnSpan(['sm' => 4 , 'md' => 1 , 'lg' => 2 , 'xl' => 2 , '2xl' => 2]),
+                    TextInput::make('address')->label(TranslationHelper::translateIfNeeded('Address'))->columnSpan(['sm' => 4 , 'md' => 1 , 'lg' => 2 , 'xl' => 2 , '2xl' => 2]),
+                    CheckBox::make('insurance')->default(1)->label(TranslationHelper::translateIfNeeded('Insurance'))->columnSpan(['sm' => 4 , 'md' => 1 , 'lg' => 2 , 'xl' => 2 , '2xl' => 2]),
                     TextInput::make('insurance_amount')->label(TranslationHelper::translateIfNeeded('Insurance Amount')),
                     TextInput::make('activity')->label(TranslationHelper::translateIfNeeded('Activity')),
                     TextArea::make('note')->label(TranslationHelper::translateIfNeeded('Note'))->columnSpanFull(),
-                ])->columns(4),
+                ])->columns(['sm' => 1 , 'md' => 1 , 'lg' => 4]),
                 // ...
         
             ]);

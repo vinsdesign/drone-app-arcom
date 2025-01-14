@@ -21,14 +21,16 @@
     $documentProjects = $queryDocument;
     //FlightIncident
     $maintenance = App\Models\maintence_eq::Where('equidment_id',$id)->get();
-    $flights = App\Models\Fligh::where('teams_id', $teams)
-    ->whereHas('equidments', function ($query) use ($id) {
-        $query->where('equidment_id', $id);
-    })
-    ->paginate(10);
-    $flightsCount = App\Models\Fligh::where('teams_id', $teams)
-    ->whereHas('equidments', function ($query) use ($id) {
-        $query->where('equidment_id', $id);
+    $flights = App\Models\Fligh::whereHas('kits', function ($query) use ($id) {
+        $query->whereHas('equidment', function ($query) use ($id) {
+            $query->where('equidment_kits.equidment_id', $id);
+        });
+    })->paginate(10);
+
+    $flightsCount = App\Models\Fligh::whereHas('kits', function ($query) use ($id) {
+        $query->whereHas('equidment', function ($query) use ($id) {
+            $query->where('equidment_kits.equidment_id', $id);
+        });
     })
     ->get();
     $count = $flightsCount->count('id');

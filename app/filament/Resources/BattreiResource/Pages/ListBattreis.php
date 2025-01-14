@@ -5,7 +5,7 @@ namespace App\Filament\Resources\BattreiResource\Pages;
 use App\Filament\Resources\BattreiResource;
 use Filament\Actions;
 use Filament\Resources\Pages\ListRecords;
-use App\Livewire\HeaderWidget\HeaderBattery;
+use App\Filament\Widgets\HeaderWidget\HeaderBattery;
 
 class ListBattreis extends ListRecords
 {

@@ -3,10 +3,10 @@
 namespace App\Policies;
 
 use App\Models\User;
-use App\Models\TeamsList;
+use App\Models\ListTeam;
 use Illuminate\Auth\Access\HandlesAuthorization;
 
-class TeamsListPolicy
+class ListTeamPolicy
 {
     use HandlesAuthorization;
 
@@ -21,7 +21,7 @@ class TeamsListPolicy
     /**
      * Determine whether the user can view the model.
      */
-    public function view(User $user, TeamsList $teamsList): bool
+    public function view(User $user, ListTeam $teamsList): bool
     {
         return $user->can('view_teams::list');
     }
@@ -37,7 +37,7 @@ class TeamsListPolicy
     /**
      * Determine whether the user can update the model.
      */
-    public function update(User $user, TeamsList $teamsList): bool
+    public function update(User $user, ListTeam $teamsList): bool
     {
         return $user->can('update_teams::list');
     }
@@ -45,7 +45,7 @@ class TeamsListPolicy
     /**
      * Determine whether the user can delete the model.
      */
-    public function delete(User $user, TeamsList $teamsList): bool
+    public function delete(User $user, ListTeam $teamsList): bool
     {
         return $user->can('delete_teams::list');
     }
@@ -61,7 +61,7 @@ class TeamsListPolicy
     /**
      * Determine whether the user can permanently delete.
      */
-    public function forceDelete(User $user, TeamsList $teamsList): bool
+    public function forceDelete(User $user, ListTeam $teamsList): bool
     {
         return $user->can('force_delete_teams::list');
     }
@@ -77,7 +77,7 @@ class TeamsListPolicy
     /**
      * Determine whether the user can restore.
      */
-    public function restore(User $user, TeamsList $teamsList): bool
+    public function restore(User $user, ListTeam $teamsList): bool
     {
         return $user->can('restore_teams::list');
     }
@@ -93,7 +93,7 @@ class TeamsListPolicy
     /**
      * Determine whether the user can replicate.
      */
-    public function replicate(User $user, TeamsList $teamsList): bool
+    public function replicate(User $user, ListTeam $teamsList): bool
     {
         return $user->can('replicate_teams::list');
     }

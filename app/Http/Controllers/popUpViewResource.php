@@ -77,6 +77,7 @@ class popUpViewResource extends Controller
         $description = $request->input('notes');
         $owner = $request->input('owner');
         $flight = $request->input('flight');
+        $flightId = $request->input('flight_id');
 
         //untuk file ke path
 
@@ -95,6 +96,7 @@ class popUpViewResource extends Controller
             'doc'=>$uniqueFileName,
             'users_id'=>$owner,
             'teams_id'=>$id,
+            'flight_id' =>  $flightId
         ]);
 
         if($sql){

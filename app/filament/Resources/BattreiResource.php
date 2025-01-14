@@ -103,11 +103,11 @@ class BattreiResource extends Resource
                             ->default($defaultData['asset_inventory'] ?? null),
                         Forms\Components\TextInput::make('serial_P')
                             ->label(TranslationHelper::translateIfNeeded('Serial #(Printed)'))
-                            ->required()->columnSpan(2)
+                            ->required()->columnSpan(['sm' => 4 , 'md' => 1 , 'lg' => 2 , 'xl' => 2 , '2xl' => 2])
                             ->default($defaultData['serial_P'] ?? null),
                         Forms\Components\TextInput::make('serial_I')
                             ->label(TranslationHelper::translateIfNeeded('Serial #(Internal)'))
-                            ->required()->columnSpan(2)
+                            ->required()->columnSpan(['sm' => 4 , 'md' => 1 , 'lg' => 2 , 'xl' => 2 , '2xl' => 2])
                             ->default($defaultData['serial_I'] ?? null),
                         Forms\Components\BelongsToSelect::make('for_drone')
                             ->label(TranslationHelper::translateIfNeeded('For Drone (Optional)'))
@@ -153,9 +153,9 @@ class BattreiResource extends Resource
                         Forms\Components\TextInput::make('flaight_count')
                             ->label(TranslationHelper::translateIfNeeded('Flight Count'))
                             ->required()
-                            ->numeric()->columnSpan(1)
+                            ->numeric()->columnSpan(['sm' => 4 , 'md' => 1 , 'lg' => 1 , 'xl' => 1 , '2xl' => 1])
                             ->default($defaultData['flaight_count'] ?? null),
-                        ])->columns(4),
+                        ])->columns(['sm' => 1 , 'md' => 1 , 'lg' => 4]),
                         //end wizard 1
                     Tabs\Tab::make(TranslationHelper::translateIfNeeded('Extra Information'))
                     ->schema([

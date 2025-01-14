@@ -23,7 +23,7 @@
             //flight
             $flight = App\Models\fligh::Where('teams_id',$currentTeamId)->orderBy('created_at', 'desc')
             ->limit(20)
-            ->paginate(10);
+            ->paginate(5);
             //end flight
             //inventory
             $inventory = App\Models\fligh::Where('teams_id',$currentTeamId)
@@ -54,7 +54,14 @@
                     ->orderBy('updated_at', 'desc')
                     ->limit(5)
                     ->get();
-                $uniqId = $LastBattrei->pluck('battrei_id')->unique();
+        
+            $batteryIds = DB::table('flighs')
+                ->where('teams_id',$currentTeamId)
+                ->join('battrei_kits', 'flighs.kits_id', '=', 'battrei_kits.kits_id')
+                ->pluck('battrei_kits.battrei_id');
+            
+                $uniqId = $LastBattrei->pluck('battrei_id')->merge($batteryIds)->unique()->take(10);
+                
                 $battreiUsage = App\Models\Battrei::whereHas('teams', function ($query) use ($currentTeamId){
                     $query->where('teams_id', $currentTeamId);
                 })->whereIn('id', $uniqId)
@@ -67,13 +74,24 @@
                     ->orderBy('updated_at', 'desc')
                     ->limit(5)
                     ->get();
-                $uniqIdEquipment = $lastEquipment->pluck('equidment_id')->unique();
+
+            $equipmentIds = DB::table('flighs')
+                ->where('teams_id',$currentTeamId)
+                ->join('equidment_kits', 'flighs.kits_id', '=', 'equidment_kits.kits_id')
+                ->pluck('equidment_kits.equidment_id');
+
+                $uniqIdEquipment = $lastEquipment->pluck('equidment_id')->merge($equipmentIds)->unique()->take(10);
+                // dd($uniqIdEquipment);
+
                 $equipmentUsage = App\Models\Equidment::whereHas('teams', function ($query) use ($currentTeamId){
                     $query->where('teams_id', $currentTeamId);
                 })->whereIn('id', $uniqIdEquipment)
                     ->withCount('fligh as usage_count')
                     ->with('fligh')
                     ->get();
+
+            
+
             //count
             $flightCount = $flight->count();
             $maintenaceDroneCount =$maintenance_drone->count();
@@ -156,7 +174,7 @@
     <!-- Tab content -->
         <div class="content">
 
-                <div id="content0" class="tab-content active">
+                <div id="content0" class="tab-content">
                     <h2 class="text-2xl font-bold mb-4">{!! TranslationHelper::translateIfNeeded('Your Operations Overview') !!}</h2>
                 
                     {{-- untuk tampilan 2 atau lebih widgets --}}
@@ -451,7 +469,7 @@
                 </div>
                 
                 
-                <div id="content3" class="tab-content">
+                <div id="content3" class="tab-content  active">
                     <h1 class="text-2xl font-bold mb-4">{!! TranslationHelper::translateIfNeeded('Inventory Overview')!!}</h1>
                     <div class="space-y-4">
                         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 justify-center">
@@ -500,7 +518,19 @@
                                         <p class="text-sm text-gray-800 dark:text-gray-200 font-semibold">{!! TranslationHelper::translateIfNeeded('Flight') !!}</p>
                                         <p class="text-sm text-gray-700 dark:text-gray-400"></p>
                                         <div class="flex justify-between items-center rounded">
-                                            <p class="text-sm text-gray-700 dark:text-gray-400">{{$item->usage_count}} {!! TranslationHelper::translateIfNeeded('Flight') !!}</p> 
+                                            @if($item->usage_count == 0)
+                                                @php
+                                                    $kitsID = DB::table('battrei_kits')->where('battrei_id',$item->id)->first()->kits_id;
+                                                    // dd($kitsID);
+                                                    $flights = DB::table('flighs')
+                                                    ->where('kits_id', $kitsID)
+                                                    ->count();
+                                                @endphp
+                                                <p class="text-sm text-gray-700 dark:text-gray-400">{{$flights}} {!! TranslationHelper::translateIfNeeded('Flight')!!}</p>
+
+                                            @else
+                                                <p class="text-sm text-gray-700 dark:text-gray-400">{{$item->usage_count}} {!! TranslationHelper::translateIfNeeded('Flight')!!}</p>
+                                            @endif
                         
                                             @if($item->fligh->isNotEmpty())
                                             
@@ -523,7 +553,35 @@
                                             {!! TranslationHelper::translateIfNeeded('Total Duration:') !!} {{ $formattedTotalDuration }} <!-- Menampilkan durasi yang diformat -->
                                             </p>
                                         @else
-                                            <p class="text-sm text-gray-500">null</p>
+                                            @php
+                                                $kitsID = DB::table('battrei_kits')->where('battrei_id',$item->id)->first()->kits_id;
+                                                // dd($kitsID);
+                                                $flights = DB::table('flighs')
+                                                ->where('kits_id', $kitsID)
+                                                ->get();
+                                              
+                                                // Menghitung total durasi dalam detik
+                                                if ($flights) {
+
+                                                    $totalDurationInSeconds = $flights->sum(function ($flight) {
+                                                        list($hours, $minutes, $seconds) = explode(':', $flight->duration);
+                                                        return ($hours * 3600) + ($minutes * 60) + $seconds;
+                                                    });
+
+                                                    // Menghitung total jam, menit, dan detik
+                                                    $totalHours = floor($totalDurationInSeconds / 3600);
+                                                    $totalMinutes = floor(($totalDurationInSeconds % 3600) / 60);
+                                                    $totalSeconds = $totalDurationInSeconds % 60;
+                            
+                                                    // Format total durasi
+                                                    $formattedTotalDuration = sprintf('%02d:%02d:%02d', $totalHours, $totalMinutes, $totalSeconds);
+                                                } else {
+                                                    $$formattedTotalDuration = 0;
+                                                }
+                                            @endphp
+                                            <p class="text-sm text-gray-700 dark:text-gray-400">
+                                                {!! TranslationHelper::translateIfNeeded('Total Duration:')!!} {{ $formattedTotalDuration }} <!-- Menampilkan durasi yang diformat -->
+                                            </p>
                                         @endif
                                         </div>      
                                     </div>
@@ -534,9 +592,10 @@
                                                 {{ $item->serial_I ?? 'N/A' }}
                                         </p>
                                     </div>
-                                
+                               
                                     <div class="flex-1 min-w-[150px] mb-2 border-r border-gray-300 pr-2">
                                             <p class="text-sm text-gray-800 dark:text-gray-200 font-semibold">{!! TranslationHelper::translateIfNeeded('For Drone')!!}</p>
+                                        @if($item->for_drone != 0)
                                             @if($item->drone->shared != 0)
                                             <a href="{{route('drone.statistik', ['drone_id' => $item->drone->id ?? 0])}}">
                                                 <p class="text-sm text-gray-700 dark:text-gray-400">{{$item->drone->name??null}}</p>
@@ -545,6 +604,7 @@
                                                 <p class="text-sm text-gray-700 dark:text-gray-400">{{$item->drone->name??null}}</p>
                                             @endif
                                             <p class="text-sm text-gray-700 dark:text-gray-400">{{$item->drone->brand??null}} - {{$item->drone->model??null}}</p>
+                                        @endif
                                     </div>
                                 </div>
                             @endforeach
@@ -569,7 +629,20 @@
                                         <p class="text-sm text-gray-800 dark:text-gray-200 font-semibold">{!! TranslationHelper::translateIfNeeded('Flight')!!}</p>
                                         <p class="text-sm text-gray-700 dark:text-gray-400"></p>
                                         <div class="flex justify-between items-center rounded">
-                                            <p class="text-sm text-gray-700 dark:text-gray-400">{{$item->usage_count}} {!! TranslationHelper::translateIfNeeded('Flight')!!}</p> 
+                                            
+                                            @if($item->usage_count == 0)
+                                                @php
+                                                    $kitsID = DB::table('equidment_kits')->where('equidment_id',$item->id)->first()->kits_id;
+                                                    // dd($kitsID);
+                                                    $flights = DB::table('flighs')
+                                                    ->where('kits_id', $kitsID)
+                                                    ->count();
+                                                @endphp
+                                                <p class="text-sm text-gray-700 dark:text-gray-400">{{$flights}} {!! TranslationHelper::translateIfNeeded('Flight')!!}</p>
+
+                                            @else
+                                                <p class="text-sm text-gray-700 dark:text-gray-400">{{$item->usage_count}} {!! TranslationHelper::translateIfNeeded('Flight')!!}</p>
+                                            @endif
                         
                                             @if($item->fligh->isNotEmpty())
                                             
@@ -593,7 +666,35 @@
                                             {!! TranslationHelper::translateIfNeeded('Total Duration:')!!} {{ $formattedTotalDuration }} <!-- Menampilkan durasi yang diformat -->
                                             </p>
                                         @else
-                                            <p class="text-sm text-gray-500">null</p>
+                                            @php
+                                                $kitsID = DB::table('equidment_kits')->where('equidment_id',$item->id)->first()->kits_id;
+                                                // dd($kitsID);
+                                                $flights = DB::table('flighs')
+                                                ->where('kits_id', $kitsID)
+                                                ->get();
+                                              
+                                                // Menghitung total durasi dalam detik
+                                                if ($flights) {
+
+                                                    $totalDurationInSeconds = $flights->sum(function ($flight) {
+                                                        list($hours, $minutes, $seconds) = explode(':', $flight->duration);
+                                                        return ($hours * 3600) + ($minutes * 60) + $seconds;
+                                                    });
+
+                                                    // Menghitung total jam, menit, dan detik
+                                                    $totalHours = floor($totalDurationInSeconds / 3600);
+                                                    $totalMinutes = floor(($totalDurationInSeconds % 3600) / 60);
+                                                    $totalSeconds = $totalDurationInSeconds % 60;
+                            
+                                                    // Format total durasi
+                                                    $formattedTotalDuration = sprintf('%02d:%02d:%02d', $totalHours, $totalMinutes, $totalSeconds);
+                                                } else {
+                                                    $$formattedTotalDuration = 0;
+                                                }
+                                            @endphp
+                                            <p class="text-sm text-gray-700 dark:text-gray-400">
+                                                {!! TranslationHelper::translateIfNeeded('Total Duration:')!!} {{ $formattedTotalDuration }} <!-- Menampilkan durasi yang diformat -->
+                                            </p>
                                         @endif
                                         </div>      
                                     </div>
@@ -767,7 +868,7 @@
                                     <div class="flex-1 min-w-[150px] mb-2 border-r border-gray-300 pr-2">
                                         <p class="text-sm text-gray-800 dark:text-gray-200 font-semibold">{!! TranslationHelper::translateIfNeeded('Location:')!!}</p>
                                         @if($item->fligh_locations->shared != 0)
-                                        <a href="{{route('filament.admin.resources.fligh-locations.edit',['tenant' =>Auth()->user()->teams()->first()->id,'record'=>$item->fligh_locations->id ?? 0])}}">
+                                        <a href="{{route('filament.admin.resources.fligh-locations.view',['tenant' =>Auth()->user()->teams()->first()->id,'record'=>$item->fligh_locations->id ?? 0])}}">
                                             <p class="text-sm text-gray-700 dark:text-gray-400">{{ $item->fligh_locations->name ??  TranslationHelper::translateIfNeeded('No Location') }}</p>
                                         </a>
                                         @else
