@@ -519,8 +519,8 @@ class DocumentResource extends Resource
                     ]): null)->color(Color::Blue),
                 TextEntry::make('description')
                     ->label(TranslationHelper::translateIfNeeded('Description'))
-                    ->columnspan(2),
-            ])->columns(3)
+                    ->columnspan(['sm'=>1, 'md'=>2, 'lg'=>2]),
+            ])->columns(['sm'=>1, 'md'=>2, 'lg'=>2])
 
         ]);
     }
