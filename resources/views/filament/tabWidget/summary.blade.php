@@ -80,7 +80,7 @@
                                         @endif
                                     </div>
                                     <div class="text-red-900 dark:text-red-300">{!! TranslationHelper::translateIfNeeded('Pilot:')!!} 
-                                        <button type="button" onclick="setSessionPersonnel({{$item->users->id}}">
+                                        <button type="button" onclick="setSessionPersonnel({{$item->users->id}})">
                                             {{$item->users->name ?? null}}
                                         </button>
                                     </div>

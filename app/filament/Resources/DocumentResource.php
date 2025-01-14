@@ -79,7 +79,7 @@ class DocumentResource extends Resource
                         'Site Assessment' => 'Site Assessment',
                         'Safety Instruction' => 'Safety Instruction',
                         'Other' => 'Other',
-                    ])->searchable()->columnSpan(2),
+                    ])->searchable()->columnSpan(['sm' => 3 , 'md' => 1 , 'lg' => 2 , 'xl' => 2 , '2xl' => 2]),
                 Forms\Components\TextInput::make('refnumber')
                     ->label(TranslationHelper::translateIfNeeded('REF. Number'))
                     ->required()
@@ -111,7 +111,7 @@ class DocumentResource extends Resource
                         'Equipments/Battery' => 'Equipments/Battery',
                         'Incident' => 'Incident',
                     ])
-                    ->columnSpan(2),
+                    ->columnSpan(['sm' => 3 , 'md' => 1 , 'lg' => 2 , 'xl' => 2 , '2xl' => 2]),
                 Forms\Components\Select::make('users_id')
                     ->label(TranslationHelper::translateIfNeeded('Owner'))
                     //->relationship('users', 'name')
@@ -144,7 +144,7 @@ class DocumentResource extends Resource
                 Forms\Components\TextInput::make('external link')
                     ->label(TranslationHelper::translateIfNeeded('Or External Link, your document'))
                     ->required()
-                    ->maxLength(255)->columnSpan(2),
+                    ->maxLength(255)->columnSpan(['sm' => 3 , 'md' => 1 , 'lg' => 2 , 'xl' => 2 , '2xl' => 2]),
                 Forms\Components\TextArea::make('description')
                     ->label(TranslationHelper::translateIfNeeded('Description'))
                     ->maxLength(255)->columnSpanFull(),
@@ -152,7 +152,7 @@ class DocumentResource extends Resource
                     ->default(auth()->user()->teams()->first()->id ?? null),
 
                 ])
-                ->columns(3),
+                ->columns(['sm' => 1 , 'md' => 1 , 'lg' => 3]),
                 
             ]);
     }

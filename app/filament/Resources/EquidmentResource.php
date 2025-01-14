@@ -114,7 +114,7 @@ class EquidmentResource extends Resource
                                 ->default($defaultData['inventory_asset'] ?? null),
                             Forms\Components\TextInput::make('serial')
                            ->label(TranslationHelper::translateIfNeeded('Serial'))
-                                ->required()->columnSpan(2)
+                                ->required()->columnSpan(['sm' => 4 , 'md' => 1 , 'lg' => 2 , 'xl' => 2 , '2xl' => 2])
                                 ->default($defaultData['serial'] ?? null),
                             Forms\Components\select::make('type')
                            ->label(TranslationHelper::translateIfNeeded('Type'))
@@ -151,7 +151,7 @@ class EquidmentResource extends Resource
                                     'tripod' => 'Tripod',
                                     'video_transmitter' => 'Video Transmitter'
                                 ])->searchable()
-                                ->required()->columnSpan(2)
+                                ->required()->columnSpan(['sm' => 4 , 'md' => 1 , 'lg' => 2 , 'xl' => 2 , '2xl' => 2])
                                 ->default($defaultData['type'] ?? null),
                             Forms\Components\Select::make('drones_id')
                            ->label(TranslationHelper::translateIfNeeded('For Drone (Optional)'))
@@ -166,7 +166,7 @@ class EquidmentResource extends Resource
                                     ->where('status', 'airworthy')
                                     ->pluck('name', 'id'))
                                 ->default($defaultData['drones_id'] ?? null)
-                        ])->columns(4),
+                        ])->columns(['sm' => 1 , 'md' => 1 , 'lg' => 4]),
                         Tabs\Tab::make(TranslationHelper::translateIfNeeded('Extra Information'))
                         ->schema([
                             Forms\Components\Select::make('users_id')

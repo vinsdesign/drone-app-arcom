@@ -218,6 +218,7 @@
                             @csrf
                             <input id="ownerFlight" type="hidden" name="teams_idFlight" value="{{ auth()->user()->first()->id }}">
                             <input id="flight" type="hidden" name="recordIDFlight" value="Flight">
+                            <input id="flight_id" type="hidden" name="recordIDFlights" value="{{$id}}}">
                     
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                                 <!-- Name Input -->
@@ -1117,6 +1118,7 @@
             formDataFlight.append('dock', $('#dockFlight')[0].files[0]); // File input
             formDataFlight.append('owner', $('#ownerFlight').val());
             formDataFlight.append('flight', $('#flight').val());
+            formDataFlight.append('flight_id', $('#flight').val());
 
             let name = $('#nameFlight').val().trim() || null;
             let expired = $('#expiredDateFlight').val().trim() || null;

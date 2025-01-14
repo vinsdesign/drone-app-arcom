@@ -4,6 +4,7 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\ListTeamResource\Pages;
 use App\Filament\Resources\ListTeamResource\RelationManagers;
+use App\Models\ListTeam;
 use App\Models\Team;
 use Filament\Forms;
 use Filament\Forms\Form;
@@ -27,7 +28,7 @@ use App\Helpers\TranslationHelper;
 
 class ListTeamResource extends Resource
 {
-    protected static ?string $model = Team::class;
+    protected static ?string $model = team::class;
     protected static ?string $modelLabel = 'Team Lists';
     protected static ?string $navigationLabel = 'Team List';
 

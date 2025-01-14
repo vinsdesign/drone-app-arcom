@@ -68,12 +68,12 @@ class DroneResource extends Resource
                         Forms\Components\TextInput::make('name')
                         ->label(TranslationHelper::translateIfNeeded('Name'))
                             ->required()
-                            ->maxLength(255)->columnSpan(1)
+                            ->maxLength(255)->columnSpan(['sm' => 3 , 'md' => 1 , 'lg' => 1 , 'xl' => 1 , '2xl' => 1])
                             ->default($defaultData['name'] ?? null),
                         Forms\Components\TextInput::make('idlegal')
                         ->label(TranslationHelper::translateIfNeeded('Legal ID'))
                             ->required()
-                            ->maxLength(255)->columnSpan(2)
+                            ->maxLength(255)->columnSpan(['sm' => 3 , 'md' => 1 , 'lg' => 2 , 'xl' => 2 , '2xl' => 2])
                             ->default($defaultData['idlegal'] ?? null),
                         Forms\Components\select::make('status')
                         ->label(TranslationHelper::translateIfNeeded('Status'))  
@@ -114,7 +114,7 @@ class DroneResource extends Resource
                             'Submersible' => 'Submersible',
                         ])->searchable()->required()
                         ->default($defaultData['type'] ?? null),
-                    ])->columns(3),
+                    ])->columns(['sm' => 1 , 'md' => 1 , 'lg' => 3]),
                     //and wizard 1
                     Forms\Components\Wizard\Step::make(TranslationHelper::translateIfNeeded('Drone Details'))
                     ->schema([
@@ -248,7 +248,7 @@ class DroneResource extends Resource
                             Forms\Components\TextInput::make('remote_cc')
                             ->label(TranslationHelper::translateIfNeeded('Remote Controller2'))
                            
-                            ->maxLength(255)->columnSpan(2)
+                            ->maxLength(255)->columnSpan(['sm' => 3 , 'md' => 1 , 'lg' => 2 , 'xl' => 2 , '2xl' => 2])
                             ->default($defaultData['remote_cc'] ?? null),
                         Forms\Components\TextInput::make('remote')
                         ->label(TranslationHelper::translateIfNeeded('Remote ID'))
@@ -258,9 +258,9 @@ class DroneResource extends Resource
                         Forms\Components\TextInput::make('conn_card')
                         ->label(TranslationHelper::translateIfNeeded('Connection Card'))
                            
-                            ->maxLength(255)->columnSpan(2)
+                            ->maxLength(255)->columnSpan(['sm' => 3 , 'md' => 1 , 'lg' => 2 , 'xl' => 2 , '2xl' => 2])
                             ->default($defaultData['conn_card'] ?? null),
-                    ])->columns(3),
+                    ])->columns(['sm' => 1 , 'md' => 1 , 'lg' => 3]),
                     //and wizard 3
                 ])->columnSpanFull(),
                 //end wizard
@@ -592,8 +592,8 @@ class DroneResource extends Resource
                     TextEntry::make('propulsion_v')->label(TranslationHelper::translateIfNeeded('Propulsion Version')),
                     TextEntry::make('description')
                         ->label(TranslationHelper::translateIfNeeded('Description'))
-                        ->columnspan(3),
-                ])->columns(5),
+                        ->columnSpan(['sm' => 1 , 'md' => 1 , 'lg' => 3 , 'xl' => 3 , '2xl' => 3]),
+                ]) ->columns(['sm' => 2 , 'md' => 2 , 'lg' => 5]),
             Section::make(TranslationHelper::translateIfNeeded('Connect'))
                 ->schema([
                     TextEntry::make('serial_p')->label(TranslationHelper::translateIfNeeded('Serial Printed')),

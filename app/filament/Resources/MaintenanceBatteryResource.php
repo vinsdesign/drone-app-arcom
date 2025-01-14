@@ -83,7 +83,7 @@ class MaintenanceBatteryResource extends Resource
                                 ->where('shared', '!=', 0)
                                 ->pluck('name', 'id'))
                             ->searchable()
-                            ->columnSpan(1)
+                            ->columnSpan(['sm' => 3 , 'md' => 1 , 'lg' => 1 , 'xl' => 1 , '2xl' => 1])
                             ->default($defaultData['equidment_id'] ?? null),
                             Forms\Components\Select::make('battrei_id')
                             ->label(TranslationHelper::translateIfNeeded('Battery'))
@@ -92,11 +92,11 @@ class MaintenanceBatteryResource extends Resource
                                 ->where('shared', '!=', 0)
                                 ->pluck('name', 'id'))
                             ->searchable()
-                            ->columnSpan(1)
+                            ->columnSpan(['sm' => 3 , 'md' => 1 , 'lg' => 1 , 'xl' => 1 , '2xl' => 1])
                             ->default($defaultData['battrei_id'] ?? null),
                         Forms\Components\DatePicker::make('date')
                         ->label(TranslationHelper::translateIfNeeded('Maintenance Date'))      
-                            ->columnSpan(1)
+                        ->columnSpan(['sm' => 3 , 'md' => 1 , 'lg' => 1 , 'xl' => 1 , '2xl' => 1])
                             ->default($defaultData['date'] ?? null),
                         Forms\Components\Select::make('status')
                         ->label(TranslationHelper::translateIfNeeded('Status'))    
@@ -133,14 +133,14 @@ class MaintenanceBatteryResource extends Resource
                         Forms\Components\TextInput::make('technician')
                         ->label(TranslationHelper::translateIfNeeded('Technician'))    
                             ->maxLength(255)
-                            ->columnSpan(2)
+                            ->columnSpan(['sm' => 3 , 'md' => 1 , 'lg' => 2 , 'xl' => 2 , '2xl' => 2])
                             ->default($defaultData['technician'] ?? null),
 
                         Forms\Components\TextArea::make('notes')
                         ->label(TranslationHelper::translateIfNeeded('Notes'))    
                             ->columnSpanFull()
                             ->default($defaultData['notes'] ?? null),
-                ])->columns(3),
+                ])->columns(['sm' => 1 , 'md' => 1 , 'lg' => 3]),
             ]);
     }
 

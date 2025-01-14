@@ -19,14 +19,16 @@
     //FlightIncident
     $maintenance = App\Models\maintence_eq::Where('battrei_id',$id)->get();
     //flight
-    $flights = App\Models\Fligh::where('teams_id', $teams)
-    ->whereHas('battreis', function ($query) use ($id) {
-        $query->where('battrei_id', $id);
+    $flights = App\Models\Fligh::whereHas('kits', function ($query) use ($id) {
+        $query->whereHas('battrei', function ($query) use ($id) {
+            $query->where('battrei_kits.battrei_id', $id);
+        });
     })
     ->paginate(10);
-    $flightCount = App\Models\Fligh::where('teams_id', $teams)
-    ->whereHas('battreis', function ($query) use ($id) {
-        $query->where('battrei_id', $id);
+    $flightCount = App\Models\Fligh::whereHas('kits', function ($query) use ($id) {
+        $query->whereHas('battrei', function ($query) use ($id) {
+            $query->where('battrei_kits.battrei_id', $id);
+        });
     })
     ->get();
     $count = $flightCount->count('id');
