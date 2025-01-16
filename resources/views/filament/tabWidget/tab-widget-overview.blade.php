@@ -284,7 +284,7 @@
                                     <div class="flex-1 min-w-[150px] mb-2 border-r border-gray-300 pr-2">
                                         <p class="text-sm text-gray-800 dark:text-gray-200 font-semibold">{!! TranslationHelper::translateIfNeeded('Flight Location') !!}</p>
                                         @if($item->fligh_location->shared != 0)
-                                        <a href="{{route('filament.admin.resources.fligh-locations.edit',
+                                        <a href="{{route('filament.admin.resources.fligh-locations.view',
                                         ['tenant' => Auth()->user()->teams()->first()->id,
                                         'record' => $item->fligh_location->id ?? 0])}}"><p class="text-sm text-gray-700 dark:text-gray-400">{{$item->fligh_location->name?? null}}</p>
                                         </a>
