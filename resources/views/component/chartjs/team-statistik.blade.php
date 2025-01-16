@@ -64,14 +64,26 @@ $year = session('tahun', now()->year);
             <p class="text-sm font-semibold text-center text-gray-800 dark:text-gray-100">Flight Team Statistik in {{$year}}</p>
             <canvas id="dualAxisChart" class="w-full h-auto"></canvas>
             <p class="text-sm font-semibold text-center text-gray-700 dark:text-gray-100 mb-2">{{ $totalFlightsPerMonth}} Flights / {{$formattedTotalDuration}} Hours in {{$year}}</p>
-            <div class="button-container flex justify-center items-center space-x-4">
-                <button id="button-left" type="button" class="bg-primary-500 text-white p-2 rounded-lg shadow hover:bg-primary-600 dark:bg-primary-700 dark:hover:bg-primary-800" onclick="changeYear(-1)">
+            <div class="flex justify-center items-center space-x-4 sm:space-x-2 md:space-x-6 lg:space-x-8 sm:scale-90 md:scale-100 lg:scale-110 xl:scale-125 sm:flex-wrap">
+                <button 
+                    id="button-left" 
+                    type="button" 
+                    class="bg-primary-500 text-white p-2 rounded-lg shadow hover:bg-primary-600 dark:bg-primary-700 dark:hover:bg-primary-800 sm:p-1 sm:text-sm md:p-2 md:text-base lg:p-3 lg:text-lg xl:p-4 xl:text-xl"
+                    onclick="changeYear(-1)">
                     <i class="fas fa-chevron-left"></i>
                 </button>
-                <button id="button-center" type="button" class="bg-primary-500 text-white p-2 rounded-lg shadow hover:bg-primary-600 dark:bg-primary-700 dark:hover:bg-primary-800" onclick="changeYearDefault()">
-                    <p id="current-year">current-year</p>
+                <button 
+                    id="button-center" 
+                    type="button" 
+                    class="bg-primary-500 text-white p-2 rounded-lg shadow hover:bg-primary-600 dark:bg-primary-700 dark:hover:bg-primary-800 sm:p-1 sm:text-sm md:p-2 md:text-base lg:p-3 lg:text-lg xl:p-4 xl:text-xl"
+                    onclick="changeYearDefault()">
+                    <p id="current-year" class="sm:text-xs md:text-sm lg:text-base xl:text-lg">current-year</p>
                 </button>
-                <button id="button-right" type="button" class="bg-primary-500 text-white p-2 rounded-lg shadow hover:bg-primary-600 dark:bg-primary-700 dark:hover:bg-primary-800" onclick="changeYear(1)">
+                <button 
+                    id="button-right" 
+                    type="button" 
+                    class="bg-primary-500 text-white p-2 rounded-lg shadow hover:bg-primary-600 dark:bg-primary-700 dark:hover:bg-primary-800 sm:p-1 sm:text-sm md:p-2 md:text-base lg:p-3 lg:text-lg xl:p-4 xl:text-xl"
+                    onclick="changeYear(1)">
                     <i class="fas fa-chevron-right"></i>
                 </button>
             </div>
