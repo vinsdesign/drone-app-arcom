@@ -179,8 +179,23 @@ class DocumentResource extends Resource
     {
         return $table
         //edit query untuk action shared un-shared
+        // ->modifyQueryUsing(function (Builder $query) {
+        //     $userId = auth()->user()->id;
+        //     if (Auth()->user()->roles()->pluck('name')->contains('super_admin') || (Auth()->user()->roles()->pluck('name')->contains('panel_user'))) {
+        //         return $query;
+        //     }else{
+        //         $query->where(function ($query) use ($userId) {
+        //             $query->where('users_id', $userId);
+        //         })
+        //         ->orWhere(function ($query) use ($userId) {
+        //             $query->where('users_id', '!=', $userId)->where('shared', 1);
+        //         });
+        //         return $query;
+        //     }
+        // })
         ->modifyQueryUsing(function (Builder $query) {
             $userId = auth()->user()->id;
+    
             if (Auth()->user()->roles()->pluck('name')->contains('super_admin') || (Auth()->user()->roles()->pluck('name')->contains('panel_user'))) {
                 return $query;
             }else{

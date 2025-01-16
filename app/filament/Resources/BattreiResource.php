@@ -458,7 +458,7 @@ class BattreiResource extends Resource
                             Forms\Components\TextArea::make('description')
                                 ->label(TranslationHelper::translateIfNeeded('Notes'))
                                 ->maxLength(255)
-                                ->columnSpan(2),
+                                ->columnSpan(['sm'=>1, 'md'=>2, 'lg'=>2, 'xl'=>2, '2xl'=>2]),
                                 
                             Forms\Components\TextInput::make('refnumber')
                                 ->label(TranslationHelper::translateIfNeeded('Reference Number'))
