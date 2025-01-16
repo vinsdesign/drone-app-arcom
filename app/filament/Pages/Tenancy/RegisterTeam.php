@@ -38,4 +38,13 @@ class RegisterTeam extends RegisterTenant
     
         return $team;
     }
+
+    // untuk hendel registration team
+    public static function boot(){
+        $user = auth()->user()->teams()->first()->id ?? 0;
+        $teams = auth()->user()->teams()->first()->id ?? 0; 
+        if(!$user == 0){
+            return redirect()->route('filament.admin.pages.dashboard',['tenant' => $teams]);
+        }
+    }
 }

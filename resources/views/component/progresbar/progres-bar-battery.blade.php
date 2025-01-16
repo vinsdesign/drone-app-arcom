@@ -1,5 +1,7 @@
 <?php 
 use Carbon\Carbon;
+use Illuminate\Support\Str;
+
     $id = $getRecord()->id;
     $name = $getRecord()->name;
     $flightTotal = $getRecord()->flaight_count;
@@ -66,7 +68,7 @@ use Carbon\Carbon;
     
         <div class="flex flex-col items-start sm:items-center space-y-2 w-full sm:w-auto flex-grow">
             <a href="{{route('filament.admin.resources.battreis.view',['tenant' => Auth()->user()->teams()->first()->id,'record'=>$getRecord()->id])}}">
-                <p class="text-lg font-semibold text-gray-800">{{$name}}</p>
+                <p class="text-lg font-semibold text-gray-800">{{ Str::limit($name, 22) }}</p>
             </a>
             <p class="text-sm text-gray-500">{{$getRecord()->model ?? null}}</p>
         </div>

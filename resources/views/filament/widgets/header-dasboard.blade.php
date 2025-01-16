@@ -98,7 +98,7 @@
 <x-filament-widgets::widget>
     <x-filament::section>
 
-    <div class="filament-stats-overview-widget p-6 border-b bg-white dark:bg-gray-800 rounded-lg shadow">
+    <div class="filament-stats-overview-widget p-6 border-b bg-white dark:bg-gray-800 rounded-lg shadow overflow-hidden">
         <!-- Title and total drones -->
         <div class="flex flex-col space-y-6 sm:flex-row sm:space-y-0 justify-between items-center">
             <!-- Title Section -->
@@ -134,23 +134,34 @@
                   
     
             <!-- Status indicators (Airworthy, Maintenance, Retired) -->
-            <div class="flex space-x-12">
-                <div class="text-center">
-                    <h2 class="text-sm font-semibold text-gray-500 dark:text-gray-400">{!! TranslationHelper::translateIfNeeded('Flying Time') !!}</h2>
-                    <h1 id="flightDuration" class="text-3xl font-bold text-gray-600 dark:text-gray-300">{{ $formattedTotalDuration }}</h1>
+            <div class="flex space-x-4 overflow-x-auto p-4">
+                <div class="text-center flex-shrink-0">
+                    <h2 class="text-xs font-semibold text-gray-500 dark:text-gray-400">
+                        {!! TranslationHelper::translateIfNeeded('Flying Time') !!}
+                    </h2>
+                    <h1 id="flightDuration" class="text-xl font-bold text-gray-600 dark:text-gray-300">
+                        {{ $formattedTotalDuration }}
+                    </h1>
                 </div>
-                <br>
-                <div class="text-center">
-                    <h2 class="text-sm font-semibold text-gray-500 dark:text-gray-400">{!! TranslationHelper::translateIfNeeded('Flights') !!}</h2>
-                    <h1 id="flightCount" class="text-3xl font-bold text-gray-600 dark:text-gray-300">{{ $sumFlightYear }}</h1>
+            
+                <div class="text-center flex-shrink-0">
+                    <h2 class="text-xs font-semibold text-gray-500 dark:text-gray-400">
+                        {!! TranslationHelper::translateIfNeeded('Flights') !!}
+                    </h2>
+                    <h1 id="flightCount" class="text-xl font-bold text-gray-600 dark:text-gray-300">
+                        {{ $sumFlightYear }}
+                    </h1>
                 </div>
-                <br>
-                <div id="isYear" class="text-center" style="display: none;">
-                    <h2 class="text-sm font-semibold text-gray-500 dark:text-gray-400">{!! TranslationHelper::translateIfNeeded('Year') !!}</h2>
-                    <h1 id="flightCount" class="text-3xl font-bold text-gray-600 dark:text-gray-300">{{ $year }}</h1>
+            
+                <div id="isYear" class="text-center flex-shrink-0 hidden" style="display: none;">
+                    <h2 class="text-xs font-semibold text-gray-500 dark:text-gray-400">
+                        {!! TranslationHelper::translateIfNeeded('Year') !!}
+                    </h2>
+                    <h1 id="flightCount" class="text-xl font-bold text-gray-600 dark:text-gray-300">
+                        {{ $year }}
+                    </h1>
                 </div>
             </div>
-    
             <!-- Action buttons -->
             
             @if (Auth::user()->can('create', App\Models\fligh::class)) 
